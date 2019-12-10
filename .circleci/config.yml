@@ -47,3 +47,23 @@ jobs:
           # Must be relative path from root
           paths:
             - out
+
+  test-linux:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10.16.3
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run: ls -lah out
+
+workflows:
+  version: 2
+
+  btd:
+    jobs:
+      - build
+      - test-linux:
+          requires:
+            - build
