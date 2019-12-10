@@ -70,6 +70,14 @@ jobs:
           name: Run MacOS binary
           command: out/codecov-macos
 
+  test-windows:
+    executor: win/default
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run: out/codecov-win.exe
+
 workflows:
   version: 2
 
@@ -80,5 +88,8 @@ workflows:
           requires:
             - build
       - test-macos:
+          requires:
+            - build
+      - test-window:
           requires:
             - build
