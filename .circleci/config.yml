@@ -80,7 +80,10 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run: out/codecov-win.exe
+      - run:
+          name: Run Windows binary
+          command: out/codecov-win.exe
+          shell: cmd.exe
 
 workflows:
   version: 2
