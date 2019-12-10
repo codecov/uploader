@@ -56,7 +56,7 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run: ls -lah out
+      - run: out/codecov-linux
 
 workflows:
   version: 2
