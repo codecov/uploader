@@ -82,7 +82,9 @@ jobs:
           at: .
       - run:
           name: Run Windows binary
-          command: out/codecov-win.exe
+          command: |
+            cd out
+            codecov-win.exe
           shell: cmd.exe
 
 workflows:
