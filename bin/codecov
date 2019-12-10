@@ -2,6 +2,13 @@
 
 const { version } = require("../package.json");
 
+const readline = require("readline");
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
 require("yargs")
   .scriptName("pirate-parser")
   .usage("$0 <cmd> [args]")
