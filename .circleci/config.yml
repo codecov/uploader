@@ -84,7 +84,7 @@ jobs:
           name: Run Windows binary
           command: |
             cd out
-            cmd codecov-win.exe
+            codecov-win.exe
           shell: cmd.exe
 
 workflows:
