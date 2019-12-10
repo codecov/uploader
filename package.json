@@ -1,0 +1,26 @@
+{
+  "name": "uploader",
+  "version": "1.0.0",
+  "description": "Codecov Report Uploader",
+  "bin": "bin/codecov",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codecov/uploader.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/codecov/uploader/issues"
+  },
+  "homepage": "https://github.com/codecov/uploader#readme",
+  "dependencies": {
+    "yargs": "^15.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^6.7.2"
+  }
+}
