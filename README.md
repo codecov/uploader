@@ -1,4 +1,6 @@
-# uploader
+# Codecov Uploader
+
+[![CircleCI](https://circleci.com/gh/codecov/uploader.svg?style=svg&circle-token=def755bf76a1d8c36436c3115530c7eac7fa30e0)](https://circleci.com/gh/codecov/uploader)
 
 ## Steps to develop
 
