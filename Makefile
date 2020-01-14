@@ -1,6 +1,8 @@
 clean:
 	rm -rf node_modules
 	rm -rf out
+	rm -rf coverage
+	rm -rf .nyc_output
 
 install:
 	npm install

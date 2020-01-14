@@ -5,7 +5,7 @@
   "private": true,
   "bin": "bin/codecov",
   "scripts": {
-    "test": "nyc --reporter=text --reporter=cobertura mocha test/*.test.js test/**/*.test.js",
+    "test": "nyc mocha test/*.test.js test/**/*.test.js",
     "build": "pkg . --out-path out"
   },
   "repository": {
@@ -28,5 +28,12 @@
     "mocha": "^7.0.0",
     "nyc": "^15.0.0",
     "pkg": "^4.4.1"
+  },
+  "nyc": {
+    "all": true,
+    "reporter": [
+      "text",
+      "cobertura"
+    ]
   }
 }

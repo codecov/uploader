@@ -1,6 +1,7 @@
 function validateToken(token) {
-  let re = "[/w]+";
-  return token.match(re);
+  let re = /^\w+$/g;
+  let result = token.match(re);
+  return true ? result != null : false;
 }
 
 module.exports = {
