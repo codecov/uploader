@@ -1,11 +1,11 @@
 {
   "name": "codecov",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Codecov Report Uploader",
   "private": true,
   "bin": "bin/codecov",
   "scripts": {
-    "test": "echo \"Warning: no tests specified\" && exit 0",
+    "test": "nyc --reporter=text --reporter=cobertura mocha test/*.test.js test/**/*.test.js",
     "build": "pkg . --out-path out"
   },
   "repository": {
@@ -23,7 +23,10 @@
     "yargs": "^15.0.2"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "eslint": "^6.7.2",
+    "mocha": "^7.0.0",
+    "nyc": "^15.0.0",
     "pkg": "^4.4.1"
   }
 }
