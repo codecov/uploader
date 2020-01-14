@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
+    "chalk": "^3.0.0",
+    "figlet": "^1.2.4",
     "yargs": "^15.0.2"
   },
   "devDependencies": {

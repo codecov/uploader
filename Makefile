@@ -11,6 +11,7 @@ test:
 	npm test
 	
 build: 
+	rm -rf out
 	npm run build
 
 .PHONY: clean install test build
