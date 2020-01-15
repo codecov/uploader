@@ -2,19 +2,32 @@
 
 const app = require("../src");
 
-require("yargs") // eslint-disable-line
+var argv = require("yargs") // eslint-disable-line
   .usage("Usage: $0 <command> [options]")
-  .option("verbose", {
-    alias: "v",
-    type: "boolean",
-    description: "Run with verbose logging"
-  })
-  .option("dry-run", {
-    type: "boolean",
-    description: "Don't upload files to Codecov"
+  .options({
+    token: {
+      alias: "t",
+      default: "",
+      description: "Codecov upload token"
+    },
+    verbose: {
+      alias: "v",
+      type: "boolean",
+      description: "Run with verbose logging"
+    },
+    "dry-run": {
+      alias: "d",
+      type: "boolean",
+      description: "Don't upload files to Codecov"
+    },
+    url: {
+      type: "string",
+      description: "Change the upload host (Enterprise use)",
+      default: "https://codecov.io"
+    }
   })
   .version()
   .help("help")
   .alias("help", "h").argv;
 
-return app.main(process.env, process.argv);
+return app.main(argv);

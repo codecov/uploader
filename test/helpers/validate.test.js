@@ -20,5 +20,8 @@ describe("Input Validators", () => {
     it("Returns false with an invalid URL", () => {
       expect(validate.validateURL("not.a.URL.com")).to.be.false;
     });
+    it("Returns false with an empty URL", () => {
+      expect(validate.validateURL("")).to.be.false;
+    });
   });
 });
