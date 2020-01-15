@@ -1,7 +1,7 @@
+var validator = require("validator");
+
 function validateToken(token) {
-  let re = /^\w+$/g;
-  let result = token.match(re);
-  return true ? result != null : false;
+  return validator.isAlphanumeric(token);
 }
 
 module.exports = {
