@@ -1,5 +1,6 @@
 const { version } = require("../package.json");
 const validate = require("./helpers/validate");
+var figlet = require("figlet");
 
 function generateQuery(
   branch,
@@ -55,13 +56,23 @@ function main(args) {
   token = validate.validateToken(args.token)
     ? args.token
     : console.log(uploadHost);
-  console.log(`Codecov report uploader ${getVersion()}`);
+  displayHeader();
   // console.dir(env);
   console.dir(args);
 
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile);
   }
+}
+
+function displayHeader(params) {
+  figlet("Codecov", function(err, data) {
+    if (err) {
+      throw new Error("Something went wrong...", err);
+    }
+    console.log(data);
+    console.log(`Codecov report uploader ${getVersion()}`);
+  });
 }
 
 function getVersion() {
@@ -73,5 +84,6 @@ flag = "--dry-run";
 module.exports = {
   main,
   getVersion,
-  generateQuery
+  generateQuery,
+  displayHeader
 };

@@ -26,4 +26,7 @@ describe("Uploader Core", () => {
       "branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1& slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6"
     );
   });
+  it("Can display header", () => {
+    expect(app.displayHeader("Testing")).to.not.throw;
+  });
 });
