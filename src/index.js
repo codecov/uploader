@@ -56,7 +56,7 @@ function main(args) {
   token = validate.validateToken(args.token)
     ? args.token
     : console.log(uploadHost);
-  displayHeader();
+  console.log(generateHeader(getVersion()));
   // console.dir(env);
   console.dir(args);
 
@@ -65,25 +65,26 @@ function main(args) {
   }
 }
 
-function displayHeader(params) {
-  figlet("Codecov", function(err, data) {
-    if (err) {
-      throw new Error("Something went wrong...", err);
-    }
-    console.log(data);
-    console.log(`Codecov report uploader ${getVersion()}`);
-  });
+function generateHeader(version) {
+  header = `
+     _____          _
+    / ____|        | |
+   | |     ___   __| | ___  ___ _____   __
+   | |    / _ \\ / _\` |/ _ \\/ __/ _ \\ \\ / /
+   | |___| (_) | (_| |  __/ (_| (_) \\ V /
+    \\_____\\___/ \\__,_|\\___|\\___\\___/ \\_/
+
+  Codecov report uploader ${version}`;
+  return header;
 }
 
 function getVersion() {
   return version;
 }
 
-flag = "--dry-run";
-
 module.exports = {
   main,
   getVersion,
   generateQuery,
-  displayHeader
+  displayHeader: generateHeader
 };
