@@ -1,43 +1,53 @@
 const { version } = require("../package.json");
 const validate = require("./helpers/validate");
-var figlet = require("figlet");
+const providers = require("./ci_providers");
 
-function generateQuery(
-  branch,
-  commit,
-  build,
-  build_url,
-  name,
-  tag,
-  slug,
-  service,
-  flags,
-  pr,
-  job
-) {
+function generateQueryParams(branch, commit, slug) {
+  if (branch === undefined || commit === undefined || slug === undefined) {
+    throw new Error("branch, commit, and slug are all required paramitars");
+  }
+  this.branch = branch;
+  this.commit = commit;
+  this.slug = slug;
+  return {
+    branch,
+    commit,
+    build: "",
+    buildURL: "",
+    name: "",
+    tag: "",
+    slug,
+    service: "",
+    flags: "",
+    pr: "",
+    job: ""
+  };
+}
+
+function generateQuery(queryParams) {
   query = "".concat(
     "branch=",
-    branch,
+    queryParams.branch,
     "&commit=",
-    commit,
+    queryParams.commit,
     "&build=",
-    build,
+    queryParams.build,
     "&build_url=",
-    build_url,
+    queryParams.buildURL,
     "&name=",
-    name,
+    queryParams.name,
     "&tag=",
-    tag,
-    "& slug=",
-    slug,
+    queryParams.tag,
+    "&slug=",
+    queryParams.slug,
     "&service=",
-    service,
+    queryParams.service,
     "&flags=",
-    flags,
+    queryParams.flags,
     "&pr=",
-    pr,
+    queryParams.pr,
     "&job=",
-    job
+    queryParams.job
   );
   return query;
 }
@@ -45,9 +55,9 @@ function generateQuery(
 function dryRun(uploadHost, token, query, uploadFile) {
   console.log(`==> Dumping upload file (no upload)`);
   console.log(
-    `${up / uploadHost}/v4?package=uploader-${version}&token=${token}&${query}`
+    `${uploadHost}/v4?package=uploader-${version}&token=${token}&${query}`
   );
-  console.log(upload_file);
+  console.log(uploadFile);
   process.exit();
 }
 
@@ -59,6 +69,13 @@ function main(args) {
   console.log(generateHeader(getVersion()));
   // console.dir(env);
   console.dir(args);
+
+  console.log(providers.local.detect());
+  console.log(providers.local.getBranch());
+
+  query = generateQuery(generateQueryParams());
+
+  uploadFile = endNetworkMarker();
 
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile);
@@ -82,9 +99,15 @@ function getVersion() {
   return version;
 }
 
+function endNetworkMarker() {
+  return "<<<<<< network\n";
+}
+
 module.exports = {
   main,
   getVersion,
   generateQuery,
-  displayHeader: generateHeader
+  generateHeader,
+  endNetworkMarker,
+  generateQueryParams
 };

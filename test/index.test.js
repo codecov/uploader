@@ -7,27 +7,26 @@ describe("Uploader Core", () => {
   it("Can return version", () => {
     expect(app.getVersion()).to.equal(version);
   });
+  it("Can generate network end marker", () => {
+    expect(app.endNetworkMarker()).to.equal("<<<<<< network\n");
+  });
   it("Can generate query URL", () => {
-    expect(
-      app.generateQuery(
-        "testBranch",
-        "commitSHA",
-        "4",
-        "https://ci-providor.local/job/xyz",
-        "testName",
-        "tagV1",
-        "testOrg/testRepo",
-        "testingCI",
-        "unit,uploader",
-        "2",
-        "6"
-      )
-    ).to.equal(
-      "branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1& slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6"
+    const queryParams = app.generateQueryParams("testBranch", "commitSHA", "4");
+    queryParams.buildURL = "https://ci-providor.local/job/xyz";
+    queryParams.job = "6";
+    queryParams.flags = "unit,uploader";
+    queryParams.slug = "testOrg/testRepo";
+    queryParams.build = "4";
+    queryParams.service = "testingCI";
+    queryParams.name = "testName";
+    queryParams.tag = "tagV1";
+    queryParams.pr = "2";
+    expect(app.generateQuery(queryParams)).to.equal(
+      "branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6"
     );
   });
   it("Can display header", () => {
-    expect(app.displayHeader(app.getVersion())).to.equal(`
+    expect(app.generateHeader(app.getVersion())).to.equal(`
      _____          _
     / ____|        | |
    | |     ___   __| | ___  ___ _____   __
