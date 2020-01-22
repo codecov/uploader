@@ -1,3 +1,4 @@
+const https = require("https");
 const { version } = require("../package.json");
 const validate = require("./helpers/validate");
 const providers = require("./ci_providers");
@@ -70,16 +71,80 @@ function main(args) {
   // console.dir(env);
   console.dir(args);
 
-  console.log(providers.local.detect());
-  console.log(providers.local.getBranch());
+  let serviceParams;
+  for (const provider of providers) {
+    if (provider.detect()) {
+      serviceParams = provider.getServiceParams(args);
+      break;
+    }
+  }
 
-  query = generateQuery(generateQueryParams());
+  console.log(serviceParams);
+
+  if (serviceParams === undefined) {
+    console.error("Unable to detect service, please specify manually.");
+    process.exit(-1);
+  }
+
+  query = generateQuery(
+    generateQueryParams(
+      serviceParams.branch,
+      serviceParams.commit,
+      serviceParams.slug
+    )
+  );
 
   uploadFile = endNetworkMarker();
 
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile);
+  } else {
+    uploadToCodecov(uploadHost, token, query, uploadFile);
   }
+}
+
+function parseURLToHostAndPost(url) {
+  if (url.match("https://")) {
+    return { port: 443, host: url.split("//")[1] };
+  } else if (url.match("http://")) {
+    return { port: 80, host: url.split("//")[1] };
+  }
+  throw new Error("Unable to parse upload url.");
+}
+
+function uploadToCodecov(uploadURL, token, query, uploadFile) {
+  // ${uploadHost}/v4?package=uploader-${version}&token=${token}&${query}
+  hostAndPort = parseURLToHostAndPost(uploadURL);
+  const options = {
+    hostname: hostAndPort.host,
+    port: hostAndPort.port,
+    path: `/v4?package=uploader-${version}&token=${token}&${query}`,
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Length": Buffer.byteLength(uploadFile)
+    }
+  };
+
+  const req = https.request(options, res => {
+    console.log(`STATUS: ${res.statusCode}`);
+    console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+    res.setEncoding("utf8");
+    res.on("data", chunk => {
+      console.log(`BODY: ${chunk}`);
+    });
+    res.on("end", () => {
+      console.log("No more data in response.");
+    });
+  });
+
+  req.on("error", e => {
+    console.error(`problem with request: ${e.message}`);
+  });
+
+  // Write data to request body
+  req.write(uploadFile);
+  req.end();
 }
 
 function generateHeader(version) {

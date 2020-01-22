@@ -1,5 +1,5 @@
 providor_local = require("./provider_local");
 
-module.exports = {
-  local: providor_local
-};
+const providers = [providor_local];
+
+module.exports = providers;
