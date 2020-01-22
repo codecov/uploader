@@ -1,5 +1,6 @@
 const https = require("https");
 const zlib = require("zlib");
+const superagent = require("superagent");
 const { version } = require("../package.json");
 const validate = require("./helpers/validate");
 const providers = require("./ci_providers");
@@ -63,14 +64,10 @@ function dryRun(uploadHost, token, query, uploadFile) {
   process.exit();
 }
 
-function main(args) {
+async function main(args) {
   uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
-  token = validate.validateToken(args.token)
-    ? args.token
-    : console.log(uploadHost);
+  token = validate.validateToken(args.token) ? args.token : "";
   console.log(generateHeader(getVersion()));
-  // console.dir(env);
-  console.dir(args);
 
   let serviceParams;
   for (const provider of providers) {
@@ -79,8 +76,6 @@ function main(args) {
       break;
     }
   }
-
-  console.log(serviceParams);
 
   if (serviceParams === undefined) {
     console.error("Unable to detect service, please specify manually.");
@@ -103,7 +98,14 @@ function main(args) {
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile);
   } else {
-    uploadToCodecov(uploadHost, token, query, gzippedFile);
+    const uploadURL = await uploadToCodecov(
+      uploadHost,
+      token,
+      query,
+      gzippedFile
+    );
+    const result = await uploadToCodecovPUT(uploadURL, gzippedFile);
+    console.log(result);
   }
 }
 
@@ -120,93 +122,51 @@ function gzip(contents) {
   return zlib.gzipSync(contents);
 }
 
-function uploadToCodecovPUT(uploadHost, uploadURL, uploadFile) {
+async function uploadToCodecovPUT(uploadURL, uploadFile) {
   console.log("Uploading...");
 
-  path = uploadURL.split(uploadHost)[1];
   parts = uploadURL.split("\n");
   putURL = parts[1];
   codecovResultURL = parts[0];
 
-  console.log(path);
+  try {
+    result = await superagent
+      .put(`${putURL}`)
+      .send(uploadFile) // sends a JSON post body
+      .set("Content-Type", "application/x-gzip")
+      .set("Content-Encoding", "gzip")
+      .set("x-amz-acl", "public-read")
+      .set("Content-Length", Buffer.byteLength(uploadFile));
 
-  options2 = {
-    hostname: uploadHost,
-    port: 443,
-    path: putURL,
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/x-gzip",
-      "Content-Encoding": "gzip",
-      "x-amz-acl": "public-read",
-      "Content-Length": Buffer.byteLength(uploadFile)
-    }
-  };
-
-  const req2 = https.request(options2, res2 => {
-    console.log(`STATUS: ${res2.statusCode}`);
-    console.log(`HEADERS: ${JSON.stringify(res2.headers)}`);
-
-    if (res2.statusCode === 200) {
+    if (result.status === 200) {
       return { status: "success", resultURL: codecovResultURL };
     }
-
-    res2.setEncoding("utf8");
-    res2.on("data", chunk => {
-      // console.log(`BODY: ${chunk}`);
-    });
-    res2.on("end", () => {});
-  });
-
-  req2.on("error", e => {
-    console.error(`problem with request: ${e.message}`);
-  });
-
-  // Write data to request body
-  req2.write(uploadFile);
-  req2.end();
+    throw new Error("Error uploading");
+  } catch (error) {
+    console.error(error);
+  }
 }
 
-function uploadToCodecov(uploadURL, token, query, uploadFile) {
-  // ${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}
+async function uploadToCodecov(uploadURL, token, query, uploadFile) {
   hostAndPort = parseURLToHostAndPost(uploadURL);
-  const options = {
-    hostname: hostAndPort.host,
-    port: hostAndPort.port,
-    path: `/upload/v4?package=uploader-${version}&token=${token}&${query}`,
-    method: "POST",
-    headers: {
-      "X-Reduced-Redundancy": "false",
-      "X-Content-Type": "application/x-gzip",
-      "Content-Length": Buffer.byteLength(uploadFile)
-    }
-  };
-
   console.log(
-    `Pinging Codecov: ${uploadHost}/v4?package=uploader-${version}&token=${token}&${query}`
+    `Pinging Codecov: ${hostAndPort.host}/v4?package=uploader-${version}&token=*******&${query}`
   );
 
-  const req = https.request(options, res => {
-    // console.log(`STATUS: ${res.statusCode}`);
-    // console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-    res.setEncoding("utf8");
-    res.on("data", chunk => {
-      console.log(`BODY: ${chunk}`);
-      if (res.statusCode === 200 && chunk !== "") {
-        const preSignedPUT = chunk;
-        uploadToCodecovPUT(hostAndPort.host, chunk, uploadFile);
-      }
-    });
-    res.on("end", () => {});
-  });
+  try {
+    result = await superagent
+      .post(
+        `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`
+      )
+      .send(uploadFile) // sends a JSON post body
+      .set("X-Reduced-Redundancy", "false")
+      .set("X-Content-Type", "application/x-gzip")
+      .set("Content-Length", Buffer.byteLength(uploadFile));
 
-  req.on("error", e => {
-    console.error(`problem with request: ${e.message}`);
-  });
-
-  // Write data to request body
-  req.write(uploadFile);
-  req.end();
+    return result.res.text;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 function generateHeader(version) {
