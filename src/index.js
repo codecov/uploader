@@ -1,4 +1,5 @@
 const https = require("https");
+const zlib = require("zlib");
 const { version } = require("../package.json");
 const validate = require("./helpers/validate");
 const providers = require("./ci_providers");
@@ -56,7 +57,7 @@ function generateQuery(queryParams) {
 function dryRun(uploadHost, token, query, uploadFile) {
   console.log(`==> Dumping upload file (no upload)`);
   console.log(
-    `${uploadHost}/v4?package=uploader-${version}&token=${token}&${query}`
+    `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`
   );
   console.log(uploadFile);
   process.exit();
@@ -96,10 +97,13 @@ function main(args) {
 
   uploadFile = endNetworkMarker();
 
+  token = args.token || process.env.CODECOV_TOKEN || "";
+  const gzippedFile = gzip(uploadFile);
+
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile);
   } else {
-    uploadToCodecov(uploadHost, token, query, uploadFile);
+    uploadToCodecov(uploadHost, token, query, gzippedFile);
   }
 }
 
@@ -112,30 +116,88 @@ function parseURLToHostAndPost(url) {
   throw new Error("Unable to parse upload url.");
 }
 
-function uploadToCodecov(uploadURL, token, query, uploadFile) {
-  // ${uploadHost}/v4?package=uploader-${version}&token=${token}&${query}
-  hostAndPort = parseURLToHostAndPost(uploadURL);
-  const options = {
-    hostname: hostAndPort.host,
-    port: hostAndPort.port,
-    path: `/v4?package=uploader-${version}&token=${token}&${query}`,
-    method: "POST",
+function gzip(contents) {
+  return zlib.gzipSync(contents);
+}
+
+function uploadToCodecovPUT(uploadHost, uploadURL, uploadFile) {
+  console.log("Uploading...");
+
+  path = uploadURL.split(uploadHost)[1];
+  parts = uploadURL.split("\n");
+  putURL = parts[1];
+  codecovResultURL = parts[0];
+
+  console.log(path);
+
+  options2 = {
+    hostname: uploadHost,
+    port: 443,
+    path: putURL,
+    method: "PUT",
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/x-gzip",
+      "Content-Encoding": "gzip",
+      "x-amz-acl": "public-read",
       "Content-Length": Buffer.byteLength(uploadFile)
     }
   };
 
+  const req2 = https.request(options2, res2 => {
+    console.log(`STATUS: ${res2.statusCode}`);
+    console.log(`HEADERS: ${JSON.stringify(res2.headers)}`);
+
+    if (res2.statusCode === 200) {
+      return { status: "success", resultURL: codecovResultURL };
+    }
+
+    res2.setEncoding("utf8");
+    res2.on("data", chunk => {
+      // console.log(`BODY: ${chunk}`);
+    });
+    res2.on("end", () => {});
+  });
+
+  req2.on("error", e => {
+    console.error(`problem with request: ${e.message}`);
+  });
+
+  // Write data to request body
+  req2.write(uploadFile);
+  req2.end();
+}
+
+function uploadToCodecov(uploadURL, token, query, uploadFile) {
+  // ${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}
+  hostAndPort = parseURLToHostAndPost(uploadURL);
+  const options = {
+    hostname: hostAndPort.host,
+    port: hostAndPort.port,
+    path: `/upload/v4?package=uploader-${version}&token=${token}&${query}`,
+    method: "POST",
+    headers: {
+      "X-Reduced-Redundancy": "false",
+      "X-Content-Type": "application/x-gzip",
+      "Content-Length": Buffer.byteLength(uploadFile)
+    }
+  };
+
+  console.log(
+    `Pinging Codecov: ${uploadHost}/v4?package=uploader-${version}&token=${token}&${query}`
+  );
+
   const req = https.request(options, res => {
-    console.log(`STATUS: ${res.statusCode}`);
-    console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+    // console.log(`STATUS: ${res.statusCode}`);
+    // console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
     res.setEncoding("utf8");
     res.on("data", chunk => {
       console.log(`BODY: ${chunk}`);
+      if (res.statusCode === 200 && chunk !== "") {
+        const preSignedPUT = chunk;
+        uploadToCodecovPUT(hostAndPort.host, chunk, uploadFile);
+      }
     });
-    res.on("end", () => {
-      console.log("No more data in response.");
-    });
+    res.on("end", () => {});
   });
 
   req.on("error", e => {
