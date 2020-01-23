@@ -1,5 +1,7 @@
-providor_local = require("./provider_local");
+provider_circleci = require("./provider_circleci");
+provider_local = require("./provider_local");
 
-const providers = [providor_local];
+// Please make sure provider_local is last
+const providers = [provider_circleci, provider_local];
 
 module.exports = providers;

@@ -5,6 +5,22 @@ const app = require("../src");
 var argv = require("yargs") // eslint-disable-line
   .usage("Usage: $0 <command> [options]")
   .options({
+    build: {
+      alias: "b",
+      description: "Specify the build number manually"
+    },
+    branch: {
+      alias: "B",
+      description: "Specify the branch manually"
+    },
+    sha: {
+      alias: "C",
+      description: "Specify the commit SHA mannually"
+    },
+    pr: {
+      alias: "P",
+      description: "Specify the pull request number mannually"
+    },
     token: {
       alias: "t",
       default: "",
@@ -19,6 +35,10 @@ var argv = require("yargs") // eslint-disable-line
       alias: "d",
       type: "boolean",
       description: "Don't upload files to Codecov"
+    },
+    slug: {
+      alias: "r",
+      description: "Specify the slug manually (Enterprise use)"
     },
     url: {
       type: "string",

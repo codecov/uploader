@@ -71,8 +71,8 @@ async function main(args) {
 
   let serviceParams;
   for (const provider of providers) {
-    if (provider.detect()) {
-      serviceParams = provider.getServiceParams(args);
+    if (provider.detect(process.env)) {
+      serviceParams = provider.getServiceParams(process.env, args);
       break;
     }
   }

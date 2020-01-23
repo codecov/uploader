@@ -1,26 +1,26 @@
 const { spawnSync } = require("child_process");
 
-function detect() {
-  return !process.env.CI;
+function detect(envs) {
+  return !envs.CI;
 }
 
-function getBranch() {
+function getBranch(envs, args) {
   try {
     branchName = spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"])
       .stdout.toString()
       .trimRight();
-    return branchName;
+    return args.branch || branchName;
   } catch (error) {
     throw error;
   }
 }
 
-function getSHA() {
+function getSHA(envs, args) {
   try {
     sha = spawnSync("git", ["rev-parse", "HEAD"])
       .stdout.toString()
       .trimRight();
-    return sha;
+    return args.sha || sha;
   } catch (error) {
     throw error;
   }
@@ -43,26 +43,26 @@ function parseSlug(slug) {
   throw new Error("Unable to parse slug URL: " + slug);
 }
 
-function getSlug() {
+function getSlug(envs, args) {
   try {
     slug = spawnSync("git", ["config", "--get", "remote.origin.url"])
       .stdout.toString()
       .trimRight();
-    return parseSlug(slug);
+    return args.slug || parseSlug(slug);
   } catch (error) {
     throw error;
   }
 }
 
-function getServiceParams(args) {
+function getServiceParams(envs, args) {
   return {
-    branch: getBranch(),
-    commit: getSHA(),
+    branch: getBranch(envs, args),
+    commit: getSHA(envs, args),
     build: "",
     buildURL: "",
     name: "",
     tag: "",
-    slug: getSlug() || args.slug || "",
+    slug: args.slug || getSlug(envs, args),
     service: "",
     flags: "",
     pr: "",
