@@ -5,28 +5,6 @@ const { version } = require("../package.json");
 const validate = require("./helpers/validate");
 const providers = require("./ci_providers");
 
-function generateQueryParams(branch, commit, slug) {
-  if (branch === undefined || commit === undefined || slug === undefined) {
-    throw new Error("branch, commit, and slug are all required paramitars");
-  }
-  this.branch = branch;
-  this.commit = commit;
-  this.slug = slug;
-  return {
-    branch,
-    commit,
-    build: "",
-    buildURL: "",
-    name: "",
-    tag: "",
-    slug,
-    service: "",
-    flags: "",
-    pr: "",
-    job: ""
-  };
-}
-
 function generateQuery(queryParams) {
   query = "".concat(
     "branch=",
@@ -83,13 +61,7 @@ async function main(args) {
     process.exit(-1);
   }
 
-  query = generateQuery(
-    generateQueryParams(
-      serviceParams.branch,
-      serviceParams.commit,
-      serviceParams.slug
-    )
-  );
+  query = generateQuery(serviceParams);
 
   uploadFile = endNetworkMarker();
 
