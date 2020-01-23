@@ -4,6 +4,10 @@ function detect(envs) {
   return !envs.CI;
 }
 
+function getServiceName() {
+  return "Local";
+}
+
 function getBranch(envs, args) {
   try {
     branchName = spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"])
@@ -73,5 +77,6 @@ function getServiceParams(envs, args) {
 module.exports = {
   detect,
   getServiceParams,
-  parseSlug
+  parseSlug,
+  getServiceName
 };

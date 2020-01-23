@@ -72,6 +72,7 @@ async function main(args) {
   let serviceParams;
   for (const provider of providers) {
     if (provider.detect(process.env)) {
+      console.log(`Detected ${provider.getServiceName()} as the CI provider.`);
       serviceParams = provider.getServiceParams(process.env, args);
       break;
     }
