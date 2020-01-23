@@ -168,6 +168,5 @@ module.exports = {
   getVersion,
   generateQuery,
   generateHeader,
-  endNetworkMarker,
-  generateQueryParams
+  endNetworkMarker
 };

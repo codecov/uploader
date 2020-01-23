@@ -11,7 +11,9 @@ describe("Uploader Core", () => {
     expect(app.endNetworkMarker()).to.equal("<<<<<< network\n");
   });
   it("Can generate query URL", () => {
-    const queryParams = app.generateQueryParams("testBranch", "commitSHA", "4");
+    const queryParams = {};
+    queryParams.branch = "testBranch";
+    queryParams.commit = "commitSHA";
     queryParams.buildURL = "https://ci-providor.local/job/xyz";
     queryParams.job = "6";
     queryParams.flags = "unit,uploader";
