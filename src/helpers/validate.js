@@ -15,11 +15,12 @@ function validateFlags(flags) {
 
 function validateFileNamePath(path) {
   mask = /^[\w,]+$/;
-  return flags.test(mask);
+  return mask.test(path);
 }
 
 module.exports = {
   validateToken,
   validateURL,
-  validateFlags
+  validateFlags,
+  validateFileNamePath
 };

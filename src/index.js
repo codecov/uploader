@@ -47,6 +47,14 @@ async function main(args) {
   token = validate.validateToken(args.token) ? args.token : "";
   console.log(generateHeader(getVersion()));
 
+  // Look for files
+  if (!args.file) {
+    throw new Error("Not yet able to scan for files, please use `-f");
+  }
+
+  uploadFilePath = validate.validateFileNamePath(args.file);
+
+  // Determine CI provider
   let serviceParams;
   for (const provider of providers) {
     if (provider.detect(process.env)) {
