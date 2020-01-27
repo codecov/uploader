@@ -45,6 +45,7 @@ function dryRun(uploadHost, token, query, uploadFile) {
 async function main(args) {
   uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
   token = validate.validateToken(args.token) ? args.token : "";
+  flags = validate.validateFlags(args.flags || "") ? args.flags : "";
   console.log(generateHeader(getVersion()));
 
   let serviceParams;
@@ -61,12 +62,12 @@ async function main(args) {
     process.exit(-1);
   }
 
-  query = generateQuery(serviceParams);
+  query = generateQuery(populateBuildParams(process.env, args, serviceParams));
 
   uploadFile = endNetworkMarker();
 
   token = args.token || process.env.CODECOV_TOKEN || "";
-  const gzippedFile = gzip(uploadFile);
+  const gzippedFile = zlib.gzipSync(uploadFile);
 
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile);
@@ -91,8 +92,11 @@ function parseURLToHostAndPost(url) {
   throw new Error("Unable to parse upload url.");
 }
 
-function gzip(contents) {
-  return zlib.gzipSync(contents);
+function populateBuildParams(envs, args, serviceParams) {
+  serviceParams.name = envs.CODECOV_NAME || "";
+  serviceParams.tag = args.tag || "";
+  serviceParams.flags = args.flags || "";
+  return serviceParams;
 }
 
 async function uploadToCodecovPUT(uploadURL, uploadFile) {

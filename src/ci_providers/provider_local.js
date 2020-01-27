@@ -64,11 +64,8 @@ function getServiceParams(envs, args) {
     commit: getSHA(envs, args),
     build: "",
     buildURL: "",
-    name: "",
-    tag: "",
     slug: args.slug || getSlug(envs, args),
     service: "",
-    flags: "",
     pr: "",
     job: ""
   };

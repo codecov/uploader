@@ -17,6 +17,14 @@ var argv = require("yargs") // eslint-disable-line
       alias: "C",
       description: "Specify the commit SHA mannually"
     },
+    file: {
+      alias: "f",
+      description: "Target file(s) to upload"
+    },
+    flags: {
+      alias: "F",
+      description: "Flag the upload to group coverage metrics"
+    },
     pr: {
       alias: "P",
       description: "Specify the pull request number mannually"
@@ -25,6 +33,11 @@ var argv = require("yargs") // eslint-disable-line
       alias: "t",
       default: "",
       description: "Codecov upload token"
+    },
+    tag: {
+      alias: "T",
+      default: "",
+      description: "Specify the git tag"
     },
     verbose: {
       alias: "v",
