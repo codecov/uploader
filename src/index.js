@@ -45,7 +45,6 @@ function dryRun(uploadHost, token, query, uploadFile) {
 async function main(args) {
   uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
   token = validate.validateToken(args.token) ? args.token : "";
-  flags = validate.validateFlags(args.flags || "") ? args.flags : "";
   console.log(generateHeader(getVersion()));
 
   let serviceParams;
@@ -95,7 +94,7 @@ function parseURLToHostAndPost(url) {
 function populateBuildParams(envs, args, serviceParams) {
   serviceParams.name = envs.CODECOV_NAME || "";
   serviceParams.tag = args.tag || "";
-  serviceParams.flags = args.flags || "";
+  serviceParams.flags = validate.validateFlags(args.flags) ? args.flags : "";
   return serviceParams;
 }
 

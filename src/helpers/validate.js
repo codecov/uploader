@@ -9,8 +9,13 @@ function validateURL(url) {
 }
 
 function validateFlags(flags) {
-  mask = /^[w,]+$/;
-  return flags.match(mask);
+  mask = /^[\w,]+$/;
+  return mask.test(flags);
+}
+
+function validateFileNamePath(path) {
+  mask = /^[\w,]+$/;
+  return flags.test(mask);
 }
 
 module.exports = {

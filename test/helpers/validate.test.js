@@ -13,6 +13,12 @@ describe("Input Validators", () => {
     });
   });
 
+  describe("Flags", () => {
+    it("Should fail with a dash", () => {
+      expect(validate.validateFlags("moo-foor")).to.be.false;
+    });
+  });
+
   describe("URLs", () => {
     it("Returns true with a valid URL", () => {
       expect(validate.validateURL("https://codecov.io")).to.be.true;

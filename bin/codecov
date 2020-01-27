@@ -23,6 +23,7 @@ var argv = require("yargs") // eslint-disable-line
     },
     flags: {
       alias: "F",
+      default: "",
       description: "Flag the upload to group coverage metrics"
     },
     pr: {
