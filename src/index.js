@@ -44,6 +44,10 @@ function dryRun(uploadHost, token, query, uploadFile) {
 }
 
 async function main(args) {
+  // TODO: clean and sanitize envs and args
+  envs = process.env;
+  // args
+
   uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
   token = validate.validateToken(args.token) ? args.token : "";
   console.log(generateHeader(getVersion()));
@@ -58,9 +62,9 @@ async function main(args) {
   // Determine CI provider
   let serviceParams;
   for (const provider of providers) {
-    if (provider.detect(process.env)) {
+    if (provider.detect(envs)) {
       console.log(`Detected ${provider.getServiceName()} as the CI provider.`);
-      serviceParams = provider.getServiceParams(process.env, args);
+      serviceParams = provider.getServiceParams(envs, args);
       break;
     }
   }
@@ -70,11 +74,14 @@ async function main(args) {
     process.exit(-1);
   }
 
-  query = generateQuery(populateBuildParams(process.env, args, serviceParams));
+  query = generateQuery(populateBuildParams(envs, args, serviceParams));
 
-  uploadFile = endNetworkMarker();
+  // Geneerate file listing
+  uploadFile = await files.getFileListing(".");
+  uploadFile = `${uploadFile}${files.endNetworkMarker()}`;
 
   // Get coverage report contents
+  uploadFile = `${uploadFile}${files.fileHeader(args.file)}`;
   fileContents = await files.readCoverageFile(args.file);
 
   uploadFile = `${uploadFile}${fileContents}`;
@@ -176,14 +183,9 @@ function getVersion() {
   return version;
 }
 
-function endNetworkMarker() {
-  return "<<<<<< network\n";
-}
-
 module.exports = {
   main,
   getVersion,
   generateQuery,
-  generateHeader,
-  endNetworkMarker
+  generateHeader
 };
