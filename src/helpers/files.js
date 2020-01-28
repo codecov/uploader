@@ -16,7 +16,8 @@ function isBlacklisted(file) {
     ".nyc_output",
     ".circleci",
     ".nvmrc",
-    ".gitignore"
+    ".gitignore",
+    "snapshot" // Not sure what this one is
   ];
 
   return blacklist.includes(file);
