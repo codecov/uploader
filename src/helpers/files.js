@@ -16,14 +16,16 @@ function isBlacklisted(file) {
     ".nyc_output",
     ".circleci",
     ".nvmrc",
-    ".gitignore",
-    "snapshot" // Not sure what this one is
+    ".gitignore"
   ];
 
   return blacklist.includes(file);
 }
 
-const getAllFiles = function(dirPath, arrayOfFiles) {
+const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
+  // This replacement is needed because the cwd changes when being packaged
+  origionalPath = process.cwd();
+
   files = fs.readdirSync(dirPath);
 
   arrayOfFiles = arrayOfFiles || [];
@@ -33,10 +35,17 @@ const getAllFiles = function(dirPath, arrayOfFiles) {
       fs.statSync(dirPath + "/" + file).isDirectory() &&
       !isBlacklisted(file)
     ) {
-      arrayOfFiles = getAllFiles(dirPath + "/" + file, arrayOfFiles);
+      arrayOfFiles = getAllFiles(
+        dirPath + "/" + file,
+        arrayOfFiles,
+        origionalPath
+      );
     } else {
       if (!isBlacklisted(file)) {
-        arrayOfFiles.push(`${path.join(dirPath, "/", file)}\n`);
+        //   arrayOfFiles.push(`${path.join(dirPath, "/", file)}\n`);
+        arrayOfFiles.push(
+          `${path.join(dirPath.replace(origionalPath, "."), "/", file)}\n`
+        );
       }
     }
   });

@@ -77,7 +77,7 @@ async function main(args) {
   query = generateQuery(populateBuildParams(envs, args, serviceParams));
 
   // Geneerate file listing
-  uploadFile = await files.getFileListing(".");
+  uploadFile = await files.getFileListing(process.cwd());
   uploadFile = `${uploadFile}${files.endNetworkMarker()}`;
 
   // Get coverage report contents
