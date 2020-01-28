@@ -7,9 +7,6 @@ describe("Uploader Core", () => {
   it("Can return version", () => {
     expect(app.getVersion()).to.equal(version);
   });
-  it("Can generate network end marker", () => {
-    expect(app.endNetworkMarker()).to.equal("<<<<<< network\n");
-  });
   it("Can generate query URL", () => {
     const queryParams = {};
     queryParams.branch = "testBranch";
