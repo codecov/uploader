@@ -1,11 +1,18 @@
 const util = require("util");
 const fs = require("fs");
 
-const stat = util.promisify(fs.stat);
+const readFile = util.promisify(fs.readFile);
 
-async function callStat() {
-  const stats = await stat(".");
-  console.log(`This directory is owned by ${stats.uid}`);
+async function readCoverageFile(filePath) {
+  baseDir = process.cwd();
+  try {
+    const fileContents = await readFile(`${baseDir}/${filePath}`);
+    return fileContents;
+  } catch (error) {
+    throw error;
+  }
 }
 
-async function readCoverageFile(filePath) {}
+module.exports = {
+  readCoverageFile
+};

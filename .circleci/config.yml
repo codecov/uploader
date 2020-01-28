@@ -44,7 +44,7 @@ jobs:
       - run: make build
 
       # upload coverage
-      - run: out/codecov-linux
+      - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F linux
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:

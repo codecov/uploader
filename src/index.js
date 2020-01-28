@@ -2,6 +2,7 @@ const https = require("https");
 const zlib = require("zlib");
 const superagent = require("superagent");
 const { version } = require("../package.json");
+const files = require("./helpers/files");
 const validate = require("./helpers/validate");
 const providers = require("./ci_providers");
 
@@ -72,6 +73,11 @@ async function main(args) {
   query = generateQuery(populateBuildParams(process.env, args, serviceParams));
 
   uploadFile = endNetworkMarker();
+
+  // Get coverage report contents
+  fileContents = await files.readCoverageFile(args.file);
+
+  uploadFile = `${uploadFile}${fileContents}`;
 
   token = args.token || process.env.CODECOV_TOKEN || "";
   const gzippedFile = zlib.gzipSync(uploadFile);
