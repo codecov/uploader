@@ -66,18 +66,18 @@ jobs:
           at: .
       - run: out/codecov-linux
 
-  test-macos:
-    macos: # indicate that we are using the macOS executor
-      xcode: "10.0.0" # indicate our selected version of Xcode
-    steps: # a series of commands to run
-      - checkout
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: .
-      - run:
-          # run our tests using xcode's cli tool `xcodebuild`
-          name: Run MacOS binary
-          command: out/codecov-macos
+  # test-macos:
+  #   macos: # indicate that we are using the macOS executor
+  #     xcode: "10.0.0" # indicate our selected version of Xcode
+  #   steps: # a series of commands to run
+  #     - checkout
+  #     - attach_workspace:
+  #         # Must be absolute path or relative path from working_directory
+  #         at: .
+  #     - run:
+  #         # run our tests using xcode's cli tool `xcodebuild`
+  #         name: Run MacOS binary
+  #         command: out/codecov-macos
 
   test-windows:
     executor: win/default
@@ -102,9 +102,9 @@ workflows:
       - test-linux:
           requires:
             - build
-      - test-macos:
-          requires:
-            - build
+      # - test-macos:
+      #     requires:
+      #       - build
       - test-windows:
           requires:
             - build
