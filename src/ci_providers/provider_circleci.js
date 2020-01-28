@@ -50,7 +50,7 @@ function getServiceParams(envs, args) {
   return {
     branch: getBranch(envs, args),
     commit: getSHA(envs, args),
-    build: getBuild(args, envs),
+    build: getBuild(envs, args),
     buildURL: "",
     slug: args.slug || getSlug(envs, args),
     service: getService(envs, args),
