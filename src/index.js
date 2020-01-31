@@ -48,7 +48,7 @@ async function main(args) {
   // args
 
   const uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
-  const token = validate.validateToken(args.token) || process.env.CODECOV_TOKEN || "";
+  const token = validate.validateToken(args.token) ? args.token || process.env.CODECOV_TOKEN || "": "";
   console.log(generateHeader(getVersion()));
 
   // Look for files
