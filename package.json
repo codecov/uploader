@@ -7,7 +7,7 @@
   "scripts": {
     "test": "nyc mocha test/*.test.js test/**/*.test.js",
     "build": "pkg . --out-path out",
-    "build-win": "nexe -t win32-x86-10.13.0 bin/codecov"
+    "build-win": "cd bin && nexe -t win32-x86-10.13.0 codecov"
   },
   "repository": {
     "type": "git",
