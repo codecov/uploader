@@ -54,6 +54,7 @@ jobs:
           # Must be relative path from root
           paths:
             - out
+            - coverage
 
   test-linux:
     docker:
