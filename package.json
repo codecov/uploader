@@ -8,7 +8,7 @@
     "test": "nyc mocha test/*.test.js test/**/*.test.js",
     "prebuild": "rollup -c rollup.config.js",
     "build": "pkg dist/codecov.js --out-path out",
-    "build-win": "pkg dist/codecov.js -t node10-win-x64 --out-path out"
+    "build-win": "nexe dist/codecov.js -t win32-x64-10.16.0x"
   },
   "repository": {
     "type": "git",
