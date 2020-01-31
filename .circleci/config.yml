@@ -44,7 +44,7 @@ jobs:
       - run: make build
 
       # upload coverage
-      - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F linux
+      - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F build
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
@@ -64,20 +64,20 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run: out/codecov-linux
+      - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F linux
 
-  # test-macos:
-  #   macos: # indicate that we are using the macOS executor
-  #     xcode: "10.0.0" # indicate our selected version of Xcode
-  #   steps: # a series of commands to run
-  #     - checkout
-  #     - attach_workspace:
-  #         # Must be absolute path or relative path from working_directory
-  #         at: .
-  #     - run:
-  #         # run our tests using xcode's cli tool `xcodebuild`
-  #         name: Run MacOS binary
-  #         command: out/codecov-macos
+  test-macos:
+    macos: # indicate that we are using the macOS executor
+      xcode: "10.0.0" # indicate our selected version of Xcode
+    steps: # a series of commands to run
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          # run our tests using xcode's cli tool `xcodebuild`
+          name: Run MacOS binary
+          command: out/codecov-macos -f coverage/cobertura-coverage.xml -F macos
 
   test-windows:
     executor: win/default
@@ -90,7 +90,7 @@ jobs:
           name: Run Windows binary
           command: |
             cd out
-            codecov-win.exe
+            codecov-win.exe -f coverage/cobertura-coverage.xml -F windows
           shell: cmd.exe
 
 workflows:
@@ -102,9 +102,9 @@ workflows:
       - test-linux:
           requires:
             - build
-      # - test-macos:
-      #     requires:
-      #       - build
+      - test-macos:
+          requires:
+            - build
       - test-windows:
           requires:
             - build
