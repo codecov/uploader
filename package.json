@@ -7,7 +7,9 @@
   "scripts": {
     "test": "nyc mocha test/*.test.js test/**/*.test.js",
     "prebuild": "rollup -c rollup.config.js",
-    "build": "pkg dist/codecov.js --out-path out"
+    "build-linux": "nexe dist/codecov.js -t linux-x64-10.16.3 -o out/codecov",
+    "build-macos": "nexe dist/codecov.js -t mac-x64-10.16.3 -o out/codecov-macos",
+    "build-windows": "nexe dist/codecov.js -t windows-x64-10.16.0 -o out/codecov.exe"
   },
   "repository": {
     "type": "git",
