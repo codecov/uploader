@@ -1,4 +1,3 @@
-const https = require("https");
 const zlib = require("zlib");
 const superagent = require("superagent");
 const { version } = require("../package.json");
@@ -7,7 +6,7 @@ const validate = require("./helpers/validate");
 const providers = require("./ci_providers");
 
 function generateQuery(queryParams) {
-  query = "".concat(
+  const query = "".concat(
     "branch=",
     queryParams.branch,
     "&commit=",
@@ -45,11 +44,11 @@ function dryRun(uploadHost, token, query, uploadFile) {
 
 async function main(args) {
   // TODO: clean and sanitize envs and args
-  envs = process.env;
+  const envs = process.env;
   // args
 
-  uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
-  token = validate.validateToken(args.token) ? args.token : "";
+  const uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
+  const token = validate.validateToken(args.token) || process.env.CODECOV_TOKEN || "";
   console.log(generateHeader(getVersion()));
 
   // Look for files
@@ -57,7 +56,7 @@ async function main(args) {
     throw new Error("Not yet able to scan for files, please use `-f");
   }
 
-  uploadFilePath = validate.validateFileNamePath(args.file);
+  const uploadFilePath = validate.validateFileNamePath(args.file);
 
   // Determine CI provider
   let serviceParams;
@@ -74,19 +73,18 @@ async function main(args) {
     process.exit(-1);
   }
 
-  query = generateQuery(populateBuildParams(envs, args, serviceParams));
+  const query = generateQuery(populateBuildParams(envs, args, serviceParams));
 
   // Geneerate file listing
-  uploadFile = await files.getFileListing(process.cwd());
+  let uploadFile = await files.getFileListing(process.cwd());
   uploadFile = `${uploadFile}${files.endNetworkMarker()}`;
 
   // Get coverage report contents
   uploadFile = `${uploadFile}${files.fileHeader(args.file)}`;
-  fileContents = await files.readCoverageFile(args.file);
+  const fileContents = await files.readCoverageFile(uploadFilePath);
 
   uploadFile = `${uploadFile}${fileContents}`;
 
-  token = args.token || process.env.CODECOV_TOKEN || "";
   const gzippedFile = zlib.gzipSync(uploadFile);
 
   if (args.dryRun) {
@@ -122,12 +120,12 @@ function populateBuildParams(envs, args, serviceParams) {
 async function uploadToCodecovPUT(uploadURL, uploadFile) {
   console.log("Uploading...");
 
-  parts = uploadURL.split("\n");
-  putURL = parts[1];
-  codecovResultURL = parts[0];
+  const parts = uploadURL.split("\n");
+  const putURL = parts[1];
+  const codecovResultURL = parts[0];
 
   try {
-    result = await superagent
+    const result = await superagent
       .put(`${putURL}`)
       .send(uploadFile) // sends a JSON post body
       .set("Content-Type", "application/x-gzip")
@@ -145,15 +143,15 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
 }
 
 async function uploadToCodecov(uploadURL, token, query, uploadFile) {
-  hostAndPort = parseURLToHostAndPost(uploadURL);
+  const hostAndPort = parseURLToHostAndPost(uploadURL);
   console.log(
     `Pinging Codecov: ${hostAndPort.host}/v4?package=uploader-${version}&token=*******&${query}`
   );
 
   try {
-    result = await superagent
+    const result = await superagent
       .post(
-        `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`
+        `${hostAndPort.host}/upload/v4?package=uploader-${version}&token=${token}&${query}`
       )
       .send(uploadFile) // sends a JSON post body
       .set("X-Reduced-Redundancy", "false")
@@ -167,7 +165,7 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile) {
 }
 
 function generateHeader(version) {
-  header = `
+  return `
      _____          _
     / ____|        | |
    | |     ___   __| | ___  ___ _____   __
@@ -176,7 +174,6 @@ function generateHeader(version) {
     \\_____\\___/ \\__,_|\\___|\\___\\___/ \\_/
 
   Codecov report uploader ${version}`;
-  return header;
 }
 
 function getVersion() {
