@@ -1,3 +1,5 @@
+'use strict';
+
 // #!/usr/bin/env node
 
 const app = require("../src");

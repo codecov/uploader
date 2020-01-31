@@ -6,7 +6,8 @@
   "bin": "bin/codecov",
   "scripts": {
     "test": "nyc mocha test/*.test.js test/**/*.test.js",
-    "build": "pkg . --out-path out"
+    "prebuild": "rollup bin/codecov --file dist/codecov.js --format cjs",
+    "build": "pkg dist/codecov.js --out-path out"
   },
   "repository": {
     "type": "git",
@@ -31,7 +32,8 @@
     "eslint": "^6.7.2",
     "mocha": "^7.0.0",
     "nyc": "^15.0.0",
-    "pkg": "^4.4.1"
+    "pkg": "^4.4.1",
+    "rollup": "^1.31.0"
   },
   "nyc": {
     "all": true,
