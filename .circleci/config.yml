@@ -64,8 +64,9 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run: Run Linux binary
-        command: out/codecov-linux -f coverage/cobertura-coverage.xml -F linux
+      - run: 
+          name: Run Linux binary
+          command: out/codecov-linux -f coverage/cobertura-coverage.xml -F linux
 
   test-macos:
     macos: # indicate that we are using the macOS executor
