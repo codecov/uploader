@@ -13,5 +13,7 @@ test:
 build: 
 	rm -rf out
 	npm run build
+	npm run build-win
+	mv codecov.exe out/
 
 .PHONY: clean install test build

@@ -6,7 +6,8 @@
   "bin": "bin/codecov",
   "scripts": {
     "test": "nyc mocha test/*.test.js test/**/*.test.js",
-    "build": "pkg . --out-path out"
+    "build": "pkg . --out-path out",
+    "build-win": "nexe -t win32-x86-10.13.0 bin/codecov"
   },
   "repository": {
     "type": "git",
@@ -30,6 +31,7 @@
     "chai": "^4.2.0",
     "eslint": "^6.7.2",
     "mocha": "^7.0.0",
+    "nexe": "^3.3.2",
     "nyc": "^15.0.0",
     "pkg": "^4.4.1"
   },
