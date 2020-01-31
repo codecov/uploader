@@ -89,7 +89,9 @@ jobs:
           at: .
       - run:
           name: Build Windows Binary
-          command: npm run build-win
+          command: |
+            npm ci
+            npm run build-win
       - run:
           name: Run Windows binary
           command: |
