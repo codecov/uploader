@@ -6,7 +6,7 @@
   "bin": "bin/codecov",
   "scripts": {
     "test": "nyc mocha test/*.test.js test/**/*.test.js",
-    "prebuild": "rollup bin/codecov --file dist/codecov.js --format cjs",
+    "prebuild": "rollup -c rollup.config.js",
     "build": "pkg dist/codecov.js --out-path out"
   },
   "repository": {
@@ -28,6 +28,8 @@
     "yargs": "^15.0.2"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "chai": "^4.2.0",
     "eslint": "^6.7.2",
     "mocha": "^7.0.0",
