@@ -88,10 +88,14 @@ jobs:
           # Must be absolute path or relative path from working_directory
           at: .
       - run:
+          name: Build Windows Binary
+          command: |
+            npm ci
+            npm run build-win
+      - run:
           name: Run Windows binary
           command: |
-            cd out
-            codecov-win.exe -f coverage/cobertura-coverage.xml -F windows
+            codecov.exe -f coverage/cobertura-coverage.xml -F windows
           shell: cmd.exe
 
 workflows:

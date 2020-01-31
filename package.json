@@ -6,7 +6,9 @@
   "bin": "bin/codecov",
   "scripts": {
     "test": "nyc mocha test/*.test.js test/**/*.test.js",
-    "build": "pkg . --out-path out"
+    "prebuild": "rollup -c rollup.config.js",
+    "build": "pkg dist/codecov.js --out-path out",
+    "build-win": "nexe dist/codecov.js -t win32-x64-10.16.0x"
   },
   "repository": {
     "type": "git",
@@ -27,11 +29,15 @@
     "yargs": "^15.0.2"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
+    "@rollup/plugin-node-resolve": "^7.0.0",
     "chai": "^4.2.0",
     "eslint": "^6.7.2",
     "mocha": "^7.0.0",
+    "nexe": "^3.3.2",
     "nyc": "^15.0.0",
-    "pkg": "^4.4.1"
+    "pkg": "^4.4.1",
+    "rollup": "^1.31.0"
   },
   "nyc": {
     "all": true,
