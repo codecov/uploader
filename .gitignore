@@ -62,3 +62,4 @@ typings/
 
 # pkg output
 out/*
+dist/*

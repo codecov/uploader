@@ -18,7 +18,7 @@ build:
 	npm run build-macos
 	# npm run build-windows
 
-build-win:
+build-windows:
 	npm run prebuild
 	npm run build-windows
 
