@@ -1,38 +1,11 @@
 const zlib = require("zlib");
-const superagent = require("superagent");
-const { version } = require("../package.json");
-const files = require("./helpers/files");
-const validate = require("./helpers/validate");
-const processHelper = require("./helpers/process");
-const providers = require("./ci_providers");
 
-function generateQuery(queryParams) {
-  const query = "".concat(
-    "branch=",
-    queryParams.branch,
-    "&commit=",
-    queryParams.commit,
-    "&build=",
-    queryParams.build,
-    "&build_url=",
-    queryParams.buildURL,
-    "&name=",
-    queryParams.name,
-    "&tag=",
-    queryParams.tag,
-    "&slug=",
-    queryParams.slug,
-    "&service=",
-    queryParams.service,
-    "&flags=",
-    queryParams.flags,
-    "&pr=",
-    queryParams.pr,
-    "&job=",
-    queryParams.job
-  );
-  return query;
-}
+const { version } = require("../package.json");
+const fileHelpers = require("./helpers/files");
+const validateHelpers = require("./helpers/validate");
+const processHelpers = require("./helpers/process");
+const webHelpers = require("./helpers/web");
+const providers = require("./ci_providers");
 
 function dryRun(uploadHost, token, query, uploadFile) {
   console.log(`==> Dumping upload file (no upload)`);
@@ -44,26 +17,76 @@ function dryRun(uploadHost, token, query, uploadFile) {
 }
 
 async function main(args) {
+  /*
+  Step 1: validate and sanitize inputs
+  Step 2: detect if we are in a git repo
+  Step 3: get network (file listing)
+  Step 4: select coverage files (search or specify)
+  Step 5: generate upload file
+  Step 6: determine CI provider
+  Step 7: either upload or dry-run
+  */
+
+  // == Step 1: validate and sanitize inputs
   // TODO: clean and sanitize envs and args
   const envs = process.env;
   // args
-  const inputs = { args, envs}
+  const inputs = { args, envs };
 
-  const uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
-  let token = validate.validateToken(args.token) ? args.token : "";
+  const uploadHost = validateHelpers.validateURL(args.url)
+    ? args.url
+    : "https://codecov.io";
+  let token = validateHelpers.validateToken(args.token) ? args.token : "";
+  if (token === "") {
+    token = process.env.CODECOV_TOKEN || "";
+  }
+  token = args.token || process.env.CODECOV_TOKEN || "";
   console.log(generateHeader(getVersion()));
+
+  // == Step 2: detect if we are in a git repo
+  const gitRoot = fileHelpers.fetchGitRoot(process.cwd());
+  if (gitRoot === "") {
+    // TODO: support running outside a git repo
+    console.error(
+      "We do not yet support running the uploader outside of a git repo."
+    );
+    processHelpers.exitNonZeroIfSet(inputs);
+  }
+  console.log("=> Git root located at: ", gitRoot);
+
+  // == Step 3: get network
+  const fileListing = await fileHelpers.getFileListing(gitRoot);
+
+  // == Step 4: select coverage files (search or specify)
 
   // Look for files
   if (!args.file) {
     console.error("Not yet able to scan for files, please use `-f");
-    processHelper.exitNonZeroIfSet(inputs)
+    processHelpers.exitNonZeroIfSet(inputs);
   }
 
-  const uploadFilePath = validate.validateFileNamePath(args.file) ? args.file : "";
+  const uploadFilePath = validateHelpers.validateFileNamePath(args.file)
+    ? args.file
+    : "";
   if (uploadFilePath === "") {
-    console.error("Not coverage file found, exiting.")
-    processHelper.exitNonZeroIfSet(inputs)
+    console.error("Not coverage file found, exiting.");
+    processHelpers.exitNonZeroIfSet(inputs);
   }
+
+  // == Step 5: generate upload file
+  // TODO: capture envs
+  let uploadFile = fileListing;
+
+  uploadFile.concat(fileHelpers.endNetworkMarker());
+
+  // Get coverage report contents
+  uploadFile.concat(fileHelpers.fileHeader(args.file));
+  const fileContents = await fileHelpers.readCoverageFile(uploadFilePath);
+
+  uploadFile.concat(fileContents);
+  const gzippedFile = zlib.gzipSync(uploadFile);
+
+  // == Step 6: determine CI provider
 
   // Determine CI provider
   let serviceParams;
@@ -77,104 +100,32 @@ async function main(args) {
 
   if (serviceParams === undefined) {
     console.error("Unable to detect service, please specify manually.");
-    processHelper.exitNonZeroIfSet(inputs)
+    processHelpers.exitNonZeroIfSet(inputs);
   }
 
-  const query = generateQuery(populateBuildParams(inputs, serviceParams));
+  // == Step 7: either upload or dry-run
 
-  // Geneerate file listing
-  let uploadFile = await files.getFileListing(process.cwd());
-  uploadFile = `${uploadFile}${files.endNetworkMarker()}`;
-
-  // Get coverage report contents
-  uploadFile = `${uploadFile}${files.fileHeader(args.file)}`;
-  const fileContents = await files.readCoverageFile(uploadFilePath);
-
-  uploadFile = `${uploadFile}${fileContents}`;
-
-  token = args.token || process.env.CODECOV_TOKEN || "";
-  const gzippedFile = zlib.gzipSync(uploadFile);
+  const query = webHelpers.generateQuery(
+    webHelpers.populateBuildParams(inputs, serviceParams)
+  );
 
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile);
   } else {
-    const uploadURL = await uploadToCodecov(
+    const uploadURL = await webHelpers.uploadToCodecov(
       uploadHost,
       token,
       query,
       gzippedFile,
-      envs, 
-      args
+      inputs,
+      version
     );
-    const result = await uploadToCodecovPUT(uploadURL, gzippedFile, inputs);
+    const result = await webHelpers.uploadToCodecovPUT(
+      uploadURL,
+      gzippedFile,
+      inputs
+    );
     console.log(result);
-  }
-}
-
-function parseURLToHostAndPost(url, inputs) {
-  if (url.match("https://")) {
-    return { port: 443, host: url.split("//")[1] };
-  } else if (url.match("http://")) {
-    return { port: 80, host: url.split("//")[1] };
-  }
-  console.error("Unable to parse upload url.");
-  processHelper.exitNonZeroIfSet(inputs)
-}
-
-function populateBuildParams(inputs, serviceParams) {
-  const { args, envs } = inputs
-  serviceParams.name = envs.CODECOV_NAME || "";
-  serviceParams.tag = args.tag || "";
-  serviceParams.flags = validate.validateFlags(args.flags) ? args.flags : "";
-  return serviceParams;
-}
-
-async function uploadToCodecovPUT(uploadURL, uploadFile, inputs) {
-  console.log("Uploading...");
-
-  const parts = uploadURL.split("\n");
-  const putURL = parts[1];
-  const codecovResultURL = parts[0];
-
-  try {
-    const result = await superagent
-      .put(`${putURL}`)
-      .send(uploadFile) // sends a JSON post body
-      .set("Content-Type", "application/x-gzip")
-      .set("Content-Encoding", "gzip")
-      .set("x-amz-acl", "public-read")
-      .set("Content-Length", Buffer.byteLength(uploadFile));
-
-    if (result.status === 200) {
-      return { status: "success", resultURL: codecovResultURL };
-    }
-    console("Error uploading");
-  } catch (error) {
-    console.error(error);
-    processHelper.exitNonZeroIfSet(inputs)
-  }
-}
-
-async function uploadToCodecov(uploadURL, token, query, uploadFile, inputs) {
-  const hostAndPort = parseURLToHostAndPost(uploadURL, inputs);
-  console.log(
-    `Pinging Codecov: ${hostAndPort.host}/v4?package=uploader-${version}&token=*******&${query}`
-  );
-
-  try {
-    const result = await superagent
-      .post(
-        `${hostAndPort.host}/upload/v4?package=uploader-${version}&token=${token}&${query}`
-      )
-      .send(uploadFile) // sends a JSON post body
-      .set("X-Reduced-Redundancy", "false")
-      .set("X-Content-Type", "application/x-gzip")
-      .set("Content-Length", Buffer.byteLength(uploadFile));
-
-    return result.res.text;
-  } catch (error) {
-    console.error(error);
-    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 
@@ -197,6 +148,5 @@ function getVersion() {
 module.exports = {
   main,
   getVersion,
-  generateQuery,
   generateHeader
 };

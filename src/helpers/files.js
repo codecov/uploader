@@ -1,3 +1,4 @@
+const { spawnSync } = require("child_process");
 const util = require("util");
 const fs = require("fs");
 const path = require("path");
@@ -20,6 +21,12 @@ function isBlacklisted(file) {
   ];
 
   return blacklist.includes(file);
+}
+
+function fetchGitRoot() {
+    return spawnSync("git", ["rev-parse", "--show-toplevel"])
+      .stdout.toString()
+      .trimRight();
 }
 
 const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
@@ -76,5 +83,6 @@ module.exports = {
   readCoverageFile,
   getFileListing,
   endNetworkMarker,
-  fileHeader
+  fileHeader,
+  fetchGitRoot
 };
