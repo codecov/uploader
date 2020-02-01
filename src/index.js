@@ -77,13 +77,13 @@ async function main(args) {
   // TODO: capture envs
   let uploadFile = fileListing;
 
-  uploadFile.concat(fileHelpers.endNetworkMarker());
+  uploadFile = uploadFile.concat(fileHelpers.endNetworkMarker());
 
   // Get coverage report contents
   uploadFile.concat(fileHelpers.fileHeader(args.file));
   const fileContents = await fileHelpers.readCoverageFile(uploadFilePath);
 
-  uploadFile.concat(fileContents);
+  uploadFile = uploadFile.concat(fileContents);
   const gzippedFile = zlib.gzipSync(uploadFile);
 
   // == Step 6: determine CI provider
