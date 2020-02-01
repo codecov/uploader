@@ -7,8 +7,9 @@
   "scripts": {
     "test": "nyc mocha test/*.test.js test/**/*.test.js",
     "prebuild": "rollup -c rollup.config.js",
-    "build": "pkg dist/codecov.js --out-path out",
-    "build-win": "nexe dist/codecov.js -t win32-x64-10.16.0x"
+    "build-linux": "nexe dist/codecov.js -t linux-x64-10.16.3 -o out/codecov",
+    "build-macos": "nexe dist/codecov.js -t mac-x64-10.16.3 -o out/codecov-macos",
+    "build-windows": "nexe dist/codecov.js -t win32-x64-10.16.0x"
   },
   "repository": {
     "type": "git",
@@ -22,8 +23,6 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
-    "chalk": "^3.0.0",
-    "figlet": "^1.2.4",
     "superagent": "^5.2.1",
     "validator": "^12.1.0",
     "yargs": "^15.0.2"
@@ -32,11 +31,13 @@
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
     "chai": "^4.2.0",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
     "mocha": "^7.0.0",
     "nexe": "^3.3.2",
     "nyc": "^15.0.0",
-    "pkg": "^4.4.1",
+    "prettier": "^1.19.1",
     "rollup": "^1.31.0"
   },
   "nyc": {
@@ -45,5 +46,23 @@
       "text",
       "cobertura"
     ]
+  },
+  "eslintConfig": {
+    "env": {
+      "commonjs": true,
+      "es6": true,
+      "node": true
+    },
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
+    "globals": {
+      "Atomics": "readonly",
+      "SharedArrayBuffer": "readonly"
+    },
+    "parserOptions": {
+      "ecmaVersion": 2018
+    },
+    "rules": {}
   }
 }

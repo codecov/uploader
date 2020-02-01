@@ -9,12 +9,12 @@ function validateURL(url) {
 }
 
 function validateFlags(flags) {
-  mask = /^[\w,]+$/;
+  const mask = /^[\w,]+$/;
   return mask.test(flags);
 }
 
 function validateFileNamePath(path) {
-  mask = /^[\w,]+$/;
+  const mask = /^[\w/.,-]+$/;
   return mask.test(path);
 }
 

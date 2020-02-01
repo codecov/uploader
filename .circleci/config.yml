@@ -44,7 +44,7 @@ jobs:
       - run: make build
 
       # upload coverage
-      - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F build
+      # - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F build
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
@@ -61,17 +61,17 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:10.16.3
     steps:
-      - checkout
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F linux
+      - run: 
+          name: Run Linux binary
+          command: out/codecov -f coverage/cobertura-coverage.xml -F linux
 
   test-macos:
     macos: # indicate that we are using the macOS executor
       xcode: "10.0.0" # indicate our selected version of Xcode
     steps: # a series of commands to run
-      - checkout
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
@@ -91,7 +91,8 @@ jobs:
           name: Build Windows Binary
           command: |
             npm ci
-            npm run build-win
+            npm run prebuild
+            npm run build-windows
       - run:
           name: Run Windows binary
           command: |
@@ -101,7 +102,7 @@ jobs:
 workflows:
   version: 2
 
-  btd:
+  "Build and Test":
     jobs:
       - build
       - test-linux:

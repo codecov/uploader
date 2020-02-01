@@ -1,4 +1,5 @@
 const { spawnSync } = require("child_process");
+const processHelper = require("../helpers/process")
 
 function detect(envs) {
   return !envs.CI;
@@ -8,29 +9,33 @@ function getServiceName() {
   return "Local";
 }
 
-function getBranch(envs, args) {
+function getBranch(inputs) {
+  const { args } = inputs
   try {
-    branchName = spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"])
+    const branchName = spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"])
       .stdout.toString()
       .trimRight();
     return args.branch || branchName;
   } catch (error) {
-    throw error;
+    console.error("There was an error getting the branch name from git: ", error)
+    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 
-function getSHA(envs, args) {
+function getSHA(inputs) {
+  const { args} = inputs
   try {
-    sha = spawnSync("git", ["rev-parse", "HEAD"])
+    const sha = spawnSync("git", ["rev-parse", "HEAD"])
       .stdout.toString()
       .trimRight();
     return args.sha || sha;
   } catch (error) {
-    throw error;
+    console.error("There was an error getting the commit SHA from git: ", error)
+    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 
-function parseSlug(slug) {
+function parseSlug(slug, inputs) {
   // origin    https://github.com/torvalds/linux.git (fetch)
 
   // git@github.com: codecov / uploader.git
@@ -44,27 +49,30 @@ function parseSlug(slug) {
     let cleanSlug = slug.split(":")[1].replace(".git", "");
     return cleanSlug;
   }
-  throw new Error("Unable to parse slug URL: " + slug);
+  console.error("Unable to parse slug URL: " + slug);
+  processHelper.exitNonZeroIfSet(inputs)
 }
 
-function getSlug(envs, args) {
+function getSlug(inputs) {
+  const {args} = inputs
   try {
-    slug = spawnSync("git", ["config", "--get", "remote.origin.url"])
+    const slug = spawnSync("git", ["config", "--get", "remote.origin.url"])
       .stdout.toString()
       .trimRight();
-    return args.slug || parseSlug(slug);
+    return args.slug || parseSlug(slug, inputs);
   } catch (error) {
-    throw error;
+    console.error("There was an error getting the slug from git: ", error)
+    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 
-function getServiceParams(envs, args) {
+function getServiceParams(inputs) {
   return {
-    branch: getBranch(envs, args),
-    commit: getSHA(envs, args),
+    branch: getBranch(inputs),
+    commit: getSHA(inputs),
     build: "",
     buildURL: "",
-    slug: args.slug || getSlug(envs, args),
+    slug: inputs.args.slug || getSlug(inputs),
     service: "",
     pr: "",
     job: ""

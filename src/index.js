@@ -1,13 +1,13 @@
-const https = require("https");
 const zlib = require("zlib");
 const superagent = require("superagent");
 const { version } = require("../package.json");
 const files = require("./helpers/files");
 const validate = require("./helpers/validate");
+const processHelper = require("./helpers/process");
 const providers = require("./ci_providers");
 
 function generateQuery(queryParams) {
-  query = "".concat(
+  const query = "".concat(
     "branch=",
     queryParams.branch,
     "&commit=",
@@ -45,44 +45,50 @@ function dryRun(uploadHost, token, query, uploadFile) {
 
 async function main(args) {
   // TODO: clean and sanitize envs and args
-  envs = process.env;
+  const envs = process.env;
   // args
+  const inputs = { args, envs}
 
-  uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
-  token = validate.validateToken(args.token) ? args.token : "";
+  const uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
+  let token = validate.validateToken(args.token) ? args.token : "";
   console.log(generateHeader(getVersion()));
 
   // Look for files
   if (!args.file) {
-    throw new Error("Not yet able to scan for files, please use `-f");
+    console.error("Not yet able to scan for files, please use `-f");
+    processHelper.exitNonZeroIfSet(inputs)
   }
 
-  uploadFilePath = validate.validateFileNamePath(args.file);
+  const uploadFilePath = validate.validateFileNamePath(args.file) ? args.file : "";
+  if (uploadFilePath === "") {
+    console.error("Not coverage file found, exiting.")
+    processHelper.exitNonZeroIfSet(inputs)
+  }
 
   // Determine CI provider
   let serviceParams;
   for (const provider of providers) {
     if (provider.detect(envs)) {
       console.log(`Detected ${provider.getServiceName()} as the CI provider.`);
-      serviceParams = provider.getServiceParams(envs, args);
+      serviceParams = provider.getServiceParams(inputs);
       break;
     }
   }
 
   if (serviceParams === undefined) {
     console.error("Unable to detect service, please specify manually.");
-    process.exit(-1);
+    processHelper.exitNonZeroIfSet(inputs)
   }
 
-  query = generateQuery(populateBuildParams(envs, args, serviceParams));
+  const query = generateQuery(populateBuildParams(inputs, serviceParams));
 
   // Geneerate file listing
-  uploadFile = await files.getFileListing(process.cwd());
+  let uploadFile = await files.getFileListing(process.cwd());
   uploadFile = `${uploadFile}${files.endNetworkMarker()}`;
 
   // Get coverage report contents
   uploadFile = `${uploadFile}${files.fileHeader(args.file)}`;
-  fileContents = await files.readCoverageFile(args.file);
+  const fileContents = await files.readCoverageFile(uploadFilePath);
 
   uploadFile = `${uploadFile}${fileContents}`;
 
@@ -96,38 +102,42 @@ async function main(args) {
       uploadHost,
       token,
       query,
-      gzippedFile
+      gzippedFile,
+      envs, 
+      args
     );
-    const result = await uploadToCodecovPUT(uploadURL, gzippedFile);
+    const result = await uploadToCodecovPUT(uploadURL, gzippedFile, inputs);
     console.log(result);
   }
 }
 
-function parseURLToHostAndPost(url) {
+function parseURLToHostAndPost(url, inputs) {
   if (url.match("https://")) {
     return { port: 443, host: url.split("//")[1] };
   } else if (url.match("http://")) {
     return { port: 80, host: url.split("//")[1] };
   }
-  throw new Error("Unable to parse upload url.");
+  console.error("Unable to parse upload url.");
+  processHelper.exitNonZeroIfSet(inputs)
 }
 
-function populateBuildParams(envs, args, serviceParams) {
+function populateBuildParams(inputs, serviceParams) {
+  const { args, envs } = inputs
   serviceParams.name = envs.CODECOV_NAME || "";
   serviceParams.tag = args.tag || "";
   serviceParams.flags = validate.validateFlags(args.flags) ? args.flags : "";
   return serviceParams;
 }
 
-async function uploadToCodecovPUT(uploadURL, uploadFile) {
+async function uploadToCodecovPUT(uploadURL, uploadFile, inputs) {
   console.log("Uploading...");
 
-  parts = uploadURL.split("\n");
-  putURL = parts[1];
-  codecovResultURL = parts[0];
+  const parts = uploadURL.split("\n");
+  const putURL = parts[1];
+  const codecovResultURL = parts[0];
 
   try {
-    result = await superagent
+    const result = await superagent
       .put(`${putURL}`)
       .send(uploadFile) // sends a JSON post body
       .set("Content-Type", "application/x-gzip")
@@ -138,22 +148,23 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
     if (result.status === 200) {
       return { status: "success", resultURL: codecovResultURL };
     }
-    throw new Error("Error uploading");
+    console("Error uploading");
   } catch (error) {
     console.error(error);
+    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 
-async function uploadToCodecov(uploadURL, token, query, uploadFile) {
-  hostAndPort = parseURLToHostAndPost(uploadURL);
+async function uploadToCodecov(uploadURL, token, query, uploadFile, inputs) {
+  const hostAndPort = parseURLToHostAndPost(uploadURL, inputs);
   console.log(
     `Pinging Codecov: ${hostAndPort.host}/v4?package=uploader-${version}&token=*******&${query}`
   );
 
   try {
-    result = await superagent
+    const result = await superagent
       .post(
-        `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`
+        `${hostAndPort.host}/upload/v4?package=uploader-${version}&token=${token}&${query}`
       )
       .send(uploadFile) // sends a JSON post body
       .set("X-Reduced-Redundancy", "false")
@@ -163,11 +174,12 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile) {
     return result.res.text;
   } catch (error) {
     console.error(error);
+    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 
 function generateHeader(version) {
-  header = `
+  return `
      _____          _
     / ____|        | |
    | |     ___   __| | ___  ___ _____   __
@@ -176,7 +188,6 @@ function generateHeader(version) {
     \\_____\\___/ \\__,_|\\___|\\___\\___/ \\_/
 
   Codecov report uploader ${version}`;
-  return header;
 }
 
 function getVersion() {

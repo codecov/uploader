@@ -26,7 +26,7 @@ const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
   // This replacement is needed because the cwd changes when being packaged
   origionalPath = process.cwd();
 
-  files = fs.readdirSync(dirPath);
+  const files = fs.readdirSync(dirPath);
 
   arrayOfFiles = arrayOfFiles || [];
 
@@ -54,12 +54,13 @@ const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
 };
 
 async function readCoverageFile(filePath) {
-  baseDir = process.cwd();
+  const baseDir = process.cwd();
   try {
     const fileContents = await readFile(`${baseDir}/${filePath}`);
     return fileContents;
   } catch (error) {
-    throw error;
+    console.error("There was an error reading the coverage file: ", error)
+    process.exit(-1)
   }
 }
 
