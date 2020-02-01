@@ -45,6 +45,10 @@ var argv = require("yargs") // eslint-disable-line
       type: "boolean",
       description: "Run with verbose logging"
     },
+    rootDir: {
+      alias: "R",
+      description: "Specify the project roor directory when not in a git repo"
+    },
     nonZeroExit: {
       alias: "Z",
       type: "boolean",

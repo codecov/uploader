@@ -49,6 +49,9 @@ async function main(args) {
   if (gitRoot === "") {
     // TODO: support running outside a git repo
     projectRoot = process.cwd();
+    console.log(
+      "=> No git repo detected. Please use the -R flag if the below detected directory is not correct."
+    );
     console.log("=> Project root located at: ", projectRoot);
   } else {
     console.log("=> Git root located at: ", gitRoot);
@@ -82,7 +85,10 @@ async function main(args) {
 
   // Get coverage report contents
   uploadFile = uploadFile.concat(fileHelpers.fileHeader(args.file));
-  const fileContents = await fileHelpers.readCoverageFile(uploadFilePath);
+  const fileContents = await fileHelpers.readCoverageFile(
+    projectRoot,
+    uploadFilePath
+  );
 
   uploadFile = uploadFile.concat(fileContents);
   const gzippedFile = zlib.gzipSync(uploadFile);

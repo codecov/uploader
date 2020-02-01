@@ -57,10 +57,9 @@ const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   return arrayOfFiles;
 };
 
-async function readCoverageFile(filePath) {
-  const baseDir = process.cwd();
+async function readCoverageFile(projectRoot, filePath) {
   try {
-    const fileContents = await readFile(`${baseDir}/${filePath}`);
+    const fileContents = await readFile(`${projectRoot}/${filePath}`);
     return fileContents;
   } catch (error) {
     console.error("There was an error reading the coverage file: ", error);
