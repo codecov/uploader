@@ -24,13 +24,20 @@ function isBlacklisted(file) {
 }
 
 function fetchGitRoot() {
-  return spawnSync("git", ["rev-parse", "--show-toplevel"])
-    .stdout.toString()
-    .trimRight();
+  return (
+    spawnSync("git", ["rev-parse", "--show-toplevel"])
+      .stdout.toString()
+      .trimRight() ||
+    spawnSync("hg", ["root"])
+      .stdout.toString()
+      .trimRight() ||
+    process.cwd()
+  );
 }
 
 const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   const files = fs.readdirSync(dirPath);
+  console.log(projectRoot, dirPath, files);
 
   arrayOfFiles = arrayOfFiles || [];
 

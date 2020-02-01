@@ -1,5 +1,4 @@
 const zlib = require("zlib");
-
 const { version } = require("../package.json");
 const fileHelpers = require("./helpers/files");
 const validateHelpers = require("./helpers/validate");
@@ -44,22 +43,17 @@ async function main(args) {
   console.log(generateHeader(getVersion()));
 
   // == Step 2: detect if we are in a git repo
-  const gitRoot = fileHelpers.fetchGitRoot(process.cwd());
-  let projectRoot;
+  const gitRoot = fileHelpers.fetchGitRoot();
   if (gitRoot === "") {
-    // TODO: support running outside a git repo
-    projectRoot = args.rootDir || process.cwd();
     console.log(
       "=> No git repo detected. Please use the -R flag if the below detected directory is not correct."
     );
-    console.log("=> Project root located at: ", projectRoot);
-  } else {
-    console.log("=> Git root located at: ", gitRoot);
-    projectRoot = gitRoot;
   }
 
+  console.log("=> Project root located at: ", gitRoot);
+
   // == Step 3: get network
-  const fileListing = await fileHelpers.getFileListing(projectRoot);
+  const fileListing = await fileHelpers.getFileListing(gitRoot);
 
   // == Step 4: select coverage files (search or specify)
 
@@ -86,7 +80,7 @@ async function main(args) {
   // Get coverage report contents
   uploadFile = uploadFile.concat(fileHelpers.fileHeader(args.file));
   const fileContents = await fileHelpers.readCoverageFile(
-    projectRoot,
+    gitRoot,
     uploadFilePath
   );
 
