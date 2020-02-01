@@ -84,12 +84,12 @@ jobs:
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
+            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z -R $CIRCLE_WORKING_DIRECTORY
       - run:
           # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary (upload)
           command: |
-            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
+            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z -R $CIRCLE_WORKING_DIRECTORY
 
   test-windows:
     executor: win/default
