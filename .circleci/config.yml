@@ -98,9 +98,13 @@ jobs:
             npm run prebuild
             npm run build-windows
       - run:
-          name: Run Windows binary
+          name: Run Windows binary (dry-run)
           command: |
             codecov.exe -f coverage/cobertura-coverage.xml -F windows -d -Z
+          shell: cmd.exe
+      - run:
+          name: Run Windows binary (upload)
+          command: |
             codecov.exe -f coverage/cobertura-coverage.xml -F windows -Z
           shell: cmd.exe
 
