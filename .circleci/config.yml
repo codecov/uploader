@@ -67,8 +67,8 @@ jobs:
       - run:
           name: Run Linux binary
           command: |
-            out/codecov -f coverage/cobertura-coverage.xml -F linux -R .. -d -Z
-            out/codecov -f coverage/cobertura-coverage.xml -F linux -R .. -Z
+            out/codecov -f coverage/cobertura-coverage.xml -F linux -d -Z
+            out/codecov -f coverage/cobertura-coverage.xml -F linux -Z
 
   test-macos:
     macos: # indicate that we are using the macOS executor
@@ -81,8 +81,8 @@ jobs:
           # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary
           command: |
-            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -R .. -d -Z
-            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -R .. -Z
+            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
+            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
 
   test-windows:
     executor: win/default
