@@ -91,7 +91,8 @@ jobs:
           name: Build Windows Binary
           command: |
             npm ci
-            make build-windows
+	          npm run prebuild
+	          npm run build-windows
       - run:
           name: Run Windows binary
           command: |

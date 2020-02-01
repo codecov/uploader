@@ -18,8 +18,4 @@ build:
 	npm run build-macos
 	# npm run build-windows
 
-build-windows:
-	npm run prebuild
-	npm run build-windows
-
 .PHONY: clean install test build, build-win
