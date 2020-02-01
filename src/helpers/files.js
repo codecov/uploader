@@ -2,6 +2,7 @@ const { spawnSync } = require("child_process");
 const util = require("util");
 const fs = require("fs");
 const path = require("path");
+const processHelper = require("../helpers/process");
 
 const readFile = util.promisify(fs.readFile);
 
@@ -23,16 +24,21 @@ function isBlacklisted(file) {
   return blacklist.includes(file);
 }
 
-function fetchGitRoot() {
-  return (
-    spawnSync("git", ["rev-parse", "--show-toplevel"])
-      .stdout.toString()
-      .trimRight() ||
-    spawnSync("hg", ["root"])
-      .stdout.toString()
-      .trimRight() ||
-    process.cwd()
-  );
+function fetchGitRoot(inputs) {
+  try {
+    return (
+      spawnSync("git", ["rev-parse", "--show-toplevel"])
+        .stdout.toString()
+        .trimRight() ||
+      spawnSync("hg", ["root"])
+        .stdout.toString()
+        .trimRight() ||
+      process.cwd()
+    );
+  } catch (error) {
+    console.error("Error fetching git root. Please try using the -R flag.");
+    processHelper.exitNonZeroIfSet(inputs);
+  }
 }
 
 const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
