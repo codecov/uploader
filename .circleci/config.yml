@@ -88,7 +88,9 @@ jobs:
           at: .
       - run:
           name: Run Windows binary
-          command: out/codecov.exe -f coverage/cobertura-coverage.xml -F windows
+          command: |
+            cd out
+            codecov.exe -f coverage/cobertura-coverage.xml -F windows
           shell: cmd.exe
 
 workflows:
