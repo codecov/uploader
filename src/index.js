@@ -55,7 +55,7 @@ async function main(args) {
   console.log("=> Git root located at: ", gitRoot);
 
   // == Step 3: get network
-  const fileListing = await fileHelpers.getFileListing(gitRoot);
+  const fileListing = await fileHelpers.getFileListing(gitRoot, gitRoot);
 
   // == Step 4: select coverage files (search or specify)
 

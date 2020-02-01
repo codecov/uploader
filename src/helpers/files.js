@@ -5,8 +5,8 @@ const path = require("path");
 
 const readFile = util.promisify(fs.readFile);
 
-async function getFileListing(filePath) {
-  return getAllFiles(filePath).join("");
+async function getFileListing(gitRoot, filePath) {
+  return getAllFiles(gitRoot, filePath).join("");
 }
 
 function isBlacklisted(file) {
@@ -24,14 +24,14 @@ function isBlacklisted(file) {
 }
 
 function fetchGitRoot() {
-    return spawnSync("git", ["rev-parse", "--show-toplevel"])
-      .stdout.toString()
-      .trimRight();
+  return spawnSync("git", ["rev-parse", "--show-toplevel"])
+    .stdout.toString()
+    .trimRight();
 }
 
-const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
+const getAllFiles = function(gitRoot, dirPath, arrayOfFiles, origionalPath) {
   // This replacement is needed because the cwd changes when being packaged
-  origionalPath = process.cwd();
+  origionalPath = gitRoot;
 
   const files = fs.readdirSync(dirPath);
 
@@ -43,6 +43,7 @@ const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
       !isBlacklisted(file)
     ) {
       arrayOfFiles = getAllFiles(
+        gitRoot,
         dirPath + "/" + file,
         arrayOfFiles,
         origionalPath
@@ -66,8 +67,8 @@ async function readCoverageFile(filePath) {
     const fileContents = await readFile(`${baseDir}/${filePath}`);
     return fileContents;
   } catch (error) {
-    console.error("There was an error reading the coverage file: ", error)
-    process.exit(-1)
+    console.error("There was an error reading the coverage file: ", error);
+    process.exit(-1);
   }
 }
 
