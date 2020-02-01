@@ -50,7 +50,7 @@ async function main(args) {
   const inputs = { args, envs}
 
   const uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
-  const token = validate.validateToken(args.token) ? args.token || process.env.CODECOV_TOKEN || "": "";
+  let token = validate.validateToken(args.token) ? args.token : "";
   console.log(generateHeader(getVersion()));
 
   // Look for files
@@ -92,6 +92,7 @@ async function main(args) {
 
   uploadFile = `${uploadFile}${fileContents}`;
 
+  token = args.token || process.env.CODECOV_TOKEN || "";
   const gzippedFile = zlib.gzipSync(uploadFile);
 
   if (args.dryRun) {
