@@ -1,11 +1,13 @@
+const { spawnSync } = require("child_process");
 const util = require("util");
 const fs = require("fs");
 const path = require("path");
+const processHelper = require("../helpers/process");
 
 const readFile = util.promisify(fs.readFile);
 
-async function getFileListing(filePath) {
-  return getAllFiles(filePath).join("");
+async function getFileListing(projectRoot) {
+  return getAllFiles(projectRoot, projectRoot).join("");
 }
 
 function isBlacklisted(file) {
@@ -22,12 +24,25 @@ function isBlacklisted(file) {
   return blacklist.includes(file);
 }
 
-const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
-  // This replacement is needed because the cwd changes when being packaged
-  origionalPath = process.cwd();
+function fetchGitRoot(inputs) {
+  try {
+    return (
+      spawnSync("git", ["rev-parse", "--show-toplevel"])
+        .stdout.toString()
+        .trimRight() ||
+      spawnSync("hg", ["root"])
+        .stdout.toString()
+        .trimRight() ||
+      process.cwd()
+    );
+  } catch (error) {
+    console.error("Error fetching git root. Please try using the -R flag.");
+    processHelper.exitNonZeroIfSet(inputs);
+  }
+}
 
+const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   const files = fs.readdirSync(dirPath);
-
   arrayOfFiles = arrayOfFiles || [];
 
   files.forEach(function(file) {
@@ -36,15 +51,14 @@ const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
       !isBlacklisted(file)
     ) {
       arrayOfFiles = getAllFiles(
+        projectRoot,
         dirPath + "/" + file,
-        arrayOfFiles,
-        origionalPath
+        arrayOfFiles
       );
     } else {
       if (!isBlacklisted(file)) {
-        //   arrayOfFiles.push(`${path.join(dirPath, "/", file)}\n`);
         arrayOfFiles.push(
-          `${path.join(dirPath.replace(origionalPath, "."), "/", file)}\n`
+          `${path.join(dirPath.replace(projectRoot, "."), "/", file)}\n`
         );
       }
     }
@@ -53,14 +67,13 @@ const getAllFiles = function(dirPath, arrayOfFiles, origionalPath) {
   return arrayOfFiles;
 };
 
-async function readCoverageFile(filePath) {
-  const baseDir = process.cwd();
+async function readCoverageFile(projectRoot, filePath) {
   try {
-    const fileContents = await readFile(`${baseDir}/${filePath}`);
+    const fileContents = await readFile(`${projectRoot}/${filePath}`);
     return fileContents;
   } catch (error) {
-    console.error("There was an error reading the coverage file: ", error)
-    process.exit(-1)
+    console.error("There was an error reading the coverage file: ", error);
+    process.exit(-1);
   }
 }
 
@@ -76,5 +89,6 @@ module.exports = {
   readCoverageFile,
   getFileListing,
   endNetworkMarker,
-  fileHeader
+  fileHeader,
+  fetchGitRoot
 };

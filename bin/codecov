@@ -45,7 +45,17 @@ var argv = require("yargs") // eslint-disable-line
       type: "boolean",
       description: "Run with verbose logging"
     },
-    "dry-run": {
+    rootDir: {
+      alias: "R",
+      description: "Specify the project root directory when not in a git repo"
+    },
+    nonZeroExit: {
+      alias: "Z",
+      type: "boolean",
+      default: false,
+      description: "Should errors exit with a non-zero (default: false)"
+    },
+    dryRun: {
       alias: "d",
       type: "boolean",
       description: "Don't upload files to Codecov"
