@@ -83,15 +83,15 @@ jobs:
   test-windows:
     executor: win/default
     steps:
-      # - checkout
+      - checkout
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      # - run:
-      #     name: Build Windows Binary
-      #     command: |
-      #       npm ci
-      #       npm run build-windows
+      - run:
+          name: Build Windows Binary
+          command: |
+            npm ci
+            npm run build-windows
       - run:
           name: Run Windows binary
           command: |
