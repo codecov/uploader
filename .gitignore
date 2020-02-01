@@ -63,3 +63,7 @@ typings/
 # pkg output
 out/*
 dist/*
+
+codecov
+codecov-macos
+codecov.exe
