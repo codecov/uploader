@@ -64,9 +64,11 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run: 
+      - run:
           name: Run Linux binary
-          command: out/codecov -f coverage/cobertura-coverage.xml -F linux
+          command: |
+            out/codecov -f coverage/cobertura-coverage.xml -F linux -d -Z
+            out/codecov -f coverage/cobertura-coverage.xml -F linux -Z
 
   test-macos:
     macos: # indicate that we are using the macOS executor
@@ -78,7 +80,9 @@ jobs:
       - run:
           # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary
-          command: out/codecov-macos -f coverage/cobertura-coverage.xml -F macos
+          command: |
+            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
+            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
 
   test-windows:
     executor: win/default
@@ -96,7 +100,8 @@ jobs:
       - run:
           name: Run Windows binary
           command: |
-            codecov.exe -f coverage/cobertura-coverage.xml -F windows
+            codecov.exe -f coverage/cobertura-coverage.xml -F windows -d -Z
+            codecov.exe -f coverage/cobertura-coverage.xml -F windows -Z
           shell: cmd.exe
 
 workflows:
