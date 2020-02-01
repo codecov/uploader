@@ -37,7 +37,8 @@ const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   files.forEach(function(file) {
     if (
       fs.statSync(dirPath + "/" + file).isDirectory() &&
-      !isBlacklisted(file)
+      !isBlacklisted(file) &&
+      file != ""
     ) {
       arrayOfFiles = getAllFiles(
         projectRoot,
@@ -46,7 +47,7 @@ const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
       );
     } else {
       if (!isBlacklisted(file)) {
-        //   arrayOfFiles.push(`${path.join(dirPath, "/", file)}\n`);
+        console.log(dirPath.replace(projectRoot, "."), file);
         arrayOfFiles.push(
           `${path.join(dirPath.replace(projectRoot, "."), "/", file)}\n`
         );
