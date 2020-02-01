@@ -48,7 +48,7 @@ async function main(args) {
   let projectRoot;
   if (gitRoot === "") {
     // TODO: support running outside a git repo
-    projectRoot = process.cwd();
+    projectRoot = args.rootDir || process.cwd();
     console.log(
       "=> No git repo detected. Please use the -R flag if the below detected directory is not correct."
     );

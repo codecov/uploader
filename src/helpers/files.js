@@ -47,7 +47,6 @@ const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
       );
     } else {
       if (!isBlacklisted(file)) {
-        console.log(dirPath.replace(projectRoot, "."), file);
         arrayOfFiles.push(
           `${path.join(dirPath.replace(projectRoot, "."), "/", file)}\n`
         );
