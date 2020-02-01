@@ -16,6 +16,8 @@ build:
 	npm run prebuild
 	npm run build-linux
 	npm run build-macos
+
+build-win:
 	npm run build-windows
 
-.PHONY: clean install test build
+.PHONY: clean install test build, build-win

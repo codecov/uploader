@@ -90,9 +90,8 @@ jobs:
       - run:
           name: Build Windows Binary
           command: |
-            rm out/codecov.exe
             npm ci
-            npm run build-win
+            npm run build-windows
       - run:
           name: Run Windows binary
           command: |
