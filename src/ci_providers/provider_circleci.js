@@ -12,21 +12,24 @@ function getService() {
   return "circleci";
 }
 
-function getBranch(envs, args) {
+function getBranch(inputs) {
+  const { args, envs} = inputs
   return args.branch || envs.CIRCLE_BRANCH;
 }
 
-function getSHA(envs, args) {
+function getSHA(inputs) {
+  const { args, envs} = inputs
   try {
     const sha = envs.CIRCLE_SHA1;
     return args.sha || sha;
   } catch (error) {
     console.error("There was an error getting the commit SHA: ", error)
-    processHelper.exitNonZeroIfSet(envs, args)
+    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 
-function getSlug(envs, args) {
+function getSlug(inputs) {
+  const {args, envs} = inputs
   let slug
   if (envs.CIRCLE_PROJECT_REPONAME !== "") {
     
@@ -37,29 +40,31 @@ function getSlug(envs, args) {
   return args.slug || slug;
 }
 
-function getBuild(envs, args) {
+function getBuild(inputs) {
+  const { args, envs } = inputs
   return args.build || envs.CIRCLE_BUILD_NUM || "";
 }
 
-function getPR(envs, args) {
+function getPR(inputs) {
+  const { args, envs } = inputs
   return args.pr || envs.CIRCLE_PR_NUMBER || "";
 }
 
 // eslint-disable-next-line no-unused-vars
-function getJob(envs, args) {
+function getJob(envs) {
   return envs.CIRCLE_NODE_INDEX || "";
 }
 
-function getServiceParams(envs, args) {
+function getServiceParams(inputs) {
   return {
-    branch: getBranch(envs, args),
-    commit: getSHA(envs, args),
-    build: getBuild(envs, args),
+    branch: getBranch(inputs),
+    commit: getSHA(inputs),
+    build: getBuild(inputs),
     buildURL: "",
-    slug: args.slug || getSlug(envs, args),
-    service: getService(envs, args),
-    pr: getPR(envs, args),
-    job: getJob(envs, args)
+    slug: inputs.args.slug || getSlug(inputs),
+    service: getService(inputs),
+    pr: getPR(inputs),
+    job: getJob(inputs.envs)
   };
 }
 

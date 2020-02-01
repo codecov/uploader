@@ -3,6 +3,7 @@ const superagent = require("superagent");
 const { version } = require("../package.json");
 const files = require("./helpers/files");
 const validate = require("./helpers/validate");
+const processHelper = require("./helpers/process");
 const providers = require("./ci_providers");
 
 function generateQuery(queryParams) {
@@ -46,6 +47,7 @@ async function main(args) {
   // TODO: clean and sanitize envs and args
   const envs = process.env;
   // args
+  const inputs = { args, envs}
 
   const uploadHost = validate.validateURL(args.url) ? args.url : "https://codecov.io";
   const token = validate.validateToken(args.token) ? args.token || process.env.CODECOV_TOKEN || "": "";
@@ -53,27 +55,32 @@ async function main(args) {
 
   // Look for files
   if (!args.file) {
-    throw new Error("Not yet able to scan for files, please use `-f");
+    console.error("Not yet able to scan for files, please use `-f");
+    processHelper.exitNonZeroIfSet(inputs)
   }
 
-  const uploadFilePath = validate.validateFileNamePath(args.file);
+  const uploadFilePath = validate.validateFileNamePath(args.file) ? args.file : "";
+  if (uploadFilePath === "") {
+    console.error("Not coverage file found, exiting.")
+    processHelper.exitNonZeroIfSet(inputs)
+  }
 
   // Determine CI provider
   let serviceParams;
   for (const provider of providers) {
     if (provider.detect(envs)) {
       console.log(`Detected ${provider.getServiceName()} as the CI provider.`);
-      serviceParams = provider.getServiceParams(envs, args);
+      serviceParams = provider.getServiceParams(inputs);
       break;
     }
   }
 
   if (serviceParams === undefined) {
     console.error("Unable to detect service, please specify manually.");
-    process.exit(-1);
+    processHelper.exitNonZeroIfSet(inputs)
   }
 
-  const query = generateQuery(populateBuildParams(envs, args, serviceParams));
+  const query = generateQuery(populateBuildParams(inputs, serviceParams));
 
   // Geneerate file listing
   let uploadFile = await files.getFileListing(process.cwd());
@@ -94,30 +101,34 @@ async function main(args) {
       uploadHost,
       token,
       query,
-      gzippedFile
+      gzippedFile,
+      envs, 
+      args
     );
-    const result = await uploadToCodecovPUT(uploadURL, gzippedFile);
+    const result = await uploadToCodecovPUT(uploadURL, gzippedFile, inputs);
     console.log(result);
   }
 }
 
-function parseURLToHostAndPost(url) {
+function parseURLToHostAndPost(url, inputs) {
   if (url.match("https://")) {
     return { port: 443, host: url.split("//")[1] };
   } else if (url.match("http://")) {
     return { port: 80, host: url.split("//")[1] };
   }
-  throw new Error("Unable to parse upload url.");
+  console.error("Unable to parse upload url.");
+  processHelper.exitNonZeroIfSet(inputs)
 }
 
-function populateBuildParams(envs, args, serviceParams) {
+function populateBuildParams(inputs, serviceParams) {
+  const { args, envs } = inputs
   serviceParams.name = envs.CODECOV_NAME || "";
   serviceParams.tag = args.tag || "";
   serviceParams.flags = validate.validateFlags(args.flags) ? args.flags : "";
   return serviceParams;
 }
 
-async function uploadToCodecovPUT(uploadURL, uploadFile) {
+async function uploadToCodecovPUT(uploadURL, uploadFile, inputs) {
   console.log("Uploading...");
 
   const parts = uploadURL.split("\n");
@@ -136,14 +147,15 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
     if (result.status === 200) {
       return { status: "success", resultURL: codecovResultURL };
     }
-    throw new Error("Error uploading");
+    console("Error uploading");
   } catch (error) {
     console.error(error);
+    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 
-async function uploadToCodecov(uploadURL, token, query, uploadFile) {
-  const hostAndPort = parseURLToHostAndPost(uploadURL);
+async function uploadToCodecov(uploadURL, token, query, uploadFile, inputs) {
+  const hostAndPort = parseURLToHostAndPost(uploadURL, inputs);
   console.log(
     `Pinging Codecov: ${hostAndPort.host}/v4?package=uploader-${version}&token=*******&${query}`
   );
@@ -161,6 +173,7 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile) {
     return result.res.text;
   } catch (error) {
     console.error(error);
+    processHelper.exitNonZeroIfSet(inputs)
   }
 }
 

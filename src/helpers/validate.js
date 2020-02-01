@@ -14,7 +14,7 @@ function validateFlags(flags) {
 }
 
 function validateFileNamePath(path) {
-  const mask = /^[\w,]+$/;
+  const mask = /^[\w/.,-]+$/;
   return mask.test(path);
 }
 
