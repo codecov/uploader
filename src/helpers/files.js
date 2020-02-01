@@ -5,8 +5,8 @@ const path = require("path");
 
 const readFile = util.promisify(fs.readFile);
 
-async function getFileListing(gitRoot, filePath) {
-  return getAllFiles(gitRoot, filePath).join("");
+async function getFileListing(projectRoot) {
+  return getAllFiles(projectRoot, projectRoot).join("");
 }
 
 function isBlacklisted(file) {
@@ -29,10 +29,7 @@ function fetchGitRoot() {
     .trimRight();
 }
 
-const getAllFiles = function(gitRoot, dirPath, arrayOfFiles, origionalPath) {
-  // This replacement is needed because the cwd changes when being packaged
-  origionalPath = gitRoot;
-
+const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   const files = fs.readdirSync(dirPath);
 
   arrayOfFiles = arrayOfFiles || [];
@@ -43,16 +40,15 @@ const getAllFiles = function(gitRoot, dirPath, arrayOfFiles, origionalPath) {
       !isBlacklisted(file)
     ) {
       arrayOfFiles = getAllFiles(
-        gitRoot,
+        projectRoot,
         dirPath + "/" + file,
-        arrayOfFiles,
-        origionalPath
+        arrayOfFiles
       );
     } else {
       if (!isBlacklisted(file)) {
         //   arrayOfFiles.push(`${path.join(dirPath, "/", file)}\n`);
         arrayOfFiles.push(
-          `${path.join(dirPath.replace(origionalPath, "."), "/", file)}\n`
+          `${path.join(dirPath.replace(projectRoot, "."), "/", file)}\n`
         );
       }
     }

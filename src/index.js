@@ -45,17 +45,18 @@ async function main(args) {
 
   // == Step 2: detect if we are in a git repo
   const gitRoot = fileHelpers.fetchGitRoot(process.cwd());
+  let projectRoot;
   if (gitRoot === "") {
     // TODO: support running outside a git repo
-    console.error(
-      "We do not yet support running the uploader outside of a git repo."
-    );
-    processHelpers.exitNonZeroIfSet(inputs);
+    projectRoot = process.cwd();
+    console.log("=> Project root located at: ", projectRoot);
+  } else {
+    console.log("=> Git root located at: ", gitRoot);
+    projectRoot = gitRoot;
   }
-  console.log("=> Git root located at: ", gitRoot);
 
   // == Step 3: get network
-  const fileListing = await fileHelpers.getFileListing(gitRoot, gitRoot);
+  const fileListing = await fileHelpers.getFileListing(projectRoot);
 
   // == Step 4: select coverage files (search or specify)
 
@@ -80,7 +81,7 @@ async function main(args) {
   uploadFile = uploadFile.concat(fileHelpers.endNetworkMarker());
 
   // Get coverage report contents
-  uploadFile.concat(fileHelpers.fileHeader(args.file));
+  uploadFile = uploadFile.concat(fileHelpers.fileHeader(args.file));
   const fileContents = await fileHelpers.readCoverageFile(uploadFilePath);
 
   uploadFile = uploadFile.concat(fileContents);
