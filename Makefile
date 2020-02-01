@@ -19,6 +19,7 @@ build:
 	# npm run build-windows
 
 build-win:
+	npm run prebuild
 	npm run build-windows
 
 .PHONY: clean install test build, build-win
