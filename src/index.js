@@ -43,7 +43,7 @@ async function main(args) {
   console.log(generateHeader(getVersion()));
 
   // == Step 2: detect if we are in a git repo
-  const gitRoot = fileHelpers.fetchGitRoot();
+  const gitRoot = args.rootDir || fileHelpers.fetchGitRoot();
   if (gitRoot === "") {
     console.log(
       "=> No git repo detected. Please use the -R flag if the below detected directory is not correct."
@@ -79,10 +79,7 @@ async function main(args) {
 
   // Get coverage report contents
   uploadFile = uploadFile.concat(fileHelpers.fileHeader(args.file));
-  const fileContents = await fileHelpers.readCoverageFile(
-    gitRoot,
-    uploadFilePath
-  );
+  const fileContents = await fileHelpers.readCoverageFile(".", uploadFilePath);
 
   uploadFile = uploadFile.concat(fileContents);
   const gzippedFile = zlib.gzipSync(uploadFile);

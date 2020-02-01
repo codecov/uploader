@@ -37,15 +37,12 @@ function fetchGitRoot() {
 
 const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   const files = fs.readdirSync(dirPath);
-  console.log(projectRoot, dirPath, files);
-
   arrayOfFiles = arrayOfFiles || [];
 
   files.forEach(function(file) {
     if (
       fs.statSync(dirPath + "/" + file).isDirectory() &&
-      !isBlacklisted(file) &&
-      file != ""
+      !isBlacklisted(file)
     ) {
       arrayOfFiles = getAllFiles(
         projectRoot,

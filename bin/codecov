@@ -47,7 +47,7 @@ var argv = require("yargs") // eslint-disable-line
     },
     rootDir: {
       alias: "R",
-      description: "Specify the project roor directory when not in a git repo"
+      description: "Specify the project root directory when not in a git repo"
     },
     nonZeroExit: {
       alias: "Z",

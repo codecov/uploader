@@ -64,25 +64,32 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
+      - run: mv out/codecov ./
       - run:
-          name: Run Linux binary
+          name: Run Linux binary (dry run)
           command: |
-            out/codecov -f coverage/cobertura-coverage.xml -F linux -d -Z
-            out/codecov -f coverage/cobertura-coverage.xml -F linux -Z
+            ./codecov -f coverage/cobertura-coverage.xml -F linux -d -Z
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            ./codecov -f coverage/cobertura-coverage.xml -F linux -Z
 
   test-macos:
     macos: # indicate that we are using the macOS executor
       xcode: "10.0.0" # indicate our selected version of Xcode
     steps: # a series of commands to run
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
+      - run: mv out/codecov-macos ./
+      - run:
+          name: Run MacOS binary (dry-run)
+          command: |
+            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
       - run:
           # run our tests using xcode's cli tool `xcodebuild`
-          name: Run MacOS binary
+          name: Run MacOS binary (upload)
           command: |
-            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
-            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
+            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
 
   test-windows:
     executor: win/default
@@ -97,6 +104,7 @@ jobs:
             npm ci
             npm run prebuild
             npm run build-windows
+      - run: mv out/codecov.exe ./
       - run:
           name: Run Windows binary (dry-run)
           command: |
