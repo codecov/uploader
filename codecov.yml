@@ -1,2 +1,2 @@
 fixes:
-    - "::C:\Users\circleci\project\"
+    - "C:\Users\circleci\project\::"
