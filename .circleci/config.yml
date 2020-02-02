@@ -78,6 +78,7 @@ jobs:
     macos: # indicate that we are using the macOS executor
       xcode: "10.0.0" # indicate our selected version of Xcode
     steps: # a series of commands to run
+      - checkout
       - attach_workspace:
           at: .
       - run: mv out/codecov-macos ./
