@@ -23,6 +23,7 @@ function isBlacklisted(file) {
   return blacklist.includes(file);
 }
 
+// eslint-disable-next-line no-unused-vars
 function fetchGitRoot(inputs) {
   try {
     return (
