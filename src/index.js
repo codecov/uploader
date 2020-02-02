@@ -115,7 +115,6 @@ async function main(args) {
       token,
       query,
       gzippedFile,
-      inputs,
       version
     );
     const result = await webHelpers.uploadToCodecovPUT(

@@ -3,7 +3,7 @@ const provider = require("../../src/ci_providers/provider_local");
 const chai = require("chai");
 const expect = chai.expect;
 
-const inputs = {args: [], envs: []}
+const inputs = { args: [], envs: [] };
 
 describe("Provider - Local", () => {
   describe("parse slug", () => {
