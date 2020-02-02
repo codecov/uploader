@@ -110,6 +110,9 @@ async function main(args) {
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile);
   } else {
+    console.log(
+      `Pinging Codecov: ${uploadHost}/v4?package=uploader-${version}&token=*******&${query}`
+    );
     const uploadURL = await webHelpers.uploadToCodecov(
       uploadHost,
       token,

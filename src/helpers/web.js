@@ -47,9 +47,6 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
 
 async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
   const hostAndPort = parseURLToHostAndPost(uploadURL);
-  console.log(
-    `Pinging Codecov: ${hostAndPort.host}/v4?package=uploader-${version}&token=*******&${query}`
-  );
 
   try {
     const result = await superagent

@@ -1,5 +1,4 @@
-const { spawnSync } = require("child_process");
-const processHelper = require("../helpers/process");
+const child_process = require("child_process");
 
 function detect(envs) {
   return !envs.CI;
@@ -12,7 +11,8 @@ function getServiceName() {
 function getBranch(inputs) {
   const { args } = inputs;
   try {
-    const branchName = spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"])
+    const branchName = child_process
+      .spawnSync("git", ["rev-parse", "--abbrev-ref", "HEAD"])
       .stdout.toString()
       .trimRight();
     return args.branch || branchName;
@@ -27,20 +27,20 @@ function getBranch(inputs) {
 function getSHA(inputs) {
   const { args } = inputs;
   try {
-    const sha = spawnSync("git", ["rev-parse", "HEAD"])
+    const sha = child_process
+      .spawnSync("git", ["rev-parse", "HEAD"])
       .stdout.toString()
       .trimRight();
     return args.sha || sha;
   } catch (error) {
-    console.error(
+    throw new Error(
       "There was an error getting the commit SHA from git: ",
       error
     );
-    processHelper.exitNonZeroIfSet(inputs);
   }
 }
 
-function parseSlug(slug, inputs) {
+function parseSlug(slug) {
   // origin    https://github.com/torvalds/linux.git (fetch)
 
   // git@github.com: codecov / uploader.git
@@ -60,13 +60,13 @@ function parseSlug(slug, inputs) {
 function getSlug(inputs) {
   const { args } = inputs;
   try {
-    const slug = spawnSync("git", ["config", "--get", "remote.origin.url"])
+    const slug = child_process
+      .spawnSync("git", ["config", "--get", "remote.origin.url"])
       .stdout.toString()
       .trimRight();
-    return args.slug || parseSlug(slug, inputs);
+    return args.slug || parseSlug(slug);
   } catch (error) {
-    console.error("There was an error getting the slug from git: ", error);
-    processHelper.exitNonZeroIfSet(inputs);
+    throw new Error("There was an error getting the slug from git: " + error);
   }
 }
 
@@ -86,6 +86,6 @@ function getServiceParams(inputs) {
 module.exports = {
   detect,
   getServiceParams,
-  parseSlug,
+  getSlug,
   getServiceName
 };

@@ -36,8 +36,7 @@ function fetchGitRoot(inputs) {
       process.cwd()
     );
   } catch (error) {
-    console.error("Error fetching git root. Please try using the -R flag.");
-    processHelper.exitNonZeroIfSet(inputs);
+    throw new Error("Error fetching git root. Please try using the -R flag.");
   }
 }
 
