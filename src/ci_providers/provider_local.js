@@ -47,7 +47,9 @@ function parseSlug(slug) {
 
   if (slug.match("http")) {
     // Type is http(s)
-    let cleanSlug = slug.split("//")[1].replace(".git", "");
+    const phaseOne = slug.split("//")[1].replace(".git", "");
+    const phaseTwo = phaseOne.split("/");
+    let cleanSlug = `${phaseTwo[1]}/${phaseTwo[2]}`;
     return cleanSlug;
   } else if (slug.match("@")) {
     // Type is git
