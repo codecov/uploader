@@ -17,8 +17,8 @@ describe("CI Providers", () => {
     const inputs = {
       args: {},
       envs: {
-        CIRCLE_PROJECT_USERNAME: "baz",
-        CIRCLE_PROJECT_REPONAME: "bar"
+        CIRCLE_PROJECT_USERNAME: "testOrg",
+        CIRCLE_PROJECT_REPONAME: "testRepo"
       }
     };
     describe(`${provider.getServiceName() || ""}`, () => {
@@ -37,7 +37,7 @@ describe("CI Providers", () => {
         });
         it("can get the slug from a git url", () => {
           SpawnSyncStub.returns({
-            stdout: "git@github.com:testDOrg/testRepo.git"
+            stdout: "git@github.com:testOrg/testRepo.git"
           });
           expect(provider.getSlug(inputs)).to.equal("testOrg/testRepo");
         });
