@@ -2,7 +2,6 @@ const { spawnSync } = require("child_process");
 const util = require("util");
 const fs = require("fs");
 const path = require("path");
-const processHelper = require("../helpers/process");
 
 const readFile = util.promisify(fs.readFile);
 
@@ -71,8 +70,7 @@ async function readCoverageFile(projectRoot, filePath) {
     const fileContents = await readFile(`${projectRoot}/${filePath}`);
     return fileContents;
   } catch (error) {
-    console.error("There was an error reading the coverage file: ", error);
-    process.exit(-1);
+    throw new Error("There was an error reading the coverage file: ", error);
   }
 }
 
