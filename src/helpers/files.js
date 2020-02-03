@@ -1,9 +1,6 @@
 const { spawnSync } = require("child_process");
-const util = require("util");
 const fs = require("fs");
 const path = require("path");
-
-const readFile = util.promisify(fs.readFile);
 
 async function getFileListing(projectRoot) {
   return getAllFiles(projectRoot, projectRoot).join("");
@@ -66,12 +63,12 @@ const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   return arrayOfFiles;
 };
 
-async function readCoverageFile(projectRoot, filePath) {
+function readCoverageFile(projectRoot, filePath) {
   try {
-    const fileContents = await readFile(`${projectRoot}/${filePath}`);
+    const fileContents = fs.readFileSync(`${projectRoot}/${filePath}`);
     return fileContents;
   } catch (error) {
-    throw new Error("There was an error reading the coverage file: ", error);
+    throw new Error("There was an error reading the coverage file: " + error);
   }
 }
 
