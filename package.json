@@ -67,5 +67,8 @@
       "ecmaVersion": 2018
     },
     "rules": {}
+  },
+  "mocha": {
+    "timeout": 3000
   }
 }
