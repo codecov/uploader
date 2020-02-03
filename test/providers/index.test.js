@@ -89,13 +89,13 @@ describe("CI Providers", () => {
             "testOrg/testRepo"
           );
         });
-        it("can get the slug from an https url", () => {
+        it("can get the slug from an http(s) url", () => {
           SpawnSyncStub.withArgs("git", [
             "config",
             "--get",
             "remote.origin.url"
           ]).returns({
-            stdout: "https://github.com/testOrg/testRepo.git"
+            stdout: "http://github.com/testOrg/testRepo.git"
           });
           expect(provider.private._getSlug(inputs)).to.equal(
             "testOrg/testRepo"
