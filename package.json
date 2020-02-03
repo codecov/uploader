@@ -48,6 +48,9 @@
     "reporter": [
       "text",
       "cobertura"
+    ],
+    "exclude": [
+      "src/ci_providers/provider_example.js"
     ]
   },
   "eslintConfig": {
