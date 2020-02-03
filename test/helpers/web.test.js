@@ -30,7 +30,7 @@ describe("Web Helpers", () => {
       .reply(200, "test");
   });
 
-  it("Can POST to the uploader endpoint", async () => {
+  it("Can POST to the uploader endpoint", async done => {
     const response = await webHelper.uploadToCodecov(
       uploadURL,
       token,
@@ -39,6 +39,7 @@ describe("Web Helpers", () => {
       version
     );
     expect(response).to.be.equal("test");
+    done();
   });
 
   it("Can generate query URL", () => {
