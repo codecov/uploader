@@ -50,7 +50,9 @@
       "cobertura"
     ],
     "exclude": [
-      "src/ci_providers/provider_example.js"
+      "src/ci_providers/provider_template.js",
+      "rollup.config.js",
+      "test/**/*"
     ]
   },
   "eslintConfig": {

@@ -1,2 +1,3 @@
 ignore:
-  - "src/ci_providers/provider_example.js"
+  - "src/ci_providers/provider_template.js"
+  - "test/**/*"
