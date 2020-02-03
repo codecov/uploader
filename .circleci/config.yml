@@ -78,18 +78,19 @@ jobs:
     macos: # indicate that we are using the macOS executor
       xcode: "10.0.0" # indicate our selected version of Xcode
     steps: # a series of commands to run
+      - checkout
       - attach_workspace:
           at: .
       - run: mv out/codecov-macos ./
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z -R ..
+            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
       - run:
           # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary (upload)
           command: |
-            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z -R ..
+            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
 
   test-windows:
     executor: win/default

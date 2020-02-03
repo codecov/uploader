@@ -1,10 +1,6 @@
 const { spawnSync } = require("child_process");
-const util = require("util");
 const fs = require("fs");
 const path = require("path");
-const processHelper = require("../helpers/process");
-
-const readFile = util.promisify(fs.readFile);
 
 async function getFileListing(projectRoot) {
   return getAllFiles(projectRoot, projectRoot).join("");
@@ -24,6 +20,7 @@ function isBlacklisted(file) {
   return blacklist.includes(file);
 }
 
+// eslint-disable-next-line no-unused-vars
 function fetchGitRoot(inputs) {
   try {
     return (
@@ -36,8 +33,7 @@ function fetchGitRoot(inputs) {
       process.cwd()
     );
   } catch (error) {
-    console.error("Error fetching git root. Please try using the -R flag.");
-    processHelper.exitNonZeroIfSet(inputs);
+    throw new Error("Error fetching git root. Please try using the -R flag.");
   }
 }
 
@@ -67,13 +63,12 @@ const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   return arrayOfFiles;
 };
 
-async function readCoverageFile(projectRoot, filePath) {
+function readCoverageFile(projectRoot, filePath) {
   try {
-    const fileContents = await readFile(`${projectRoot}/${filePath}`);
+    const fileContents = fs.readFileSync(`${projectRoot}/${filePath}`);
     return fileContents;
   } catch (error) {
-    console.error("There was an error reading the coverage file: ", error);
-    process.exit(-1);
+    throw new Error("There was an error reading the coverage file: " + error);
   }
 }
 
