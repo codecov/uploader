@@ -2,6 +2,7 @@ function detect(envs) {
   return envs.CI && envs.CIRCLECI;
 }
 
+// eslint-disable-next-line no-unused-vars
 function getBuildURL(inputs) {
   return "";
 }
