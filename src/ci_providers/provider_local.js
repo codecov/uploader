@@ -4,11 +4,17 @@ function detect(envs) {
   return !envs.CI;
 }
 
-function getServiceName() {
-  return "Local";
+function _getBuild(inputs) {
+  const { args } = inputs;
+  return args.build || "";
 }
 
-function getBranch(inputs) {
+// eslint-disable-next-line no-unused-vars
+function _getBuildURL(inputs) {
+  return "";
+}
+
+function _getBranch(inputs) {
   const { args } = inputs;
   try {
     const branchName = child_process
@@ -24,7 +30,27 @@ function getBranch(inputs) {
   }
 }
 
-function getSHA(inputs) {
+// eslint-disable-next-line no-unused-vars
+function _getJob(envs) {
+  return "";
+}
+
+// eslint-disable-next-line no-unused-vars
+function _getPR(inputs) {
+  return "";
+}
+
+// This is the value that gets passed to the Codecov uploader
+function _getService() {
+  return "";
+}
+
+// This is the name that gets printed
+function getServiceName() {
+  return "Local";
+}
+
+function _getSHA(inputs) {
   const { args } = inputs;
   try {
     const sha = child_process
@@ -40,7 +66,7 @@ function getSHA(inputs) {
   }
 }
 
-function parseSlug(slug) {
+function _parseSlug(slug) {
   // origin    https://github.com/torvalds/linux.git (fetch)
 
   // git@github.com: codecov / uploader.git
@@ -59,14 +85,14 @@ function parseSlug(slug) {
   throw new Error("Unable to parse slug URL: " + slug);
 }
 
-function getSlug(inputs) {
+function _getSlug(inputs) {
   const { args } = inputs;
   try {
     const slug = child_process
       .spawnSync("git", ["config", "--get", "remote.origin.url"])
       .stdout.toString()
       .trimRight();
-    return args.slug || parseSlug(slug);
+    return args.slug || _parseSlug(slug);
   } catch (error) {
     throw new Error("There was an error getting the slug from git: " + error);
   }
@@ -74,20 +100,29 @@ function getSlug(inputs) {
 
 function getServiceParams(inputs) {
   return {
-    branch: getBranch(inputs),
-    commit: getSHA(inputs),
-    build: "",
-    buildURL: "",
-    slug: inputs.args.slug || getSlug(inputs),
-    service: "",
-    pr: "",
-    job: ""
+    branch: _getBranch(inputs),
+    build: _getBuild(inputs),
+    buildURL: _getBuildURL(inputs),
+    commit: _getSHA(inputs),
+    job: _getJob(inputs),
+    pr: _getPR(inputs),
+    service: _getService(),
+    slug: _getSlug(inputs)
   };
 }
 
 module.exports = {
+  private: {
+    _getBuild,
+    _getBuildURL,
+    _getBranch,
+    _getJob,
+    _getPR,
+    _getService,
+    _getSHA,
+    _getSlug
+  },
   detect,
-  getServiceParams,
-  getSlug,
-  getServiceName
+  getServiceName,
+  getServiceParams
 };
