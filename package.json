@@ -24,12 +24,12 @@
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
     "superagent": "^5.2.1",
-    "validator": "^12.1.0",
-    "yargs": "^15.0.2"
+    "validator": "^12.2.0",
+    "yargs": "^15.1.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.1",
-    "@rollup/plugin-node-resolve": "^7.0.0",
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
     "eslint": "^6.8.0",
