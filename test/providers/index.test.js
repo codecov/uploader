@@ -11,14 +11,19 @@ describe("CI Providers", () => {
   const SpawnSyncStub = sinon
     .stub(child_process, "spawnSync")
     .withArgs("git", ["config", "--get", "remote.origin.url"])
-    .returns({ stdout: "git@github.com:testOrg/testRepo.git" });
+    .returns({ stdout: "git@github.com:testOrg/testRepo.git" })
+    .withArgs("git", ["rev-parse", "--abbrev-ref", "HEAD"])
+    .returns({ stdout: "testingBranch" })
+    .withArgs("git", ["rev-parse", "HEAD"])
+    .returns({ stdout: "testingSHA" });
 
   providers.forEach(provider => {
     const inputs = {
       args: {},
       envs: {
         CIRCLE_PROJECT_USERNAME: "testOrg",
-        CIRCLE_PROJECT_REPONAME: "testRepo"
+        CIRCLE_PROJECT_REPONAME: "testRepo",
+        CIRCLE_SHA1: "testingSHA"
       }
     };
     describe(`${provider.getServiceName() || ""}`, () => {
@@ -31,10 +36,16 @@ describe("CI Providers", () => {
       it("has a getServiceParams() method", () => {
         expect(provider.getServiceParams).is.an("function");
       });
-      describe("getSlug()", () => {
-        it("is a function", () => {
-          expect(provider.getSlug).is.an("function");
+      describe("getServiceParams", () => {
+        const serviceParams = provider.getServiceParams(inputs);
+        it("has it's commit property set", () => {
+          expect(serviceParams.commit).to.equal("testingSHA");
         });
+      });
+      it("has a getSlug() method", () => {
+        expect(provider.getSlug).is.an("function");
+      });
+      describe("getSlug()", () => {
         it("can get the slug from a git url", () => {
           SpawnSyncStub.returns({
             stdout: "git@github.com:testOrg/testRepo.git"
