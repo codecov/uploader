@@ -3,12 +3,12 @@ function detect(envs) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function getBuildURL(inputs) {
+function _getBuildURL(inputs) {
   return "";
 }
 
 // This is the value that gets passed to the Codecov uploader
-function getService() {
+function _getService() {
   return "circleci";
 }
 
@@ -17,12 +17,12 @@ function getServiceName() {
   return "CircleCI";
 }
 
-function getBranch(inputs) {
+function _getBranch(inputs) {
   const { args, envs } = inputs;
   return args.branch || envs.CIRCLE_BRANCH;
 }
 
-function getSHA(inputs) {
+function _getSHA(inputs) {
   const { args, envs } = inputs;
   try {
     const sha = envs.CIRCLE_SHA1;
@@ -32,7 +32,7 @@ function getSHA(inputs) {
   }
 }
 
-function getSlug(inputs) {
+function _getSlug(inputs) {
   const { args, envs } = inputs;
   let slug;
   if (envs.CIRCLE_PROJECT_REPONAME !== "") {
@@ -43,43 +43,45 @@ function getSlug(inputs) {
   return args.slug || slug;
 }
 
-function getBuild(inputs) {
+function _getBuild(inputs) {
   const { args, envs } = inputs;
   return args.build || envs.CIRCLE_BUILD_NUM || "";
 }
 
-function getPR(inputs) {
+function _getPR(inputs) {
   const { args, envs } = inputs;
   return args.pr || envs.CIRCLE_PR_NUMBER || "";
 }
 
-function getJob(envs) {
+function _getJob(envs) {
   return envs.CIRCLE_NODE_INDEX || "";
 }
 
 function getServiceParams(inputs) {
   return {
-    branch: getBranch(inputs),
-    build: getBuild(inputs),
-    buildURL: getBuildURL(inputs),
-    commit: getSHA(inputs),
-    job: getJob(inputs.envs),
-    pr: getPR(inputs),
-    service: getService(inputs),
-    slug: getSlug(inputs)
+    branch: _getBranch(inputs),
+    build: _getBuild(inputs),
+    buildURL: _getBuildURL(inputs),
+    commit: _getSHA(inputs),
+    job: _getJob(inputs.envs),
+    pr: _getPR(inputs),
+    service: _getService(inputs),
+    slug: _getSlug(inputs)
   };
 }
 
 module.exports = {
+  private: {
+    _getBuild,
+    _getBuildURL,
+    _getBranch,
+    _getJob,
+    _getPR,
+    _getService,
+    _getSHA,
+    _getSlug
+  },
   detect,
-  getBuild,
-  getBuildURL,
-  getBranch,
-  getJob,
-  getPR,
-  getService,
   getServiceName,
-  getServiceParams,
-  getSHA,
-  getSlug
+  getServiceParams
 };
