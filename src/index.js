@@ -133,6 +133,7 @@ async function main(args) {
       console.log(result);
     }
   } catch (error) {
+    // Output any exceptions and exit
     console.error(error.message);
     process.exit(args.nonZero ? -1 : 0);
   }
