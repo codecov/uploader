@@ -2,12 +2,18 @@ function detect(envs) {
   return envs.CI && envs.CIRCLECI;
 }
 
-function getServiceName() {
-  return "CircleCI";
+function getBuildURL(inputs) {
+  return "";
 }
 
+// This is the value that gets passed to the Codecov uploader
 function getService() {
   return "circleci";
+}
+
+// This is the name that gets printed
+function getServiceName() {
+  return "CircleCI";
 }
 
 function getBranch(inputs) {
@@ -46,7 +52,6 @@ function getPR(inputs) {
   return args.pr || envs.CIRCLE_PR_NUMBER || "";
 }
 
-// eslint-disable-next-line no-unused-vars
 function getJob(envs) {
   return envs.CIRCLE_NODE_INDEX || "";
 }
@@ -54,20 +59,26 @@ function getJob(envs) {
 function getServiceParams(inputs) {
   return {
     branch: getBranch(inputs),
-    commit: getSHA(inputs),
     build: getBuild(inputs),
-    buildURL: "",
-    slug: inputs.args.slug || getSlug(inputs),
-    service: getService(inputs),
+    buildURL: getBuildURL(inputs),
+    commit: getSHA(inputs),
+    job: getJob(inputs.envs),
     pr: getPR(inputs),
-    job: getJob(inputs.envs)
+    service: getService(inputs),
+    slug: getSlug(inputs)
   };
 }
 
 module.exports = {
   detect,
-  getServiceParams,
+  getBuild,
+  getBuildURL,
+  getBranch,
+  getJob,
+  getPR,
   getService,
   getServiceName,
+  getServiceParams,
+  getSHA,
   getSlug
 };

@@ -4,6 +4,32 @@ function detect(envs) {
   return !envs.CI;
 }
 
+function getBuild(inputs) {
+  const { args } = inputs;
+  return args.build || "";
+}
+
+// eslint-disable-next-line no-unused-vars
+function getBuildURL(inputs) {
+  return "";
+}
+
+// eslint-disable-next-line no-unused-vars
+function getJob(envs) {
+  return "";
+}
+
+// eslint-disable-next-line no-unused-vars
+function getPR(inputs) {
+  return "";
+}
+
+// This is the value that gets passed to the Codecov uploader
+function getService() {
+  return "";
+}
+
+// This is the name that gets printed
 function getServiceName() {
   return "Local";
 }
@@ -75,19 +101,26 @@ function getSlug(inputs) {
 function getServiceParams(inputs) {
   return {
     branch: getBranch(inputs),
+    build: getBuild(inputs),
+    buildURL: getBuildURL(inputs),
     commit: getSHA(inputs),
-    build: "",
-    buildURL: "",
-    slug: inputs.args.slug || getSlug(inputs),
-    service: "",
-    pr: "",
-    job: ""
+    job: getJob(inputs),
+    pr: getPR(inputs),
+    service: getService(),
+    slug: getSlug(inputs)
   };
 }
 
 module.exports = {
   detect,
+  getBuild,
+  getBuildURL,
+  getBranch,
+  getJob,
+  getPR,
+  getService,
+  getServiceName,
   getServiceParams,
-  getSlug,
-  getServiceName
+  getSHA,
+  getSlug
 };
