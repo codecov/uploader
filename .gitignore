@@ -67,3 +67,4 @@ dist/*
 codecov
 codecov-macos
 codecov.exe
+.DS_Store
