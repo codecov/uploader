@@ -105,12 +105,12 @@ jobs:
       - run:
           name: Run Windows binary (dry-run)
           command: |
-            ./out/codecov.exe -f coverage/cobertura-coverage.xml -F windows -d -Z
+            .\out\codecov.exe -f coverage/cobertura-coverage.xml -F windows -d -Z
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
           command: |
-            ./out/codecov.exe -f coverage/cobertura-coverage.xml -F windows -Z
+            .\out\codecov.exe -f coverage/cobertura-coverage.xml -F windows -Z
           shell: cmd.exe
 
 workflows:
