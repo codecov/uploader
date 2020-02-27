@@ -64,7 +64,6 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run: mv out/codecov ./
       - run:
           name: Run Linux binary (dry run)
           command: |
@@ -81,7 +80,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: mv out/codecov-macos ./
       - run:
           name: Run MacOS binary (dry-run)
           command: |
@@ -104,7 +102,6 @@ jobs:
           command: |
             npm ci
             npm run build-windows
-      - run: mv out/codecov.exe ./
       - run:
           name: Run Windows binary (dry-run)
           command: |
