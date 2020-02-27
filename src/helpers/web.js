@@ -60,7 +60,7 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
 
     return result.res.text;
   } catch (error) {
-    throw new Error("Error parsing host and post: ", error);
+    throw new Error(`Error uploading to Codecov: ${error}`);
   }
 }
 
