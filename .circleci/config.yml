@@ -103,7 +103,6 @@ jobs:
           name: Build Windows Binary
           command: |
             npm ci
-            npm run prebuild
             npm run build-windows
       - run: mv out/codecov.exe ./
       - run:
