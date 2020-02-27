@@ -39,7 +39,7 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
     if (result.status === 200) {
       return { status: "success", resultURL: codecovResultURL };
     }
-    throw new Error("Error uploading");
+    throw new Error("Error uploading", result.status, result.body);
   } catch (error) {
     throw new Error("Error uploading: ", error);
   }

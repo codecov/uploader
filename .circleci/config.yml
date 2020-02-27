@@ -61,18 +61,18 @@ jobs:
       # specify the version you desire here
       - image: circleci/node:10.16.3
     steps:
+      - checkout
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run: mv out/codecov ./
       - run:
           name: Run Linux binary (dry run)
           command: |
-            ./codecov -f coverage/cobertura-coverage.xml -F linux -d -Z
+            out/codecov-linux -f coverage/cobertura-coverage.xml -F linux -d -Z
       - run:
           name: Run Linux binary (upload)
           command: |
-            ./codecov -f coverage/cobertura-coverage.xml -F linux -Z
+            out/codecov-linux -f coverage/cobertura-coverage.xml -F linux -Z
 
   test-macos:
     macos: # indicate that we are using the macOS executor
@@ -81,16 +81,15 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      - run: mv out/codecov-macos ./
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
+            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
       - run:
           # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary (upload)
           command: |
-            ./codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
+            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
 
   test-windows:
     executor: win/default
@@ -103,19 +102,19 @@ jobs:
           name: Build Windows Binary
           command: |
             npm ci
-            npm run prebuild
             npm run build-windows
-      - run: mv out/codecov.exe ./
       - run:
           name: Run Windows binary (dry-run)
           command: |
-            codecov.exe -f coverage/cobertura-coverage.xml -F windows -d -Z
+            .\out\codecov.exe -f coverage/cobertura-coverage.xml -F windows -d -Z
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
           command: |
-            codecov.exe -f coverage/cobertura-coverage.xml -F windows -Z
+            .\out\codecov.exe -f coverage/cobertura-coverage.xml -F windows -Z
           shell: cmd.exe
+
+# TODO: add test runs for each binary outside of a git project
 
 workflows:
   version: 2
