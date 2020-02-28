@@ -81,4 +81,12 @@ describe("Web Helpers", () => {
       "branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6"
     );
   });
+
+  it("can populateBuildParams() from args", () => {
+    const result = webHelper.populateBuildParams(
+      { args: { flags: "testFlag", tag: "testTag" }, envs: {} },
+      { name: "", tag: ", flags: []" }
+    );
+    expect(result.flags).to.equal("testFlag");
+  });
 });
