@@ -8,4 +8,6 @@
 - `make install`
 - `make build`
 
+Note: `make build` does not currently build the Windows binary until I confirm that a Windows binary build under Linux works. To build the Windows binary, run `npm run build-windows`
+
 Binaries for Windows, MacOS, and Linux will be in the `out/` directory.
