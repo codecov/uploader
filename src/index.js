@@ -43,32 +43,47 @@ async function main(args) {
     console.log(generateHeader(getVersion()));
 
     // == Step 2: detect if we are in a git repo
-    const gitRoot = args.rootDir || fileHelpers.fetchGitRoot(inputs);
-    if (gitRoot === "") {
+    const projectRoot = args.rootDir || fileHelpers.fetchGitRoot(inputs);
+    if (projectRoot === "") {
       console.log(
         "=> No git repo detected. Please use the -R flag if the below detected directory is not correct."
       );
     }
 
-    console.log("=> Project root located at: ", gitRoot);
+    console.log("=> Project root located at: ", projectRoot);
 
     // == Step 3: get network
-    const fileListing = await fileHelpers.getFileListing(gitRoot);
+    const fileListing = await fileHelpers.getFileListing(projectRoot);
 
     // == Step 4: select coverage files (search or specify)
 
     // Look for files
+    let coverageFilePaths = [];
     if (!args.file) {
-      console.error("Not yet able to scan for files, please use `-f");
-      process.exit(args.nonZero ? -1 : 0);
-    }
-
-    const uploadFilePath = validateHelpers.validateFileNamePath(args.file)
-      ? args.file
-      : "";
-    if (uploadFilePath === "") {
-      console.error("Not coverage file found, exiting.");
-      process.exit(args.nonZero ? -1 : 0);
+      coverageFilePaths = fileHelpers.getCoverageFiles(
+        projectRoot,
+        // TODO: Determine why this is so slow (I suspect it's walking paths it should not)
+        fileHelpers.coverageFilePatterns()
+      );
+      if (coverageFilePaths.length > 0) {
+        console.log(
+          `=> Found ${coverageFilePaths.length} possible coverage files:`
+        );
+        console.log(coverageFilePaths.join("\n"));
+      } else {
+        console.error(
+          "No coverage files located, please try use `-f`, or change the project root with `-R`"
+        );
+        process.exit(args.nonZero ? -1 : 0);
+      }
+    } else {
+      coverageFilePaths[0] = validateHelpers.validateFileNamePath(args.file)
+        ? args.file
+        : "";
+      if (coverageFilePaths.length === 0) {
+        console.error("Not coverage file found, exiting.");
+        process.exit(args.nonZero ? -1 : 0);
+      }
     }
 
     // == Step 5: generate upload file
@@ -78,13 +93,16 @@ async function main(args) {
     uploadFile = uploadFile.concat(fileHelpers.endNetworkMarker());
 
     // Get coverage report contents
-    uploadFile = uploadFile.concat(fileHelpers.fileHeader(args.file));
-    const fileContents = await fileHelpers.readCoverageFile(
-      ".",
-      uploadFilePath
-    );
+    for (let index = 0; index < coverageFilePaths.length; index++) {
+      const coverageFile = coverageFilePaths[index];
+      const fileContents = await fileHelpers.readCoverageFile(
+        ".",
+        coverageFile
+      );
+      uploadFile = uploadFile.concat(fileHelpers.fileHeader(coverageFile));
+      uploadFile = uploadFile.concat(fileContents);
+    }
 
-    uploadFile = uploadFile.concat(fileContents);
     const gzippedFile = zlib.gzipSync(uploadFile);
 
     // == Step 6: determine CI provider

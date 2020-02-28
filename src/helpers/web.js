@@ -96,5 +96,6 @@ module.exports = {
   populateBuildParams,
   uploadToCodecov,
   uploadToCodecovPUT,
-  generateQuery
+  generateQuery,
+  parseURLToHostAndPost
 };

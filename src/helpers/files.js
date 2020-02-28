@@ -1,14 +1,15 @@
 const { spawnSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
+const glob = require("glob");
 
 async function getFileListing(projectRoot) {
   return getAllFiles(projectRoot, projectRoot).join("");
 }
 
-function isBlacklisted(file) {
+function manualBlacklist() {
   // TODO: honor the .gitignore file instead of a hard-coded list
-  const blacklist = [
+  return [
     "node_modules",
     ".git",
     ".nyc_output",
@@ -16,7 +17,62 @@ function isBlacklisted(file) {
     ".nvmrc",
     ".gitignore"
   ];
+}
 
+function globBlacklist() {
+  // TODO: honor the .gitignore file instead of a hard-coded list
+  return [
+    "node_modules/**/*",
+    ".git",
+    ".nyc_output",
+    ".circleci",
+    ".nvmrc",
+    ".gitignore"
+  ];
+}
+
+function coverageFilePatterns() {
+  return [
+    "*coverage*.*",
+    "nosetests.xml",
+    "jacoco*.xml",
+    "clover.xml",
+    "report.xml",
+    "*.codecov.*",
+    "codecov.*",
+    "cobertura.xml",
+    "excoveralls.json",
+    "luacov.report.out",
+    "coverage-final.json",
+    "naxsi.info",
+    "lcov.info",
+    "lcov.dat",
+    "*.lcov",
+    "*.clover",
+    "cover.out",
+    "gcov.info",
+    "*.gcov",
+    "*.lst"
+  ];
+}
+
+function getCoverageFiles(projectRoot, coverageFilePatterns) {
+  let files = [];
+  for (let index = 0; index < coverageFilePatterns.length; index++) {
+    const pattern = coverageFilePatterns[index];
+    const newFiles = glob.sync(`**/${pattern}`, {
+      cwd: projectRoot,
+      ignore: globBlacklist()
+    });
+
+    files = files.concat(newFiles);
+  }
+  return files;
+}
+
+function isBlacklisted(projectRoot, file, manualBlacklist) {
+  // const blacklist = manualBlacklist.concat(parseGitIgnore(projectRoot));
+  const blacklist = manualBlacklist;
   return blacklist.includes(file);
 }
 
@@ -37,14 +93,32 @@ function fetchGitRoot(inputs) {
   }
 }
 
-const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
+function parseGitIgnore(projectRoot) {
+  const gitIgnorePath = path.join(projectRoot, ".gitignore");
+  let lines;
+  try {
+    lines = readAllLines(gitIgnorePath) || [];
+  } catch (error) {
+    throw new Error(`Unable to open ${gitIgnorePath}: ${error}`);
+  }
+
+  const filteredLines = lines.filter(line => {
+    if (line === "" || line.startsWith("#")) {
+      return false;
+    }
+    return true;
+  });
+  return filteredLines;
+}
+
+function getAllFiles(projectRoot, dirPath, arrayOfFiles) {
   const files = fs.readdirSync(dirPath);
   arrayOfFiles = arrayOfFiles || [];
 
   files.forEach(function(file) {
     if (
       fs.statSync(dirPath + "/" + file).isDirectory() &&
-      !isBlacklisted(file)
+      !isBlacklisted(projectRoot, file, manualBlacklist())
     ) {
       arrayOfFiles = getAllFiles(
         projectRoot,
@@ -52,7 +126,7 @@ const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
         arrayOfFiles
       );
     } else {
-      if (!isBlacklisted(file)) {
+      if (!isBlacklisted(projectRoot, file, manualBlacklist())) {
         arrayOfFiles.push(
           `${path.join(dirPath.replace(projectRoot, "."), "/", file)}\n`
         );
@@ -61,7 +135,14 @@ const getAllFiles = function(projectRoot, dirPath, arrayOfFiles) {
   });
 
   return arrayOfFiles;
-};
+}
+
+function readAllLines(filePath) {
+  const fileContents = fs.readFileSync(filePath);
+
+  const lines = fileContents.toString().split("\n") || [];
+  return lines;
+}
 
 function readCoverageFile(projectRoot, filePath) {
   try {
@@ -85,5 +166,8 @@ module.exports = {
   getFileListing,
   endNetworkMarker,
   fileHeader,
-  fetchGitRoot
+  fetchGitRoot,
+  parseGitIgnore,
+  getCoverageFiles,
+  coverageFilePatterns
 };
