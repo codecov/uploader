@@ -68,11 +68,11 @@ jobs:
       - run:
           name: Run Linux binary (dry run)
           command: |
-            out/codecov-linux -f coverage/cobertura-coverage.xml -F linux -d -Z
+            out/codecov-linux -F linux -d -Z
       - run:
           name: Run Linux binary (upload)
           command: |
-            out/codecov-linux -f coverage/cobertura-coverage.xml -F linux -Z
+            out/codecov-linux -F linux -Z
 
   test-macos:
     macos: # indicate that we are using the macOS executor
@@ -84,12 +84,12 @@ jobs:
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z
+            out/codecov-macos -F macos -d -Z
       - run:
           # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -Z
+            out/codecov-macos -F macos -Z
 
   test-windows:
     executor: win/default
@@ -106,12 +106,12 @@ jobs:
       - run:
           name: Run Windows binary (dry-run)
           command: |
-            .\out\codecov.exe -f coverage/cobertura-coverage.xml -F windows -d -Z
+            .\out\codecov.exe -F windows -d -Z
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
           command: |
-            .\out\codecov.exe -f coverage/cobertura-coverage.xml -F windows -Z
+            .\out\codecov.exe -F windows -Z
           shell: cmd.exe
 
 # TODO: add test runs for each binary outside of a git project
