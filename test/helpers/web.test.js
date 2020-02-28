@@ -14,7 +14,6 @@ describe("Web Helpers", () => {
   let query;
   beforeEach(() => {
     inputs = { args: {}, envs: {} };
-    uploadURL = "https://codecov.io";
     token = "123-abc-890-xyz";
     uploadFile = "some content";
     query = "hello";
@@ -28,9 +27,33 @@ describe("Web Helpers", () => {
       .post("/upload/v4")
       .query(true)
       .reply(200, "test");
+
+    nock("http://codecov.io")
+      .post("/upload/v4")
+      .query(true)
+      .reply(200, "test");
   });
 
-  it("Can POST to the uploader endpoint", async () => {
+  it("Throws an exception when parseURLToHostAndPost() is passed a non web  URI", () => {
+    expect(() => {
+      webHelper.parseURLToHostAndPost("git://foo@bar.git");
+    }).to.Throw();
+  });
+
+  it("Can POST to the uploader endpoint (HTTP)", async () => {
+    uploadURL = "http://codecov.io";
+    const response = await webHelper.uploadToCodecov(
+      uploadURL,
+      token,
+      query,
+      uploadFile,
+      version
+    );
+    expect(response).to.be.equal("test");
+  });
+
+  it("Can POST to the uploader endpoint (HTTPS)", async () => {
+    uploadURL = "https://codecov.io";
     const response = await webHelper.uploadToCodecov(
       uploadURL,
       token,

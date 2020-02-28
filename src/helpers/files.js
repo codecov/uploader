@@ -60,7 +60,7 @@ function getCoverageFiles(projectRoot, coverageFilePatterns) {
   let files = [];
   for (let index = 0; index < coverageFilePatterns.length; index++) {
     const pattern = coverageFilePatterns[index];
-    const newFiles = glob.sync(`*/**/${pattern}`, {
+    const newFiles = glob.sync(`**/${pattern}`, {
       cwd: projectRoot,
       ignore: globBlacklist()
     });
