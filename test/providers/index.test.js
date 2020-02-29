@@ -1,3 +1,4 @@
+const td = require('testdouble')
 const child_process = require("child_process");
 const chai = require("chai");
 const expect = chai.expect;
@@ -5,6 +6,12 @@ const expect = chai.expect;
 const providers = require("../../src/ci_providers");
 
 describe("CI Providers", () => {
+
+  afterEach(function() {
+    td.reset()
+  })
+
+
   it("is an array of CI providers", () => expect(providers).to.be.an("array"));
   // const SpawnSyncStub = sinon.stub(child_process, "spawnSync");
   providers.forEach(provider => {
@@ -84,6 +91,13 @@ describe("CI Providers", () => {
           // SpawnSyncStub.returns({
           //   stdout: "git@github.com:testOrg/testRepo.git"
           // });
+          const spawnSync = td.replace(child_process, 'spawnSync')
+          td.when(spawnSync("git", [
+            "config",
+            "--get",
+            "remote.origin.url"])).thenReturn({
+                stdout: "git@github.com:testOrg/testRepo.git"
+              })
           expect(provider.private._getSlug(inputs)).to.equal(
             "testOrg/testRepo"
           );
@@ -96,6 +110,13 @@ describe("CI Providers", () => {
           // ]).returns({
           //   stdout: "http://github.com/testOrg/testRepo.git"
           // });
+          const spawnSync = td.replace(child_process, 'spawnSync')
+          td.when(spawnSync("git", [
+              "config",
+              "--get",
+              "remote.origin.url"])).thenReturn({
+                  stdout: "http://github.com/testOrg/testRepo.git"
+                })
           expect(provider.private._getSlug(inputs)).to.equal(
             "testOrg/testRepo"
           );

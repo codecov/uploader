@@ -40,7 +40,8 @@
     "nock": "11.7.2",
     "nyc": "15.0.0",
     "pkg": "4.4.3",
-    "prettier": "1.19.1"
+    "prettier": "1.19.1",
+    "testdouble": "^3.13.0"
   },
   "nyc": {
     "all": true,
