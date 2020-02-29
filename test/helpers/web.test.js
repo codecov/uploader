@@ -5,14 +5,14 @@ const should = chai.should();
 
 const webHelper = require("../../src/helpers/web");
 
-describe("Web Helpers", () => {
+describe("Web Helpers", function() {
   let inputs;
   let uploadURL;
   let token;
   let uploadFile;
   let version;
   let query;
-  beforeEach(() => {
+  beforeEach(function() {
     inputs = { args: {}, envs: {} };
     token = "123-abc-890-xyz";
     uploadFile = "some content";
@@ -34,13 +34,13 @@ describe("Web Helpers", () => {
       .reply(200, "test");
   });
 
-  it("Throws an exception when parseURLToHostAndPost() is passed a non web  URI", () => {
-    expect(() => {
+  it("Throws an exception when parseURLToHostAndPost() is passed a non web  URI", function() {
+    expect(function() {
       webHelper.parseURLToHostAndPost("git://foo@bar.git");
     }).to.Throw();
   });
 
-  it("Can POST to the uploader endpoint (HTTP)", async () => {
+  it("Can POST to the uploader endpoint (HTTP)", async function() {
     uploadURL = "http://codecov.io";
     const response = await webHelper.uploadToCodecov(
       uploadURL,
@@ -52,7 +52,7 @@ describe("Web Helpers", () => {
     expect(response).to.be.equal("test");
   });
 
-  it("Can POST to the uploader endpoint (HTTPS)", async () => {
+  it("Can POST to the uploader endpoint (HTTPS)", async function() {
     uploadURL = "https://codecov.io";
     const response = await webHelper.uploadToCodecov(
       uploadURL,
@@ -64,7 +64,7 @@ describe("Web Helpers", () => {
     expect(response).to.be.equal("test");
   });
 
-  it("Can generate query URL", () => {
+  it("Can generate query URL", function() {
     const queryParams = {};
     queryParams.branch = "testBranch";
     queryParams.commit = "commitSHA";
@@ -82,7 +82,7 @@ describe("Web Helpers", () => {
     );
   });
 
-  it("can populateBuildParams() from args", () => {
+  it("can populateBuildParams() from args", function() {
     const result = webHelper.populateBuildParams(
       { args: { flags: "testFlag", tag: "testTag" }, envs: {} },
       { name: "", tag: ", flags: []" }

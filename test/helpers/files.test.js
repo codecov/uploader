@@ -65,8 +65,8 @@ describe("File Helpers", function()  {
         fileHelpers.getCoverageFiles(".", ["index.test.js"])
       ).to.deep.equal(["test/index.test.js", "test/providers/index.test.js"]);
     });
-    describe("coverage file patterns", () => {
-      it("conatins `jacoco*.xml`", () => {
+    describe("coverage file patterns", function() {
+      it("conatins `jacoco*.xml`", function() {
         expect(fileHelpers.coverageFilePatterns()).to.contain("jacoco*.xml");
       });
     });

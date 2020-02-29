@@ -3,12 +3,12 @@ const chai = require("chai");
 const expect = chai.expect;
 const { version } = require("../package.json");
 
-describe("Uploader Core", () => {
-  it("Can return version", () => {
+describe("Uploader Core", function() {
+  it("Can return version", function() {
     expect(app.getVersion()).to.equal(version);
   });
 
-  it("Can display header", () => {
+  it("Can display header", function() {
     expect(app.generateHeader(app.getVersion())).to.equal(`
      _____          _
     / ____|        | |
