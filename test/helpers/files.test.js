@@ -29,10 +29,6 @@ describe("File Helpers", () => {
       );
     });
     it("can read a coverage report file", async () => {
-      // sinon
-      //   .stub(fs, "readFileSync")
-      //   .withArgs("./test-coverage-file.xml")
-      //   .returns("I am test coverage data");
       const readFileSync = td.replace(fs, 'readFileSync')
       td.when(readFileSync("./test-coverage-file.xml")).thenReturn("I am test coverage data")
       const reportContents = fileHelpers.readCoverageFile(

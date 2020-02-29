@@ -13,14 +13,8 @@ describe("CI Providers", () => {
 
 
   it("is an array of CI providers", () => expect(providers).to.be.an("array"));
-  // const SpawnSyncStub = sinon.stub(child_process, "spawnSync");
   providers.forEach(provider => {
-    // SpawnSyncStub.withArgs("git", ["config", "--get", "remote.origin.url"])
-    //   .returns({ stdout: "git@github.com:testOrg/testRepo.git" })
-    //   .withArgs("git", ["rev-parse", "--abbrev-ref", "HEAD"])
-    //   .returns({ stdout: "testingBranch" })
-    //   .withArgs("git", ["rev-parse", "HEAD"])
-    //   .returns({ stdout: "testingSHA" });
+
     const inputs = {
       args: {},
       envs: {
@@ -88,9 +82,7 @@ describe("CI Providers", () => {
       });
       describe("getSlug()", () => {
         it("can get the slug from a git url", () => {
-          // SpawnSyncStub.returns({
-          //   stdout: "git@github.com:testOrg/testRepo.git"
-          // });
+
           const spawnSync = td.replace(child_process, 'spawnSync')
           td.when(spawnSync("git", [
             "config",
@@ -103,13 +95,7 @@ describe("CI Providers", () => {
           );
         });
         it("can get the slug from an http(s) url", () => {
-          // SpawnSyncStub.withArgs("git", [
-          //   "config",
-          //   "--get",
-          //   "remote.origin.url"
-          // ]).returns({
-          //   stdout: "http://github.com/testOrg/testRepo.git"
-          // });
+
           const spawnSync = td.replace(child_process, 'spawnSync')
           td.when(spawnSync("git", [
               "config",
