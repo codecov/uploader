@@ -1,3 +1,4 @@
+const td = require("testdouble")
 const fs = require("fs");
 const path = require("path");
 const chai = require("chai");
@@ -5,6 +6,12 @@ const expect = chai.expect;
 const fileHelpers = require("../../src/helpers/files");
 
 describe("File Helpers", () => {
+
+  afterEach(function() {
+    td.reset()
+  })
+
+
   it("can generate network end marker", () => {
     expect(fileHelpers.endNetworkMarker()).to.equal("<<<<<< network\n");
   });
@@ -26,6 +33,8 @@ describe("File Helpers", () => {
       //   .stub(fs, "readFileSync")
       //   .withArgs("./test-coverage-file.xml")
       //   .returns("I am test coverage data");
+      const readFileSync = td.replace(fs, 'readFileSync')
+      td.when(readFileSync("./test-coverage-file.xml")).thenReturn("I am test coverage data")
       const reportContents = fileHelpers.readCoverageFile(
         ".",
         "test-coverage-file.xml"
