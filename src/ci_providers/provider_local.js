@@ -24,8 +24,7 @@ function _getBranch(inputs) {
     return args.branch || branchName;
   } catch (error) {
     throw new Error(
-      "There was an error getting the branch name from git: ",
-      error
+      `There was an error getting the branch name from git: ${error}`
     );
   }
 }
@@ -60,8 +59,7 @@ function _getSHA(inputs) {
     return args.sha || sha;
   } catch (error) {
     throw new Error(
-      "There was an error getting the commit SHA from git: ",
-      error
+      `There was an error getting the commit SHA from git: ${error}`
     );
   }
 }
@@ -82,7 +80,7 @@ function _parseSlug(slug) {
     let cleanSlug = slug.split(":")[1].replace(".git", "");
     return cleanSlug;
   }
-  throw new Error("Unable to parse slug URL: " + slug);
+  throw new Error(`Unable to parse slug URL: ${slug}`);
 }
 
 function _getSlug(inputs) {
@@ -94,7 +92,7 @@ function _getSlug(inputs) {
       .trimRight();
     return args.slug || _parseSlug(slug);
   } catch (error) {
-    throw new Error("There was an error getting the slug from git: " + error);
+    throw new Error(`There was an error getting the slug from git: ${error}`);
   }
 }
 

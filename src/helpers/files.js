@@ -149,7 +149,7 @@ function readCoverageFile(projectRoot, filePath) {
     const fileContents = fs.readFileSync(`${projectRoot}/${filePath}`);
     return fileContents;
   } catch (error) {
-    throw new Error("There was an error reading the coverage file: " + error);
+    throw new Error(`There was an error reading the coverage file: ${error}`);
   }
 }
 

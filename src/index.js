@@ -50,7 +50,7 @@ async function main(args) {
       );
     }
 
-    console.log("=> Project root located at: ", projectRoot);
+    console.log(`=> Project root located at: ${projectRoot}`);
 
     // == Step 3: get network
     const fileListing = await fileHelpers.getFileListing(projectRoot);

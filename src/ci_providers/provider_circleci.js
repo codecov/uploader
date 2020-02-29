@@ -28,7 +28,7 @@ function _getSHA(inputs) {
     const sha = envs.CIRCLE_SHA1;
     return args.sha || sha;
   } catch (error) {
-    throw new Error("There was an error getting the commit SHA: ", error);
+    throw new Error(`There was an error getting the commit SHA: ${error}`);
   }
 }
 
