@@ -1,20 +1,19 @@
 const child_process = require("child_process");
 const chai = require("chai");
 const expect = chai.expect;
-const sinon = require("sinon");
 
 const providers = require("../../src/ci_providers");
 
 describe("CI Providers", () => {
   it("is an array of CI providers", () => expect(providers).to.be.an("array"));
-  const SpawnSyncStub = sinon.stub(child_process, "spawnSync");
+  // const SpawnSyncStub = sinon.stub(child_process, "spawnSync");
   providers.forEach(provider => {
-    SpawnSyncStub.withArgs("git", ["config", "--get", "remote.origin.url"])
-      .returns({ stdout: "git@github.com:testOrg/testRepo.git" })
-      .withArgs("git", ["rev-parse", "--abbrev-ref", "HEAD"])
-      .returns({ stdout: "testingBranch" })
-      .withArgs("git", ["rev-parse", "HEAD"])
-      .returns({ stdout: "testingSHA" });
+    // SpawnSyncStub.withArgs("git", ["config", "--get", "remote.origin.url"])
+    //   .returns({ stdout: "git@github.com:testOrg/testRepo.git" })
+    //   .withArgs("git", ["rev-parse", "--abbrev-ref", "HEAD"])
+    //   .returns({ stdout: "testingBranch" })
+    //   .withArgs("git", ["rev-parse", "HEAD"])
+    //   .returns({ stdout: "testingSHA" });
     const inputs = {
       args: {},
       envs: {
@@ -82,21 +81,21 @@ describe("CI Providers", () => {
       });
       describe("getSlug()", () => {
         it("can get the slug from a git url", () => {
-          SpawnSyncStub.returns({
-            stdout: "git@github.com:testOrg/testRepo.git"
-          });
+          // SpawnSyncStub.returns({
+          //   stdout: "git@github.com:testOrg/testRepo.git"
+          // });
           expect(provider.private._getSlug(inputs)).to.equal(
             "testOrg/testRepo"
           );
         });
         it("can get the slug from an http(s) url", () => {
-          SpawnSyncStub.withArgs("git", [
-            "config",
-            "--get",
-            "remote.origin.url"
-          ]).returns({
-            stdout: "http://github.com/testOrg/testRepo.git"
-          });
+          // SpawnSyncStub.withArgs("git", [
+          //   "config",
+          //   "--get",
+          //   "remote.origin.url"
+          // ]).returns({
+          //   stdout: "http://github.com/testOrg/testRepo.git"
+          // });
           expect(provider.private._getSlug(inputs)).to.equal(
             "testOrg/testRepo"
           );
