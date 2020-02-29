@@ -77,7 +77,7 @@ function isBlacklisted(projectRoot, file, manualBlacklist) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function fetchGitRoot() {
+function fetchGitRoot(inputs) {
   try {
     return (
       spawnSync("git", ["rev-parse", "--show-toplevel"])
@@ -169,5 +169,5 @@ module.exports = {
   fetchGitRoot,
   parseGitIgnore,
   getCoverageFiles,
-  coverageFilePatterns,
+  coverageFilePatterns
 };
