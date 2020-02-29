@@ -1,4 +1,4 @@
-const { spawnSync } = require("child_process");
+const child_process = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const glob = require("glob");
@@ -76,14 +76,13 @@ function isBlacklisted(projectRoot, file, manualBlacklist) {
   return blacklist.includes(file);
 }
 
-// eslint-disable-next-line no-unused-vars
-function fetchGitRoot(inputs) {
+function fetchGitRoot() {
   try {
     return (
-      spawnSync("git", ["rev-parse", "--show-toplevel"])
+      child_process.spawnSync("git", ["rev-parse", "--show-toplevel"])
         .stdout.toString()
         .trimRight() ||
-      spawnSync("hg", ["root"])
+        child_process.spawnSync("hg", ["root"])
         .stdout.toString()
         .trimRight() ||
       process.cwd()

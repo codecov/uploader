@@ -2,6 +2,8 @@ const td = require("testdouble")
 const fs = require("fs");
 const path = require("path");
 const chai = require("chai");
+const child_process = require("child_process")
+const process = require("process")
 const expect = chai.expect;
 const fileHelpers = require("../../src/helpers/files");
 
@@ -15,6 +17,16 @@ describe("File Helpers", () => {
   it("can generate network end marker", () => {
     expect(fileHelpers.endNetworkMarker()).to.equal("<<<<<< network\n");
   });
+
+  it("can fetch the git root", function() {
+    const cwd = td.replace(process, 'cwd')
+    const spawnSync = td.replace(child_process, 'spawnSync')
+    td.when(cwd()).thenReturn({stdout: "fish"})
+    td.when(spawnSync("git", ["rev-parse", "--show-toplevel"])).thenReturn({stdout: "gitRoot"})
+    
+    // td.when(cwd()).thenReturn("baa")
+    expect(fileHelpers.fetchGitRoot()).to.equal("gitRoot")
+  })
 
   it("can get a file listing", async () => {
     expect(await fileHelpers.getFileListing(".")).to.contain(
@@ -38,6 +50,9 @@ describe("File Helpers", () => {
       expect(reportContents).to.equal("I am test coverage data");
     });
     it("can return a list of coverage files", () => {
+      // const cwd = td.replace(process, 'cwd')
+  
+      // td.when(cwd()).thenReturn("baa")
       expect(
         fileHelpers.getCoverageFiles(".", ["index.test.js"])
       ).to.deep.equal(["test/index.test.js", "test/providers/index.test.js"]);

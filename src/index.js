@@ -43,7 +43,7 @@ async function main(args) {
     console.log(generateHeader(getVersion()));
 
     // == Step 2: detect if we are in a git repo
-    const projectRoot = args.rootDir || fileHelpers.fetchGitRoot(inputs);
+    const projectRoot = args.rootDir || fileHelpers.fetchGitRoot();
     if (projectRoot === "") {
       console.log(
         "=> No git repo detected. Please use the -R flag if the below detected directory is not correct."
