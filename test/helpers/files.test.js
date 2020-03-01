@@ -34,6 +34,12 @@ describe("File Helpers", () => {
     );
   });
 
+  it("can parse the .gitignore file", function() {
+    const readFileSync = td.replace(fs, 'readFileSync')
+    td.when(readFileSync(".gitignore")).thenReturn("ignore this file\nandthisone\n# not me!\n\nand me")
+    expect(fileHelpers.parseGitIgnore('.')).to.equal(["ignore this file", "andthisone", "and me"])
+  })
+
   describe("Coverage report handling", () => {
     it("can generate report file header", () => {
       expect(fileHelpers.fileHeader("test-coverage-file.xml")).to.equal(
