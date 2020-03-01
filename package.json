@@ -52,7 +52,8 @@
     "exclude": [
       "src/ci_providers/provider_template.js",
       "rollup.config.js",
-      "test/**/*"
+      "test/**/*",
+      "src/index.js"
     ]
   },
   "eslintConfig": {
