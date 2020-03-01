@@ -41,7 +41,7 @@
     "nyc": "15.0.0",
     "pkg": "4.4.3",
     "prettier": "1.19.1",
-    "sinon": "8.1.1"
+    "testdouble": "^3.13.0"
   },
   "nyc": {
     "all": true,
@@ -52,7 +52,8 @@
     "exclude": [
       "src/ci_providers/provider_template.js",
       "rollup.config.js",
-      "test/**/*"
+      "test/**/*",
+      "src/index.js"
     ]
   },
   "eslintConfig": {

@@ -106,13 +106,16 @@ jobs:
       - run:
           name: Run Windows binary (dry-run)
           command: |
-            .\out\codecov.exe -F windows -d -Z
+            .\out\codecov.exe -F windows -d -Z > output.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
           command: |
             .\out\codecov.exe -F windows -Z
           shell: cmd.exe
+
+      - store_artifacts:
+          path: output.txt
 
 # TODO: add test runs for each binary outside of a git project
 

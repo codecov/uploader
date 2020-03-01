@@ -43,8 +43,7 @@ function _getBranch(inputs) {
     return args.branch || "";
   } catch (error) {
     throw new Error(
-      "There was an error getting the branch name from git: ",
-      error
+      `There was an error getting the branch name from git: ${error}`
     );
   }
 }
@@ -100,8 +99,7 @@ function _getSHA(inputs) {
     return args.sha || "";
   } catch (error) {
     throw new Error(
-      "There was an error getting the commit SHA from git: ",
-      error
+      `There was an error getting the commit SHA from git: ${error}`
     );
   }
 }
@@ -116,7 +114,7 @@ function _getSlug(inputs) {
   try {
     return args.slug || "";
   } catch (error) {
-    throw new Error("There was an error getting the slug from git: " + error);
+    throw new Error(`There was an error getting the slug from git: ${error}`);
   }
 }
 /**

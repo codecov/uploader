@@ -8,6 +8,8 @@ install:
 	npm install
 
 test: 
+	rm -rf coverage
+	rm -rf .nyc_output
 	npm test
 	
 build: 

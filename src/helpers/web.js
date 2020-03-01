@@ -1,15 +1,6 @@
 const superagent = require("superagent");
 const validateHelpers = require("./validate");
 
-function parseURLToHostAndPost(url) {
-  if (url.match("https://")) {
-    return { port: 443, host: url.split("//")[1] };
-  } else if (url.match("http://")) {
-    return { port: 80, host: url.split("//")[1] };
-  }
-  throw new Error("Unable to parse upload URL.");
-}
-
 function populateBuildParams(inputs, serviceParams) {
   const { args, envs } = inputs;
   serviceParams.name = envs.CODECOV_NAME || "";
@@ -30,6 +21,7 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
   try {
     const result = await superagent
       .put(`${putURL}`)
+      .retry()
       .send(uploadFile) // sends a JSON post body
       .set("Content-Type", "application/x-gzip")
       .set("Content-Encoding", "gzip")
@@ -39,20 +31,19 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
     if (result.status === 200) {
       return { status: "success", resultURL: codecovResultURL };
     }
-    throw new Error("Error uploading", result.status, result.body);
+    throw new Error(`Error uploading: ${result.status}, ${result.body}`);
   } catch (error) {
-    throw new Error("Error uploading: ", error);
+    throw new Error(`Error uploading: ${error}`);
   }
 }
 
 async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
-  const hostAndPort = parseURLToHostAndPost(uploadURL);
-
   try {
     const result = await superagent
       .post(
-        `${hostAndPort.host}/upload/v4?package=uploader-${version}&token=${token}&${query}`
+        `${uploadURL}/upload/v4?package=uploader-${version}&token=${token}&${query}`
       )
+      .retry()
       .send(uploadFile) // sends a JSON post body
       .set("X-Reduced-Redundancy", "false")
       .set("X-Content-Type", "application/x-gzip")
@@ -97,5 +88,4 @@ module.exports = {
   uploadToCodecov,
   uploadToCodecovPUT,
   generateQuery,
-  parseURLToHostAndPost
 };

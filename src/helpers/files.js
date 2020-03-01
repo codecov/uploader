@@ -1,4 +1,4 @@
-const { spawnSync } = require("child_process");
+const child_process = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const glob = require("glob");
@@ -71,19 +71,17 @@ function getCoverageFiles(projectRoot, coverageFilePatterns) {
 }
 
 function isBlacklisted(projectRoot, file, manualBlacklist) {
-  // const blacklist = manualBlacklist.concat(parseGitIgnore(projectRoot));
   const blacklist = manualBlacklist;
   return blacklist.includes(file);
 }
 
-// eslint-disable-next-line no-unused-vars
-function fetchGitRoot(inputs) {
+function fetchGitRoot() {
   try {
     return (
-      spawnSync("git", ["rev-parse", "--show-toplevel"])
+      child_process.spawnSync("git", ["rev-parse", "--show-toplevel"])
         .stdout.toString()
         .trimRight() ||
-      spawnSync("hg", ["root"])
+        child_process.spawnSync("hg", ["root"])
         .stdout.toString()
         .trimRight() ||
       process.cwd()
@@ -149,7 +147,7 @@ function readCoverageFile(projectRoot, filePath) {
     const fileContents = fs.readFileSync(`${projectRoot}/${filePath}`);
     return fileContents;
   } catch (error) {
-    throw new Error("There was an error reading the coverage file: " + error);
+    throw new Error(`There was an error reading the coverage file: ${error}`);
   }
 }
 

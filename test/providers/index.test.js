@@ -1,20 +1,20 @@
+const td = require('testdouble')
 const child_process = require("child_process");
 const chai = require("chai");
 const expect = chai.expect;
-const sinon = require("sinon");
 
 const providers = require("../../src/ci_providers");
 
 describe("CI Providers", () => {
+
+  afterEach(function() {
+    td.reset()
+  })
+
+
   it("is an array of CI providers", () => expect(providers).to.be.an("array"));
-  const SpawnSyncStub = sinon.stub(child_process, "spawnSync");
   providers.forEach(provider => {
-    SpawnSyncStub.withArgs("git", ["config", "--get", "remote.origin.url"])
-      .returns({ stdout: "git@github.com:testOrg/testRepo.git" })
-      .withArgs("git", ["rev-parse", "--abbrev-ref", "HEAD"])
-      .returns({ stdout: "testingBranch" })
-      .withArgs("git", ["rev-parse", "HEAD"])
-      .returns({ stdout: "testingSHA" });
+
     const inputs = {
       args: {},
       envs: {
@@ -82,21 +82,27 @@ describe("CI Providers", () => {
       });
       describe("getSlug()", () => {
         it("can get the slug from a git url", () => {
-          SpawnSyncStub.returns({
-            stdout: "git@github.com:testOrg/testRepo.git"
-          });
+
+          const spawnSync = td.replace(child_process, 'spawnSync')
+          td.when(spawnSync("git", [
+            "config",
+            "--get",
+            "remote.origin.url"])).thenReturn({
+                stdout: "git@github.com:testOrg/testRepo.git"
+              })
           expect(provider.private._getSlug(inputs)).to.equal(
             "testOrg/testRepo"
           );
         });
         it("can get the slug from an http(s) url", () => {
-          SpawnSyncStub.withArgs("git", [
-            "config",
-            "--get",
-            "remote.origin.url"
-          ]).returns({
-            stdout: "http://github.com/testOrg/testRepo.git"
-          });
+
+          const spawnSync = td.replace(child_process, 'spawnSync')
+          td.when(spawnSync("git", [
+              "config",
+              "--get",
+              "remote.origin.url"])).thenReturn({
+                  stdout: "http://github.com/testOrg/testRepo.git"
+                })
           expect(provider.private._getSlug(inputs)).to.equal(
             "testOrg/testRepo"
           );
