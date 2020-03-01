@@ -115,7 +115,7 @@ jobs:
           shell: cmd.exe
 
       - store_artifacts:
-        path: output.txt
+          path: output.txt
 
 # TODO: add test runs for each binary outside of a git project
 
