@@ -30,6 +30,7 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
   try {
     const result = await superagent
       .put(`${putURL}`)
+      .retry()
       .send(uploadFile) // sends a JSON post body
       .set("Content-Type", "application/x-gzip")
       .set("Content-Encoding", "gzip")
