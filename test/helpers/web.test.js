@@ -19,29 +19,38 @@ describe("Web Helpers", function() {
     query = "hello";
     version = "0.0.1";
 
-    // const hostAndPort = webHelper.parseURLToHostAndPost(uploadURL, inputs);
-
-    // console.dir(hostAndPort);
-
-    nock("https://codecov.io")
-      .post("/upload/v4")
+      nock("https://codecov.io")
+      .put("/")
       .query(true)
-      .reply(200, "test");
+      .reply(200, "testPUT");
 
-    nock("http://codecov.io")
-      .post("/upload/v4")
-      .query(true)
-      .reply(200, "test");
-  });
+});
 
-  it("Throws an exception when parseURLToHostAndPost() is passed a non web  URI", function() {
-    expect(function() {
-      webHelper.parseURLToHostAndPost("git://foo@bar.git");
-    }).to.Throw();
-  });
+this.afterEach(function() {
+  uploadURL = ""
+})
+
+  // it("Throws an exception when parseURLToHostAndPost() is passed a non web  URI", function() {
+  //   expect(function() {
+  //     webHelper.parseURLToHostAndPost("git://foo@bar.git");
+  //   }).to.Throw();
+  // });
+
+  // it("can parse an HTTP url", function () {
+  //   expect(webHelper.parseURLToHostAndPost("http://codecov.io").port).to.equal(80)
+  // })
+
+  // it("can parse an HTTP url", function () {
+  //   expect(webHelper.parseURLToHostAndPost("https://codecov.io").port).to.equal(443)
+  // })
 
   it("Can POST to the uploader endpoint (HTTP)", async function() {
     uploadURL = "http://codecov.io";
+    nock("http://codecov.io")
+    .post("/upload/v4")
+    .query(true)
+    .reply(200, "testPOSTHTTP");
+
     const response = await webHelper.uploadToCodecov(
       uploadURL,
       token,
@@ -49,11 +58,16 @@ describe("Web Helpers", function() {
       uploadFile,
       version
     );
-    expect(response).to.be.equal("test");
+    expect(response).to.be.equal("testPOSTHTTP");
   });
 
   it("Can POST to the uploader endpoint (HTTPS)", async function() {
     uploadURL = "https://codecov.io";
+    nock("https://codecov.io")
+    .post("/upload/v4")
+    .query(true)
+    .reply(200, "testPOSTHTTPS");
+
     const response = await webHelper.uploadToCodecov(
       uploadURL,
       token,
@@ -61,7 +75,16 @@ describe("Web Helpers", function() {
       uploadFile,
       version
     );
-    expect(response).to.be.equal("test");
+    expect(response).to.be.equal("testPOSTHTTPS");
+  });
+
+  it("Can PUT to the storage endpoint", async function() {
+    uploadURL = "https://results.codecov.io\nhttps://codecov.io";
+    const response = await webHelper.uploadToCodecovPUT(
+      uploadURL,
+      uploadFile,
+    );
+    expect(response.resultURL).to.be.equal("https://results.codecov.io");
   });
 
   it("Can generate query URL", function() {
