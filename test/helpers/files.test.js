@@ -1,3 +1,4 @@
+/*global expect */
 const td = require("testdouble")
 const fs = require("fs");
 const path = require("path");

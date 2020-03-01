@@ -78,10 +78,12 @@ function isBlacklisted(projectRoot, file, manualBlacklist) {
 function fetchGitRoot() {
   try {
     return (
-      child_process.spawnSync("git", ["rev-parse", "--show-toplevel"])
+      child_process
+        .spawnSync("git", ["rev-parse", "--show-toplevel"])
         .stdout.toString()
         .trimRight() ||
-        child_process.spawnSync("hg", ["root"])
+      child_process
+        .spawnSync("hg", ["root"])
         .stdout.toString()
         .trimRight() ||
       process.cwd()

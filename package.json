@@ -5,6 +5,7 @@
   "private": true,
   "bin": "bin/codecov",
   "scripts": {
+    "lint": "eslint src",
     "test": "jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
@@ -56,14 +57,17 @@
     "env": {
       "commonjs": true,
       "es6": true,
-      "node": true
+      "node": true,
+      "jest": true
     },
     "extends": [
       "plugin:prettier/recommended"
     ],
     "globals": {
       "Atomics": "readonly",
-      "SharedArrayBuffer": "readonly"
+      "SharedArrayBuffer": "readonly",
+      "td:": "readonly",
+      "expect": "readonly"
     },
     "parserOptions": {
       "ecmaVersion": 2018
