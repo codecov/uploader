@@ -43,6 +43,7 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
       .post(
         `${uploadURL}/upload/v4?package=uploader-${version}&token=${token}&${query}`
       )
+      .retry()
       .send(uploadFile) // sends a JSON post body
       .set("X-Reduced-Redundancy", "false")
       .set("X-Content-Type", "application/x-gzip")
