@@ -5,7 +5,7 @@
   "private": true,
   "bin": "bin/codecov",
   "scripts": {
-    "test": "nyc mocha test/**/*.test.js",
+    "test": "jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-windows": "pkg . --targets win --output out/codecov.exe"
@@ -29,19 +29,15 @@
     "yargs": "15.1.0"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "11.0.2",
-    "@rollup/plugin-node-resolve": "7.1.0",
-    "chai": "4.2.0",
-    "chai-as-promised": "7.1.1",
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.10.0",
     "eslint-plugin-prettier": "3.1.2",
-    "mocha": "7.0.1",
+    "jest": "^25.1.0",
     "nock": "11.7.2",
-    "nyc": "15.0.0",
     "pkg": "4.4.3",
     "prettier": "1.19.1",
-    "testdouble": "^3.13.0"
+    "testdouble": "^3.13.0",
+    "testdouble-jest": "^2.0.0"
   },
   "nyc": {
     "all": true,
@@ -74,7 +70,18 @@
     },
     "rules": {}
   },
-  "mocha": {
-    "timeout": 3000
+  "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/index.js",
+      "!src/ci_providers/provider_template.js",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ],
+    "coverageReporters": ["text", "cobertura"],
+    "setupFilesAfterEnv": [
+      "<rootDir>/test/test_helpers.js"
+    ]
   }
 }

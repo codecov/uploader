@@ -1,7 +1,5 @@
 const td = require('testdouble')
 const child_process = require("child_process");
-const chai = require("chai");
-const expect = chai.expect;
 
 const providers = require("../../src/ci_providers");
 
@@ -12,7 +10,7 @@ describe("CI Providers", () => {
   })
 
 
-  it("is an array of CI providers", () => expect(providers).to.be.an("array"));
+  it("is an array of CI providers", () => expect(providers).toBeInstanceOf(Array));
   providers.forEach(provider => {
 
     const inputs = {
@@ -25,60 +23,60 @@ describe("CI Providers", () => {
     };
     describe(`${provider.getServiceName() || ""}`, () => {
       it("has a detect() method", () => {
-        expect(provider.detect).is.an("function");
+        expect(provider.detect).toBeInstanceOf(Function);
       });
       it("has a getService() method", () => {
-        expect(provider.private._getService).is.an("function");
+        expect(provider.private._getService).toBeInstanceOf(Function);
       });
       it("has a getServiceName() method", () => {
-        expect(provider.getServiceName).is.an("function");
+        expect(provider.getServiceName).toBeInstanceOf(Function);
       });
       it("has a getServiceParams() method", () => {
-        expect(provider.getServiceParams).is.an("function");
+        expect(provider.getServiceParams).toBeInstanceOf(Function);
       });
       describe("getServiceParams()", () => {
         const serviceParams = provider.getServiceParams(inputs);
         it("has it's branch property set", () => {
-          expect(serviceParams.branch).to.equal(
+          expect(serviceParams.branch).toBe(
             provider.private._getBranch(inputs)
           );
         });
         it("has it's build property set", () => {
-          expect(serviceParams.build).to.equal(
+          expect(serviceParams.build).toBe(
             provider.private._getBuild(inputs)
           );
         });
         it("has it's buildURL property set", () => {
-          expect(serviceParams.buildURL).to.equal(
+          expect(serviceParams.buildURL).toBe(
             provider.private._getBuildURL(inputs)
           );
         });
         it("has it's commit property set", () => {
-          expect(serviceParams.commit).to.equal(
+          expect(serviceParams.commit).toBe(
             provider.private._getSHA(inputs)
           );
         });
         it("has it's job property set", () => {
-          expect(serviceParams.job).to.equal(
+          expect(serviceParams.job).toBe(
             provider.private._getJob(inputs.envs)
           );
         });
         it("has it's pr property set", () => {
-          expect(serviceParams.pr).to.equal(provider.private._getPR(inputs));
+          expect(serviceParams.pr).toBe(provider.private._getPR(inputs));
         });
         it("has it's service property set", () => {
-          expect(serviceParams.service).to.equal(
+          expect(serviceParams.service).toBe(
             provider.private._getService(inputs)
           );
         });
         it("has it's slug property set", () => {
-          expect(serviceParams.slug).to.equal(
+          expect(serviceParams.slug).toBe(
             provider.private._getSlug(inputs)
           );
         });
       });
       it("has a getSlug() method", () => {
-        expect(provider.private._getSlug).is.an("function");
+        expect(provider.private._getSlug).toBeInstanceOf(Function);
       });
       describe("getSlug()", () => {
         it("can get the slug from a git url", () => {
@@ -90,7 +88,7 @@ describe("CI Providers", () => {
             "remote.origin.url"])).thenReturn({
                 stdout: "git@github.com:testOrg/testRepo.git"
               })
-          expect(provider.private._getSlug(inputs)).to.equal(
+          expect(provider.private._getSlug(inputs)).toBe(
             "testOrg/testRepo"
           );
         });
@@ -103,7 +101,7 @@ describe("CI Providers", () => {
               "remote.origin.url"])).thenReturn({
                   stdout: "http://github.com/testOrg/testRepo.git"
                 })
-          expect(provider.private._getSlug(inputs)).to.equal(
+          expect(provider.private._getSlug(inputs)).toEqual(
             "testOrg/testRepo"
           );
         });
