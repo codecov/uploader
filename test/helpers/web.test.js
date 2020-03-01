@@ -30,20 +30,6 @@ this.afterEach(function() {
   uploadURL = ""
 })
 
-  // it("Throws an exception when parseURLToHostAndPost() is passed a non web  URI", function() {
-  //   expect(function() {
-  //     webHelper.parseURLToHostAndPost("git://foo@bar.git");
-  //   }).to.Throw();
-  // });
-
-  // it("can parse an HTTP url", function () {
-  //   expect(webHelper.parseURLToHostAndPost("http://codecov.io").port).to.equal(80)
-  // })
-
-  // it("can parse an HTTP url", function () {
-  //   expect(webHelper.parseURLToHostAndPost("https://codecov.io").port).to.equal(443)
-  // })
-
   it("Can POST to the uploader endpoint (HTTP)", async function() {
     uploadURL = "http://codecov.io";
     nock("http://codecov.io")

@@ -1,15 +1,6 @@
 const superagent = require("superagent");
 const validateHelpers = require("./validate");
 
-// function parseURLToHostAndPost(url) {
-//   if (url.match("https://")) {
-//     return { port: 443, host: url.split("//")[1] };
-//   } else if (url.match("http://")) {
-//     return { port: 80, host: url.split("//")[1] };
-//   }
-//   throw new Error("Unable to parse upload URL.");
-// }
-
 function populateBuildParams(inputs, serviceParams) {
   const { args, envs } = inputs;
   serviceParams.name = envs.CODECOV_NAME || "";
@@ -47,10 +38,6 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
 }
 
 async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
-  // const hostAndPort = parseURLToHostAndPost(uploadURL);
-  // console.log(uploadURL)
-  // console.log(hostAndPort)
-
   try {
     const result = await superagent
       .post(

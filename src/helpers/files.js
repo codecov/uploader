@@ -71,7 +71,6 @@ function getCoverageFiles(projectRoot, coverageFilePatterns) {
 }
 
 function isBlacklisted(projectRoot, file, manualBlacklist) {
-  // const blacklist = manualBlacklist.concat(parseGitIgnore(projectRoot));
   const blacklist = manualBlacklist;
   return blacklist.includes(file);
 }

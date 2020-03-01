@@ -24,7 +24,6 @@ describe("File Helpers", () => {
     td.when(cwd()).thenReturn({stdout: "fish"})
     td.when(spawnSync("git", ["rev-parse", "--show-toplevel"])).thenReturn({stdout: "gitRoot"})
     
-    // td.when(cwd()).thenReturn("baa")
     expect(fileHelpers.fetchGitRoot()).to.equal("gitRoot")
   })
 
@@ -56,9 +55,6 @@ describe("File Helpers", () => {
       expect(reportContents).to.equal("I am test coverage data");
     });
     it("can return a list of coverage files", () => {
-      // const cwd = td.replace(process, 'cwd')
-  
-      // td.when(cwd()).thenReturn("baa")
       expect(
         fileHelpers.getCoverageFiles(".", ["index.test.js"])
       ).to.deep.equal(["test/index.test.js", "test/providers/index.test.js"]);
