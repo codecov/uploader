@@ -1,7 +1,4 @@
 const nock = require("nock");
-const chai = require("chai");
-const expect = chai.expect;
-const should = chai.should();
 
 const webHelper = require("../../src/helpers/web");
 
@@ -26,7 +23,7 @@ describe("Web Helpers", function() {
 
 });
 
-this.afterEach(function() {
+afterEach(function() {
   uploadURL = ""
 })
 
@@ -44,7 +41,12 @@ this.afterEach(function() {
       uploadFile,
       version
     );
-    expect(response).to.be.equal("testPOSTHTTP");
+    try {
+      expect(response).toBe("testPOSTHTTP");  
+    } catch (error) {
+      console.trace(error)
+    }
+    
   });
 
   it("Can POST to the uploader endpoint (HTTPS)", async function() {
@@ -61,7 +63,7 @@ this.afterEach(function() {
       uploadFile,
       version
     );
-    expect(response).to.be.equal("testPOSTHTTPS");
+    expect(response).toBe("testPOSTHTTPS");
   });
 
   it("Can PUT to the storage endpoint", async function() {
@@ -70,7 +72,7 @@ this.afterEach(function() {
       uploadURL,
       uploadFile,
     );
-    expect(response.resultURL).to.be.equal("https://results.codecov.io");
+    expect(response.resultURL).toBe("https://results.codecov.io");
   });
 
   it("Can generate query URL", function() {
@@ -86,7 +88,7 @@ this.afterEach(function() {
     queryParams.name = "testName";
     queryParams.tag = "tagV1";
     queryParams.pr = "2";
-    expect(webHelper.generateQuery(queryParams)).to.equal(
+    expect(webHelper.generateQuery(queryParams)).toBe(
       "branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6"
     );
   });
@@ -96,6 +98,6 @@ this.afterEach(function() {
       { args: { flags: "testFlag", tag: "testTag" }, envs: {} },
       { name: "", tag: ", flags: []" }
     );
-    expect(result.flags).to.equal("testFlag");
+    expect(result.flags).toBe("testFlag");
   });
 });

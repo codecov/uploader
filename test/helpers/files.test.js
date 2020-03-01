@@ -1,10 +1,8 @@
 const td = require("testdouble")
 const fs = require("fs");
 const path = require("path");
-const chai = require("chai");
 const child_process = require("child_process")
 const process = require("process")
-const expect = chai.expect;
 const fileHelpers = require("../../src/helpers/files");
 
 describe("File Helpers", () => {
@@ -15,7 +13,7 @@ describe("File Helpers", () => {
 
 
   it("can generate network end marker", () => {
-    expect(fileHelpers.endNetworkMarker()).to.equal("<<<<<< network\n");
+    expect(fileHelpers.endNetworkMarker()).toBe("<<<<<< network\n");
   });
 
   it("can fetch the git root", function() {
@@ -24,11 +22,11 @@ describe("File Helpers", () => {
     td.when(cwd()).thenReturn({stdout: "fish"})
     td.when(spawnSync("git", ["rev-parse", "--show-toplevel"])).thenReturn({stdout: "gitRoot"})
     
-    expect(fileHelpers.fetchGitRoot()).to.equal("gitRoot")
+    expect(fileHelpers.fetchGitRoot()).toBe("gitRoot")
   })
 
   it("can get a file listing", async () => {
-    expect(await fileHelpers.getFileListing(".")).to.contain(
+    expect(await fileHelpers.getFileListing(".")).toMatch(
       "npm-shrinkwrap.json"
     );
   });
@@ -36,12 +34,12 @@ describe("File Helpers", () => {
   it("can parse the .gitignore file", function() {
     const readFileSync = td.replace(fs, 'readFileSync')
     td.when(readFileSync(".gitignore")).thenReturn("ignore this file\nandthisone\n# not me!\n\nand me")
-    expect(fileHelpers.parseGitIgnore('.')).to.deep.equal(["ignore this file", "andthisone", "and me"])
+    expect(fileHelpers.parseGitIgnore('.')).toStrictEqual(["ignore this file", "andthisone", "and me"])
   })
 
   describe("Coverage report handling", () => {
     it("can generate report file header", () => {
-      expect(fileHelpers.fileHeader("test-coverage-file.xml")).to.equal(
+      expect(fileHelpers.fileHeader("test-coverage-file.xml")).toBe(
         "# path=test-coverage-file.xml\n"
       );
     });
@@ -52,16 +50,16 @@ describe("File Helpers", () => {
         ".",
         "test-coverage-file.xml"
       );
-      expect(reportContents).to.equal("I am test coverage data");
+      expect(reportContents).toBe("I am test coverage data");
     });
     it("can return a list of coverage files", () => {
       expect(
         fileHelpers.getCoverageFiles(".", ["index.test.js"])
-      ).to.deep.equal(["test/index.test.js", "test/providers/index.test.js"]);
+      ).toStrictEqual(["test/index.test.js", "test/providers/index.test.js"]);
     });
     describe("coverage file patterns", function() {
       it("conatins `jacoco*.xml`", function() {
-        expect(fileHelpers.coverageFilePatterns()).to.contain("jacoco*.xml");
+        expect(fileHelpers.coverageFilePatterns()).toContain("jacoco*.xml");
       });
     });
   });

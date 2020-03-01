@@ -1,33 +1,30 @@
 const validate = require("../../src/helpers/validate");
 
-const chai = require("chai");
-const expect = chai.expect;
-
 describe("Input Validators", function() {
   describe("Tokens", function() {
     it("Returns true with a valid token", function() {
-      expect(validate.validateToken("1bc123")).to.be.true;
+      expect(validate.validateToken("1bc123")).toBe(true);
     });
     it("Returns false with an invalid token", function() {
-      expect(validate.validateToken("1bc1 23")).to.be.false;
+      expect(validate.validateToken("1bc1 23")).toBe(false);
     });
   });
 
   describe("Flags", function() {
     it("Should fail with a dash", function() {
-      expect(validate.validateFlags("moo-foor")).to.be.false;
+      expect(validate.validateFlags("moo-foor")).toBe(false);
     });
   });
 
   describe("URLs", function() {
     it("Returns true with a valid URL", function() {
-      expect(validate.validateURL("https://codecov.io")).to.be.true;
+      expect(validate.validateURL("https://codecov.io")).toBe(true);
     });
     it("Returns false with an invalid URL", function() {
-      expect(validate.validateURL("not.a.URL.com")).to.be.false;
+      expect(validate.validateURL("not.a.URL.com")).toBe(false);
     });
     it("Returns false with an empty URL", function() {
-      expect(validate.validateURL("")).to.be.false;
+      expect(validate.validateURL("")).toBe(false);
     });
   });
 });

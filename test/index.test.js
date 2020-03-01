@@ -1,15 +1,14 @@
 const app = require("../src");
-const chai = require("chai");
-const expect = chai.expect;
+
 const { version } = require("../package.json");
 
 describe("Uploader Core", function() {
   it("Can return version", function() {
-    expect(app.getVersion()).to.equal(version);
+    expect(app.getVersion()).toBe(version);
   });
 
   it("Can display header", function() {
-    expect(app.generateHeader(app.getVersion())).to.equal(`
+    expect(app.generateHeader(app.getVersion())).toBe(`
      _____          _
     / ____|        | |
    | |     ___   __| | ___  ___ _____   __
