@@ -140,6 +140,28 @@ jobs:
           paths:
             - output_win.txt
 
+  test-windows-without-git:
+    executor: win/default
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Run Windows binary (dry-run)
+          command: |
+            .\out\codecov.exe -F windows-without-git -d -Z > output_win_without_git.txt
+          shell: cmd.exe
+      - run:
+          name: Run Windows binary (upload)
+          command: |
+            .\out\codecov.exe -F windows-without-git -Z
+          shell: cmd.exe
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_win_without_git.txt
+
   review:
     docker:
       - image: circleci/node:10.16.3
@@ -155,7 +177,9 @@ jobs:
       - store_artifacts:
           path: output_osx.txt
       - store_artifacts:
-          path: output_win.txt      
+          path: output_win.txt
+      - store_artifacts:
+          path: output_win_without_git.txt     
 
 # TODO: add test runs for each binary outside of a git project
 
@@ -177,8 +201,11 @@ workflows:
       - test-windows:
           requires:
             - build-windows
+      - test-windows-without-git:
+          requires:
+            - test-windows
       - review:
           requires:
-            - test-linux
-            - test-macos
-            - test-windows
+            - test-linux-no-git
+            - test-macos-no-git
+            - test-windows-without-git
