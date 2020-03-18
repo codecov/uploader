@@ -18,8 +18,4 @@ build:
 	npm run build-linux
 	npm run build-macos
 
-build-win:
-	npm ci
-	npm run build-windows
-
-.PHONY: clean install test build, build-win
+.PHONY: clean install test build
