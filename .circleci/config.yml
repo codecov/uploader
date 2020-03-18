@@ -53,11 +53,27 @@ jobs:
             - out
             - coverage
 
-      - store_artifacts:
-          path: out
+  build-windows:
+    executor: win/default
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Build Windows Binary
+          command: |
+            make build-win
 
-      - store_artifacts:
-          path: coverage
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: .
+          # Must be relative path from root
+          paths:
+            - out
+            - coverage
 
   test-linux:
     docker:
@@ -71,11 +87,16 @@ jobs:
       - run:
           name: Run Linux binary (dry run)
           command: |
-            out/codecov-linux -F linux -d -Z
+            out/codecov-linux -F linux -d -Z > output_linux.txt
       - run:
           name: Run Linux binary (upload)
           command: |
             out/codecov-linux -F linux -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_linux.txt
 
   test-macos:
     macos: # indicate that we are using the macOS executor
@@ -87,12 +108,17 @@ jobs:
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            out/codecov-macos -F macos -d -Z
+            out/codecov-macos -F macos -d -Z > output_osx.txt
       - run:
           # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary (upload)
           command: |
             out/codecov-macos -F macos -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_osx.txt
 
   test-windows:
     executor: win/default
@@ -104,7 +130,7 @@ jobs:
       - run:
           name: Run Windows binary (dry-run)
           command: |
-            .\out\codecov.exe -F windows -d -Z > output.txt
+            .\out\codecov.exe -F windows -d -Z > output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
@@ -112,8 +138,27 @@ jobs:
             .\out\codecov.exe -F windows -Z
           shell: cmd.exe
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_win.txt
+
+  review:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - attach_workspace:
+          at: .
       - store_artifacts:
-          path: output.txt
+        path: coverage
+      - store_artifacts:
+        path: out
+      - store_artifacts:
+        path: output_linux.txt
+      - store_artifacts:
+        path: output_osx.txt
+      - store_artifacts:
+        path: output_win.txt      
 
 # TODO: add test runs for each binary outside of a git project
 
@@ -123,6 +168,9 @@ workflows:
   "Build and Test":
     jobs:
       - build
+      - build-windows:
+          requires:
+            - build
       - test-linux:
           requires:
             - build
@@ -131,4 +179,9 @@ workflows:
             - build
       - test-windows:
           requires:
-            - build
+            - build-windows
+      - review:
+          requires:
+            - test-linux
+            - test-osx
+            - test-windows
