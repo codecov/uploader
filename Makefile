@@ -20,6 +20,6 @@ build:
 
 build-win:
 	npm ci
- 	npm run build-windows
+	npm run build-windows
 
 .PHONY: clean install test build, build-win
