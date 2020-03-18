@@ -43,9 +43,6 @@ jobs:
       # run tests!
       - run: make build
 
-      # upload coverage
-      # - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F build
-
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
@@ -98,11 +95,6 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
-      - run:
-          name: Build Windows Binary
-          command: |
-            npm ci
-            npm run build-windows
       - run:
           name: Run Windows binary (dry-run)
           command: |
