@@ -83,7 +83,10 @@
       "!**/node_modules/**",
       "!**/vendor/**"
     ],
-    "coverageReporters": ["text", "cobertura"],
+    "coverageReporters": [
+      "text",
+      "cobertura"
+    ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/test_helpers.js"
     ]
