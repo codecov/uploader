@@ -183,5 +183,5 @@ workflows:
       - review:
           requires:
             - test-linux
-            - test-osx
+            - test-macos
             - test-windows
