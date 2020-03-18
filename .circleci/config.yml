@@ -53,6 +53,12 @@ jobs:
             - out
             - coverage
 
+      - store_artifacts:
+          path: out
+
+      - store_artifacts:
+          path: coverage
+
   test-linux:
     docker:
       # specify the version you desire here
