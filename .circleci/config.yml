@@ -206,6 +206,6 @@ workflows:
             - test-windows
       - review:
           requires:
-            - test-linux-no-git
-            - test-macos-no-git
+            - test-linux
+            - test-macos
             - test-windows-without-git
