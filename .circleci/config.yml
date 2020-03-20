@@ -223,7 +223,7 @@ jobs:
           path: output_osx.txt
        - store_artifacts:
           path: output_osx_without_git.txt
-       - store_artifacts:
+      - store_artifacts:
           path: output_win.txt
       - store_artifacts:
           path: output_win_without_git.txt     
