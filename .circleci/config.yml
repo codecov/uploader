@@ -221,7 +221,7 @@ jobs:
           path: output_linux_without_git.txt
       - store_artifacts:
           path: output_osx.txt
-       - store_artifacts:
+      - store_artifacts:
           path: output_osx_without_git.txt
       - store_artifacts:
           path: output_win.txt
@@ -248,10 +248,10 @@ workflows:
       - test-macos:
           requires:
             - build
-       - test-macos-without-git:
+      - test-macos-without-git:
           requires:
             - test-macos
-       - test-windows:
+      - test-windows:
           requires:
             - build-windows
       - test-windows-without-git:
