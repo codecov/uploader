@@ -95,6 +95,28 @@ jobs:
           paths:
             - output_linux.txt
 
+  test-linux:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:10.16.3
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Run Linux binary (dry run)
+          command: |
+            out/codecov-linux -F linux-without-git -d -Z > output_linux_without_git.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-linux -F linux-without-git -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_linux.txt
+
   test-macos:
     macos: # indicate that we are using the macOS executor
       xcode: "10.0.0" # indicate our selected version of Xcode
@@ -175,6 +197,8 @@ jobs:
       - store_artifacts:
           path: output_linux.txt
       - store_artifacts:
+          path: output_linux_without_git.txt
+      - store_artifacts:
           path: output_osx.txt
       - store_artifacts:
           path: output_win.txt
@@ -195,6 +219,9 @@ workflows:
       - test-linux:
           requires:
             - build
+      - test-linux-without-git:
+          requires:
+            - test-linux
       - test-macos:
           requires:
             - build
@@ -206,6 +233,6 @@ workflows:
             - test-windows
       - review:
           requires:
-            - test-linux
+            - test-linux-without-git
             - test-macos
             - test-windows-without-git
