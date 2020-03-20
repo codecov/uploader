@@ -149,12 +149,12 @@ jobs:
       - run:
           name: Run Windows binary (dry-run)
           command: |
-            .\out\codecov.exe -F windows-without-git -d -Z > output_win_without_git.txt
+            .\out\codecov.exe -F windows-without-git -d > output_win_without_git.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
           command: |
-            .\out\codecov.exe -F windows-without-git -Z
+            .\out\codecov.exe -F windows-without-git
           shell: cmd.exe
 
       - persist_to_workspace:
