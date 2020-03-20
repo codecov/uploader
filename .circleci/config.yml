@@ -139,6 +139,27 @@ jobs:
           paths:
             - output_osx.txt
 
+  test-macos-without-git:
+    macos: # indicate that we are using the macOS executor
+      xcode: "10.0.0" # indicate our selected version of Xcode
+    steps: # a series of commands to run
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run MacOS binary (dry-run)
+          command: |
+            out/codecov-macos -F macos-without-git -d -Z > output_osx_without_git.txt
+      - run:
+          # run our tests using xcode's cli tool `xcodebuild`
+          name: Run MacOS binary (upload)
+          command: |
+            out/codecov-macos -F macos-without-git -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_osx.txt
+
   test-windows:
     executor: win/default
     steps:
@@ -200,7 +221,9 @@ jobs:
           path: output_linux_without_git.txt
       - store_artifacts:
           path: output_osx.txt
-      - store_artifacts:
+       - store_artifacts:
+          path: output_osx_without_git.txt
+       - store_artifacts:
           path: output_win.txt
       - store_artifacts:
           path: output_win_without_git.txt     
@@ -225,7 +248,10 @@ workflows:
       - test-macos:
           requires:
             - build
-      - test-windows:
+       - test-macos-without-git:
+          requires:
+            - test-macos
+       - test-windows:
           requires:
             - build-windows
       - test-windows-without-git:
@@ -234,5 +260,5 @@ workflows:
       - review:
           requires:
             - test-linux-without-git
-            - test-macos
+            - test-macos-without-git
             - test-windows-without-git
