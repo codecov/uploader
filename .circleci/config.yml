@@ -97,11 +97,10 @@ jobs:
 
   test-linux-without-git:
     docker:
-      # specify the version you desire here
       - image: circleci/node:10.16.3
     steps:
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
+          # TODO: Determine why we use the cwd on Linex and not on other operating systems.
           at: .
       - run:
           name: Run Linux binary (dry run)
@@ -118,9 +117,9 @@ jobs:
             - output_linux.txt
 
   test-macos:
-    macos: # indicate that we are using the macOS executor
-      xcode: "10.0.0" # indicate our selected version of Xcode
-    steps: # a series of commands to run
+    macos: 
+      xcode: "10.0.0" 
+    steps: 
       - checkout
       - attach_workspace:
           at: .
@@ -129,7 +128,6 @@ jobs:
           command: |
             out/codecov-macos -F macos -d -Z > output_osx.txt
       - run:
-          # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary (upload)
           command: |
             out/codecov-macos -F macos -Z
@@ -140,20 +138,19 @@ jobs:
             - output_osx.txt
 
   test-macos-without-git:
-    macos: # indicate that we are using the macOS executor
-      xcode: "10.0.0" # indicate our selected version of Xcode
-    steps: # a series of commands to run
+    macos: 
+      xcode: "10.0.0" 
+    steps: 
       - attach_workspace:
           at: .
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            out/codecov-macos -F macos-without-git -d -Z > output_osx_without_git.txt
+            out/codecov-macos -F macos-without-git -d > output_osx_without_git.txt
       - run:
-          # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-macos -F macos-without-git -Z
+            out/codecov-macos -F macos-without-git
 
       - persist_to_workspace:
           root: .
@@ -165,7 +162,6 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Run Windows binary (dry-run)
