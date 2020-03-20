@@ -17,6 +17,5 @@ build:
 	rm -rf dist
 	npm run build-linux
 	npm run build-macos
-	# npm run build-windows
 
-.PHONY: clean install test build, build-win
+.PHONY: clean install test build
