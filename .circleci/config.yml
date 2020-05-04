@@ -244,7 +244,9 @@ jobs:
           command: >
             RELEASE_TAG=v$(cat package.json | jq --raw-output
             .version)_$CIRCLE_BUILD_NUM
+
             echo $RELEASE_TAG
+
             ./ghr --replace $RELEASE_TAG out
 
 workflows:
