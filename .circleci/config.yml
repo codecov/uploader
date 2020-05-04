@@ -248,7 +248,7 @@ jobs:
 
             echo $RELEASE_TAG
 
-            ./ghr --replace $RELEASE_TAG out
+            ./ghr -u codecov-io codecov-devops $RELEASE_TAG out
 
 workflows:
   version: 2
