@@ -227,24 +227,24 @@ jobs:
 # TODO: add test runs for each binary outside of a git project
 
   deploy:
-    - docker:
-        - image: circleci/node:10.16.3
-    - steps:
-        - attach_workspace:
-            at: .
-    - run:
-        name: Install GHR
-        command: >
-          wget
-          https://github.com/tcnksm/ghr/releases/download/v0.5.4/ghr_v0.5.4_linux_amd64.zip
-          unzip ghr_v0.5.4_linux_amd64.zip
-    - run:
-        name: Package
-        command: >
-          RELEASE_TAG=v$(cat package.json | jq --raw-output
-          .version)_$CIRCLE_BUILD_NUM
-          echo $RELEASE_TAG
-          ./ghr --replace $RELEASE_TAG out
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install GHR
+          command: >
+            wget
+            https://github.com/tcnksm/ghr/releases/download/v0.5.4/ghr_v0.5.4_linux_amd64.zip
+            unzip ghr_v0.5.4_linux_amd64.zip
+      - run:
+          name: Package
+          command: >
+            RELEASE_TAG=v$(cat package.json | jq --raw-output
+            .version)_$CIRCLE_BUILD_NUM
+            echo $RELEASE_TAG
+            ./ghr --replace $RELEASE_TAG out
 
 workflows:
   version: 2
