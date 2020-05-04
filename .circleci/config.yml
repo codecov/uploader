@@ -52,6 +52,7 @@ jobs:
           paths:
             - out
             - coverage
+            - package.json
 
   build-windows:
     executor: win/default
