@@ -343,6 +343,7 @@ workflows:
   "Build and Test":
     jobs:
       - build
+      - build-alpine
       - build-windows:
           requires:
             - build
