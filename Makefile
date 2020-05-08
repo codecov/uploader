@@ -16,7 +16,6 @@ build:
 	rm -rf out
 	rm -rf dist
 	npm run build-linux
-	npm run build-alpine
 	npm run build-macos
 
 .PHONY: clean install test build

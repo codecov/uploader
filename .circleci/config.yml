@@ -54,6 +54,46 @@ jobs:
             - coverage
             - package.json
 
+  build-alpine:
+    docker:
+      - image: mhart/alpine-node:10.17.1
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v1-dependencies-alpine-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-alpine-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-alpine-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm run build-alpine
+
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: .
+          # Must be relative path from root
+          paths:
+            - out
+            - coverage
+            - package.json
+
   build-windows:
     executor: win/default
     steps:
@@ -314,7 +354,7 @@ workflows:
             - test-linux
       - test-alpine:
           requires:
-            - build
+            - build-alpine
       - test-alpine-without-git:
           requires:
             - test-alpine
