@@ -56,7 +56,7 @@ jobs:
 
   build-alpine:
     docker:
-      - image: mhart/alpine-node:10.17.1
+      - image: mhart/alpine-node:10.20.1
 
     working_directory: ~/repo
 
