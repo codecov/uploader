@@ -101,7 +101,7 @@ jobs:
       - image: circleci/node:10.16.3
     steps:
       - attach_workspace:
-          # TODO: Determine why we use the cwd on Linex and not on other operating systems.
+          # TODO: Determine why we use the cwd on Linux and not on other operating systems.
           at: .
       - run:
           name: Run Linux binary (dry run)
@@ -115,7 +115,50 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - output_linux.txt
+            - output_linux_without_git.txt
+
+  test-alpine:
+    docker:
+      # specify the version you desire here
+      - image: gitlab/gitlab-runner:alpine
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Run Alpine binary (dry run)
+          command: |
+            out/codecov-alpine -F alpine -d -Z > output_alpine.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -F alpine -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine.txt
+
+  test-alpine-without-git:
+    docker:
+      - image: gitlab/gitlab-runner:alpine
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Alpine binary (dry run)
+          command: |
+            out/codecov-alpine -F alpine-without-git -d -Z > output_alpine_without_git.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-alpine -F alpine-without-git -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine_without_git.txt
 
   test-macos:
     macos: 
@@ -156,7 +199,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - output_osx.txt
+            - output_osx_without_git.txt
 
   test-windows:
     executor: win/default
@@ -217,6 +260,10 @@ jobs:
       - store_artifacts:
           path: output_linux_without_git.txt
       - store_artifacts:
+          path: output_alpine.txt
+      - store_artifacts:
+          path: output_alpine_without_git.txt
+      - store_artifacts:
           path: output_osx.txt
       - store_artifacts:
           path: output_osx_without_git.txt
@@ -265,6 +312,12 @@ workflows:
       - test-linux-without-git:
           requires:
             - test-linux
+      - test-alpine:
+          requires:
+            - build
+      - test-alpine-without-git:
+          requires:
+            - test-alpine
       - test-macos:
           requires:
             - build
@@ -280,6 +333,7 @@ workflows:
       - review:
           requires:
             - test-linux-without-git
+            - test-alpine-without-git
             - test-macos-without-git
             - test-windows-without-git
       - deploy:
