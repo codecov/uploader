@@ -117,18 +117,18 @@ function getAllFiles(projectRoot, dirPath, arrayOfFiles) {
 
   files.forEach(function(file) {
     if (
-      fs.statSync(dirPath + "/" + file).isDirectory() &&
+      fs.statSync(path.join(dirPath, file)).isDirectory() &&
       !isBlacklisted(projectRoot, file, manualBlacklist())
     ) {
       arrayOfFiles = getAllFiles(
         projectRoot,
-        dirPath + "/" + file,
+        path.join(dirPath,  file),
         arrayOfFiles
       );
     } else {
       if (!isBlacklisted(projectRoot, file, manualBlacklist())) {
         arrayOfFiles.push(
-          `${path.join(dirPath.replace(projectRoot, "."), "/", file)}\n`
+          `${path.join(dirPath.replace(projectRoot, "."), file)}\n`
         );
       }
     }
@@ -162,11 +162,13 @@ function fileHeader(filePath) {
 
 function getFilePath(projectRoot, filePath) {
   if (filePath.startsWith("./")
-      || filePath.startsWith("/")) {
+      || filePath.startsWith("/")
+      || filePath.startsWith(".\\")
+      || filePath.startsWith(".\\")) {
     return filePath
   }
   if (projectRoot === ".") {
-    return `./${filePath}`
+    return path.join(".", filePath)
   }
   return path.join(projectRoot, filePath)
 

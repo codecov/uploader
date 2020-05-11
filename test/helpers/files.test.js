@@ -46,7 +46,7 @@ describe("File Helpers", () => {
     });
     it("can read a coverage report file", async () => {
       const readFileSync = td.replace(fs, 'readFileSync')
-      td.when(readFileSync("./test-coverage-file.xml")).thenReturn("I am test coverage data")
+      td.when(readFileSync("test-coverage-file.xml")).thenReturn("I am test coverage data")
       const reportContents = fileHelpers.readCoverageFile(
         ".",
         "test-coverage-file.xml"
@@ -74,7 +74,7 @@ describe("File Helpers", () => {
         expect(fileHelpers.getFilePath("/usr/", "./coverage.xml")).toEqual("./coverage.xml")
       })
       it("should return path when project root is . and filepath does not start with ./ or /", () => {
-        expect(fileHelpers.getFilePath(".", "coverage.xml")).toEqual("./coverage.xml")
+        expect(fileHelpers.getFilePath(".", "coverage.xml")).toEqual("coverage.xml")
       })
       it("should return path when project root is . and filepath starts /", () => {
         expect(fileHelpers.getFilePath(".", "/usr/coverage.xml")).toEqual("/usr/coverage.xml")
