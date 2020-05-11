@@ -146,8 +146,7 @@ function readAllLines(filePath) {
 
 function readCoverageFile(projectRoot, filePath) {
   try {
-    const fileContents = fs.readFileSync(`${projectRoot}/${filePath}`);
-    return fileContents;
+    return fs.readFileSync(getFilePath(projectRoot, filePath));
   } catch (error) {
     throw new Error(`There was an error reading the coverage file: ${error}`);
   }
@@ -161,6 +160,18 @@ function fileHeader(filePath) {
   return `# path=${filePath}\n`;
 }
 
+function getFilePath(projectRoot, filePath) {
+  if (filePath.startsWith("./")
+      || filePath.startsWith("/")) {
+    return filePath
+  }
+  if (projectRoot === ".") {
+    return `./${filePath}`
+  }
+  return path.join(projectRoot, filePath)
+
+}
+
 module.exports = {
   readCoverageFile,
   getFileListing,
@@ -169,5 +180,6 @@ module.exports = {
   fetchGitRoot,
   parseGitIgnore,
   getCoverageFiles,
-  coverageFilePatterns
+  coverageFilePatterns,
+  getFilePath
 };
