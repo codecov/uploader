@@ -27,12 +27,13 @@
     "line-reader": "^0.4.0",
     "superagent": "5.2.1",
     "validator": "12.2.0",
-    "yargs": "15.1.0"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "eslint": "6.8.0",
     "eslint-config-prettier": "6.10.0",
     "eslint-plugin-prettier": "3.1.2",
+    "expect": "^26.0.1",
     "jest": "^25.1.0",
     "nock": "11.7.2",
     "pkg": "4.4.3",
