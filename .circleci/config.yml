@@ -68,7 +68,7 @@ jobs:
           command: |
             apk add alpine-sdk
             adduser -D codecov-builder
-            login alpine-sdk
+            login codecov-builder
             whoami
             exit 1
             exit 1
