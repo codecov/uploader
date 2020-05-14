@@ -80,6 +80,7 @@ jobs:
           name: Clone the aports tree
           command: |
             sudo -u codecov-builder git clone git://git.alpinelinux.org/aports
+          cwd: /home/codecov-builder
 
       - run: exit 1
 
