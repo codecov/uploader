@@ -1,0 +1,41 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=usbredir
+pkgver=0.8.0
+pkgrel=1
+pkgdesc="USB network redirection protocol libraries"
+url="https://www.spice-space.org/usbredir.html"
+arch="all"
+options="!check"  # No test suite.
+license="GPL-2.0-or-later AND LGPL-2.1-or-later"
+makedepends="libusb-dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-server"
+source="https://www.spice-space.org/download/usbredir/usbredir-$pkgver.tar.bz2"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-static
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+check() {
+	make check
+}
+
+server() {
+	pkgdesc="Simple USB host TCP server"
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/sbin "$subpkgdir"/usr/
+}
+
+sha512sums="976274adf08f8691b0961f5238021e988a4347873d0c67576038f44cbdaf25c2bb325d8cede0a507933b719f9715b1508ccd1d8f52fccd36f13a7640553dc108  usbredir-0.8.0.tar.bz2"

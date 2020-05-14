@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=keditbookmarks
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://www.kde.org/"
+pkgdesc="Bookmark Organizer and Editor"
+license="GPL-2.0-only AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev ki18n-dev kio-dev kbookmarks-dev kparts-dev kwindowsystem-dev kiconthemes-dev kdoctools-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/keditbookmarks-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="6f0e3e91587b8e0746797931bb506a0e826689d8ded41d9a421be90f7537978049e6792b1879d624c4f2456ebc3973805919308ad0dc51a049aa59d40708e4c5  keditbookmarks-20.04.0.tar.xz"

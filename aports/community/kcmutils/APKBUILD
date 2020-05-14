@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kcmutils
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Utilities for interacting with KCModules"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-only AND LGPL-2.1-or-later"
+depends_dev="kitemviews-dev kconfigwidgets-dev kcoreaddons-dev ki18n-dev kiconthemes-dev kservice-dev kxmlgui-dev kdeclarative-dev"
+makedepends="$depends_dev extra-cmake-modules doxygen qt5-qttools-dev"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kcmutils-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="2b1811c30bc003b2f4325aa1ce094cb9cffcb96eead58a55d4c40cd100ef3cc640d38510077ddc306bfd526526fb0598c3efa49f8342a0ffa46c296bac240c38  kcmutils-5.70.0.tar.xz"

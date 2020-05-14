@@ -1,0 +1,51 @@
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=log4cplus
+pkgver=2.0.5
+pkgrel=0
+pkgdesc="Logging Framework for C++"
+url="https://sourceforge.net/p/log4cplus/wiki/Home/"
+# tests/testsuite.dir/58/testsuite.log
+# 4 ./appender_test.at:5: "$abs_top_builddir/appender_test" 2>&1
+# 5 Aborted (core dumped)
+arch="all !armhf !armv7" # test 50 dumps core
+license="Apache-2.0"
+checkdepends="findutils"
+subpackages="$pkgname-static $pkgname-dev $pkgname-unicode"
+source="https://downloads.sourceforge.net/log4cplus/log4cplus-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-implicit-initialization \
+		--enable-lto \
+		--enable-static \
+		--with-working-c-locale
+	make
+}
+
+check() {
+	make check || {
+		find -name testsuite.log -type f -ls \
+			-printf '%P {{{\n' \
+			-exec cat -v -n '{}' ';' \
+			-printf '}}} %P\n'
+		return 1
+	}
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+unicode() {
+	pkgdesc="$pkgdesc (Unicode)"
+
+	amove ./usr/lib/liblog4cplusU*
+}
+
+sha512sums="916bd148d4f30d2dd14446faf2327ee4c8ad48c62666d5e3970a1f4b29a234f6af770164ee5db5a5a8d5a23d3fab6361abcbb49ba31b23513823dd64cb70ba46  log4cplus-2.0.5.tar.xz"

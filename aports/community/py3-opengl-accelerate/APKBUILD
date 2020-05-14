@@ -1,0 +1,27 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=py3-opengl-accelerate
+pkgver=3.1.4
+_pkgreal=PyOpenGL-accelerate-$pkgver
+pkgrel=0
+pkgdesc="OpenGL bindings for Python (Cython extensions)"
+url="http://pyopengl.sourceforge.net/"
+arch="all"
+license="BSD-3-Clause"
+depends="python3 py3-opengl"
+makedepends="py3-setuptools python3-dev cython"
+source="https://files.pythonhosted.org/packages/source/P/PyOpenGL-accelerate/$_pkgreal.tar.gz"
+builddir="$srcdir"/$_pkgreal
+
+replaces="py-opengl-accelerate" # Backwards compatibility
+provides="py-opengl-accelerate=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="ead92c4ac8047379e8cbde4189e04ef0e25265f472c3eac089a81ebad271fba6f646cfdd43402b21966de5ee20ccab7e27faf94771adb1a93ccad8a3eaf610e8  PyOpenGL-accelerate-3.1.4.tar.gz"

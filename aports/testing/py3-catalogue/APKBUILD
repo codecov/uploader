@@ -1,0 +1,32 @@
+# Contributor: Oleg Titov <oleg.titov@gmail.com>
+# Maintainer: Oleg Titov <oleg.titov@gmail.com>
+pkgname=py3-catalogue
+pkgver=2.0.0
+pkgrel=0
+pkgdesc="Super lightweight function registries for your library"
+url="https://github.com/explosion/catalogue"
+arch="noarch"
+license="MIT"
+depends="py3-importlib-metadata"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/explosion/catalogue/archive/v$pkgver.tar.gz"
+
+builddir=$srcdir/catalogue-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	pytest-3 test_catalogue.py
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+}
+
+sha512sums="126d6f6469d88245b118247b3a6c7c1108a4bc6f0f5628acc3e4b82dfab51da9321a4684eda97c75338bede2d8ebdcba656a8045ed033f489e2a5b28a9d11f6d  py3-catalogue-2.0.0.tar.gz"

@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=akonadi-contacts
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Libraries and daemons to implement Contact Management in Akonadi"
+arch="all !armhf"
+url="https://community.kde.org/KDE_PIM"
+license="LGPL-2.1"
+depends_dev="qt5-qtbase-dev kio-dev ki18n-dev kcompletion-dev kconfig-dev
+	kcodecs-dev kiconthemes-dev kdbusaddons-dev kservice-dev ktextwidgets-dev
+	kwidgetsaddons-dev kxmlgui-dev prison-dev kcontacts-dev kmime-dev
+	akonadi-dev"
+makedepends="$depends_dev extra-cmake-modules"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/akonadi-contacts-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="b9b55e8c9540c1a143233064af99b7eb947ddb40be582f8308a8f863171410e14fb98b7907fa59793c7cac3008e4c67c309f4f4dbec01986adae31337f5964b5  akonadi-contacts-20.04.0.tar.xz"

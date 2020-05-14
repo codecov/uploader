@@ -1,0 +1,29 @@
+# Contributor: Johannes Matheis <jomat+alpinebuild@jmt.gr>
+# Maintainer: Johannes Matheis <jomat+alpinebuild@jmt.gr>
+pkgname=libuecc
+pkgver=7
+pkgrel=2
+pkgdesc="Very small Elliptic Curve Cryptography library"
+url="https://git.universe-factory.net/libuecc"
+arch="all"
+license="BSD-2-Clause"
+makedepends="cmake"
+options="!check" # No testsuite
+subpackages="$pkgname-dev"
+source="https://git.universe-factory.net/libuecc/snapshot/libuecc-$pkgver.tar"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		.
+	make -C build
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+
+sha512sums="3b9bfc62709bf8242fc4caeeda1c079fe17bb74492eb14527d0a8afbe969a836dd5b62b4408adb3ff80b9f7dcdfdc8f6be9886dc6e4181780b55c71fd6c604d8  libuecc-7.tar"

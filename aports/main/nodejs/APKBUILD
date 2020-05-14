@@ -1,0 +1,159 @@
+# Contributor: Jose-Luis Rivas <ghostbar@riseup.net>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Contributor: Dave Esaias <dave@containership.io>
+# Contributor: Tadahisa Kamijo <kamijin@live.jp>
+# Contributor: Eivind Uggedal <eu@eju.no>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+#
+# secfixes:
+#   12.15.0-r0:
+#     - CVE-2019-15606
+#     - CVE-2019-15605
+#     - CVE-2019-15604
+#   10.16.3-r0:
+#     - CVE-2019-9511
+#     - CVE-2019-9512
+#     - CVE-2019-9513
+#     - CVE-2019-9514
+#     - CVE-2019-9515
+#     - CVE-2019-9516
+#     - CVE-2019-9517
+#     - CVE-2019-9518
+#   10.15.3-r0:
+#     - CVE-2019-5737
+#   10.14.0-r0:
+#     - CVE-2018-12121
+#     - CVE-2018-12122
+#     - CVE-2018-12123
+#     - CVE-2018-0735
+#     - CVE-2018-0734
+#   8.11.4-r0:
+#     - CVE-2018-12115
+#   8.11.3-r0:
+#     - CVE-2018-7167
+#     - CVE-2018-7161
+#     - CVE-2018-1000168
+#   8.11.0-r0:
+#     - CVE-2018-7158
+#     - CVE-2018-7159
+#     - CVE-2018-7160
+#   8.9.3-r0:
+#     - CVE-2017-15896
+#     - CVE-2017-15897
+#   6.11.5-r0:
+#     - CVE-2017-14919
+#   6.11.1-r0:
+#     - CVE-2017-1000381
+#
+pkgname=nodejs
+# Note: Update only to even-numbered versions (e.g. 6.y.z, 8.y.z)!
+# Odd-numbered versions are supported only for 9 months by upstream.
+pkgver=12.16.3
+pkgrel=0
+pkgdesc="JavaScript runtime built on V8 engine - LTS version"
+url="https://nodejs.org/"
+arch="all !mips64 !mips64el"
+license="MIT"
+depends="ca-certificates"
+depends_dev="libuv"
+makedepends="
+	brotli-dev
+	c-ares-dev
+	libuv-dev
+	linux-headers
+	nghttp2-dev
+	openssl-dev
+	python2
+	zlib-dev
+	"
+subpackages="$pkgname-dev $pkgname-doc npm::noarch"
+provides="nodejs-lts=$pkgver"  # for backward compatibility
+replaces="nodejs-current nodejs-lts"  # nodejs-lts for backward compatibility
+source="https://nodejs.org/dist/v$pkgver/node-v$pkgver.tar.gz
+	dont-run-gyp-files-for-bundled-deps.patch
+	unbundle-uv.patch
+	link-with-libatomic-on-mips32.patch
+	"
+builddir="$srcdir/node-v$pkgver"
+
+prepare() {
+	default_prepare
+
+	# Remove bundled dependencies that we're not using.
+	rm -rf deps/brotli deps/cares deps/openssl deps/uv deps/zlib
+}
+
+build() {
+	cd "$builddir"
+
+	# Add defines recommended in libuv readme.
+	export CFLAGS="$CFLAGS -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+	export CXXFLAGS="$CXXFLAGS -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+
+	case "$CARCH" in
+	mips*) _carchflags="--with-mips-arch-variant=r1 --with-mips-float-abi=soft";;
+	esac
+
+	./configure --prefix=/usr \
+		$_carchflags \
+		--shared-brotli \
+		--shared-zlib \
+		--shared-libuv \
+		--shared-openssl \
+		--shared-cares \
+		--shared-nghttp2 \
+		--openssl-use-def-ca-store
+
+	make BUILDTYPE=Release
+}
+
+# TODO Run provided test suite.
+check() {
+	cd "$builddir"/out/Release
+
+	./node -e 'console.log("Hello, world!")'
+	./node -e "require('assert').equal(process.versions.node, '$pkgver')"
+}
+
+package() {
+	cd "$builddir"
+
+	make DESTDIR="$pkgdir" install
+
+	cp -pr "$pkgdir"/usr/lib/node_modules/npm/man "$pkgdir"/usr/share
+	local d; for d in docs man; do
+		rm -r "$pkgdir"/usr/lib/node_modules/npm/$d
+	done
+
+	# XXX: Workaround for https://github.com/npm/cli/issues/780.
+	(cd "$pkgdir"/usr/share/man/man5 && find * \
+		-type f ! \( -name 'package-json.*' -or -name 'npmrc.*' -or -name 'npm-*' \) \
+		-exec mv {} npm-{} \;)
+	(cd "$pkgdir"/usr/share/man/man7 && find * \
+		-type f ! \( -name 'semver.*' -or -name 'npm-*' \) \
+		-exec mv {} npm-{} \;)
+}
+
+dev() {
+	provides="nodejs-lts-dev=$pkgver"  # for backward compatibility
+	default_dev
+}
+
+npm() {
+	pkgdesc="A package manager for JavaScript"
+	depends="$pkgname"
+	# for backward compatibility
+	provides="nodejs-npm=$pkgver-r$pkgrel nodejs-current-npm=$pkgver-r$pkgrel"
+	replaces="nodejs-npm nodejs-current-npm $pkgname"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/np[mx] "$subpkgdir"/usr/bin/
+
+	mkdir -p "$subpkgdir"/usr/lib/node_modules
+	mv "$pkgdir"/usr/lib/node_modules/npm "$subpkgdir"/usr/lib/node_modules/
+}
+
+sha512sums="e78b13d64a7c5eaeb05d2041ec88ace755fac3882501e5e3d69d85158ece2f7c9fe6cd771ae791a7615fc9ed676f49f6eb951862aa242af461812ccc52155a87  node-v12.16.3.tar.gz
+3c536776e2ecb5dc677bf711a09418085b3c5e931a6eaf647f47c28e194d5c6dec354d4e7a039a5805b30fc7e83140594851e18d9120f523eec2f93539eac4db  dont-run-gyp-files-for-bundled-deps.patch
+a4e1e7bd4f32ee30ebd319ac0c2fc751166f8fdd27f491709003dfebda51cbece9412630f0b98f0b85253ccc4f066c82997ad68abb9b87dc0b47c24d09a0643a  unbundle-uv.patch
+9f60928b53447f9590c7065bcdbdd4065d10a06e8451531615791a3bd7d14f9114807e5446e0ec00e2cb7a11a277050345e34636b199db2979d7f022b31ffde4  link-with-libatomic-on-mips32.patch"

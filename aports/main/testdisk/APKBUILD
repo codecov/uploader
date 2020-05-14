@@ -1,0 +1,35 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=testdisk
+pkgver=7.1
+pkgrel=0
+pkgdesc="A data recovery suite"
+url="https://www.cgsecurity.org/wiki/TestDisk"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="e2fsprogs-dev ntfs-3g-dev ncurses-dev zlib-dev libjpeg-turbo-dev"
+subpackages="$pkgname-doc"
+source="https://www.cgsecurity.org/testdisk-$pkgver.tar.bz2"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="ad6531eec45c1ed8d4a0ce6132692bb609c4c269fbca57f788ce808214e0b00b5fb1187745a859c5da8a3cb8de18b29904792d3246b15cedfa24bf24cbfe3df5  testdisk-7.1.tar.bz2"

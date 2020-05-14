@@ -1,0 +1,63 @@
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtwebkit
+pkgver=5.212.0_alpha4
+_pkgver=${pkgver/_/-}
+pkgrel=11
+pkgdesc="Qt5 - QtWebKit components"
+url="https://www.qt.io/developers/"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+arch="$arch !mips !mips64" # JavascriptCore FTBFS due to lack of JIT on mips
+license="LGPL-2.1-only AND LGPL-3.0-only AND GPL-3.0-only AND Qt-GPL-exception-1.0"
+depends_dev="
+	qt5-qtbase-dev
+	qt5-qtlocation-dev
+	qt5-qtsensors-dev
+	qt5-qtwebchannel-dev
+	hyphen-dev
+	libjpeg-turbo-dev
+	icu-dev
+	libxml2-dev
+	libxslt-dev
+	libxcomposite-dev
+	libxrender-dev
+	gst-plugins-base-dev
+	libwebp-dev
+	libexecinfo-dev
+	"
+makedepends="$depends_dev
+	cmake
+	bison
+	flex
+	gperf
+	ruby
+	"
+subpackages="$pkgname-dev"
+
+source="https://github.com/qtwebkit/qtwebkit/releases/download/qtwebkit-$_pkgver/qtwebkit-$_pkgver.tar.xz
+	musl-mcontext.patch
+	"
+builddir="$srcdir/qtwebkit-$_pkgver"
+
+build() {
+	case "$CARCH" in
+		ppc64le|s390x) _jit=FALSE ;;
+		*) _jit=TRUE ;;
+	esac
+
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DPORT=Qt \
+		-DENABLE_JIT=$_jit
+	make -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="33f11270bd030599beff9c1983a6c5ff2d61f407cc8a6825f7f405d46f9184c720fc7f60c7359f08f828db96a2170092875066a0d5c0a21ff09bc48a2603fbf6  qtwebkit-5.212.0-alpha4.tar.xz
+11f6b4b5101f5e89917062483c0d55c4180dc4b8107bb3f6ad92ed4e56361ef1b604909056b383313c4072b1229dc9f6606ceacdd84efc1dc80dd1151294b195  musl-mcontext.patch"

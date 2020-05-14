@@ -1,0 +1,31 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=entr
+pkgver=4.5
+pkgrel=0
+pkgdesc="Event Notify Test Runner: Run arbitrary commands when files change"
+url="http://entrproject.org"
+arch="all"
+license="ISC"
+subpackages="$pkgname-doc"
+makedepends="vim mercurial file util-linux"
+checkdepends="bash tmux"
+source="http://entrproject.org/code/entr-$pkgver.tar.gz"
+
+build() {
+	./configure
+	make
+}
+
+check() {
+	make test
+
+	# FIXME: The tmux invocation in the functional tests blocks the builders
+	# make regress
+}
+
+package() {
+	PREFIX="$pkgdir/usr" make install
+}
+
+sha512sums="db9499d78385df5056a30a4e3262fb436090acc5410ddfc529a7cfe4e10e304e13787abfc31dd38dbf8b9f01fa3369ef32d20c9fb903fa35763f41791bdda9c7  entr-4.5.tar.gz"

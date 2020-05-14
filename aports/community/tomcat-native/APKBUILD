@@ -1,0 +1,38 @@
+# Contributor: Sean Summers <seansummers@gmail.com>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=tomcat-native
+pkgver=1.2.24
+pkgrel=0
+pkgdesc="Native resources optional component for Apache Tomcat"
+url="https://tomcat.apache.org/native-doc/"
+arch="all !mips !mips64"
+license="Apache-2.0"
+options="!check" # package has no tests
+makedepends="apr-dev chrpath openjdk8 openssl-dev"
+subpackages="$pkgname-dev"
+source="https://www-eu.apache.org/dist/tomcat/tomcat-connectors/native/$pkgver/source/tomcat-native-$pkgver-src.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver-src/native"
+
+build() {
+	./configure --prefix=/usr \
+		--with-apr=/usr/bin/apr-1-config \
+		--with-java-home=/usr/lib/jvm/default-jvm \
+		--with-ssl=yes
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	# Remove redundant rpath.
+	chrpath --delete "$pkgdir"/usr/lib/libtcnative-1.so
+
+	rm -f "$pkgdir"/usr/lib/libtcnative-1.la
+}
+
+dev() {
+	default_dev
+	mv "$subpkgdir"/usr/lib/libtcnative-1.so "$pkgdir"/usr/lib/
+}
+
+sha512sums="5dae151a60f8bd5a9a29d63eca838c77174426025ee65a826f0698943494dd3656d50bcd417e220a926b9ce111ea167043d4b806264030e951873d06767b3d6f  tomcat-native-1.2.24-src.tar.gz"

@@ -1,0 +1,29 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=py3-gitpython
+pkgver=3.1.2
+pkgrel=1
+pkgdesc="Python3 Git Library"
+url="https://github.com/gitpython-developers/GitPython"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3 py3-gitdb2"
+makedepends="py3-setuptools"
+checkdepends="py3-ddt py3-nose"
+source="https://pypi.python.org/packages/source/G/GitPython/GitPython-$pkgver.tar.gz"
+options="!check" # Tests require a specific git configuration
+builddir="$srcdir/GitPython-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	nosetests
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="051b59b56a163839bf7754860bfc8e21cfde08b8e7d0fd66239c234b89ba5a83fa7e8540a12c5df3563e5353d1e01119dd1b0a5ea1c22daf7e071fb963cbc3a4  GitPython-3.1.2.tar.gz"

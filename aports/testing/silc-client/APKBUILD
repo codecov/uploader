@@ -1,0 +1,37 @@
+# Contributor: Johannes Matheis <jomat+alpinebuild@jmt.gr>
+# Maintainer: Johannes Matheis <jomat+alpinebuild@jmt.gr>
+pkgname=silc-client
+pkgver=1.1.11
+pkgrel=10
+pkgdesc="Secure Internet Live Conferencing - client"
+url="http://silcnet.org/"
+arch="all"
+license="GPL-2.0-only"
+makedepends="file glib-dev openssl-dev perl-dev ncurses-dev"
+subpackages="$pkgname-doc"
+source="https://downloads.sourceforge.net/project/silc/silc/client/sources/silc-client-$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+
+	update_config_guess
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR=$pkgdir install
+	rm $pkgdir/usr/lib/perl5/core_perl/perllocal.pod
+}
+
+
+sha512sums="185cd687a155fbbfbb65877438c2ad099d6795451d443d4d826d47469d312fa9f82035999d1cdf80f24eac2df45a10e88ddf095dc5acda70a31c61a4abb1cdb2  silc-client-1.1.11.tar.gz"

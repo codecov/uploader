@@ -1,0 +1,38 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=yad
+pkgver=6.0
+pkgrel=0
+pkgdesc="A fork of zenity - display graphical dialogs from shell scripts or command line"
+url="https://sourceforge.net/projects/yad-dialog"
+arch="all"
+license="GPL-3.0-or-later"
+depends="hicolor-icon-theme"
+makedepends="gtk+3.0-dev webkit2gtk-dev intltool libtool automake autoconf"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="yad-$pkgver.tar.gz::https://github.com/v1cont/yad/archive/v$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	autoreconf -ivf && intltoolize
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--enable-icon-browser \
+		--enable-html \
+		--disable-pfd
+	make
+}
+
+check() {
+	echo "src/util.c" >> po/POTFILES.in
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="c8c61e4ad0fe1230b1a6d0fd1fc07ee7c364184443adf1a11bc634ba7e2c9724e951a9674272e64473e1dcf20f22794a37deb3a4aec3bb0d2a0a652a328bfd1f  yad-6.0.tar.gz"

@@ -1,0 +1,32 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=py3-ldap3
+_pkgname=ldap3
+pkgver=2.7
+pkgrel=0
+pkgdesc="A strictly RFC 4510 conforming LDAP V3 pure Python3 client"
+url="https://github.com/cannatag/ldap3"
+arch="noarch"
+license="LGPL-3.0-or-later"
+depends="python3 py3-asn1"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/cannatag/ldap3/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+options="!check"  # tests need running LDAP server
+
+replaces="py-ldap3" # Backwards compatibility
+provides="py-ldap3=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="52b9e8632a8d0b5cfdd801d165f72cfa78b6fa56e1c5e1b3b0b44ad1f1d695a55506b324d88af429319bc9b7b2a5d67d8f0eb6b7c305aa06a7ed9fec8aedbd94  py3-ldap3-2.7.tar.gz"

@@ -1,0 +1,33 @@
+# Contributor: Ivan Tham <pickfire@riseup.net>
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+_commit=3c88778c6c85d97fb63c41c05304519e0484b07c
+pkgname=ubase
+pkgver=20190312
+pkgrel=0
+pkgdesc="Suckless collection of unportable base"
+url="https://core.suckless.org/ubase"
+arch="all !mips !mips64" # fails to build on mips
+license="MIT"
+subpackages="$pkgname-doc"
+makedepends="git"
+source="" # source is only distributed as a git repo
+options="suid !check" # upstream provides no test suite
+builddir="$srcdir/$pkgname"
+
+prepare() {
+	cd "$srcdir"
+	git clone git://git.suckless.org/ubase
+	cd ubase
+	git checkout $_commit
+}
+
+build() {
+	cd "$builddir"
+	make
+}
+
+package() {
+	cd "$builddir"
+	chmod a+s passwd
+	make DESTDIR="$pkgdir" PREFIX=/usr install
+}

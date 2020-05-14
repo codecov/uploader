@@ -1,0 +1,36 @@
+# Contributor: Taner Tas <taner76@gmail.com>
+# Maintainer: Taner Tas <taner76@gmail.com>
+pkgname=xfd
+pkgver=1.1.3
+pkgrel=0
+pkgdesc="Xorg font display application."
+url="https://xorg.freedesktop.org/"
+arch="all"
+license="X11"
+makedepends="
+	fontconfig-dev
+	gettext-dev
+	libintl
+	libxaw-dev
+	libxft-dev
+	libxmu-dev
+	libxrender-dev
+	libxkbfile-dev
+	"
+subpackages="$pkgname-doc"
+source="
+	https://xorg.freedesktop.org/archive/individual/app/$pkgname-$pkgver.tar.gz
+	"
+options="!check" # No test suite
+
+build() {
+	export LIBS="$LIBS -lintl"
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="6154c3014b407b6eb01615e214c7bda8ab7b2d11ca4e5e457fdd79d757c37cd6b358c46b45e782c5462324bfb539830520e228e9600546fb1b0878e0974abc78  xfd-1.1.3.tar.gz"

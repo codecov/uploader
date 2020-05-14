@@ -1,0 +1,19 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: David Demelier <markand@malikania.fr>
+pkgname=libretro-database
+pkgver=1.8.6
+pkgrel=0
+arch="noarch"
+url="https://www.libretro.com/"
+pkgdesc="Libretro core info files"
+license="MIT"
+source="$pkgname-$pkgver.tar.gz::https://github.com/libretro/libretro-database/archive/v$pkgver.tar.gz
+	fix-busybox-incompability.patch"
+options="!check" # No code to test
+
+package() {
+	DESTDIR="$pkgdir" make install
+}
+
+sha512sums="92a4639a036f52c84814244324014fead187423d417511e23263da53ab966e9b81d8a7e29817355932e2c202564f5e179133a2a55a0333628ec9bcdc78808a6d  libretro-database-1.8.6.tar.gz
+41670da3518bf5aa80f0916e94f81c6aed4c8ca5c1cae941c521440d5c019b96c3594e2efc3849e397d71deda8b9db7bed6fabb0ecf305572688179bbffc1406  fix-busybox-incompability.patch"

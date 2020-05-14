@@ -1,0 +1,43 @@
+# Contributor: Diaz Devera Victor <vitronic2@gmail.com>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtgamepad
+pkgver=5.14.2
+pkgrel=0
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://doc.qt.io/qt-5/qtgamepad-index.html"
+license="LGPL-2.1-only AND LGPL-3.0-only AND GPL-3.0-only AND Qt-GPL-exception-1.0"
+pkgdesc="Adds support for getting events from gamepad devices"
+depends="sdl2 libevdev"
+depends_dev="qt5-qtdeclarative-dev eudev-dev"
+makedepends="$depends_dev qt5-qtbase-dev libevdev"
+subpackages="$pkgname-dev"
+builddir="$srcdir/qtgamepad-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="http://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtgamepad-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="23971fae9b1626afc005dccae3bb715f719695bf5e24a1711b3e7049ce49ef5c72097e1eb702464ab7663d41750bf4103e4ed78ee7954269921e3064b79f4c05  qtgamepad-everywhere-src-5.14.2.tar.xz"

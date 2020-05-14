@@ -1,0 +1,37 @@
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Maintainer: Kevin Daudt <kdaudt@alpinelinux.org>
+pkgname=kops
+pkgver=1.16.1
+pkgrel=0
+pkgdesc="Kubernetes Operations"
+url="https://github.com/kubernetes/kops"
+arch="x86_64"
+license="Apache-2.0"
+depends="kubernetes"
+makedepends="go"
+options="chmod-clean"
+source="$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz"
+
+export GOPATH=$srcdir/go
+
+prepare() {
+	default_prepare
+
+	local dir=$GOPATH/src/k8s.io
+	mkdir -p "$dir"
+	ln -s "$builddir" "$dir/$pkgname"
+}
+
+build() {
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	install -D "$GOPATH"/bin/kops "$pkgdir"/usr/bin/kops
+}
+
+sha512sums="bb29a0a4863923cbf11bd08d5ea469fabf9dc2f3e710bd07fa26ca8ed4028120855dc14a2aef0307111eba7d536161b906dca8b5ff28e41b73e31dcaddf6a8a4  kops-1.16.1.tar.gz"

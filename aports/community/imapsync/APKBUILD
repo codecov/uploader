@@ -1,0 +1,68 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=imapsync
+pkgver=1.945
+pkgrel=0
+pkgdesc="IMAP synchronisation, sync, copy or migration tool"
+url="https://imapsync.lamiral.info/"
+arch="noarch"
+license="NLPL"
+depends="perl-app-cpanminus
+	perl-authen-ntlm
+	perl-cgi
+	perl-crypt-openssl-rsa
+	perl-data-dumper
+	perl-data-uniqid
+	perl-digest-hmac
+	perl-digest-md5
+	perl-dist-checkconflicts
+	perl-file-copy-recursive
+	perl-file-tail
+	perl-io-compress
+	perl-io-socket-inet6
+	perl-io-socket-ssl
+	perl-io-tee
+	perl-json-webtoken
+	perl-libwww
+	perl-mail-imapclient
+	perl-module-implementation
+	perl-package-stash
+	perl-parse-recdescent
+	perl-readonly
+	perl-regexp-common
+	perl-sys-meminfo
+	perl-term-readkey
+	perl-unicode-string
+	perl-uri
+	procps
+	"
+checkdepends="
+	perl-test-deep
+	perl-test-fatal
+	perl-test-mock-guard
+	perl-test-mockobject
+	perl-test-nowarnings
+	perl-test-pod
+	perl-test-requires
+	perl-test-simple
+	perl-test-warn
+	"
+makedepends="perl-module-scandeps perl-par-packer"
+subpackages="$pkgname-doc"
+source="https://github.com/imapsync/imapsync/archive/imapsync-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgname-$pkgver"
+
+# NOTE: tests.sh requires authors remote imap password
+check() {
+	./imapsync --version
+	make testp  # check dependencies
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/share/doc/$pkgname
+	install -Dm644 FAQ.d/* "$pkgdir"/usr/share/doc/$pkgname/
+}
+
+sha512sums="cb8c2c545a54ae63d944fc56790595a0de9260d3451d11b43a5d58dab0c87653be633572ce1de6715334091b667187585eedd21ca12bc438abaeee2a65a1a6bd  imapsync-1.945.tar.gz"

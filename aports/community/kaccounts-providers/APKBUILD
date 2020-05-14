@@ -1,0 +1,27 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kaccounts-providers
+pkgver=20.04.0
+pkgrel=0
+arch="all !ppc64le !s390x !armhf !mips !mips64" # blocked by qt5-qtwebengine
+url="https://kde.org/applications/internet/"
+pkgdesc="Small system to administer web accounts for the sites and services across the KDE desktop"
+license="GPL-2.0-or-later"
+depends="kaccounts-integration"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtdeclarative-dev qt5-qtwebengine-dev kio-dev ki18n-dev kdeclarative-dev kpackage-dev kaccounts-integration-dev intltool"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kaccounts-providers-$pkgver.tar.xz"
+subpackages="$pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="679e6825141f10844cabd6cef25134d690cc2a073c25e1adb14dd9b744117ad94c346d3214a67b9b755a7a1b852bc1208cf4aff9d4dbea5d8472f1bab25c1f4f  kaccounts-providers-20.04.0.tar.xz"

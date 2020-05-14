@@ -1,0 +1,38 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=vpnc
+pkgver=0.5.3
+_commit=fa0689cc9a67d02a614c7a2406dfe2e794825a31
+pkgrel=8
+pkgdesc="IPSec VPN client compatible with Cisco equipment"
+url="https://github.com/streambinder/vpnc"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="gnutls-dev libgcrypt-dev openssl-dev perl linux-headers"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="$pkgname-$pkgver.zip::https://github.com/streambinder/vpnc/archive/$_commit.zip
+	vpnc.initd
+	vpnc.confd"
+builddir="$srcdir/$pkgname-$_commit"
+
+build() {
+	sed 's|^#OPENSSL|OPENSSL|g' -i Makefile
+	sed 's|/sbin/resolvconf|/usr/sbin/resolvconf|g' -i src/vpnc-script
+	make PREFIX=/usr
+}
+
+check() {
+	make test
+}
+
+package() {
+	make PREFIX=/usr DESTDIR="$pkgdir" install
+	install -m755 -D "$srcdir"/vpnc.initd \
+		"$pkgdir"/etc/init.d/vpnc
+	install -m644 -D "$srcdir"/vpnc.confd \
+		"$pkgdir"/etc/conf.d/vpnc
+}
+
+sha512sums="b78a0e9689b743bcda002e1b8b1f924757477c07899b2b6e5d6b4d3a82399f7cc5daaf9f5d10cb337a0a9b082053f9e083f9a9848a6d01481e8846a1d4ad4165  vpnc-0.5.3.zip
+416bba9c539d14c61a014f2a08e7324ffd4b8d1764af051d555b93e083f5811c3332e22c2aa81fd2a2856ddb69e9370455dfe7da7b36c010a0f4e8dbc233fbbd  vpnc.initd
+1254f687dcd9822becfcccabbb34d8343d715d70247dbf4b5e018835fff24b33f5272368f77199d697c8d11d913182b1f756d5e08a46b2057849779f09b19633  vpnc.confd"

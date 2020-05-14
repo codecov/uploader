@@ -1,0 +1,17 @@
+# Contributor: Ted Trask <ttrask01@yahoo.com>
+# Maintainer: Ted Trask <ttrask01@yahoo.com>
+pkgname=acf-alpine-conf
+pkgver=0.9.0
+pkgrel=4
+pkgdesc="A web-based system administration interface for alpine-conf"
+url="https://git.alpinelinux.org/cgit/acf/acf-alpine-conf"
+arch="noarch"
+license="GPL-2.0"
+depends="acf-core lua-posix openssl"
+source="https://dev.alpinelinux.org/archive/$pkgname/$pkgname-$pkgver.tar.xz"
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="a018089b1ada43270ff2e10eecc83e0a56289e722de52344a3a0acac2b74914165a23aea4602ad48b1748af4873c36d2f61d5fbaae578f1d3749a82a41d5f03c  acf-alpine-conf-0.9.0.tar.xz"

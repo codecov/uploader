@@ -1,0 +1,13 @@
+--- a/core/src/lib/mntent_cache.cc
++++ b/core/src/lib/mntent_cache.cc
+@@ -54,6 +54,10 @@
+  *  Marco van Wieringen, August 2009
+  */
+ 
++#ifndef _PATH_MOUNTED
++# define _PATH_MOUNTED "/proc/mounts"
++#endif
++
+ #include "include/bareos.h"
+ #include "mntent_cache.h"
+ 

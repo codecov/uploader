@@ -1,0 +1,38 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libebml
+pkgver=1.3.10
+pkgrel=1
+pkgdesc="C++ library to parse Extensible Binary Meta-Language files"
+url="https://www.matroska.org"
+arch="all"
+options="!check"  # No test suite.
+license="LGPL-2.1-or-later"
+makedepends="cmake"
+subpackages="$pkgname-dev"
+source="http://dl.matroska.org/downloads/libebml/libebml-$pkgver.tar.xz"
+
+# secfixes:
+#   1.3.6-r0:
+#     - CVE-2019-13615
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		$CMAKE_CROSSOPTS
+	make
+}
+
+package() {
+	make install DESTDIR="$pkgdir"
+}
+
+sha512sums="c7ba20664161e811a10847f888a833abaa2b7a4d43ddbef6ae927f391f5d1eff45bc703f13a52ccfc793521e3b22cbac2fd93550cd95119a4060153683b29c49  libebml-1.3.10.tar.xz"

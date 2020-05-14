@@ -1,0 +1,28 @@
+# Contributor: Michał Polański <michal@polanski.me>
+# Maintainer: Michał Polański <michal@polanski.me>
+pkgname=py3-pathspec
+_pkgname=pathspec
+pkgver=0.8.0
+pkgrel=0
+pkgdesc="Utility library for gitignore style pattern matching of file paths"
+url="https://github.com/cpburnz/python-path-specification"
+arch="noarch"
+license="MPL-2.0"
+depends="python3"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/p/pathspec/pathspec-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 -m unittest discover pathspec/tests
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir" --skip-build
+}
+
+sha512sums="e0cb1883d11506b3d11963397db98a0fd3411f56df7c3e2ab3ac44116ab53977112bb51d1918591afc48b9c08f9cf997d34beba373aafbfbca2aa8749ffaf6c8  pathspec-0.8.0.tar.gz"

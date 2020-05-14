@@ -1,0 +1,31 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-webob
+_pkgname=WebOb
+pkgver=1.8.6
+pkgrel=0
+pkgdesc="A Python WSGI request and response objects"
+url="https://webob.org/"
+arch="noarch"
+license="MIT"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest py3-pytest-runner"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-webob" # Backwards compatibility
+provides="py-webob=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py pytest --addopts "--ignore=docs"
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="b9a3faac114c55f3e9a6eb71a78dd921d928da99a427dea05bc798bc1fe249f0f1cf8c9b9fcb1b73be2737b9132bbfe2250a8652e3a8a1199ac74fa62a59d44c  WebOb-1.8.6.tar.gz"

@@ -1,0 +1,46 @@
+# Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
+pkgname=ocrmypdf
+pkgver=9.8.0
+pkgrel=0
+pkgdesc="Add OCR text layer to scanned PDF files"
+url="https://github.com/jbarlow83/OCRmyPDF"
+arch="noarch"
+license="MIT"
+options="!check" # failing tests with jbig2enc 0.17
+depends="
+	python3
+	py3-setuptools
+	py3-reportlab
+	py3-chardet
+	py3-cffi
+	py3-img2pdf
+	py3-pdfminer
+	py3-pikepdf
+	py3-pillow
+	py3-tqdm
+
+	tesseract-ocr
+	ghostscript
+	unpaper
+	qpdf
+	jbig2enc
+	pngquant
+	leptonica
+	"
+makedepends="python3-dev"
+source="https://files.pythonhosted.org/packages/source/o/ocrmypdf/ocrmypdf-$pkgver.tar.gz"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="3dd0408b4b879f4b741dcfb12947e79e9da4d5abdd02b4ecde5f061a3e62e443616ce38aee04c7b13724117f24312377dc0229990e681c095e0f263d4c3a5a46  ocrmypdf-9.8.0.tar.gz"

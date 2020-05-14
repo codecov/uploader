@@ -1,0 +1,28 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=xfce4-dev-tools
+pkgver=4.14.0
+pkgrel=0
+pkgdesc="Xfce developer tools"
+url="https://xfce.org/"
+arch="all"
+license="GPL-2.0-or-later"
+depends="automake autoconf make intltool pkgconfig libtool gtk-doc glib-dev"
+source="https://archive.xfce.org/src/xfce/xfce4-dev-tools/${pkgver%.*}/xfce4-dev-tools-$pkgver.tar.bz2"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--libexecdir=/usr/lib \
+		--localstatedir=/var \
+		--disable-static
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="e22b139ff7516ec0e510f882cc6a9e8e8b2b7bd41093c8e67e5ef11eb6c2c2848637513369d652f7238f10b5005c5483a938d3348020b48a4c1fadadd6d635f8  xfce4-dev-tools-4.14.0.tar.bz2"

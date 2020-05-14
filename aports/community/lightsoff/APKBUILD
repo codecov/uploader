@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=lightsoff
+pkgver=3.36.0
+pkgrel=1
+arch="all !s390x !mips !mips64" # Blocked by librsvg -> rust
+url="https://wiki.gnome.org/Apps/Lightsoff"
+pkgdesc="Turn off all the lights"
+license="GPL-2.0-or-later"
+makedepends="meson ninja itstool vala gtk+3.0-dev librsvg-dev clutter-dev clutter-gtk-dev"
+checkdepends="appstream-glib desktop-file-utils"
+source="https://download.gnome.org/sources/lightsoff/${pkgver%.*}/lightsoff-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="9d026432bf059fb72aa8aab7b52c22e81acca12c8ba6a26350970a22a760a5d113958288196acc38d6ecba1096155323ecef86406e94d35e9ed82f26f9e30eae  lightsoff-3.36.0.tar.xz"

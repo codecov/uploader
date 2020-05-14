@@ -1,0 +1,17 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=apk-post-messages
+pkgver=0.10
+pkgrel=1
+pkgdesc="Print apk post-install messages"
+url="https://alpinelinux.org"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="apk-tools"
+triggers="$pkgname.trigger=/usr/share/doc/*"
+
+builddir="$srcdir"
+
+package() {
+	mkdir -p "$pkgdir"
+}

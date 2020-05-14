@@ -1,0 +1,43 @@
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-mail-dkim
+_realname=Mail-DKIM
+pkgver=0.58
+pkgrel=1
+pkgdesc="Signs/verifies Internet mail with DKIM/DomainKey signatures"
+url="http://search.cpan.org/~jaslong/Mail-DKIM/"
+arch="noarch"
+license="Artistic-Perl-1.0 GPL+"
+depends="perl perl-net-dns perl-net-ip perl-mailtools perl-crypt-openssl-rsa
+	perl-yaml-libyaml perl-net-dns-resolver-mock
+	perl-mail-authenticationresults
+	"
+makedepends="perl-dev"
+checkdepends="perl-test-requiresinternet"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/M/MB/MBRADSHAW/$_realname-$pkgver.tar.gz"
+builddir="$srcdir/$_realname-$pkgver"
+
+prepare() {
+	cd "$builddir"
+	export CFLAGS=`perl -MConfig -E 'say $Config{ccflags}'`
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+}
+
+build() {
+	cd "$builddir"
+	export CFLAGS=`perl -MConfig -E 'say $Config{ccflags}'`
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+sha512sums="b06e834286a1ae6c5e2049c26ab1df2f4e784f44cd2ac5ad370be76746da7a32b41733e4b756aded422017cf646d2d0d93dee51cff8320604074cb3375df743d  Mail-DKIM-0.58.tar.gz"

@@ -1,0 +1,33 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-pyzmq
+_pkgname=pyzmq
+pkgver=18.1.1
+pkgrel=0
+pkgdesc="Python bindings for ZeroMQ"
+url="https://pypi.python.org/pypi/pyzmq"
+arch="all !mips !mips64 !s390x" # https://github.com/zeromq/pyzmq/issues/1274
+license="LGPL-3.0-or-later AND BSD-3-Clause"
+depends="python3"
+makedepends="python3-dev py3-setuptools zeromq-dev"
+checkdepends="py3-pytest"
+source="https://files.pythonhosted.org/packages/source/p/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces=py-zmq # Backwards compatibility
+provides=py-zmq=$pkgver-r$pkgrel # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py build_ext --inplace
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="27e7b454e8bf26bc7a201a858f1ff107da039f99c5a5987e463a6bb3dc5a4568a7ec2404dfb4612cac5740f69d943ab4116d0f0f7ece2d1bba1a0c2779c4c164  pyzmq-18.1.1.tar.gz"

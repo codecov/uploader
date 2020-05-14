@@ -1,0 +1,35 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: 7heo <7heo@mail.com>
+pkgname=libofx
+pkgver=0.9.15
+pkgrel=0
+pkgdesc="The libofx OFX banking protocol abstraction library"
+url="https://github.com/libofx/libofx"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="bash automake autoconf libtool gengetopt opensp-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/libofx/libofx/archive/$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-static
+	make -j1
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+}
+
+sha512sums="6014bf9c457adbe9053a47718064e6246c911c3bf081c690bf761650220208aabe94824aaa38794c1834462894b7948a06b3ff6b517a9a84b9f881ba51aee3a1  libofx-0.9.15.tar.gz"

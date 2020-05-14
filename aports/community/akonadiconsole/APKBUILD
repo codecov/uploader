@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=akonadiconsole
+pkgver=20.04.0
+pkgrel=0
+arch="all !s390x !ppc64le !armhf !mips !mips64" # calendarsupport messagelib missing
+url="https://kontact.kde.org/"
+pkgdesc="Application for debugging Akonadi Resources"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kcompletion-dev kconfig-dev kconfigwidgets-dev kdbusaddons-dev kdoctools-dev ki18n-dev kitemmodels-dev ktextwidgets-dev kwidgetsaddons-dev kxmlgui-dev kcrash-dev kcompletion-dev kitemviews-dev kio-dev akonadi-dev kcontacts-dev kcalendarcore-dev kmime-dev akonadi-contacts-dev calendarsupport-dev messagelib-dev libkdepim-dev akonadi-search-dev xapian-bindings"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/akonadiconsole-$pkgver.tar.xz"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="87a8ce3f88fd99f7e5483e0dbca712fa3d79be83bcddfe98305368df85b640c25533338995a0ce6b0aa528182dc505c1cdc5023c578cd8c9d698361eac92ee92  akonadiconsole-20.04.0.tar.xz"

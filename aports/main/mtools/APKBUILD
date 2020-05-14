@@ -1,0 +1,33 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=mtools
+pkgver=4.0.24
+pkgrel=0
+pkgdesc="A collection of utilities to access MS-DOS disks from Unix without mounting them"
+url="https://www.gnu.org/software/mtools/"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="texinfo"
+source="https://ftp.gnu.org/gnu/mtools/mtools-$pkgver.tar.bz2"
+subpackages="$pkgname-doc"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--sysconfdir=/etc/mtools \
+		--without-x
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make -j1 install DESTDIR="$pkgdir"
+}
+
+sha512sums="b74becc4f696315cfabc016d1746e744b43e366de73bf1bffeec4fbab1e4815967594de8acb4af01f89d36a925f93672efbac205b89540161bd53ab7edebcf04  mtools-4.0.24.tar.bz2"

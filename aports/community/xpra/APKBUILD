@@ -1,0 +1,103 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=xpra
+pkgver=3.0.9
+pkgrel=0
+pkgdesc="Xpra is 'screen for X' & allows you to run X programs, usually on a remote host over SSH or encrypted tcp"
+url="https://xpra.org"
+# blocked by numpy
+arch="all !mips !mips64"
+license="GPL-2.0-or-later"
+depends="
+	py3-gobject3
+	py3-numpy
+	py3-opengl
+	py3-rencode
+	py3-lz4
+	py3-cryptography
+	py3-dbus
+	py3-openssl
+	py3-brotli
+
+	py3-pillow
+
+	xf86-video-dummy
+	xorg-server
+	xvfb
+	"
+makedepends="
+	x264-dev
+	x265-dev
+	ffmpeg-dev
+	libvpx-dev
+	libwebp-dev
+	libpng-dev
+	libjpeg-turbo-dev
+
+	libogg-dev
+	opus-dev
+	libvorbis-dev
+
+	libx11-dev
+	libxrandr-dev
+	libxtst-dev
+	libxfixes-dev
+	libxkbfile-dev
+	libxcomposite-dev
+	libxdamage-dev
+
+	gtk+3.0-dev
+	glib-dev
+
+	py3-gobject3-dev
+	py3-cairo-dev
+
+	lz4-dev
+
+	python3-dev
+	cython
+	yasm
+	nasm
+	gmp-dev
+	mpfr-dev
+	py3-yuicompressor
+	"
+subpackages="$pkgname-openrc $pkgname-doc $pkgname-tests::noarch $pkgname-webclient::noarch"
+options="!check"
+source="https://xpra.org/src/xpra-$pkgver.tar.xz"
+
+build() {
+	# https://www.xpra.org/trac/ticket/1080
+	CFLAGS="$CFLAGS -fno-strict-aliasing"
+	python3 setup.py build \
+		--with-bundle_tests
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	# Fixes Error relocating /usr/lib/xorg/modules/drivers/dummy_drv.so: fbPictureInit: symbol not found
+	# https://bugs.alpinelinux.org/issues/5478
+	printf '\nSection "Module"\n  Load\t"fb"\nEndSection\n' >> "$pkgdir"/etc/xpra/xorg.conf
+
+	rm -rf "$pkgdir"/usr/lib/tmpfiles.d/xpra.conf
+	rm -rf "$pkgdir"/usr/lib/sysusers.d/xpra.conf
+}
+
+tests() {
+	pkgdesc="Xpra test suite"
+
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr/share/xpra
+	cp -rf tests "$subpkgdir"/usr/share/xpra/
+}
+
+webclient() {
+	pkgdesc="Xpra websockets client"
+
+	cd "$pkgdir"
+	mkdir -p "$subpkgdir"/usr/share/xpra
+	cp -rf usr/share/xpra/www "$subpkgdir"/usr/share/xpra/
+}
+
+sha512sums="e94782ceb1ad28aec797f8573e12ddb1ef7652d50222365a85bbfdda0d348b7a71c38d72600d5c1702edb167efabf60f890d1aee21a8f95f29d49e21b1c7aa98  xpra-3.0.9.tar.xz"

@@ -1,0 +1,32 @@
+# Maintainer: Marian Buschsieweke <marian.buschsieweke@ovgu.de>
+pkgname=py3-kiwisolver
+_pkgname=kiwisolver
+pkgver=1.2.0
+pkgrel=0
+pkgdesc="Efficient implementation of the Cassowary constraint solving algorithm"
+url="https://github.com/nucleic/kiwi"
+arch="all"
+license="BSD-3-Clause-Attribution"
+depends="py3-setuptools"
+makedepends="python3-dev"
+checkdepends="py3-pytest"
+source="$pkgname-$pkgver.tar.gz::https://github.com/nucleic/kiwi/archive/$pkgver.tar.gz"
+builddir="$srcdir"/kiwi-$pkgver
+
+replaces="py-kiwisolver" # Backwards compatibility
+provides="py-kiwisolver=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	PYTHONPATH="$(echo $PWD/build/lib.*-3*)" py.test-3
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+
+sha512sums="05541ff46cc64b9958d714452138dc7bb343e6cc9308408a3f8cf25242e9640af37f8bfd22a7038e8ca70a895f57bdb983346259bce22b1630ac10b974d00a0e  py3-kiwisolver-1.2.0.tar.gz"

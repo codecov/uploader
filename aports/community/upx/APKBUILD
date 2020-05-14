@@ -1,0 +1,84 @@
+# Maintainer: Mitch Tishmack <mitch.tishmack@gmail.com>
+# TODO: unbundle lzma-sdk
+pkgname=upx
+pkgver=3.96
+pkgrel=0
+pkgdesc="The Ultimate Packer for eXecutables"
+url="https://upx.github.io"
+arch="all !s390x !aarch64 !armhf !armv7 !mips !mips64" # Failure to build/run
+license="GPL-2.0 Public-Domain"
+# perl-dev is used to generate man pages
+makedepends="bash perl-dev ucl-dev zlib-dev"
+subpackages="$pkgname-doc"
+source="https://github.com/upx/upx/releases/download/v$pkgver/upx-$pkgver-src.tar.xz
+	0001-rm-broken-whitespace-check.patch"
+builddir="$srcdir/$pkgname-$pkgver-src"
+
+# secfixes:
+#   3.96-r0:
+#     - CVE-2018-11243
+#     - CVE-2019-14296
+#     - CVE-2019-20021
+#     - CVE-2019-20053
+
+build() {
+	make CXXFLAGS_OPTIMIZE= UPX_LZMADIR="$srcdir" all
+}
+
+check() {
+	# upx -q is not quiet enough by design or broken
+
+	local upx=src/upx.out
+	local out
+
+	# first check some big dynamically-linked binary
+	echo "checking -pie..."
+
+	cp -f /bin/busybox ./sh
+	for i in "-1" "-d"; do
+		$upx $i -qf sh >/dev/null
+		out="$(./sh -c 'echo works')"
+		test "x$out" = "xworks"
+	done
+	rm -f sh
+
+	# FIXME: fix broken architectures
+	case "$CARCH" in
+		x86) return 0;;
+	esac
+
+	# then check less common statically-linked binaries (PIE and non-PIE)
+	for v in "-static"; do # FIXME: fix "-static -no-pie"
+		echo "checking $v..."
+
+		# must be compressible (i.e. big enough) so pull printf etc
+		$CC -o upxtest -pipe -std=c11 -pedantic -Wall $CFLAGS $LDFLAGS $v -x c - -latomic <<-EOF
+		#include <stdatomic.h>
+		#include <stdio.h>
+		static const atomic_llong b = ATOMIC_VAR_INIT(0x1000200030004000LL);
+		int main(int argc, char *argv[const]) {
+			atomic_llong a = ATOMIC_VAR_INIT(argc);
+			atomic_fetch_add(&a, b);
+			printf("%d,%#llx\n", argc, a);
+			return 0;
+		}
+		EOF
+		cp upxtest upxtest.orig
+
+		for i in "-1" "-d"; do
+			echo "$upx $i -qf upxtest"
+			$upx $i -qf upxtest >/dev/null
+			out=$(./upxtest "")
+			test "x$out" = "x2,0x1000200030004002"
+		done
+	done
+	rm -f upxtest
+}
+
+package() {
+	install -D -m 0755 src/upx.out "$pkgdir"/usr/bin/upx
+	install -D -m 0644 doc/upx.1 "$pkgdir"/usr/share/man/man1/upx.1
+}
+
+sha512sums="2d4d1be21d274d9bfdee9b9815396f5e5ff0bcdfb781b7be5fafa4d1e224028e412ec5f5ba607c482671aae27ccf9069abb2db0fb58f78f3a102a51897df2b11  upx-3.96-src.tar.xz
+a41dd8b8e9e884c78c410a49b4486963f6dd90759ba49eb05123e81b8e4fbe3d23af2ba5c2acf64218b7edeec7df0793b4030d1375c167a183a4d70d21addf50  0001-rm-broken-whitespace-check.patch"

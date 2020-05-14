@@ -1,0 +1,34 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libnumbertext
+pkgver=1.0.5
+pkgrel=0
+pkgdesc="Number to number name and money text conversion library"
+url="https://github.com/Numbertext/libnumbertext"
+arch="all"
+license="BSD-3-Clause"
+subpackages="$pkgname-dev"
+source="https://github.com/Numbertext/libnumbertext/releases/download/$pkgver/libnumbertext-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-static \
+		--disable-werror
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="4d61464f26f631d272ef7285fbb931d3931b08240b58166b7e9a28c95ff5a537ca04af4c9673541b73997339d66061858c9cd18873b4c16f9ad2ccd1b68e81a3  libnumbertext-1.0.5.tar.xz"

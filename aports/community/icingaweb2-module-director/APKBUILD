@@ -1,0 +1,60 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=icingaweb2-module-director
+_module=${pkgname/*-/}
+pkgver=1.7.2
+pkgrel=2
+pkgdesc="Configuration frontend for Icinga 2, integrated automation"
+url="http://www.icinga.org"
+arch="noarch !armhf !armv7 !s390x !mips !mips64"
+license="GPL-2.0-or-later"
+_php=php7
+depends="icingaweb2 $_php-curl $_php-pcntl icingaweb2-module-incubator icingaweb2-module-ipl icingaweb2-module-reactbundle"
+options="!check"
+pkggroups="icingaweb2"
+subpackages="$pkgname-doc"
+source="icingaweb2-module-director-$pkgver.tar.gz::https://github.com/Icinga/icingaweb2-module-director/archive/v$pkgver.tar.gz"
+
+build() {
+	return 0
+}
+
+package() {
+	mkdir -p "$pkgdir/etc/icingaweb2/modules/$_module"
+	mkdir -p "$pkgdir/usr/share/doc/$pkgname"
+	mkdir -p "$pkgdir/usr/share/webapps/icingaweb2/modules/$_module"
+	mkdir -p "$pkgdir/usr/share/webapps/icingaweb2/modules/$_module/contrib"
+	cp -a application library public schema test \
+		configuration.php module.info run.php \
+		run-missingdeps.php register-hooks.php \
+		"$pkgdir/usr/share/webapps/icingaweb2/modules/$_module"
+	cp -a contrib/*-agent-installer \
+		"$pkgdir/usr/share/webapps/icingaweb2/modules/$_module/contrib"
+	cp -a doc "$pkgdir/usr/share/doc/$pkgname"
+	chgrp -R $pkggroups "$pkgdir/etc/icingaweb2/modules/$_module"
+
+	cat >"$pkgdir"/usr/share/doc/$pkgname/README.alpine <<EOF
+You need to fix /etc/icingaweb2/modules/$_module with the owner of the user of your webserver
+
+For nginx, as example:
+	# chown -R nginx /etc/icingaweb2/modules/$_module
+or
+	# chown -R nobody /etc/icingaweb2/modules/$_module
+
+For Apache:
+	# chown -R apache /etc/icingaweb2/modules/$_module
+
+For lighttpd:
+	# chown -R lighttpd /etc/icingaweb2/modules/$_module
+
+Remember to enable the module with:
+	# icingacli module enable ipl
+	# icingacli module enable reactbundle
+	# icingacli module enable incubator
+	# icingacli module enable $_module
+
+EOF
+
+}
+
+sha512sums="416d9bac99b7e34338722bb977995510be40af169fad374671d9cf481903c45a856e107ac249d21219f186223b3bfbbde91a1242a4d1fe9667bd2518c446ded9  icingaweb2-module-director-1.7.2.tar.gz"

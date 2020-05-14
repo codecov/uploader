@@ -1,0 +1,35 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=perl-text-autoformat
+_pkgname=Text-Autoformat
+pkgver=1.75
+pkgrel=0
+pkgdesc="Text::Autoformat perl module"
+url="https://metacpan.org/release/Text-Autoformat"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl perl-text-reform"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/N/NE/NEILB/Text-Autoformat-$pkgver.tar.gz"
+
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="45476dddfd3938561bc0aed9c86cf7876cb823349de815fa511530b80a4049748b4aed2d3135e4349ad1373b8d7fb0a23918a11979ae906551f53f95581c7db2  Text-Autoformat-1.75.tar.gz"

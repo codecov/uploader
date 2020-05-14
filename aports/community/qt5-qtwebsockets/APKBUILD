@@ -1,0 +1,39 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtwebsockets
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="Provides WebSocket communication compliant with RFC 6455"
+url="https://www.qt.io/developers/"
+arch="all"
+license="(LGPL-3.0-or-later OR GPL-3.0-only OR GPL-2.0-or-later) AND Qt-GPL-exception-1.0"
+makedepends="qt5-qtbase-dev qt5-qtdeclarative-dev"
+subpackages="$pkgname-dev"
+replaces="qt5-websockets"
+options="!check" # No tests
+builddir="$srcdir/qtwebsockets-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtwebsockets-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="091e17459a8a255fccece092399ac32994307aa53e6e72e736e6ff9f1bb745c49bfcb9a747e1e21acaa0ed95754f7f450ba2f73a3bbafad54e21bf600f7da92f  qtwebsockets-everywhere-src-5.14.2.tar.xz"

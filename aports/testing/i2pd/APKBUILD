@@ -1,0 +1,54 @@
+# Maintainer: l-n-s <supervillain@riseup.net>
+# Contributor: r4sas <r4sas@i2pmail.org>
+pkgname=i2pd
+pkgver=2.31.0
+pkgrel=0
+pkgdesc="I2P Router written in C++"
+url="https://github.com/PurpleI2P/i2pd"
+arch="all"
+license="BSD-3-Clause"
+pkgusers="i2pd"
+depends="musl-utils"
+makedepends="boost-dev miniupnpc-dev openssl-dev openssl zlib-dev"
+options="!check" # No test suite
+install="$pkgname.pre-install"
+source="https://github.com/PurpleI2P/i2pd/archive/$pkgver/i2pd-$pkgver.tar.gz
+	i2pd.initd
+	i2pd.confd
+	"
+subpackages="$pkgname-openrc"
+
+build() {
+	local _arch_opts="USE_UPNP=yes"
+
+	case "$CARCH" in
+		aarch64|arm*) _arch_opts="$_arch_opts USE_AESNI=no USE_AVX=no" ;;
+	esac
+
+	make $_arch_opts
+}
+
+package() {
+
+	install -D -m 755 i2pd "$pkgdir"/usr/sbin/i2pd
+
+	install -dm755 -o $pkgusers \
+		"$pkgdir"/etc/$pkgname \
+		"$pkgdir"/usr/share/$pkgname \
+		"$pkgdir"/var/lib/$pkgname \
+		"$pkgdir"/var/log/$pkgname
+
+	install -D -m 644 contrib/tunnels.conf "$pkgdir"/etc/i2pd/tunnels.conf
+	install -D -m 644 contrib/i2pd.conf "$pkgdir"/etc/i2pd/i2pd.conf
+	cp -r contrib/certificates/ "$pkgdir"/usr/share/$pkgname/certificates
+	ln -s /usr/share/$pkgname/certificates "$pkgdir"/var/lib/$pkgname/certificates
+
+	install -m755 -D "$srcdir"/$pkgname.initd \
+		"$pkgdir"/etc/init.d/$pkgname
+	install -m644 -D "$srcdir"/$pkgname.confd \
+		"$pkgdir"/etc/conf.d/$pkgname
+}
+
+sha512sums="af1583c6c2fb2073d6d3d32f0b394da3f1bc4a3d232aa47880f457447c6592801c48f6a05b1a7d2955c58d888c4c574e15082bf2583921797e24e5cda4c188e0  i2pd-2.31.0.tar.gz
+5a95beef635fc2f5beecee314964fd41713ed61f92c4e972276208e0a2c86604c2b42a8e922863fc658a7a5789c9f43fddf7f76350fc281a44f2f42258a01201  i2pd.initd
+ba94e5505f4eeb9a32159aa0a3b7f68ff077abb9704800f70502ac75fd5bcfcb20450ebd983d0523beca2d13e718d7bf888f53ec455d1f41701c16d09c3b2d28  i2pd.confd"

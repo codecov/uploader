@@ -1,0 +1,32 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=belr
+pkgver=4.3.1
+pkgrel=0
+pkgdesc="ABNF Parser"
+url="https://www.linphone.org"
+arch="all"
+license="GPL-3.0-or-later"
+options="!check" # not test available
+makedepends="cmake bctoolbox-dev eudev-dev"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/BelledonneCommunications/belr/archive/$pkgver.tar.gz"
+
+build() {
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DCMAKE_MODULE_PATH=/usr/lib/cmake \
+		-DENABLE_STRICT=NO \
+		-DENABLE_SHARED=YES \
+		-DENABLE_TESTS=NO \
+		-DENABLE_STATIC=NO \
+		.
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="38bc304be3a0bf70d33fe145e87cec0f23ce94ae66a1d86ea722fd7452d63dfa3093dc24396fdbb901afada8f8aa3f9dacf76043be4014e3a4c334e1f9179d13  belr-4.3.1.tar.gz"

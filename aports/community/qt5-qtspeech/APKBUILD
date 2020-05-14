@@ -1,0 +1,42 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtspeech
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="Qt module to make text to speech and speech recognition easy"
+url="https://qt.io"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+license="(LGPL-2.0-or-later OR GPL-3.0-only OR GPL-2.0-or-later) AND Qt-GPL-exception-1.0"
+depends="qt5-qtmultimedia"
+makedepends="qt5-qtbase-dev"
+subpackages="$pkgname-dev"
+builddir="$srcdir/qtspeech-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="http://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtspeech-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="d3870cc66cba4f5dd2c0a2a4845defe4299de2d7affe12ccdadc4948116317590b580592d575cc5e8eb190043a92f38416e030f47cfb87f5cf3419a31152e00f  qtspeech-everywhere-src-5.14.2.tar.xz"

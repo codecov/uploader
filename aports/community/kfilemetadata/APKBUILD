@@ -1,0 +1,47 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kfilemetadata
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="A library for extracting file metadata"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-or-later AND (LGPL-2.1-only OR LGPL-3.0-only)"
+depends_dev="qt5-qtbase-dev karchive-dev kcoreaddons-dev ki18n-dev kconfig-dev exiv2-dev taglib-dev ffmpeg-dev attr-dev"
+makedepends="$depends_dev extra-cmake-modules qt5-qttools-dev doxygen"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kfilemetadata-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+
+	# Broken tests
+	local skipped_tests="("
+	local tests="
+		usermetadatawritertest
+		extractorcoveragetest
+		propertyinfotest_localized
+		extractorcollectiontest
+		"
+	for test in $tests; do
+		skipped_tests="$skipped_tests|$test"
+	done
+	skipped_tests="$skipped_tests)test"
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest -E "$skipped_tests"
+}
+
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="51576765c334e885ef55bc6373821583f8ad1fe81cd6e7aaaa21c4ede9cae27fd162e5bbb29dd553e1cbc045a3396dd8d48d66171ce7dc82d4976d9c698df706  kfilemetadata-5.70.0.tar.xz"

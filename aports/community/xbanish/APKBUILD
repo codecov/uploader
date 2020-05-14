@@ -1,0 +1,28 @@
+# Contributor: Eivind Uggedal <eu@eju.no>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=xbanish
+pkgver=1.7
+pkgrel=0
+pkgdesc="Banish the mouse cursor when typing, show it again when the mouse moves"
+url="https://github.com/jcs/xbanish"
+arch="all"
+license="BSD-3-Clause"
+makedepends="libx11-dev libxt-dev libxfixes-dev libxi-dev"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+package() {
+	mkdir -p "$pkgdir"/usr/bin
+	mkdir -p "$pkgdir"/usr/share/man/man1
+	make \
+		PREFIX=/usr \
+		DESTDIR="$pkgdir" \
+		MANDIR=/usr/share/man/man1 \
+		install
+}
+
+sha512sums="f790ea888812bb6b7793f0a60a900724fc407ec4485672e37d464387ffacfa4bf2dc891862f3fed06948cda31024745816b3adb58074c4578edc6a9848f2bd08  xbanish-1.7.tar.gz"

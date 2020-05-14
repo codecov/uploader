@@ -1,0 +1,37 @@
+# Contributor: Alan Lacerda <alacerda@alpinelinux.org>
+# Maintainer: Alan Lacerda <alacerda@alpinelinux.org>
+pkgname=mate-settings-daemon
+pkgver=1.24.0
+pkgrel=0
+pkgdesc="MATE Settings daemon"
+url="https://github.com/mate-desktop/mate-settings-daemon"
+arch="all !s390x !mips !mips64" # mate-desktop
+license="GPL-2.0-or-later LGPL-2.1-or-later"
+depends="mate-common mate-desktop"
+makedepends="libtool intltool libmatekbd-dev freeglut-dev
+	glib-dev gtk+3.0-dev dbus-glib-dev dconf-dev libxklavier-dev libsm-dev
+	mate-desktop-dev polkit-dev startup-notification-dev
+	libcanberra-dev libmatemixer-dev libnotify-dev gobject-introspection-dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://pub.mate-desktop.org/releases/${pkgver%.*}/mate-settings-daemon-$pkgver.tar.xz
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--sysconfdir=/etc \
+		--enable-polkit \
+		--prefix=/usr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="897d3540930ac407d802c9ecd1995e9bfee14eafadbbfad64aab1e7d93c9830111ac991d8f0df37e34efaa3f7cae9d59ee4d786b15acf0b87b8ba5d299bc1cc1  mate-settings-daemon-1.24.0.tar.xz"

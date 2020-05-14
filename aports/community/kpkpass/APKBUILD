@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kpkpass
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kontact.kde.org/"
+pkgdesc="Apple Wallet Pass reader"
+license="GPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev karchive-dev"
+makedepends="$depends_dev extra-cmake-modules shared-mime-info"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kpkpass-$pkgver.tar.xz"
+subpackages="$pkgname-dev"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="98a65ccd51edd497b40a25f0e48b3a175743d7e2bee0caf7c9cba0f37fe5dd1309a254e8adea2fbe11dc70d31576ef83e50ed6cc0d8293c638fc8815aa8bd38f  kpkpass-20.04.0.tar.xz"

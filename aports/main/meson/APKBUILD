@@ -1,0 +1,64 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=meson
+pkgver=0.54.1
+pkgrel=0
+pkgdesc="Fast and user friendly build system"
+url="https://mesonbuild.com"
+arch="noarch"
+license="Apache-2.0"
+depends="samurai py3-setuptools python3"
+subpackages="
+	$pkgname-doc
+	$pkgname-vim::noarch
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+source="https://github.com/mesonbuild/meson/releases/download/$pkgver/meson-$pkgver.tar.gz
+	"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	install -Dm644 data/shell-completions/zsh/* -t "$pkgdir"/usr/share/zsh/site-functions
+	install -Dm644 data/shell-completions/bash/* -t "$pkgdir"/usr/share/bash-completion/completions
+}
+
+vim() {
+	pkgdesc="$pkgdesc (vim support)"
+	install_if="vim $pkgname=$pkgver-r$pkgrel"
+	cd "$builddir"
+	for kind in ftdetect ftplugin indent syntax
+	do
+		mkdir -p "$subpkgdir"/usr/share/vim/vimfiles/$kind
+		install -Dm644 \
+			"$builddir"/data/syntax-highlighting/vim/$kind/meson.vim \
+			"$subpkgdir"/usr/share/vim/vimfiles/$kind/meson.vim
+	done
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	amove usr/share/zsh/site-functions
+}
+
+sha512sums="dbc3fed326ba208f5a6eee7e3106d07450e7a3569d425013fba8c51e7cfd6485f9b083836dc74be49bc9839bd640ce54741d9335097cbd28f6a320d5fec7ecfe  meson-0.54.1.tar.gz"

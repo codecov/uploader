@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kleopatra
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://www.kde.org/applications/utilities/kleopatra/"
+pkgdesc="Certificate Manager and Unified Crypto GUI"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+depends="gnupg pinentry-qt"
+makedepends="extra-cmake-modules qt5-qtbase-dev kcmutils-dev kwidgetsaddons-dev kconfigwidgets-dev kcoreaddons-dev kcodecs-dev kconfig-dev ki18n-dev kiconthemes-dev kitemmodels-dev kxmlgui-dev kwindowsystem-dev kdoctools-dev kcrash-dev kdoctools-dev kdbusaddons-dev gpgme-dev qgpgme libkleo-dev kmime-dev libassuan-dev boost-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kleopatra-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+
+	# kuniqueservicetest requires running dbus
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "kuniqueservicetest"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="d572687069a6388427064c50f3471382bc1a1ac019d7e84816e5205da96ee6c92a8eaba49585f2337309b34e933c6a50ef686131c91fd35a03f2fb9820a8842d  kleopatra-20.04.0.tar.xz"

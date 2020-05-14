@@ -1,0 +1,11 @@
+--- a/external/easylogging++/easylogging++.h
++++ b/external/easylogging++/easylogging++.h
+@@ -216,7 +216,7 @@
+ #  define ELPP_INTERNAL_INFO(lvl, msg)
+ #endif  // (defined(ELPP_DEBUG_INFO))
+ #if (defined(ELPP_FEATURE_ALL)) || (defined(ELPP_FEATURE_CRASH_LOG))
+-#  if (ELPP_COMPILER_GCC && !ELPP_MINGW && !ELPP_OS_OPENBSD && !ELPP_OS_NETBSD && !ELPP_OS_ANDROID)
++#  if ( __has_include(<execinfo.h>) && ELPP_COMPILER_GCC && !ELPP_MINGW && !ELPP_OS_OPENBSD && !ELPP_OS_NETBSD && !ELPP_OS_ANDROID)
+ #    define ELPP_STACKTRACE 1
+ #  else
+ #    define ELPP_STACKTRACE 0

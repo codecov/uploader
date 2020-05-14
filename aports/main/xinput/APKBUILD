@@ -1,0 +1,33 @@
+# Contributor: Johannes Matheis <jomat+alpinebuild@jmt.gr>
+# Maintainer: Johannes Matheis <jomat+alpinebuild@jmt.gr>
+pkgname=xinput
+pkgver=1.6.3
+pkgrel=0
+pkgdesc="Utility to configure and test XInput devices"
+url="http://xorg.freedesktop.org/"
+arch="all"
+options="!check"  # No test suite.
+license="MIT"
+makedepends="util-macros libx11-dev libxext-dev libxi-dev libxrandr-dev
+	libxinerama-dev"
+subpackages="$pkgname-doc"
+source="https://www.x.org/archive/individual/app/xinput-$pkgver.tar.gz"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="f2d61288b87505add5909aace7d51d99f5c7b1a8fad5475316da371f74d5b616ae261660c81851bec595c5d716fead3e40d8fc0cc7d2234c2b04db2b24e25da8  xinput-1.6.3.tar.gz"

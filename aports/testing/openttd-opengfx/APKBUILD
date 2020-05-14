@@ -1,0 +1,24 @@
+# Contributor: Adrian Siekierka <kontakt@asie.pl>
+# Maintainer: Adrian Siekierka <kontakt@asie.pl>
+pkgname=openttd-opengfx
+pkgver=0.6.0
+pkgrel=0
+pkgdesc="Free graphics set for OpenTTD"
+url="https://www.openttd.org/"
+arch="noarch"
+license="GPL-2.0-or-later"
+options="!check" # No test suite
+source="https://cdn.openttd.org/opengfx-releases/$pkgver/opengfx-$pkgver-all.zip"
+builddir="$srcdir/opengfx-$pkgver"
+install_if="openttd"
+
+prepare() {
+	tar xf opengfx-$pkgver.tar
+}
+
+package() {
+	mkdir -p "$pkgdir/usr/share/games/openttd/data"
+	install -Dm644 *.grf *.obg "$pkgdir/usr/share/games/openttd/data"
+}
+
+sha512sums="712812744b7d4dea4d704b179cc6d2078626f1582e73283ff8b512a1fbe46bdf4e293e8ed678965d280ad9fe3665d7cd291dc89b65212ee01451034f356f9d57  opengfx-0.6.0-all.zip"

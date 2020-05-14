@@ -1,0 +1,36 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=latte-dock
+pkgver=0.9.11
+pkgrel=0
+arch="all !armhf !s390x !mips !mips64" # blocked by plasma-desktop
+url="https://store.kde.org/p/1169519/"
+pkgdesc="A dock based on Plasma Frameworks"
+license="LGPL-2.0-or-later AND GPL-2.0-or-later"
+depends="kactivities"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtdeclarative-dev libksysguard-dev
+	kactivities-dev karchive-dev kcoreaddons-dev kguiaddons-dev kcrash-dev
+	kdbusaddons-dev kdeclarative-dev kglobalaccel-dev ki18n-dev kiconthemes-dev
+	knewstuff-dev knotifications-dev plasma-framework-dev kwayland-dev
+	kwindowsystem-dev kxmlgui-dev xcb-util-dev plasma-desktop-dev"
+source="https://download.kde.org/stable/latte-dock/latte-dock-$pkgver.tar.xz"
+subpackages="$pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="d02747e4709de8f3091c4686f6d80129fa2fe9d6e994cec436083c59b0ceab0b01af3c1c92d946e497e725bd20efc8ec1e8d284666348a13cf6ba79e515c30d5  latte-dock-0.9.11.tar.xz"

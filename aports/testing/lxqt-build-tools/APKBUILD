@@ -1,0 +1,34 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=lxqt-build-tools
+pkgver=0.7.0
+pkgrel=0
+pkgdesc="Various packaging tools and scripts for LXQt applications"
+url="https://lxqt.org/"
+options="!check" # No testsuite
+arch="noarch"
+license="BSD-3-Clause"
+makedepends="cmake qt5-qtbase-dev glib-dev"
+source="https://github.com/lxde/lxqt-build-tools/releases/download/$pkgver/lxqt-build-tools-$pkgver.tar.xz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		$CMAKE_CROSSOPTS .
+	make -C build
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/lib
+	mv "$pkgdir"/usr/share/cmake "$pkgdir"/usr/lib
+}
+
+sha512sums="7b6fd30e6ae8355ae36be55f8f7d47d78f507c11ebd9cbdd1d2ce5f14db68b845ad0bb8ca05fa1122bfd4c41f6dc792dff5100dcb8e61167517c3704527c7cde  lxqt-build-tools-0.7.0.tar.xz"

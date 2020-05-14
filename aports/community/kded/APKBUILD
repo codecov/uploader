@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kded
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Extensible deamon for providing system level services"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-only AND LGPL-2.1-or-later"
+depends_dev="qt5-qtbase-dev kconfig-dev kcoreaddons-dev kcrash-dev kdbusaddons-dev kservice-dev"
+makedepends="$depends_dev extra-cmake-modules kdoctools-dev"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kded-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="fdea2347baa3946cf2f334b2417c717ae8369fb5b917b330f481ca53ce45fe1667143a3f4f9632cdbf5d10e8cbe8ce8401e98156f4badcb56fc58a6f3f3a25e4  kded-5.70.0.tar.xz"

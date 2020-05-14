@@ -1,0 +1,58 @@
+# Contributor: Galen Abell <galen@galenabell.com>
+# Maintainer: Galen Abell <galen@galenabell.com>
+pkgname="profanity"
+pkgver="0.8.1"
+pkgrel=0
+pkgdesc="Ncurses based XMPP client"
+url="https://github.com/profanity-im/profanity"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="
+	autoconf
+	autoconf-archive
+	automake
+	libtool
+	pkgconf
+	libmesode-dev
+	ncurses-dev
+	glib-dev
+	curl-dev
+	readline-dev
+	libnotify-dev
+	libxscrnsaver
+	libotr-dev
+	gpgme-dev
+	libsignal-protocol-c-dev
+	libgcrypt-dev
+	gtk+2.0-dev
+	python3-dev
+	cmocka-dev
+"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/profanity-im/profanity/archive/$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	./bootstrap.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	libtool --finish /usr/lib
+}
+sha512sums="2062d7400056c44327470d11ec55cdb73948bdfea90fcbd33866e0a6d77b387f0eac56f4dfd158a8cff90f29893bd087b0ab954d2ef47da9f575c176bcdeb9ee  profanity-0.8.1.tar.gz"

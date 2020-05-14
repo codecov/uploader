@@ -1,0 +1,44 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libxfont2
+pkgver=2.0.4
+pkgrel=0
+pkgdesc="X.Org X11 libXfont2 runtime library"
+url="https://www.x.org"
+arch="all"
+license="MIT"
+options="!check"  # No test suite.
+makedepends="$depends_dev libfontenc-dev freetype-dev zlib-dev xtrans
+	util-macros autoconf automake libtool xorgproto"
+subpackages="$pkgname-dev"
+source="https://www.x.org/pub/individual/lib/libXfont2-$pkgver.tar.bz2"
+builddir="$srcdir/libXfont2-$pkgver"
+
+# secfixes:
+#   2.0.3-r0:
+#     - CVE-2017-16611
+
+prepare() {
+	default_prepare
+	autoreconf -vif
+}
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-static \
+		--without-fop
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="7cf6c58e520e48e24fc4f05fec760fcbeaaac0cedeed57dded262c855e1515cc34cd033222945a0b016f6857b83009fc2a6946c7d632c2f7bb0060f8e8a8a106  libXfont2-2.0.4.tar.bz2"

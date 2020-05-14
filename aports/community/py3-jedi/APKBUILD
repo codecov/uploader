@@ -1,0 +1,24 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=py3-jedi
+pkgver=0.17.0
+pkgrel=0
+pkgdesc="Awesome autocompletion and static analysis library for Python"
+url="https://jedi.readthedocs.io"
+arch="noarch"
+license="MIT"
+depends="python3 py3-parso"
+makedepends="py3-setuptools"
+source="https://pypi.python.org/packages/source/j/jedi/jedi-$pkgver.tar.gz"
+options="!check" # Broken
+builddir="$srcdir/jedi-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="00c74f53665c8feb811bd3821d797529acf36d07b962bcd585a8d5263ccacbdcb4aa35e2bfd89c384b13d1acb5452e94427ee2815169132ec18a53d9bf9edca4  jedi-0.17.0.tar.gz"

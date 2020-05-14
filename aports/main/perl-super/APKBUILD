@@ -1,0 +1,41 @@
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-super
+_pkgname=SUPER
+pkgver=1.20190531
+pkgrel=0
+pkgdesc="Control superclass method dispatch"
+url="https://metacpan.org/pod/SUPER"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl"
+makedepends="perl-dev perl-module-build perl-sub-identify"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/C/CH/CHROMATIC/SUPER-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+	cd "$builddir"
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Build.PL INSTALLDIRS=vendor
+}
+
+build() {
+	cd "$builddir"
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="fb1072c76aa9d82edb39ec75f0e14c0fa41837b36b7d2ec24482a20338484cba867646f5e3ceb12ff4f8e1a6f333f5243900c2114d772a29d6c0380feabd3565  SUPER-1.20190531.tar.gz"

@@ -1,0 +1,33 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=lsof
+pkgver=4.93.2
+pkgrel=0
+pkgdesc="LiSt Open Files"
+url="https://people.freebsd.org/~abe"
+arch="all"
+license="lsof"
+subpackages="$pkgname-doc"
+makedepends="linux-headers"
+source="https://fossies.org/linux/misc/lsof-$pkgver.tar.xz"
+
+prepare() {
+	default_prepare
+	cd "$builddir"
+
+	sed -i "s|/\* #define\tHASSECURITY\t1 \*/|#define\tHASSECURITY\t1|" \
+		dialects/linux/machine.h
+}
+
+build() {
+	cd "$builddir"
+	./Configure -n linux
+	make
+}
+
+package() {
+	cd "$builddir"
+	install -Dm0755 lsof "$pkgdir"/usr/bin/lsof
+	install -Dm0644 Lsof.8 "$pkgdir"/usr/share/man/man8/lsof.8
+}
+
+sha512sums="9ce751092bec5d2dccb79d92aa1d7c541819e0e24e56bd0a3ec0513bd7a403c3abb85a68aa5283f84aa44b4f71742ed18f5437cc039c13ce886bf22facd1557a  lsof-4.93.2.tar.xz"

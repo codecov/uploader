@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kcharselect
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/utilities/org.kde.kcharselect"
+pkgdesc="A tool to select special characters from all installed fonts and copy them into the clipboard"
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev kbookmarks-dev kcrash-dev kdoctools-dev ki18n-dev kwidgetsaddons-dev kxmlgui-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kcharselect-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="51964a3d1358aaaecbabc92a4d9fdc1b76eb707a5dc45f8db3862ddcb5746ee15993b7a794b36f83f09784f4a7d5400101cc7f07ed4ca9d1d125172ab8b4fc00  kcharselect-20.04.0.tar.xz"

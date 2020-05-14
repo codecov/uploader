@@ -1,0 +1,48 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=pkgconf
+pkgver=1.6.3
+pkgrel=2
+pkgdesc="development framework configuration tools"
+url="https://git.sr.ht/~kaniini/pkgconf"
+arch="all"
+license="ISC"
+replaces="pkgconfig"
+provides="pkgconfig=1"
+subpackages="$pkgname-doc $pkgname-dev"
+source="https://distfiles.dereferenced.org/pkgconf/pkgconf-$pkgver.tar.xz"
+checkdepends="kyua atf"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--with-pkg-config-dir=/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	ln -s pkgconf "$pkgdir"/usr/bin/pkg-config
+}
+
+dev() {
+	default_dev
+
+	# Move pkg-config back to main package (default_dev implicitly moves
+	# files /usr/bin/*-config to -dev).
+	mv "$subpkgdir"/usr/bin/pkg-config "$pkgdir"/usr/bin/
+
+	mkdir -p "$pkgdir"/usr/share/aclocal/
+	mv "$subpkgdir"/usr/share/aclocal/pkg.m4 "$pkgdir"/usr/share/aclocal/
+}
+
+sha512sums="437c5a5c9866e2047e62e0592639930b2420d4afd41d98cef51f3475165418a39e916477860025314828a6ee0a4eefc10fdf26bda66f80c291f324d9674fa5c1  pkgconf-1.6.3.tar.xz"

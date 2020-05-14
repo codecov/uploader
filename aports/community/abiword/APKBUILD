@@ -1,0 +1,76 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=abiword
+pkgver=3.0.4
+pkgrel=3
+pkgdesc="A fully-featured word processor"
+url="http://www.abisource.com"
+arch="all !s390x !mips !mips64" # librsvg
+options="!check"  # Test suite requires valgrind, etc
+license="GPL-2.0-or-later"
+makedepends="gtk+3.0-dev readline-dev libgsf-dev enchant2-dev fribidi-dev wv-dev
+	popt-dev libjpeg-turbo-dev librsvg-dev bzip2-dev goffice-dev pcre-dev
+	libxslt-dev perl automake autoconf libtool autoconf-archive"
+
+# openxml plugin
+makedepends="$makedepends boost-dev"
+
+# collab plugin
+makedepends="$makedepends gnutls-dev libsoup-dev dbus-glib-dev"
+
+subpackages="$pkgname-dev $pkgname-doc $pkgname-plugins"
+
+_plugins="applix babelfish bmp clarisworks collab docbook command eml epub \
+	freetranslation garble gdict gimp google hancom hrtext iscii kword \
+	latex loadbindings mht mif mswrite openwriter openxml opml paint \
+	passepartout pdb pdf presentation s5 sdw t602 urldict wikipedia wml \
+	xslfo"
+
+for _i in $_plugins; do
+	subpackages="$subpackages $pkgname-plugin-$_i:_plugin"
+done
+
+source="http://www.abisource.com/downloads/abiword/$pkgver/source/abiword-$pkgver.tar.gz
+	enchant.patch"
+
+prepare() {
+	default_prepare
+
+	sed -i 's/enchant >=/enchant-2 >=/' configure.ac
+
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--enable-shared \
+		--disable-static \
+		--enable-plugins="$_plugins"
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+_plugin() {
+	local plugin="${subpkgname#$pkgname-plugin-}"
+	pkgdesc="Abiword $plugin plugin"
+	local dir="usr/lib/abiword-${pkgver%.*}/plugins"
+	mkdir -p "$subpkgdir"/$dir
+	mv "$pkgdir"/$dir/$plugin.so "$subpkgdir"/$dir/
+}
+
+plugins() {
+	pkgdesc="Abiword plugins, all of them"
+	depends=
+	for _i in $_plugins; do
+		depends="$depends $pkgname-plugin-$_i"
+	done
+	mkdir -p "$subpkgdir"
+}
+
+sha512sums="121708e010cef6722cab5622dc762f2f92c46e43b65b90b881b4f25ff32c1696fa2d281a3a6f2c04d5b9231bbbd0040281e9d4d7e594ec0ace6caae9c9021ec4  abiword-3.0.4.tar.gz
+16f28eafdd1c1444dec5b3f8cbdd00f12c6178ba8db5bb94196064653cdada4cb8e4b2ac78ee9a7093c7968c0ddeb9f50a4e6209a5d5836a24b1b2f1941fb576  enchant.patch"

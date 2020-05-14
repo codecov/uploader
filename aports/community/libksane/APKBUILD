@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libksane
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://www.kde.org/applications/graphics/"
+pkgdesc="An image scanning library"
+license="LGPL-2.1-only OR LGPL-3.0-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev ki18n-dev kwidgetsaddons-dev ktextwidgets-dev kwallet-dev sane-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/libksane-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="377d96c2bb1d69b2bb529ff8cc16fecff6c61e16f75cb96a22e560b220bd685a5f43a9271716b88a4f80e487824930903ded94163a302cc29777fdd5ec6bcc27  libksane-20.04.0.tar.xz"

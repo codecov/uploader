@@ -1,0 +1,30 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=pm-utils
+pkgver=1.4.1
+pkgrel=2
+pkgdesc="A small collection of scripts that handle suspend and resume on behalf of HAL"
+url="https://pm-utils.freedesktop.org/wiki/"
+arch="all"
+options="!check"  # No test suite.
+license="GPL-2.0-only"
+makedepends="linux-headers"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://pm-utils.freedesktop.org/releases/pm-utils-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="5bc9479fe75f120aee136befeb24c8d7d85f61410b551177ed61fd1b4ea9cce7989796b067e357ea93b44b4ae9f66311687066f188236c5efdfd3750695a8017  pm-utils-1.4.1.tar.gz"

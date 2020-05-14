@@ -1,0 +1,27 @@
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-date-calc
+_realname=Date-Calc
+pkgver=6.4
+pkgrel=1
+pkgdesc="Perl module for Gregorian calendar date calculations"
+url="https://metacpan.org/release/Date-Calc"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl perl-carp-clan perl-bit-vector"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/S/ST/STBEY/Date-Calc-$pkgver.tar.gz"
+builddir="$srcdir/$_realname-$pkgver"
+
+build() {
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install UNINST=1
+	# creates file collision among perl modules
+	find "$pkgdir" -name perllocal.pod -delete
+}
+
+sha512sums="e2d0cb2b041afedb10033700e27075f01987abc763a59034a10a9fc0bb059706cc959f6d76fe1fc21ced4b547475f62a8c37ad38e8e49f7453d78b17082c0671  Date-Calc-6.4.tar.gz"

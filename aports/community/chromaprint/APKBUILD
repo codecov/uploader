@@ -1,0 +1,27 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=chromaprint
+pkgver=1.5.0
+pkgrel=0
+pkgdesc="C library for generating audio fingerprints used by AcoustID"
+url="https://acoustid.org/chromaprint"
+arch="all"
+license="MIT"
+makedepends="cmake fftw-dev ffmpeg-dev"
+options="!check"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/acoustid/chromaprint/archive/v$pkgver.tar.gz"
+
+build() {
+	cmake -B build \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=None \
+		-DBUILD_TOOLS=ON .
+	make -C build
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="333114949928abdf5d4b11aba1db6ec487eebe526324c68d903b3fa80a3af87a28d942af765a2f873e63a1bf222b658b6438cd10cde4446f61b26ea91f537469  chromaprint-1.5.0.tar.gz"

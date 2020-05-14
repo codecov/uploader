@@ -1,0 +1,31 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=tectonic
+pkgver=0.1.12
+pkgrel=3
+pkgdesc="Tectonic is a modernized, complete, self-contained TeX/LaTeX engine"
+url="https://tectonic-typesetting.github.io"
+arch="all !s390x !mips !mips64" # rust
+license="MIT"
+makedepends="
+	cargo
+	harfbuzz-dev
+	openssl-dev
+	fontconfig-dev
+	"
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/tectonic-typesetting/tectonic/archive/v$pkgver.tar.gz
+	"
+
+build() {
+	cargo build --release
+}
+
+check() {
+	cargo test --release
+}
+
+package() {
+	install -Dm755 "$builddir"/target/release/tectonic "$pkgdir"/usr/bin/tectonic
+}
+sha512sums="fdfe98ac802c9d10f3f4ad7110af316211cad5473854da1c31ffcb77dc2b70572fec17b41b123f3cf933c8344d308346160f8c11136b400d89c41a1d8a9b32cf  tectonic-0.1.12.tar.gz"

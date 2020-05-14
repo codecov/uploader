@@ -1,0 +1,75 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=proj
+pkgver=7.0.1
+pkgrel=0
+_datumgridver=1.8
+pkgdesc="PROJ coordinate transformation software library"
+url="https://proj.org/"
+arch="all"
+license="MIT"
+makedepends="cmake sqlite sqlite-dev gtest-dev tiff-dev
+	curl-dev"
+checkdepends="bash"
+subpackages="
+	$pkgname-doc
+	$pkgname-util:util
+	$pkgname-datumgrid:datumgrid:noarch
+	$pkgname-dev
+	"
+source="
+	http://download.osgeo.org/proj/proj-$pkgver.tar.gz
+	http://download.osgeo.org/proj/proj-datumgrid-$_datumgridver.zip
+	"
+
+unpack() {
+	default_unpack
+	# Upstream doesn't put these in a separate folder in the zip, so they're all over the srcdir
+	mkdir "$srcdir/proj-datumgrid-$_datumgridver"
+	unzip -o "$srcdir/proj-datumgrid-$_datumgridver.zip" -d "$srcdir/proj-datumgrid-$_datumgridver"
+}
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DUSE_EXTERNAL_GTEST=ON \
+		$CMAKE_CROSSOPTS .
+	make
+}
+
+check() {
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest --force-new-ctest-process
+}
+
+package() {
+	depends="$pkgname-datumgrid"
+	replaces="proj4"
+
+	make DESTDIR="$pkgdir" install
+
+	install -Dm644 COPYING "$pkgdir/usr/share/licenses/$pkgname/COPYING"
+}
+
+datumgrid() {
+	pkgdesc="Cartographic projection filter and library (datum package)"
+
+	mkdir -p "$subpkgdir/usr/share/proj"
+	mv "$srcdir/proj-datumgrid-$_datumgridver"/* "$subpkgdir"/usr/share/proj
+}
+
+util() {
+	pkgdesc="Cartographic projection library (utilities)"
+
+	mkdir -p "$subpkgdir/usr/bin"
+	mv "$pkgdir/usr/bin" "$subpkgdir/usr"
+}
+
+sha512sums="034d1b916980c80fe9f8e67d2897814e611920af3e852f152fcd9e3fc4ec8cbc39bbd8f8296949a3c3f5e6708bb9d84e61c4cba9c01476a3888448135e97dc33  proj-7.0.1.tar.gz
+991206f17348b3de484eb5364d773cd06577057228c2d1a0a1c1658308e2596ca13338a666fa71ddd76d538f23dd5bf21e178fd26a785717edd847a17e5c0cd1  proj-datumgrid-1.8.zip"

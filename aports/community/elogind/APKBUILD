@@ -1,0 +1,100 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=elogind
+pkgver=243.4
+pkgrel=4
+pkgdesc="Standalone fork of systemd's elogind"
+url="https://github.com/elogind/elogind"
+arch="all"
+license="GPL-2.0-or-later LGPL-2.1-or-later"
+depends="dbus shadow"
+options="!check" # Tests fail on builders
+makedepends="
+	meson
+	coreutils
+	docbook-xsl
+	gettext-dev
+	git
+	gperf
+	intltool
+	libxslt-dev
+	glib-dev
+	acl-dev
+	eudev-dev
+	libcap-dev
+	libseccomp-dev
+	linux-pam-dev
+	m4
+	dbus-dev
+	pcre2-dev
+	"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-lang
+	$pkgname-openrc
+	lib$pkgname:libs
+	$pkgname-zsh-completion:zshcomp:noarch
+	$pkgname-bash-completion:bashcomp:noarch
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/elogind/elogind/archive/v$pkgver.tar.gz
+	elogind.initd
+	"
+
+build() {
+	[ "$CARCH" == "s390x" ] && export CFLAGS="$CFLAGS -D__IGNORE_pkey_mprotect -DSO_PEERSEC=31"
+	export LDFLAGS="$LDFLAGS -lintl"
+	meson \
+		--libdir=/usr/lib \
+		--libexecdir=/usr/libexec \
+		--buildtype=plain \
+		-Dprefix=/usr \
+		-Dcgroup-controller=elogind \
+		-Dhalt-path=/sbin/halt \
+		-Drootlibexecdir=/usr/libexec/elogind \
+		-Dreboot-path=/sbin/reboot \
+		-Ddefault-hierarchy=hybrid \
+		-Ddefault-kill-user-processes=false \
+		-Dpolkit=true \
+		build
+	ninja -C build
+}
+
+check() {
+	ninja -C build test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+
+	# Claim compatiblity with systemd and systemd-logind
+	ln -s libelogind.pc "$pkgdir"/usr/lib/pkgconfig/libsystemd.pc
+	ln -s libelogind.pc "$pkgdir"/usr/lib/pkgconfig/libsystemd-logind.pc
+	ln -s "$pkgdir"/usr/include/elogind "$pkgdir"/usr/include/systemd
+
+	# Install headers from elogind
+	install -Dm644 src/systemd/sd-id128.h usr/include/sd-id128.h
+	install -Dm644 src/systemd/_sd-common.h usr/include/_sd-common.h
+
+	# Install openrc service
+	install -Dm755 "$srcdir"/elogind.initd "$pkgdir"/etc/init.d/elogind
+}
+
+zshcomp() {
+	pkgdesc="Zsh completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	mkdir -p "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/zsh "$subpkgdir"/usr/share/
+}
+
+bashcomp() {
+	pkgdesc="Bash completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/bash-completion "$subpkgdir"/usr/share
+}
+
+sha512sums="9751a3d0ed65dd73d9363097ee1752d437d5636db2a4137395596e0c81e04d4715f314568d1d7c6f367f1ecbda011086cb165bd4dc207302626b16e693cd0a02  elogind-243.4.tar.gz
+df3f56e5860ff2c1103a8f5512e0190c16838e5329b8eba4e77b9f18856be5503d03e3a1b2b3e9be07e5215981dd904f025f409da8440ecafc3ec43ae1e28fa4  elogind.initd"

@@ -1,0 +1,31 @@
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=php7-spx
+_pkgreal=php-spx
+pkgver=0.4.7
+pkgrel=0
+pkgdesc="A simple & straight-to-the-point PHP profiling extension with its built-in web UI"
+url="https://github.com/NoiseByNorthwest/php-spx"
+arch="x86_64"
+license="GPL-3.0-or-later"
+depends="php7-common"
+makedepends="php7-dev autoconf re2c zlib-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/NoiseByNorthwest/php-spx/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=spx.so" > "$pkgdir"/etc/php7/conf.d/$_pkgreal.ini
+}
+
+sha512sums="9e8b070bb803ba6b9de749181443de5b4eddc64260a2ad3d6f51234d24e754a6f57e135b5f53e00d0f5182a8ad163c860d82056723f49df6218259d67a5c8d3e  php7-spx-0.4.7.tar.gz"

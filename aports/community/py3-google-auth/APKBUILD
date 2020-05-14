@@ -1,0 +1,56 @@
+# Contributor: Keith Maxwell <keith.maxwell@gmail.com>
+# Maintainer: Keith Maxwell <keith.maxwell@gmail.com>
+pkgname=py3-google-auth
+_pyname=google-auth
+pkgver=1.14.2
+pkgrel=0
+pkgdesc="Google authentication library for Python."
+url="https://google-auth.readthedocs.io/en/latest/"
+arch="noarch"
+license="Apache-2.0"
+depends="
+	python3
+	py3-cachetools<5.0
+	py3-asn1-modules
+	py3-rsa<4.1
+	py3-setuptools
+	py3-six
+	"
+checkdepends="
+	py3-flask
+	py3-freezegun
+	py3-mock
+	py3-oauth2client
+	py3-openssl
+	py3-pytest
+	py3-pytest-cov
+	py3-pytest-localserver
+	py3-requests
+	py3-responses
+	py3-urllib3
+	py3-cryptography
+	"
+case "$CARCH" in
+	ppc64le) ;; # no py3-grpcio, -needs UnscaledCycleClock::Frequency()
+	*) checkdepends="$checkdepends py3-grpcio" ;; # to run full suite
+esac
+
+source="https://files.pythonhosted.org/packages/source/g/$_pyname/$_pyname-$pkgver.tar.gz
+	10-use-mock-from-standard-library.patch
+	"
+
+builddir="$srcdir/$_pyname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+check() {
+	python3 -m pytest
+}
+sha512sums="b08a645a124af9798eabdb5d671d19274979cc704466594976d2f8938bba2bce20b1df98ae477b21ac4955189cfc6a63c3204a5edee0933f0b44d1bf8e9552cb  google-auth-1.14.2.tar.gz
+eceeedf449d99cc5587856831ca024ad2befaf964f93504b2a8f1a9ff2690027c494a60381455e67204caf3d77799a4445c81fff3867a32af4503990308c77ac  10-use-mock-from-standard-library.patch"

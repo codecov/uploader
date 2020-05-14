@@ -1,0 +1,42 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-msgpack
+_pkgname=msgpack-python
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="Python3 module for MessagePack serialization/deserialization"
+url="https://msgpack.org/"
+arch="all"
+license="Apache-2.0"
+depends="python3"
+makedepends="python3-dev py3-setuptools cython"
+checkdepends="py3-pytest py3-pluggy"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/msgpack/msgpack-python/archive/v$pkgver.tar.gz"
+builddir="$srcdir/msgpack-python-$pkgver"
+
+replaces="py-msgpack" # Backwards compatibility
+provides="py-msgpack=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	local _pyarch
+
+	case "$CARCH" in
+		x86_64|aarch64|ppc64le|mips*) _pyarch="$CARCH" ;;
+		x86) _pyarch=i686 ;;
+		armhf|armv7) _pyarch=armv8l ;;
+		s390x) _pyarch=s390x;;
+	esac
+
+	local _py3ver=$(python3 -c 'import sys; print("{}.{}".format(sys.version_info.major, sys.version_info.minor))')
+	env PYTHONPATH="$PWD/build/lib.linux-$_pyarch-$_py3ver" pytest-3 test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="ef392d9084ff9a86cc69514982f10d9c39494a9d2c56cd1904b75a6e493d2673ab4e47261464af07dd7beaaba153fe008a9917332e1a4c96beef4ba9ebe595ab  msgpack-python-1.0.0.tar.gz"

@@ -1,0 +1,31 @@
+# Maintainer: David Sugar <tychosoft@gmail.com>
+# Contributor: David Sugar <tychosoft@gmail.com>
+pkgname=libosip2
+pkgver=5.1.1
+pkgrel=0
+pkgdesc="oSIP is an implementation of SIP"
+url="https://www.gnu.org/software/osip/"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="autoconf automake libtool"
+options="libtool"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://ftp.gnu.org/gnu/osip/libosip2-$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--with-gnu-ld
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="485a385b67ff422878bb45ae16936a5ef4cfbff3c7db618a3ff57b942bae6d269c108fa58d58caf5be1123155fb946595e10aba5cf261ec656168444fddf840a  libosip2-5.1.1.tar.gz"

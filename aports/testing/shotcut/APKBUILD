@@ -1,0 +1,29 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Kevin Daudt <kdaudt@alpinelinux.org>
+pkgname=shotcut
+pkgver=20.04.12
+pkgrel=1
+pkgdesc="Cross-platform video editor"
+url="https://www.shotcut.org"
+arch="x86_64 x86" # blocked by qtwebkit and requires opengl
+license="GPL-3.0-or-later"
+makedepends="qt5-qtbase-dev qt5-qtwebkit-dev qt5-qtmultimedia-dev
+	qt5-qtwebsockets-dev qt5-qtx11extras-dev ffmpeg-dev mlt-dev
+	qt5-qttools-dev"
+subpackages="$pkgname-doc"
+source="shotcut-$pkgver.tar.gz::https://github.com/mltframework/shotcut/archive/v$pkgver.tar.gz
+	shotcut-melt.patch
+	"
+options="!check" # No test suite present
+
+build() {
+	qmake-qt5 PREFIX="/usr"
+	make
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+}
+
+sha512sums="e827d185675eee7f79c8844451df1e4ef3c817f086429c54026f445a57d20aa45edc1446016125e967972ff38e0b30747ebda6186fbd68082b45f1d80a1ffb5d  shotcut-20.04.12.tar.gz
+57063ccb11cb9bd061b807934afe5656d9e1e4a31850de2e60b6a0cdf4741c7975a2a548fdb5e7d2bb0a1e44635adb832d139ac55632a4e7f592952b67d17cfe  shotcut-melt.patch"

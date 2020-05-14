@@ -1,0 +1,48 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=open-isns
+pkgver=0.100
+pkgrel=0
+pkgdesc="iSNS server and client for Linux"
+url="https://github.com/open-iscsi/open-isns"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="autoconf automake openssl-dev musl-dev"
+options="!check"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lib"
+source="$pkgname-$pkgver.tar.gz::https://github.com/open-iscsi/open-isns/archive/v$pkgver.tar.gz
+	"
+
+prepare() {
+	default_prepare
+	update_config_sub
+	autoreconf -fi
+}
+
+build() {
+	CFLAGS="$CFLAGS -Wno-error" \
+	./configure \
+		--host=$CHOST \
+		--build=$CBUILD \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--enable-shared
+	make all
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" install_hdrs
+	make DESTDIR="$pkgdir" install_lib
+	rm -rf "$pkgdir"/usr/lib/systemd
+	rm -rf "$pkgdir"/usr/lib/*.a
+}
+
+lib() {
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/lib "$subpkgdir"/usr
+}
+
+sha512sums="ccf49ba1c60d46ae49b75424a966abc1f7e104c8ffa13013951a58a8f0ccaa1cf550f24fd2743fcaba1211a0ec8033c5df5249b7a108ae5974d4f1144dd3b169  open-isns-0.100.tar.gz"

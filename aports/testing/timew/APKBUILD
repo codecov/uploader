@@ -1,0 +1,25 @@
+# Contributor: Matthieu Monnier <matthieu.monnier@enalean.com>
+# Maintainer: Matthieu Monnier <matthieu.monnier@enalean.com>
+pkgname=timew
+pkgver=1.3.0
+pkgrel=0
+pkgdesc="Timewarrior is a command line time tracking application."
+options="!check" # No testsuite
+url="https://taskwarrior.org/"
+arch="all"
+license="MIT"
+makedepends="cmake"
+subpackages="$pkgname-doc"
+source="https://github.com/GothenburgBitFactory/timewarrior/releases/download/v$pkgver/timew-$pkgver.tar.gz"
+
+build() {
+	cmake . -DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="38bf44c83d2315155ee43085957824db69d9501abf2cf0bdf51636169043d82b701ebfac3176bc1dfc0186abb7db7a3a40111968c85597e7edb73c66083f0ab0  timew-1.3.0.tar.gz"

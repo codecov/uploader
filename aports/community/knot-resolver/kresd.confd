@@ -1,0 +1,18 @@
+# Configuration for /etc/init.d/kresd
+
+# Config file path.
+#cfgfile="/etc/knot-resolver/kresd.conf"
+
+# Cache (working) directory.
+#cachedir="/var/cache/knot-resolver"
+
+# A process which will be used to log the standard output from the kresd
+# process. Default is logger(1) which redirects the output to syslog.
+# If you want to disable this, set output_logger="".
+#output_logger="logger -t kresd -p daemon.info"
+
+# Path to the logging file. Default is to use the output_logger instead.
+#output_log=
+
+# Uncomment to define soft dependency on kres-cache-gc.
+rc_want="kres-cache-gc"

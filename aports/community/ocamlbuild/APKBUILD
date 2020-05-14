@@ -1,0 +1,67 @@
+# Contributor: Jon Ong <jonongjs@rottenmage.com>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Anil Madhavapeddy <anil@recoil.org>
+pkgname=ocamlbuild
+pkgver=0.14.0
+pkgrel=1
+pkgdesc="Generic build tool with built-in rules for building OCaml library and programs"
+options="!check"
+url="https://github.com/ocaml/ocamlbuild"
+arch="all !x86 !armhf !armv7 !mips !mips64"  # limited by ocaml aport
+license="LGPL-2.0-or-later-WITH-linking-exception"
+checkdepends="ocaml-compiler-libs ocaml-findlib"
+depends="ocaml-$pkgname=$pkgver-r$pkgrel cmd:tput"
+makedepends="ocaml"
+subpackages="$pkgname-doc ocaml-$pkgname-dev:_libdev ocaml-$pkgname:_lib"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ocaml/$pkgname/archive/$pkgver.tar.gz"
+
+build() {
+	make configure \
+		OCAML_NATIVE=true \
+		OCAMLBUILD_BINDIR="/usr/bin" \
+		OCAMLBUILD_LIBDIR="/usr/lib/ocaml"
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	# Remove annotation files.
+	rm -f "$pkgdir"/usr/lib/ocaml/$pkgname/*.cmt*
+
+	# Keep only native binary.
+	cd "$pkgdir"/usr/bin
+	rm ocamlbuild.byte
+	mv ocamlbuild.native ocamlbuild
+}
+
+_libdev() {
+	pkgdesc="$pkgdesc (development files)"
+	depends="ocaml-$pkgname=$pkgver-r$pkgrel"
+	replaces="$pkgname"  # for backward compatibility
+
+	local file; for file in '*.a' '*.cmx' '*.cmxa' '*.mli' '*.o'; do
+		_submv "usr/lib/ocaml/$pkgname/$file"
+	done
+}
+
+_lib() {
+	pkgdesc="$pkgdesc (library)"
+	replaces="$pkgname"  # for backward compatibility
+	depends=
+
+	_submv usr/lib/ocaml
+}
+
+_submv() {
+	local path="$1"
+	mkdir -p "$subpkgdir"/${path%/*}
+	mv "$pkgdir"/$path "$subpkgdir"/${path%/*}/
+	rmdir -p "$pkgdir"/${path%/*} 2>/dev/null || true
+}
+
+sha512sums="ae60247396399dfd35644c8c1986ef7679e5a9964df82e3388bfc6dd4c5b88a13d6869a698d14a9ac70dc48e4ce1c003f543c85426d8c862ca31dea37a554b07  ocamlbuild-0.14.0.tar.gz"

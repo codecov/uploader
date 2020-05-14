@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kamera
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/graphics"
+pkgdesc="KDE integration for gphoto2 cameras"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kconfigwidgets-dev kxmlgui-dev kio-dev ki18n-dev kconfig-dev kdoctools-dev libgphoto2-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kamera-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="6db93a9b7d51a2911de78a1c5d7987a2f21d290f465b56cb8323e781dee816d23e85aa703ee907637d98edca97063ae9830c55e0d3d36f3d3c90074736115619  kamera-20.04.0.tar.xz"

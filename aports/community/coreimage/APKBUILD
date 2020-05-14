@@ -1,0 +1,24 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=coreimage
+pkgver=2.8.0
+pkgrel=0
+pkgdesc="An image viewer from the CoreApps family."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtsvg"
+makedepends="qt5-qtbase-dev libcprime-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/coreimage/-/archive/v$pkgver/coreimage-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+sha512sums="78d74af1c840aece4a2c1268705fce727f44af4990f15e635a801ded35f79e43c7cabc31f0aff6f6cfc7f11a9353b27affae5ff4579f8fddc0c0b868217a49d1  coreimage-2.8.0.tar.gz"

@@ -1,0 +1,38 @@
+# Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
+# Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
+pkgname=php7-pecl-solr
+_pkgreal=solr
+pkgver=2.5.0
+_pkgver=${pkgver}
+pkgrel=0
+pkgdesc="Apache SOLR extension for PHP"
+url="https://pecl.php.net/package/$_pkgreal"
+arch="all"
+license="PHP"
+depends="php7-json"
+makedepends="php7-dev curl-dev libxml2-dev autoconf pcre-dev"
+source="https://pecl.php.net/get/$_pkgreal-$_pkgver.tgz"
+builddir="$srcdir"/$_pkgreal-$_pkgver
+provides="php7-solr=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-solr" # for backward compatibility
+
+build() {
+	cd "$builddir"
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	# Require Solr installed
+	php7 -d extension="$builddir"/modules/$_pkgreal.so --ri $_pkgreal
+}
+
+package() {
+	cd "$builddir"
+	make INSTALL_ROOT="$pkgdir"/ install
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_pkgreal.so" > "$pkgdir"/etc/php7/conf.d/40_$_pkgreal.ini
+}
+
+sha512sums="5b24366942aa6eb0227da9d3d95bd0a9fd23a8163859e833c248cdab8f83391dc54df9fdae490ad9bc9bc5074b0b0c2c637918bc2f1738d5028f5e23c4d060cc  solr-2.5.0.tgz"

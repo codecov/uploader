@@ -1,0 +1,35 @@
+# Contributor: Oleg Titov <oleg.titov@gmail.com>
+# Maintainer: Oleg Titov <oleg.titov@gmail.com>
+pkgname=telegram-tdlib
+pkgver=1.6.0
+pkgrel=1
+pkgdesc="Cross-platform library for building Telegram clients"
+url="https://core.telegram.org/tdlib"
+arch="all !s390x !mips !mips64" # fails to build on big-endian
+license="BSL-1.0"
+options="!check" # No test suite from upstream
+makedepends="cmake openssl-dev zlib-dev gperf linux-headers"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/tdlib/td/archive/v$pkgver.tar.gz"
+builddir="$srcdir/td-$pkgver"
+
+build() {
+	mkdir build
+
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX:PATH="$pkgdir/usr"
+
+	make -C build
+}
+
+package() {
+	make -C build install
+
+	install -m644 -D -t "$pkgdir/usr/share/licenses/$pkgname" \
+		LICENSE_1_0.txt
+	install -m644 -D -t "$pkgdir/usr/share/doc/$pkgname" \
+		README.md
+}
+
+sha512sums="aee8b3df17e8571ca587cc72092305fd0992fefc4d9f60b2c530c9e6726c6b6371f0e5819ca4d5a4ffbbef1345f2a18156aae979b80e124ffe183423f8f515e0  telegram-tdlib-1.6.0.tar.gz"

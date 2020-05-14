@@ -1,0 +1,27 @@
+# Contributor: Roberto Oliveira <robertoguimaraes8@gmail.com>
+# Maintainer: Roberto Oliveira <robertoguimaraes8@gmail.com>
+pkgname=mate-tweak
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Tweak tool for the MATE Desktop"
+url="https://github.com/ubuntu-mate/mate-tweak"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="py3-psutil py3-setproctitle"
+makedepends="python3-dev py3-distutils-extra intltool"
+subpackages="$pkgname-doc $pkgname-lang"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ubuntu-mate/mate-tweak/archive/$pkgver.tar.gz"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="14866fc760af18c75f604b2aa1fa9a2206b27d4fac462298664e48aee6a70412105fa4336428ebbc40654079275db34a21af67d499f503c00c493946fc238110  mate-tweak-20.04.0.tar.gz"

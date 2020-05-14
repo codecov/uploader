@@ -1,0 +1,37 @@
+# Maintainer:
+pkgname=py3-tornado
+_pkgname=tornado
+pkgver=6.0.4
+pkgrel=0
+pkgdesc="Python3 web framework and asynchronous networking library"
+options="!check" # 3 Tests fail by failure to resolve 'localhost'
+url="http://www.tornadoweb.org/"
+arch="all"
+license="Apache-2.0"
+depends="python3"
+makedepends="python3-dev py3-setuptools"
+checkdepends="py3-curl py3-mock py3-twisted"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-tornado" # Backwards compatibility
+provides="py-tornado=$pkgver-r$pkgrel" # Backwards compatibility
+
+export TORNADO_EXTENSION=1
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	export PYTHONPATH="$(echo $PWD/build/lib.*)"
+	cd build
+	python3 -m tornado.test.runtests
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir" --optimize=1
+	rm -rf "$subpkgdir"/usr/lib/python3*/site-packages/$_pkgname/test
+}
+
+sha512sums="d29d69cf40f8b34fb2c55d81b6ecd9bc7c6fdf644eb4ff35452829510c0d5ec185da0a6067fec3e8afb2bedf9f5f08b06adb0ad53dcab04cb791a75abc304d6e  tornado-6.0.4.tar.gz"

@@ -1,0 +1,35 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=doxygen
+pkgver=1.8.18
+pkgrel=0
+pkgdesc="A documentation system for C++, C, Java, IDL and PHP"
+url="http://www.doxygen.nl/"
+arch="all"
+license="GPL-2.0-or-later"
+checkdepends="libxml2-utils"
+makedepends="flex bison coreutils perl python3 cmake"
+source="http://doxygen.nl/files/doxygen-$pkgver.src.tar.gz
+	doxygen-1.8.14-install.patch
+	"
+
+build() {
+	cmake -B build \
+		-DGIT_EXECUTABLE=/bin/false \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=None \
+		-Dbuild_xmlparser=ON .
+	make -C build
+}
+
+check() {
+	# Remove test that use bibtex
+	rm -f ./testing/012_cite.dox
+	make -C build test
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="8a75b78db5b49c891342a40b452cae045aa4e317add12ba85a4759081dba5dab11f1a95a576df16d4f275c69a6e9ee1b8f8739c1bf8348f5b4578b1c41e2a32c  doxygen-1.8.18.src.tar.gz
+a11ece43c640ffed707240f726b2005e103294e0351d7c3b6dd46ecc9bc0341b56c4bfb4e4daead3683129a1f332f283c578258aa1f611ec5a57c4da3bff8a21  doxygen-1.8.14-install.patch"

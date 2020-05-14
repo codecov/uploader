@@ -1,0 +1,51 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=libteam
+pkgver=1.30
+pkgrel=0
+pkgdesc="Library for controlling team network device"
+url="http://libteam.org"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="autoconf automake libtool libnl3-dev libdaemon-dev jansson-dev
+	dbus-dev linux-headers bsd-compat-headers doxygen swig python3-dev"
+subpackages="$pkgname-dev $pkgname-doc py3-$pkgname:_py3"
+source="$pkgname-$pkgver.tar.gz::https://github.com/jpirko/libteam/archive/v$pkgver.tar.gz
+	fix-fd_set.patch
+	memcpy-memset-implicit-declaration.patch
+	fix-redefinition-struct-ethhdr.patch
+	"
+
+prepare() {
+	default_prepare
+	autoreconf -vfi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-static
+	make
+}
+
+_py3() {
+	pkgdesc="Python Bindings for libteam"
+
+	cd "$builddir"/binding/python
+	python3 setup.py build
+	python3 setup.py install --root "$subpkgdir" -O1
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="c037fb20b31fe018f508ccd733037267bb628b569f5689f5748e3daa467239d4d5ffe00ca389022d4dddaefed11828204b2887fdccf1a76327b56ec7fa0a0be5  libteam-1.30.tar.gz
+83f8dd77cfed0f815bc0cb2aa4af25883a02567dbb35b59016d7f3a30f162e63155996d21216424f0ea4efa8e92f8f9526a018a892533c3c7dd7c7ba12b46a44  fix-fd_set.patch
+1279c164960b6215e9bb9f3ee161ef9ac6a38b8066d4a1031996b8067031b9b19404681ebecf3492a26b1215ec2eaaddecae3370ec25e2593dc3ca7dc5f8ead7  memcpy-memset-implicit-declaration.patch
+db2f374018a8b60c099e5b41abf5a9d20912bddc0436788b246815459c97498fb47d237376f87a623438f2f48d486d91d65fe5b49aeeabc83cbd41bdb66d7bfc  fix-redefinition-struct-ethhdr.patch"

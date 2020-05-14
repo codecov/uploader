@@ -1,0 +1,37 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libsigc++
+pkgver=2.10.3
+pkgrel=0
+pkgdesc="type-safe Signal Framework for C++"
+url="https://github.com/libsigcplusplus/libsigcplusplus"
+arch="all"
+license="LGPL-3.0-or-later"
+makedepends="m4 perl"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://download.gnome.org/sources/libsigc++/${pkgver%.*}/libsigc++-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+doc() {
+	default_doc
+
+	mv "$pkgdir"/usr/share/devhelp "$subpkgdir"/usr/share
+	rmdir "$pkgdir"/usr/share
+}
+
+sha512sums="3c7f90be84724e39073c05624ad2bee6a5835e2c6cb6cf9e605edc6574eb7cd99ec153aaca6e8fcf7e3a6c031c4e9c334da32d04177d36788e64a17667c70b4e  libsigc++-2.10.3.tar.xz"

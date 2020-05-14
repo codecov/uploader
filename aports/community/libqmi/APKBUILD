@@ -1,0 +1,48 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=libqmi
+pkgver=1.24.12
+pkgrel=0
+pkgdesc="QMI modem protocol helper library"
+url="https://www.freedesktop.org/wiki/Software/libqmi"
+arch="all"
+license="GPL-2.0-or-later AND LGPL-2.1-or-later"
+makedepends="glib-dev gtk-doc libgudev-dev libmbim-dev linux-headers python3"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	"
+source="https://www.freedesktop.org/software/libqmi/libqmi-$pkgver.tar.xz"
+
+# Tests fail
+[ "$CARCH" = s390x ] && options="$options !check"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--disable-static \
+		--enable-mbim-qmux \
+		--enable-more-warnings=yes
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+bashcomp() {
+	depends=""
+	pkgdesk="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+
+sha512sums="5af72dee525e0b8508bf7f71e663e8a918f96ccb37ed8b78e7276c2d3a584c3ad782e6ec2e23c1ace00cc7bef3b2b6fa79b9aa48323b79c527a411a5b9c0d183  libqmi-1.24.12.tar.xz"

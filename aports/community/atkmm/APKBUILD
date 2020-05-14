@@ -1,0 +1,28 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=atkmm
+pkgver=2.28.0
+pkgrel=1
+pkgdesc="C++ bindings for atk"
+options="!check" # No testsuite
+url="https://www.gtkmm.org/en/"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="atk-dev glibmm-dev libsigc++-dev perl"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://download.gnome.org/sources/atkmm/${pkgver%.*}/atkmm-$pkgver.tar.xz"
+
+replaces="gtkmm"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="8457cff58648c3d3944d6a9fb400062985c70a714856a5d84d4553cb6b1202bdc47aa48c612851fea1cc1b7ab59381116c65d2a22212907e3c4b7090601946bc  atkmm-2.28.0.tar.xz"

@@ -1,0 +1,41 @@
+# Contributor: Stefan Wagner <stw@bit-strickerei.de>
+# Maintainer: Stefan Wagner <stw@bit-strickerei.de>
+pkgname=avr-libc
+pkgver=2.0.0
+pkgrel=3
+pkgdesc="The C runtime library for the AVR family of microcontrollers"
+url="https://savannah.nongnu.org/projects/avr-libc/"
+depends="gcc-avr"
+makedepends="autoconf automake"
+arch="all"
+license="BSD"
+subpackages="$pkgname-doc"
+source="https://download.savannah.gnu.org/releases/$pkgname/$pkgname-$pkgver.tar.bz2"
+
+builddir="$srcdir/$pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+	update_config_guess
+}
+
+build() {
+	cd "$builddir"
+	./bootstrap
+	CC=avr-gcc ./configure \
+		--build="$(/bin/sh config.guess)" \
+		--host=avr \
+		--prefix=/usr
+	make
+}
+
+package() {
+	cd "$builddir"
+	make install DESTDIR="$pkgdir"
+	if [ -d "$pkgdir"/usr/lib64 ]; then
+		mv "$pkgdir"/usr/lib64/* "$pkgdir"/usr/lib/
+		rmdir "$pkgdir"/usr/lib64
+	fi
+}
+
+sha512sums="fc8d062043d633350dbe05978935dcb8028257a4f1013f246af9658aef0671def19ac11577d1ee9302df68df1b8cf030b22441d96852e185db212263aacabea6  avr-libc-2.0.0.tar.bz2"

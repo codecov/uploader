@@ -1,0 +1,40 @@
+# Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
+# Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
+pkgname=php7-pecl-mailparse
+_pkgreal=mailparse
+pkgver=3.1.0
+pkgrel=0
+pkgdesc="PHP extension for parsing and working with email messages - PECL"
+url="https://pecl.php.net/package/mailparse"
+arch="all"
+license="PHP-3.01"
+depends="php7-mbstring"
+makedepends="php7-dev autoconf re2c"
+source="$pkgname-$pkgver.tgz::https://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+provides="php7-mailparse=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-mailparse" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	# Tests require mbstring extension which is not bundled
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test PHP_TEST_SHARED_EXTENSIONS=" \
+		-d extension=/usr/lib/php7/modules/mbstring.so \
+		-d extension=modules/$_pkgreal.so"
+}
+
+package() {
+	local confdir="$pkgdir/etc/php7/conf.d"
+
+	make INSTALL_ROOT="$pkgdir" install
+
+	mkdir -p "$confdir"
+	echo "extension=$_pkgreal.so" > "$confdir"/60_$_pkgreal.ini
+}
+
+sha512sums="5a2a0786fc62fc47a60dcd52158ed86a1a58a26dc764b62abd763f784553f853c6644e4de76c85ad9133c8359d040c546c662b5f838ff7a5c88307aa21a589ca  php7-pecl-mailparse-3.1.0.tgz"

@@ -1,0 +1,40 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Thomas Boerger <thomas@webhippie.de>
+pkgname=sassc
+pkgver=3.6.1
+pkgrel=1
+pkgdesc="Libsass command line driver"
+url="https://github.com/sass/sassc"
+arch="all"
+license="MIT"
+makedepends="libsass-dev autoconf automake libtool"
+source="$pkgname-$pkgver.tar.gz::https://github.com/sass/sassc/archive/$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+
+	cat <<- __EOF__ > version.sh
+		echo $pkgver
+	__EOF__
+
+	autoreconf -vif
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--disable-static
+	make
+}
+
+check() {
+	./sassc --help > /dev/null
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="b6df8f481db0737ca08808c0849dcbd83e80799d883271d382607b7a74028153195f5f9c26768ffe1a9a92ee8c26be3c382ad7b3a5336eb6e4a0dad58132690e  sassc-3.6.1.tar.gz"

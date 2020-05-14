@@ -1,0 +1,169 @@
+# Contributor: <kalonji@gmail.com>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+#
+# secfixes:
+#   5.8-r0:
+#     - CVE-2019-20044
+#   5.4.2-r1:
+#     - CVE-2018-1083
+#     - CVE-2018-1071
+#
+pkgname=zsh
+pkgver=5.8
+pkgrel=1
+pkgdesc="Very advanced and programmable command interpreter (shell)"
+url="https://www.zsh.org/"
+arch="all"
+license="custom"
+makedepends="ncurses-dev diffutils"
+install="zsh.post-install zsh.post-upgrade zsh.pre-deinstall"
+source="https://download.sourceforge.net/project/zsh/zsh/$pkgver/zsh-$pkgver.tar.xz
+	zprofile"
+subpackages="$pkgname-doc $pkgname-calendar::noarch $pkgname-vcs::noarch $pkgname-zftp"
+builddir="$srcdir/$pkgname-$pkgver"
+
+_libdir="usr/lib/zsh/$pkgver"
+_sharedir="usr/share/zsh/$pkgver"
+
+# Move some bigger completion files to subpackages.
+# <pkgname-prefix>:[<revdep>]:<file1>[:<file2>...]
+_comps="android-tools::Unix/_adb
+	bzr::Unix/_bzr
+	composer::Unix/_composer
+	cvs::Unix/_cvs
+	gcc::Unix/_gcc
+	git::Unix/_git
+	graphicsmagick::Unix/_graphicsmagick
+	imagemagick::Unix/_imagemagick
+	lynx::Unix/_lynx
+	postgresql:postgresql-client:Unix/_postgresql
+	rsync::Unix/_rsync
+	subversion::Unix/_subversion
+	tmux::Unix/_tmux
+	zfs::Unix/_zfs*:Unix/_zpool"
+for _i in $_comps; do
+	subpackages="$subpackages ${_i%%:*}-zsh-completion:_completion:noarch"
+done
+
+prepare() {
+	default_prepare
+
+	# Remove completions for other systems.
+	cd "$builddir/Completion"
+	rm -Rf AIX BSD Cygwin Darwin Debian Mandriva Redhat Solaris openSUSE
+
+	# Remove completions for programs that are not available on Alpine
+	# (just to decrease size of the package).
+	cd "$builddir/Completion/Unix/Command"
+	rm -f _aap _apm _baz _bittorrent _bpython _ccal _cdcd _chkconfig _clay \
+		_cowsay _cplay _cssh _darcs _devtodo _dict _dsh _elfdump _elm \
+		_enscript _finger _flasher _fsh _gnupod _guilt _initctl _lzop \
+		_mencal _module _monotone _moosic _mysqldiff _nkf \
+		_pack _pax _perforce _pine _pkgadd _pkginfo _pkgrm _prcs \
+		_quilt _raggle _rcs _rlogin _rubber _sablotron _sisu _socket \
+		_stgit _surfraw _tardy _telnet _tin _tla _topgit _totd _twidge \
+		_unace _unison _units _uzbl _vcsh _vux _wiggle _xmms2
+	cd "$builddir/Completion/Linux/Command"
+	rm -f _acpitool _mondo _tpb _tpconfig _uml _vserver
+	cd "$builddir/Completion/X/Command"
+	rm -f _acroread _dcop _gnome-gv _gqview _gv _kfmclient _matlab \
+		_nautilus _netscape _okular _qiv _vnc _xfig _xloadimage \
+		_xournal _xv _xwit
+
+	# remove the failing test suites
+	cd "$builddir/Test"
+	# SPLATTER: applet not found
+	rm -f A01grammar.ztst
+	# [[ $(strftime '%@' 0 2> /dev/null) == (%|)@ || $? != 0 ]]
+	rm -f V09datetime.ztst
+
+}
+
+build() {
+	cd "$builddir"
+
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--bindir=/bin \
+		--enable-etcdir=/etc/zsh \
+		--enable-multibyte \
+		--enable-function-subdirs \
+		--enable-zsh-secure-free \
+		--sysconfdir=/etc \
+		--with-tcsetpgrp \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info
+	make
+}
+
+check() {
+	cd "$builddir"
+
+	make test
+}
+
+package() {
+	cd "$builddir"
+
+	make DESTDIR="$pkgdir" install
+	install -Dm644 "$srcdir"/zprofile "$pkgdir"/etc/zsh/zprofile
+	install -Dm644 LICENCE "$pkgdir"/usr/share/licenses/$pkgname/LICENCE
+}
+
+doc() {
+	default_doc
+	_submv $_sharedir/help
+}
+
+calendar() {
+	pkgdesc="Calendar Function System for ZSH"
+	depends="$pkgname"
+
+	_submv $_sharedir/functions/Calendar
+}
+
+vcs() {
+	pkgdesc="Version Control Information module for ZSH (vcs_info)"
+	depends="$pkgname"
+
+	_submv $_sharedir/functions/VCS_Info
+}
+
+zftp() {
+	pkgdesc="Zftp Function System for ZSH"
+	depends="$pkgname"
+
+	_submv $_libdir/zsh/zftp.so
+	_submv $_sharedir/functions/Zftp
+}
+
+_completion() {
+	local name="${subpkgname%-zsh-completion}"
+	pkgdesc="Zsh completions for $name"
+	depends="$pkgname"
+
+	local revdep="$(printf '%s\n' $_comps \
+		| sed -En "s|^$name:([^:]*):.*|\1|p")"
+
+	install_if="$pkgname=$pkgver-r$pkgrel ${revdep:-$name}"
+
+	local files="$(printf '%s\n' $_comps \
+		| sed -En "s|^$name:[^:]*:(.*)|\1|p" | tr : ' ')"
+	test -n "$files" || { echo "$name not found in \$_comps" >&2; return 1; }
+
+	local f; for f in $files; do
+		_submv $_sharedir/functions/Completion/$f
+	done
+}
+
+_submv() {
+	local path="$1"
+	mkdir -p "$subpkgdir"/${path%/*}
+	mv "$pkgdir"/$path "$subpkgdir"/${path%/*}/
+}
+
+sha512sums="96198ecef498b7d7945fecebbe6bf14065fa8c5d81a7662164579eba8206b79575812d292adea1864bc7487ac0818ba900e25f9ab3802449340de80417c2c533  zsh-5.8.tar.xz
+1067ad916d8921fe8880e040453782dcaafb6c05566f72b806e71aef2c2a53f25b6039cf8133196dd52cf7e23b172452ef3f77188bab8c8b1a50c1ea6ffa176a  zprofile"

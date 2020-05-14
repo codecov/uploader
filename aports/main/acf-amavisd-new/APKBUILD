@@ -1,0 +1,17 @@
+# Contributor: Ted Trask <ttrask01@yahoo.com>
+# Maintainer: Ted Trask <ttrask01@yahoo.com>
+pkgname=acf-amavisd-new
+pkgver=0.4.0
+pkgrel=3
+pkgdesc="ACF module for amavis"
+url="https://git.alpinelinux.org/cgit/acf/acf-amavisd-new"
+arch="noarch"
+license="GPL-2.0"
+depends="acf-core amavis"
+source="https://dev.alpinelinux.org/archive/acf-amavisd-new/acf-amavisd-new-$pkgver.tar.xz"
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="d3012f1622b27ca661a0c3c20b9611b5f793fcfc1e08f0c8edf30c048e89f27bed6e6f2268c4a723b3cdcf808db29b922b15c5ad870d4af0e87d8d0e65968666  acf-amavisd-new-0.4.0.tar.xz"

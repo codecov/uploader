@@ -1,0 +1,31 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=accerciser
+pkgver=3.36.1
+pkgrel=0
+pkgdesc="Interactive Python accessibility explorer"
+url="https://wiki.gnome.org/Apps/Accerciser"
+arch="noarch !s390x !mips !mips64" #librsvg
+license="BSD-3-Clause"
+depends="libwnck3 py3-gobject3 py3-atspi gtk+3.0 librsvg py3-xlib ipython"
+makedepends="gtk+3.0-dev py3-gobject3-dev glib-dev at-spi2-core-dev itstool"
+options="!check" # no tests
+subpackages="$pkgname-lang $pkgname-doc"
+source="https://download.gnome.org/sources/accerciser/${pkgver%.*}/accerciser-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="0eb93be17b78c231bec21cc4051c6ef0346d2da0f77be7da705f0b42f60452c028baffca055e31bd6c587d6688a03356d108cff356cb4a992d2edbb9614069b8  accerciser-3.36.1.tar.xz"

@@ -1,0 +1,36 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=polari
+pkgver=3.36.2
+pkgrel=1
+pkgdesc="Polari is a simple IRC Client that is designed to integrate seamlessly with GNOME 3"
+url="https://wiki.gnome.org/Apps/Polari"
+arch="all !s390x !mips !mips64" # missing dep: gjs
+license="GPL-2.0-or-later"
+depends="telepathy-logger"
+makedepends="meson gobject-introspection-dev gtk+3.0-dev telepathy-glib-dev
+	gjs-dev itstool"
+checkdepends="appstream-glib mozjs60 desktop-file-utils"
+subpackages="$pkgname-lang $pkgname-doc"
+source="https://download.gnome.org/sources/polari/${pkgver%.*}/polari-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="d83b4464dc05c62cde58efb629410103f973c16b36e0f2d75ca88301c74fc2e1af1da465136a104fe7a439ad904e9ba4773f546f2acba494dabbccdff6e18f91  polari-3.36.2.tar.xz"

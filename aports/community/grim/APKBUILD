@@ -1,0 +1,29 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=grim
+pkgver=1.3.0
+pkgrel=1
+pkgdesc="Grabs images from Wayland compositors"
+options="!check" # No testsuite
+url="https://wayland.emersion.fr/grim/"
+arch="all"
+license="MIT"
+makedepends="meson scdoc wayland-dev wayland-protocols cairo-dev"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/emersion/grim/archive/v$pkgver.tar.gz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="de56046375da1a0c4d787a39d97e18af964dbf40b0d18c6f99c68b4bf054cf6712ba653d69711d3bc6f50870a23649959d67c0b150ac5c637e8c9e74b0eba2e6  grim-1.3.0.tar.gz"

@@ -1,0 +1,54 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=repmgr
+pkgver=5.0.0
+pkgrel=0
+pkgdesc="Replication Manager for PostgreSQL"
+url="http://www.repmgr.org/"
+arch="all"
+license="GPL-3.0"
+depends="postgresql-client"
+makedepends="postgresql-dev flex libxml2-dev libedit-dev"
+pkgusers="postgres"
+pkggroups="postgres"
+subpackages="$pkgname-doc $pkgname-daemon"
+source="$pkgname-$pkgver.tar.gz::https://github.com/2ndQuadrant/repmgr/archive/v$pkgver.tar.gz
+	repmgr.conf.patch
+	repmgrd.initd
+	"
+
+build() {
+	./configure
+	make USE_PGXS=1
+}
+
+check() {
+	./repmgr --version
+	./repmgrd --version
+}
+
+package() {
+	make USE_PGXS=1 DESTDIR="$pkgdir" install
+
+	install -D -m 640 -o postgres -g postgres \
+		repmgr.conf.sample "$pkgdir"/etc/repmgr.conf
+
+	cd "$pkgdir"
+
+	mkdir -p usr/share/doc/$pkgname
+	cp "$builddir"/*.md "$builddir"/doc/*.md usr/share/doc/$pkgname/
+}
+
+daemon() {
+	pkgdesc="A management and monitoring daemon for PostgreSQL Replication Manager"
+	depends="$pkgname"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/repmgrd "$subpkgdir"/usr/bin/
+
+	install -D -m 755 "$srcdir"/repmgrd.initd "$subpkgdir"/etc/init.d/repmgrd
+}
+
+sha512sums="05d395d470d01b7a28d570c97ff519b8611fe6e653518ae3d7a14b86e1631d906aff22a866ff27ea14eb48531618afc774f2c087dcb6daa2d26534a742abbc14  repmgr-5.0.0.tar.gz
+ebf19ac6935968483b6c7a8c8dfdb0c4cd7d3dc83e2b6418731b5a8d2894cb1f79080b85a5a60d886b6b2c0e8020fa1dbf8ec91a0bd0f28c609d2910a71791b4  repmgr.conf.patch
+d35ff4918f5bbaae58d462b984bd8da09c7847b0ef99783eccf1429c3fb3aaabeedbe99fc17bf82629a3633cf6821108e840774569cb3894c859386d10439a26  repmgrd.initd"

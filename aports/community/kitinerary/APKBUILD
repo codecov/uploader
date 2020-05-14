@@ -1,0 +1,53 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kitinerary
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://kontact.kde.org/"
+pkgdesc="Data model and extraction system for travel reservation information"
+license="LGPL-2.0-or-later"
+depends_dev="
+	kmime-dev
+	kcalendarcore-dev
+	kcontacts-dev
+	kpkpass-dev
+	"
+makedepends="
+	$depends_dev
+	extra-cmake-modules
+	qt5-qtbase-dev
+	qt5-qtdeclarative-dev
+	ki18n-dev
+	poppler-dev
+	zxing-cpp-dev
+	zxing-cpp
+	zlib-dev
+	libxml2-dev
+	shared-mime-info
+	"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kitinerary-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+
+	# jsonlddocumenttest, mergeutiltest, airportdbtest, pkpassextractortest,
+	# postprocessortest, calendarhandlertest and extractortest are broken
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest \
+		-E "(jsonlddocument|mergeutil|airportdb|pkpassextractor|postprocessor|calendarhandler|extractor)test"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="0c1c3ec2ff5a88f00289890a2b27a11fd70e26b9de6407a800a5779072acf4c0b00fa122926fa464a4fa9b447ff665dffd31b52813188d0712fb2ca693c9be42  kitinerary-20.04.0.tar.xz"

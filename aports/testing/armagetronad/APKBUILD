@@ -1,0 +1,50 @@
+# Maintainer: Díaz Urbaneja Diego <sodomon2@gmail.com>
+# Contributor: Díaz Urbaneja Diego <sodomon2@gmail.com>
+pkgname=armagetronad
+pkgver=0.2.8.3.5
+pkgrel=0
+pkgdesc="A Tron Clone in 3D."
+url="http://armagetronad.net/"
+arch="all"
+license="GPL-1.0-only"
+makedepends="sdl_image-dev sdl_mixer-dev ftgl-dev libxml2-dev"
+subpackages="$pkgname-doc"
+options="!check" #the tests are deactivated because the make check has not been declared
+source="https://launchpad.net/armagetronad/${pkgver%.*.*}/$pkgver/+download/armagetronad-$pkgver.src.tar.gz"
+
+prepare() {
+	default_prepare
+	update_config_guess
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--disable-useradd \
+		--enable-dirty \
+		--enable-music \
+		--enable-armathentication \
+		--enable-master \
+		--enable-krawall \
+		--bindir=/usr/bin \
+		--sbindir=/usr/sbin \
+		--libexecdir=/usr/libexec \
+		--datadir=/usr/share \
+		--sysconfdir=/usr/share \
+		--sharedstatedir=/usr/share \
+		--localstatedir=/var \
+		--libdir=/usr/share \
+		--includedir=/usr/share \
+		--docdir=/usr/share/doc/armagetronad
+	make
+}
+
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+
+	# The symlinks they install here are not actual openrc scripts
+	rm -rf "$pkgdir"/etc/init.d
+}
+
+sha512sums="ee3c1be492e3f5e35e29bdefd39a3407272acc8f392030d011162af45834a617715435b32dae1a45f9889455847b629a23f6711eaf901a1f61da84bdf2dbd7e0  armagetronad-0.2.8.3.5.src.tar.gz"

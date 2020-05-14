@@ -1,0 +1,29 @@
+# Contributor: kohnish <kohnish@gmx.com>
+# Maintainer: kohnish <kohnish@gmx.com>
+pkgname=crun
+pkgver=0.13
+pkgrel=0
+pkgdesc="A fast and lightweight fully featured OCI runtime and C library for running containers"
+url="https://github.com/containers/crun"
+arch="all"
+license="GPL-2.0-or-later AND LGPL-2.1-or-later"
+makedepends="libcap-dev libseccomp-dev yajl-dev argp-standalone python3 go-md2man"
+subpackages="$pkgname-doc $pkgname-static"
+source="https://github.com/containers/crun/releases/download/$pkgver/crun-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--disable-systemd
+	make
+}
+
+check() {
+	make tests/tests_libcrun_errors.log
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="a577750613b2a571f1317a24c66818a54914621c1450f5ce50b6f46e6d824a80651bb330904a11aef3a48177f85f1a0571c85b3f06d75942d9daf79f726b828e  crun-0.13.tar.xz"

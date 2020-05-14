@@ -1,0 +1,28 @@
+# Contributor: z3bra <willy at mailoo dot org>
+# Maintainer: Kevin Daudt <me@ikke.info>
+pkgname=markdown
+_pkgreal=Markdown
+pkgver=1.0.1
+pkgrel=1
+pkgdesc="Text-to-HTML conversion tool for web writers"
+url="https://daringfireball.net/projects/markdown/"
+arch="noarch"
+license="BSD-3-Clause"
+depends="perl"
+makedepends="$depends_dev"
+subpackages="$pkgname-doc"
+source="https://daringfireball.net/projects/downloads/Markdown_1.0.1.zip"
+
+builddir=$srcdir/${_pkgreal}_${pkgver}
+
+build() {
+	pod2man "Markdown.pl" > "$builddir/$pkgname.1"
+}
+
+package() {
+	install -Dm755 "Markdown.pl" "${pkgdir}/usr/bin/${pkgname}"
+	install -Dm644 "License.text" "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+	install -Dm644 "$pkgname.1" "$pkgdir/usr/share/man/man1/$pkgname.1"
+}
+
+sha512sums="962df356e641326fbf29cdedc36dafb5f04683f0b3f5eb1efb8e15994e1e000b5a6882c84f09db4a6f8f948811ebbe76759e27871c644e690884db31705eab1f  Markdown_1.0.1.zip"

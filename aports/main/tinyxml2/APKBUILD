@@ -1,0 +1,37 @@
+# Contributor: André Klitzing <aklitzing@gmail.com>
+# Maintainer: André Klitzing <aklitzing@gmail.com>
+pkgname=tinyxml2
+pkgver=8.0.0
+pkgrel=0
+pkgdesc="Simple, small and efficient C++ XML parser"
+url="http://www.grinninglizard.com/tinyxml2"
+arch="all"
+license="Zlib"
+makedepends="cmake"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/leethomason/tinyxml2/archive/$pkgver.tar.gz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		$CMAKE_CROSSOPTS
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="bcbb065c2af34ea681ec556377fd22e720b6f5d4caa73f432b1e34e08603a96f2233763f0ec5ae86b9ee71ddbe3062f58d3794cd3a162ce6903435530de0bba6  tinyxml2-8.0.0.tar.gz"

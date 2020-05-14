@@ -1,0 +1,69 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=distcc
+pkgver=3.3.3
+pkgrel=0
+pkgdesc="Ddistributed C, C++, Obj C compiler"
+url="https://github.com/distcc/distcc"
+arch="all"
+license="GPL-2.0"
+makedepends="autoconf automake popt-dev python3-dev"
+checkdepends="gdb procps"
+options="!check" # tests are failing
+install="$pkgname.pre-install"
+subpackages="$pkgname-doc $pkgname-pump"
+source="https://github.com/distcc/distcc/releases/download/v$pkgver/distcc-$pkgver.tar.gz
+	distcc-hardened.patch
+	distccd.initd
+	distccd.confd
+	"
+
+prepare() {
+	default_prepare
+
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--without-gtk \
+		--sysconfdir=/etc \
+		--disable-Werror \
+		--without-libiberty \
+		--mandir=/usr/share/man
+
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	install -D -m644 ../distccd.confd "$pkgdir"/etc/conf.d/distccd
+	install -D -m755 ../distccd.initd "$pkgdir"/etc/init.d/distccd
+
+	local d="$pkgdir/usr/lib/$pkgname/bin"
+	mkdir -p "$d"
+	ln -sf /usr/bin/$pkgname "$d"/cc
+	ln -sf /usr/bin/$pkgname "$d"/gcc
+	ln -sf /usr/bin/$pkgname "$d"/g++
+	ln -sf /usr/bin/$pkgname "$d"/cpp
+}
+
+pump() {
+	pkgdesc="pump mode for distcc a distributed compiler client and server"
+	mkdir -p "$subpkgdir"/usr/lib "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/pump "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/lib/python* "$subpkgdir"/usr/lib/
+}
+
+sha512sums="d5e7fc67f49ee640cef753038b5c0ebcbbac61c6ac29f20ee4736b045a89979ced765717c46383a4fadc50a4fe34e94e58e307509144414a9ca19eb4cc68a135  distcc-3.3.3.tar.gz
+d1150dc83bf89c332f8c0bd01e15f52f95d71868733bd2e5430a5377f1a4aaa2b5b6e0cd488d33d9b94ce18b0eeeadf4af719db536b001b50e4d482b35c7e057  distcc-hardened.patch
+3c58be08242de09f76876b20a0c6643a3a76a088c356484cb091253b7e4dddb20008d071d8e5d1a66acbc5bfe4d8a59284a6d7f225ca2006e8a8b3c698e71026  distccd.initd
+fbb12522e489243475c735e055a72a19b176f1ad736dc810e1f085d8d9d79460ac7590a92bb9563f8b316437f67f6ca729330253f007d06011144a66fede5465  distccd.confd"

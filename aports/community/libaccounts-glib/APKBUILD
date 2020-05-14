@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libaccounts-glib
+pkgver=1.25
+pkgrel=0
+arch="all"
+url="https://gitlab.com/accounts-sso/libaccounts-glib"
+pkgdesc="GLib-based client library for the accounts database"
+license="LGPL-2.1-or-later"
+depends_dev="libxml2-dev sqlite-dev check-dev py3-gobject3 gobject-introspection-dev"
+makedepends="$depends_dev meson ninja vala python3 gtk-doc glib-dev"
+source="https://gitlab.com/accounts-sso/libaccounts-glib/-/archive/VERSION_$pkgver/libaccounts-glib-VERSION_$pkgver.tar.gz"
+subpackages="$pkgname-dev $pkgname-doc"
+options="!check" # Requires a systemd feature
+builddir="$srcdir/$pkgname-VERSION_$pkgver"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	meson test -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="cc8b493d246f99300ee614fed93258378ecdbe9c518a958a59827ee8f74559b1ee3683acfb85f59aa91390275497fb35041da2be47f27f24f96e1efd5d6d2e20  libaccounts-glib-VERSION_1.25.tar.gz"

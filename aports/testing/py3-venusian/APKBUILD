@@ -1,0 +1,32 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-venusian
+_pkgname=venusian
+pkgver=3.0.0
+pkgrel=0
+pkgdesc="A Python library for deferring decorator actions"
+url="https://pypi.python.org/pypi/venusian"
+arch="noarch"
+license="BSD-4-Clause"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-venusian" # Backwards compatibility
+provides="py-venusian=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	sed -i '/addopts = -W always --cov --cov-report=term-missing/d' setup.cfg
+	PYTHONPATH="$PWD/build/lib" py.test-3
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="dec12473f30697ec678190054974d48bd30775f2204308dc43469e65814dbeea1b7ebf571187cc9efe2d3d2a73ab9ef839ad39b99ed81dfa75577f203653a776  venusian-3.0.0.tar.gz"

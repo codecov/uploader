@@ -1,0 +1,31 @@
+# Contributor: 
+# Maintainer: 
+pkgname=compat-pvgrub
+pkgver=1
+pkgrel=1
+pkgdesc="compatibility support for PV-GRUB 1.x"
+url="https://www.alpinelinux.org/"
+arch="noarch"
+license="ISC"
+depends=""
+depends_dev=""
+makedepends="$depends_dev"
+triggers="compat-pvgrub.trigger=/boot"
+install=""
+subpackages=""
+source="update-pvgrub"
+
+_builddir="$srcdir"
+
+package() {
+	cd "$_builddir"
+
+	mkdir -p "$pkgdir"/boot/grub "$pkgdir"/sbin
+	touch "$pkgdir"/boot/grub/.keep-compat-pvgrub
+
+	sed "/^version=/s/=.*/=$pkgver-r$pkgrel/" "$srcdir"/update-pvgrub \
+		> "$pkgdir"/sbin/update-pvgrub
+	chmod 755 "$pkgdir"/sbin/update-pvgrub
+}
+
+sha512sums="82bf1d6cf5804bd10b48a8da504d92c534c33e0e1df6aefb6d5d365ff8dacb260723c437edca02def88d5bfb6c21c91a610fc13ff5238d5e1d789eba427e7a15  update-pvgrub"

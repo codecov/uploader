@@ -1,0 +1,33 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+# Contributor: Daniel Isaksen <d@duniel.no>
+pkgname=httpie
+pkgver=2.1.0
+pkgrel=0
+pkgdesc="A CLI, cURL-like tool"
+options="!check" # Requires 'pytest-httpbin'
+url="https://httpie.org/"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3 py3-requests py3-pygments"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest"
+source="https://files.pythonhosted.org/packages/source/h/httpie/httpie-$pkgver.tar.gz"
+
+# secfixes:
+#   1.0.3-r0:
+#     - CVE-2019-10751
+
+check() {
+	PYTHONPATH="$PWD/build/lib" py.test-3
+}
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="c1ae68f0e2dbf583d69195f34563dee4403f962f7bc12f477b59f7418b42d0e2b08b79d5e240e52c163b2da96d107cf4f2bf9bb1e03d9ec328aabe71986887fb  httpie-2.1.0.tar.gz"

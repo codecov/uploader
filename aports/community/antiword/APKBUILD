@@ -1,0 +1,26 @@
+# Contributor: Michael Mason <ms13sp@gmail.com>
+# Maintainer: Michael Mason <ms13sp@gmail.com>
+pkgname=antiword
+pkgver=0.37
+pkgrel=4
+pkgdesc="A free MS Word reader"
+options="!check" # No testsuite
+url="http://www.winfield.demon.nl"
+arch="all"
+license="GPL-2.0-only"
+source="http://www.winfield.demon.nl/linux/antiword-$pkgver.tar.gz
+	CVE-2014-8123.patch
+	"
+
+build() {
+	make OPT="-Os"
+}
+
+package() {
+	install -m755 -D "$srcdir"/"$pkgname-$pkgver"/$pkgname "$pkgdir"/usr/bin/$pkgname
+	mkdir -p "$pkgdir"/usr/share/antiword
+	install -m644 -D "$srcdir"/"$pkgname-$pkgver"/Resources/* "$pkgdir"/usr/share/antiword/
+}
+
+sha512sums="6cd8fb9137238417544cf8754829a2d5296055d730ea62a8a025236baa79516190317d146401ff40cde73e1ee2c3c374a2ea01b2e5d24e149310bcabb8bfdce8  antiword-0.37.tar.gz
+4e0714dc7b21ebd8e232656be576d05f0252bc0d7a7c10ec1511e479ef405a3627d4d14a08aac2c4481573654185492577f3376d3bc5ebf755e661a29c32a37c  CVE-2014-8123.patch"

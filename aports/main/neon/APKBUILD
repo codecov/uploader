@@ -1,0 +1,47 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=neon
+pkgver=0.31.1
+pkgrel=0
+pkgdesc="HTTP and WebDAV client library with a C interface"
+url="https://notroj.github.io/neon/"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="expat-dev openssl-dev zlib-dev gzip xmlto
+	autoconf automake libtool"
+checkdepends="openssl"
+depends="ca-certificates"
+depends_dev="$makedepends"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/notroj/neon/archive/$pkgver.tar.gz"
+# /usr/bin/openssl invocation fails in testsuite, not sure why
+options="!check"
+
+prepare() {
+	default_prepare
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--with-ssl \
+		--with-expat \
+		--without-gssapi \
+		--disable-nls \
+		--enable-shared \
+		--disable-static \
+		--enable-threadsafe-ssl=posix \
+		--with-ca-bundle=/etc/ssl/certs/ca-certificates.crt
+	make && make docs
+}
+
+check() {
+	make check
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+}
+sha512sums="ddaa78983ddd2f913767b8f7ba1649bfde00103e335a851b465730778ceb446fec27cbbb93a3d46821a9fb48876cbcdd660b557419403a060527073b7bf1e6d5  neon-0.31.1.tar.gz"

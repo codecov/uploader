@@ -1,0 +1,36 @@
+# Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
+# Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
+pkgname=php7-pecl-amqp
+_pkgreal=amqp
+pkgver=1.10.2
+pkgrel=0
+pkgdesc="PHP extension to communicate with any AMQP spec 0-9-1 compatible server - PECL"
+url="https://pecl.php.net/package/amqp"
+arch="all"
+license="PHP-3.01"
+depends="php7-common"
+makedepends="php7-dev autoconf rabbitmq-c-dev re2c"
+source="$pkgname-$pkgver.tgz::https://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+provides="php7-amqp=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-amqp" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	# Tests require running AMQP server, so basic check
+	php7 -d extension="$builddir"/modules/$_pkgreal.so --ri $_pkgreal
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+	local confdir="$pkgdir/etc/php7/conf.d"
+	mkdir -p "$confdir"
+	echo "extension=$_pkgreal.so" > "$confdir"/40_$_pkgreal.ini
+}
+
+sha512sums="a17176bcc02d35a9686d3ca120cca98d808b2a896733f41a28b5d29d43127a0a45b012bc6566de3604f41b8bcc453408a37a8254bcf47e940ebe12bb6f4d4265  php7-pecl-amqp-1.10.2.tgz"

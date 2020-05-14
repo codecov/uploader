@@ -1,0 +1,68 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Contributor: Michael Mason <ms13sp@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=coreutils
+pkgver=8.32
+pkgrel=0
+pkgdesc="The basic file, shell and text manipulation utilities"
+url="https://www.gnu.org/software/coreutils/"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="bash acl-dev attr-dev perl"
+subpackages="$pkgname-doc"
+install="$pkgname.post-deinstall"
+source="https://ftp.gnu.org/gnu/coreutils/coreutils-$pkgver.tar.xz
+	ls.patch
+	"
+options="!check"
+
+# secfixes:
+#   8.30-r0:
+#     - CVE-2017-18018
+
+build() {
+	LIBS="-lrt" ./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--disable-nls \
+		--without-gmp \
+		--enable-no-install-program=hostname,su,kill,uptime \
+		--enable-single-binary=symlinks
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	rm -rf "$pkgdir"/usr/lib/charset.alias
+	rmdir -p "$pkgdir"/usr/lib 2>/dev/null || true
+
+	install -d "$pkgdir"/bin "$pkgdir"/usr/sbin
+	cd "$pkgdir"/usr/bin/
+
+	# binaries that busybox puts in /bin
+	local busybox_bin="base64 cat chgrp chmod chown cp date dd df echo false ln ls
+		mkdir mknod mktemp mv nice printenv pwd rm rmdir sleep stat stty sync touch true uname"
+
+	# as these binaries live in /bin on busybox, we want to put them in /bin with coreutils
+	for i in $busybox_bin; do
+		rm "$pkgdir"/usr/bin/$i
+		ln -s ../usr/bin/coreutils "$pkgdir"/bin/$i
+	done
+
+	# chroot lives in /usr/sbin with busybox
+	rm "$pkgdir"/usr/bin/chroot
+	ln -s ../bin/coreutils "$pkgdir"/usr/sbin/chroot
+}
+
+# XXX - some gnulib tests broken, find a way to patch out gnulib tests
+check() {
+	make check
+}
+
+sha512sums="1c8f3584efd61b4b02e7ac5db8e103b63cfb2063432caaf1e64cb2dcc56d8c657d1133bbf10bd41468d6a1f31142e6caa81d16ae68fa3e6e84075c253613a145  coreutils-8.32.tar.xz
+2742d74c45bdb52c524d415fb0787ed63164aec2c22980a1c46b40b7db2f0911008161b1219d5b571cc25de274bacc20c8be3f651906967a032a3ac9859cffce  ls.patch"

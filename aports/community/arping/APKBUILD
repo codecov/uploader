@@ -1,0 +1,32 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=arping
+pkgver=2.21
+pkgrel=0
+pkgdesc="An ARP ping utility"
+url="http://www.habets.pp.se/synscan/programs.php?prog=arping"
+arch="all"
+license="GPL-2.0-or-later"
+depends="!iputils"
+makedepends="libnet-dev libpcap-dev"
+checkdepends="subunit-dev check-dev"
+subpackages="$pkgname-doc"
+source="http://www.habets.pp.se/synscan/files/$pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$pkgname-$pkgver
+
+check() {
+	cd "$builddir"
+	./src/arping --help > /dev/null
+}
+
+build() {
+	cd "$builddir"
+	./configure --prefix=/usr
+	make
+}
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="0413e87aa9f0664c3e9485c1d8c2fbd2adb322bfc871f9bddf84f458433d7c8c7587ac4b24cff36caff7b966cd9b71a7d8a54ac951723b322a475ac68cf45d47  arping-2.21.tar.gz"

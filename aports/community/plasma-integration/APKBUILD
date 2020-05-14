@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=plasma-integration
+pkgver=5.18.5
+pkgrel=0
+pkgdesc="Qt Platform Theme integration plugins for the Plasma workspaces"
+arch="all !armhf" # Blocked by qt5-qtdeclarative
+url="https://www.kde.org/workspaces/plasmadesktop/"
+license="(LGPL-2.1-only OR LGPL-3.0-only) AND LGPL-2.1-only AND ((LGPL-2.1-only WITH Nokia-Qt-exception-1.1) OR (GPL-3.0-only WITH Nokia-Qt-exception-1.1))"
+depends="font-noto ttf-hack qqc2-desktop-style"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtx11extras-dev qt5-qtquickcontrols2-dev kconfig-dev kconfigwidgets-dev ki18n-dev kiconthemes-dev kio-dev knotifications-dev kwayland-dev kwidgetsaddons-dev kwindowsystem-dev breeze-dev libxcursor-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/plasma/$pkgver/plasma-integration-$pkgver.tar.xz"
+subpackages="$pkgname-lang"
+options="!check" # Broken
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DCMAKE_DISABLE_FIND_PACKAGE_FontNotoSans=true \
+		-DCMAKE_DISABLE_FIND_PACKAGE_FontHack=true
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="d217c49555ee17e3b18d006368ec7aa4d8585c05070bcf3a3c7e471b1c7dc830080d0405209979d8a27c7c2fc2adcd3d248e595f43f0b4a2928683f93c6d4b48  plasma-integration-5.18.5.tar.xz"

@@ -1,0 +1,49 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Frankie Robertson <frankie@robertson.name>
+# Maintainer:
+pkgname=hfst
+pkgver=3.13.0
+pkgrel=1
+pkgdesc="Helsinki Finite-State Transducer Technology toolkit"
+url="http://www.ling.helsinki.fi/kieliteknologia/tutkimus/$pkgname/"
+arch="all"
+license="LGPL-3.0-or-later"
+makedepends="python3 bison python3-dev swig"
+subpackages="$pkgname-dev $pkgname-doc py3-$pkgname:py3 $pkgname-libs"
+source="https://github.com/hfst/hfst/releases/download/v$pkgver/hfst-$pkgver.tar.gz
+	missing_unistd_include.patch"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-proc \
+		--without-foma \
+		--enable-lexc \
+		--enable-all-tools \
+		--disable-static \
+		PYTHON=python3
+	make -j1
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	cd python
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+py3() {
+	pkgdesc="$pkgdesc (python3 bindings)"
+	depends="python3"
+
+	mkdir -p "$subpkgdir"/usr/lib/
+	cp -r "$pkgdir"/usr/lib/python3* "$subpkgdir"/usr/lib/
+}
+
+sha512sums="9070d23577528ef562cce7229faf15206cbcf615b38500deedc6b5c58be4a0bdb14165f8bb3da644a2f264860ea0e8f2bc663e46284bc55c7b03a45c07845296  hfst-3.13.0.tar.gz
+0bfc63709dbefaaa4084bf78d169283a58ab4ee586e800446f5d92ee179d4c84959802f54e72ffa5366c49a2a30883deb54c562c9dcace21662d5cbdd06789d6  missing_unistd_include.patch"

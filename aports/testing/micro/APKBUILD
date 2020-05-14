@@ -1,0 +1,45 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=micro
+pkgver=2.0.3
+pkgrel=1
+# This will need to be updated along with version as it cannot currently be
+# obtained from the tarball, and is necessary if the user is to make error
+# reports upsteam.
+_commithash=f59468642dd37c64fc374a9916faaa7cee8b1807
+pkgdesc="A modern and intuitive terminal-based text editor"
+url="https://micro-editor.github.io/"
+options="!check chmod-clean"
+arch="all"
+license="MIT"
+makedepends="go"
+subpackages="$pkgname-doc"
+source="micro-$pkgver.tar.gz::https://github.com/zyedidia/micro/archive/v$pkgver.tar.gz"
+builddir="$srcdir/src/github.com/zyedidia/$pkgname"
+
+prepare() {
+	mkdir -p ${builddir%/*}
+	mv "$srcdir"/$pkgname-$pkgver "$builddir"/
+	default_prepare
+}
+
+build() {
+	export GOPATH="$srcdir"
+	go get -v -ldflags "
+		-s -w
+		-X github.com/zyedidia/micro/internal/util.Version=$pkgver-alpine$pkgrel
+		-X github.com/zyedidia/micro/internal/util.CommitHash=$_commithash
+		-X github.com/zyedidia/micro/internal/util.CompileDate=$SOURCE_DATE_EPOCH
+		" \
+		./cmd/micro
+}
+
+package() {
+	install -Dm755 "$srcdir"/bin/$pkgname "$pkgdir"/usr/bin/$pkgname
+	install -Dm644 "$builddir"/assets/packaging/micro.1 -t "$pkgdir"/usr/share/man/man1
+	install -Dm644 "$builddir"/assets/packaging/micro.desktop -t "$pkgdir"/usr/share/applications
+	install -Dm644 "$builddir"/assets/micro-logo.svg "$pkgdir"/usr/share/pixmaps/micro.svg
+	install -Dm644 "$builddir"/assets/micro-solarized.png "$pkgdir"/usr/share/pixmaps/micro.png
+}
+
+sha512sums="df146d8e1c73d149be420fa7869f4f6ae10a21d2be171db1c3bf52e308e41c73d9e84b47a7cd47941aaa2decc331706f1343b920dd649065071edd1dd19835dd  micro-2.0.3.tar.gz"

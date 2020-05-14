@@ -1,0 +1,37 @@
+# Contributor: Russ Webber <russ@rw.id.au>
+# Maintainer: Russ Webber <russ@rw.id.au>
+pkgname=console_bridge
+pkgver=0.4.4
+pkgrel=1
+pkgdesc="Logging that seamlessly pipes into rosconsole/rosout for ROS-dependent packages."
+url="https://github.com/ros/console_bridge"
+arch="all"
+license="BSD-3-Clause"
+makedepends="cmake"
+subpackages="$pkgname-dev"
+source="console_bridge-$pkgver.tar.gz::https://github.com/ros/console_bridge/archive/$pkgver.tar.gz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		${CMAKE_CROSSOPTS} .
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="9b8f165e3c2ea4a6c9ee5f551c78229aa57196d19c87a4393e9257bb65aed4dcfa0eb97a0b8c433347c71330659ca80ac6a3952775adb20312c51c31ef905184  console_bridge-0.4.4.tar.gz"

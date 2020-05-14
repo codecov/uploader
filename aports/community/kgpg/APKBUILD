@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kgpg
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/utilities/org.kde.kgpg"
+pkgdesc="A simple interface for GnuPG, a powerful encryption utility"
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev karchive-dev kdoctools-dev kcodecs-dev kcoreaddons-dev kcrash-dev kdbusaddons-dev ki18n-dev kiconthemes-dev kjobwidgets-dev kio-dev knotifications-dev kservice-dev ktextwidgets-dev kxmlgui-dev kwidgetsaddons-dev kwindowsystem-dev akonadi-contacts-dev kcontacts-dev gpgme-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kgpg-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	# kgpg-import fails too often
+	# kgpg-encrypt and kgpg-export are broken
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest -E "kgpg-(import|encrypt|export)"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="b040fa1efe6f20f5dfd0590fbd775e1fe782490b9f7c36bfdaf7f0dc86aa0f4037df7bbe27f4c4d139f6c01c611a4953f7aa12f75d491e4be8cb9fd720298dda  kgpg-20.04.0.tar.xz"

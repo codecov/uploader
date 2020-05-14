@@ -1,0 +1,32 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-fcgi
+_realname=FCGI
+pkgver=0.79
+pkgrel=0
+pkgdesc="Perl Fast CGI module"
+url="https://metacpan.org/pod/FCGI"
+arch="all"
+license="OML"
+depends="perl"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/E/ET/ETHER/FCGI-$pkgver.tar.gz"
+
+builddir="$srcdir/$_realname-$pkgver"
+
+build() {
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	# creates collision among perl modules
+	find "$pkgdir" -name perllocal.pod -delete
+}
+
+sha512sums="18bb654b1d779881211e90c37144479fc2767dac71cdeb45099c67e1f2650f1aeae90d8646415b62a9b1dcc7595653b14c9f89b711416ebc6a31342bacd72c90  FCGI-0.79.tar.gz"

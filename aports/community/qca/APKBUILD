@@ -1,0 +1,37 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=qca
+pkgver=2.3.0
+pkgrel=1
+pkgdesc="Qt cryptographic architecture"
+url="https://userbase.kde.org/QCA"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="qt5-qtbase-dev cmake cyrus-sasl-dev"
+subpackages="$pkgname-dev $pkgname-doc lib$pkgname:libs"
+source="https://download.kde.org/stable/qca/$pkgver/qca-$pkgver.tar.xz"
+
+build() {
+	cmake -B build . \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DWITH_cyrus-sasl_PLUGIN=yes
+	make -C build
+}
+
+check() {
+	make -C build test
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+	mkdir -p "$pkgdir"/usr/lib/qt5
+	mv "$pkgdir"/usr/mkspecs "$pkgdir"/usr/lib/qt5
+}
+
+libs() {
+	default_libs
+	mv "$pkgdir"/usr/lib/qca-qt5 "$subpkgdir"/usr/lib
+}
+
+sha512sums="ca9251868e073834562fa62ffc64b3e7817c9ddadc6bc3fb99cf8b5c8d859969562170a98874be9590c617b2dd8e5590d2c83792554f54bb880c677902db22fe  qca-2.3.0.tar.xz"

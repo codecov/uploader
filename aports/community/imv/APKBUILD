@@ -1,0 +1,43 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=imv
+pkgver=4.1.0
+pkgrel=3
+pkgdesc="Image viewer for X11/Wayland"
+url="https://github.com/eXeC64/imv"
+arch="all !s390x !mips !mips64" # librsvg
+license="MIT"
+makedepends="
+	asciidoc
+	fontconfig-dev
+	freeimage-dev
+	sdl2_ttf-dev
+	librsvg-dev
+	wayland-dev
+	mesa-dev
+	libxkbcommon-dev
+	glu-dev
+	pango-dev
+	"
+checkdepends="
+	cmocka
+	cmocka-dev
+	"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/eXeC64/imv/archive/v$pkgver.tar.gz"
+
+build() {
+	case "$CARCH" in
+		ppc64le) export CFLAGS="$CFLAGS -U__ALTIVEC__";;
+	esac
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	DESTDIR="$pkgdir" make install
+}
+
+sha512sums="92d7551bda55185b29724e90230dac608a82f4a45cd3cb9c7a5d261f65eede6dcdde78f5c16eecfc1242533ec8e155204189fab3cacf31ddc088707af5131b2a  imv-4.1.0.tar.gz"

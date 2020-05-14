@@ -1,0 +1,46 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer:
+pkgname=dma
+pkgver=0.13
+pkgrel=0
+pkgdesc="A small Mail Transport Agent from DragonFly BSD"
+url="https://github.com/corecode/dma"
+arch="x86_64 x86 ppc64le"
+license="BSD-3-Clause"
+makedepends="bison flex libbsd-dev bsd-compat-headers openssl-dev"
+options="suid"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/corecode/dma/archive/v$pkgver.tar.gz
+	$pkgname.cron
+	musl-fixes.patch"
+
+build() {
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" PREFIX=/usr install install-etc
+
+	local _prog=
+	for _prog in bin/mailq bin/newailases sbin/sendmail; do
+		mkdir -p "$pkgdir"/usr/${_prog%/*}
+		ln -s /usr/sbin/dma "$pkgdir"/usr/$_prog
+	done
+
+	# Create spool directory.
+	install -d -o root -g mail \
+		-m 775 "$pkgdir"/var/spool/$pkgname
+
+	# Install cronjob.
+	install -Dm755 "$srcdir"/$pkgname.cron \
+		"$pkgdir"/etc/periodic/15min/$pkgname
+
+	# Install additional documentation files.
+	mkdir -p "$pkgdir"/usr/share/doc/$pkgname/examples
+	install -m644 README.markdown TODO \
+		"$pkgdir"/usr/share/doc/$pkgname/
+}
+
+sha512sums="12ca04c6e67ffeead4596dcbf6bbc42547461b224a7f70e7185822b5f968c369de4c20ae7de3415a54f6eef7d4acc12d5fca5ff5851d640f3611d89a345b41ac  dma-0.13.tar.gz
+5a79895fd42ffee347b979402225eb8025ea9bb41d0dc24b43d4b1e64106f1c612024456ea98e20aef4258eb8e852b370410e47d6ee34cea630dda29cc54840e  dma.cron
+051af3d10711f7565fedd3a06c152454020e903e2e923a37cc77ccbf4346f308edecfe4f3d3c37a3cb2e54d1fb336bb4d9cea2a7d6dc560aec3c2369eb55e6a9  musl-fixes.patch"

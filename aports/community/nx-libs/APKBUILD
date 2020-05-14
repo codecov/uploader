@@ -1,0 +1,60 @@
+# Contributor: Jean-Charles de Longueville <jch@hellea.eu>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=nx-libs
+pkgver=3.5.99.23
+pkgrel=0
+pkgdesc="NoMachine libraries (redistributed by x2go)"
+url="http://x2go.org"
+arch="all !mips !mips64"
+license="GPL-2.0-or-later"
+depends="font-cursor-misc font-misc-misc"
+makedepends="libx11-dev zlib-dev libjpeg-turbo-dev
+	libpng-dev libfontenc-dev linux-headers
+	libxml2-dev xkbcomp-dev imake
+	bash automake autoconf libtool
+	libxext-dev libxdamage-dev libxrandr-dev
+	libxtst-dev pixman-dev gccmakedep
+	libxfont-dev libxpm-dev libxcomposite-dev
+	libxinerama-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/ArcticaProject/nx-libs/archive/$pkgver/nx-libs-$pkgver.tar.gz
+	xf86bigfont.patch
+	fix-musl-headers-x86.patch"
+
+prepare() {
+	# Every Makefile has /usr/local as PREFIX, so replace that
+	sed -i -e 's,/usr/local,/usr,' nx-X11/config/cf/site.def
+	default_prepare
+}
+
+build() {
+	make -j1 \
+		PREFIX=/usr \
+		USRLIBDIR=/usr/lib \
+		SHLIBDIR=/usr/lib \
+		CONFIGURE="./configure --prefix=/usr --libdir=/usr/lib --includedir=/usr/include"
+}
+
+package() {
+	make \
+		PREFIX=/usr \
+		DESTDIR="$pkgdir" \
+		NXLIBDIR=/usr/lib/nx \
+		SHLIBDIR=/usr/lib \
+		CONFIGURE="./configure --prefix=/usr --libdir=/usr/lib --includedir=/usr/include" \
+		install
+
+	# remove extras, GL, and other unneeded headers
+	rm -rf "$pkgdir"/usr/include/GL
+	rm -rf "$pkgdir"/usr/include/nx-X11
+	rm -rf "$pkgdir"/usr/include/nx-X11/extensions/XK*.h
+	rm -rf "$pkgdir"/usr/include/nx-X11/extensions/*Xv*.h
+	rm -rf "$pkgdir"/usr/include/nx-X11/extensions/Xres*.h
+	rm -rf "$pkgdir"/usr/include/nx-X11/extensions/XIproto.h
+	rm -rf "$pkgdir"/usr/include/nx-X11/extensions/XI.h
+	rm -rf "$pkgdir"/usr/include/nx-X11/Xtrans
+}
+
+sha512sums="b627d521f7a3c43c9c000f770bd1e228842099e794cda32b37df621ac86c650990bdc69810b7ff6117cbd60f0339dda93d1e2acdcfac03ddaa50407d71668b60  nx-libs-3.5.99.23.tar.gz
+ee090f4e7f5933cbea6398ac461539cbdc8b7fd62f32934c78298c1e217d2a60e7f796bffdb88d36816bbfa9becd810846f5b988b5191e5a5b9da5def5d730fa  xf86bigfont.patch
+d4a881b66f0258d6d9fb947a526868944e58217d534316dfa3f0837035415467a1e8841bf6c5b821ccedcc0c9e07b425f05243ddbd22aaec7ea2165c87d9211e  fix-musl-headers-x86.patch"

@@ -1,0 +1,69 @@
+# Contributor: Olivier Mauras <olivier@mauras.ch>
+# Contributor: Michał Polański <michal@polanski.me>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=borgbackup
+_pkgname=borg
+pkgver=1.1.11
+pkgrel=1
+pkgdesc="Deduplicating backup program"
+url="https://www.borgbackup.org/"
+arch="all !s390x !mips !mips64" # limited by py3-pyzmq
+license="BSD-3-Clause"
+depends="python3 py3-pyzmq"
+makedepends="python3-dev lz4-dev acl-dev attr-dev openssl-dev linux-headers
+	py3-setuptools zstd-dev"
+checkdepends="py3-pytest py3-pytest-benchmark"
+subpackages="$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-fish-completion:fishcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch"
+source="https://github.com/borgbackup/borg/releases/download/$pkgver/borgbackup-$pkgver.tar.gz"
+
+build() {
+	# https://github.com/borgbackup/borg/issues/4891#issuecomment-615838317
+	CFLAGS="$CFLAGS -DXXH_FORCE_MEMORY_ACCESS=1" python3 setup.py build
+}
+
+check() {
+	PYTHONPATH="$(echo "$builddir"/build/lib.linux-*)" pytest -v --benchmark-skip --pyargs borg.testsuite
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	install -Dm644 -t "$pkgdir"/usr/share/man/man1 \
+		"$builddir"/docs/man/*.1
+
+	# Clean some useless files.
+	cd "$pkgdir"/usr/lib/python*/site-packages/borg
+	find . -name '*.h' -delete -o -name '*.c' -delete -o -name '*.pyx' -delete
+}
+
+bashcomp() {
+	pkgdesc="Bash completions for $pkgname"
+	depends=""
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	install -Dm644 "$builddir"/scripts/shell_completions/bash/$_pkgname \
+		"$subpkgdir"/usr/share/bash-completion/completions/$_pkgname
+}
+
+fishcomp() {
+	pkgdesc="Fish completions for $pkgname"
+	depends=""
+	install_if="$pkgname=$pkgver-r$pkgrel fish"
+
+	install -Dm644 "$builddir"/scripts/shell_completions/fish/$_pkgname.fish \
+		"$subpkgdir"/usr/share/fish/completions/$_pkgname.fish
+}
+
+zshcomp() {
+	pkgdesc="Zsh completions for $pkgname"
+	depends=""
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	install -Dm644 "$builddir"/scripts/shell_completions/zsh/_$_pkgname \
+		"$subpkgdir"/usr/share/zsh/site-functions/_$_pkgname
+}
+
+sha512sums="cf629f31d38d27ce6350670ff27b4937f2f30eddf9e0cd9209cd9d57a4ffa653f5a291ea1e1c79614dd2c08bcf5c50bc3e4e0f222e0d3cd1bbfb2d756b4a4573  borgbackup-1.1.11.tar.gz"

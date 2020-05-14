@@ -1,0 +1,31 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=perl-par
+_pkgname=PAR
+pkgver=1.016
+pkgrel=1
+pkgdesc="Perl Archive Toolkit"
+url="https://metacpan.org/release/$_pkgname/"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl perl-archive-zip perl-par-dist"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://cpan.metacpan.org/authors/id/R/RS/RSCHUPP/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="abbea766f214b51f54241f791ba496b62d8580cfeedec473ad7c98daad44d0ef495cb157df6f1b0402ab81eda6603e6092625d80f19f8f1ff2cea7f56861b259  perl-par-1.016.tar.gz"

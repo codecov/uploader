@@ -1,0 +1,22 @@
+# Contributor: Camille Scholtz <onodera@openmailbox.org>
+# Maintainer: Camille Scholtz <onodera@openmailbox.org>
+pkgname=setroot
+pkgver=2.0.2
+pkgrel=0
+pkgdesc="Simple X background setter inspired by imlibsetroot and feh"
+url="https://github.com/ttzhou/setroot"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="imlib2-dev"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ttzhou/setroot/archive/v$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+package() {
+	make PREFIX=/usr DESTDIR="$pkgdir" install
+}
+
+sha512sums="1f636c2aed140ac011bab7d4dee6e7f21c8d0ddb6ebfbd45d81db2fe807d2d3882ca6bbd3594f7038710efe3bdff3be0874e5ba4944de40e4897591566e777ae  setroot-2.0.2.tar.gz"

@@ -1,0 +1,54 @@
+# Contributor: Holger Jaekel <holger.jaekel@gmx.de>
+# Maintainer: Holger Jaekel <holger.jaekel@gmx.de>
+pkgname=libdap
+pkgver=3.20.6
+pkgrel=0
+pkgdesc="The C++ DAP2 library from OPeNDAP"
+url="https://www.opendap.org/"
+arch="all"
+license="LGPL-2.1-or-later"
+depends_dev="libtirpc-dev"
+makedepends="
+	$depends_dev
+	bison
+	cppunit
+	curl-dev
+	doxygen
+	flex-dev
+	fontconfig
+	graphviz
+	groff
+	libxml2-dev
+	ttf-freefont
+	util-linux-dev
+	"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	"
+source="https://www.opendap.org/pub/source/libdap-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--disable-static
+	make
+	make docs
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	mv "$pkgdir"/usr/bin/dap-config-pkgconfig "$pkgdir"/usr/bin/dap-config
+	rm "$pkgdir"/usr/lib/*.a
+	rm "$pkgdir"/usr/lib/charset.alias
+
+	mkdir -p "$pkgdir"/usr/share/doc
+	cp -pr html "$pkgdir"/usr/share/doc/$pkgname-doc
+}
+
+sha512sums="ce61bc31518ba3bcab6a729c993e3ffd189624fac01de166f6606292501f5ce7364fe87aebbefdfa29d2b22780f3f4888b198aafbcffdc3a808632cbbe564e53  libdap-3.20.6.tar.gz"

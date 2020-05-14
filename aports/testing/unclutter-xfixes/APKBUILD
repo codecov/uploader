@@ -1,0 +1,24 @@
+# Contributor: Michael Pirogov <vbnet.ru@gmail.com>
+# Maintainer: Michael Pirogov <vbnet.ru@gmail.com>
+pkgname=unclutter-xfixes
+pkgver=1.5
+pkgrel=0
+url="https://github.com/Airblader/$pkgname"
+arch="all"
+license="MIT"
+pkgdesc="Hides mouse pointer while not in use"
+makedepends="libxfixes-dev libev-dev libxi-dev asciidoc"
+subpackages="$pkgname-doc"
+_myver="$pkgname-$pkgver"
+source="$_myver.tar.gz::https://github.com/Airblader/$pkgname/archive/v$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+package() {
+	install -D -m755 "$builddir/unclutter" "$pkgdir/usr/bin/$pkgname"
+	install -D -m444 "$builddir/man/$pkgname.1" "$pkgdir/usr/share/man/man1/$pkgname.1"
+}
+
+sha512sums="0b8823d5ab64193f7e5fe03ceecbe0f475bbe36f78c4a0295705a80e9df1e5a8c4f65eb749b55e5b8b06aa3248e4f2fc1daac1b14b84aab157bdfbff39bba095  unclutter-xfixes-1.5.tar.gz"

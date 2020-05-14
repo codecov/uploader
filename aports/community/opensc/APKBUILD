@@ -1,0 +1,82 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=opensc
+_realname=OpenSC
+pkgver=0.20.0
+pkgrel=1
+pkgdesc="Open source smart card tools and middleware"
+url="https://github.com/OpenSC/OpenSC"
+arch="all"
+license="LGPL-2.1-or-later"
+depends="pcsc-lite"
+depends_dev="zlib-dev pcsc-lite-dev openssl-dev readline-dev"
+makedepends="$depends_dev automake autoconf m4 gettext libtool"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-bash-completion:bashcomp:noarch"
+source="$_realname-$pkgver.tar.gz::https://github.com/OpenSC/OpenSC/archive/$pkgver.tar.gz
+	"
+
+builddir="$srcdir/$_realname-$pkgver"
+
+# secfixes:
+#   0.20.0-r0:
+#     - CVE-2019-6502
+#     - CVE-2019-15945
+#     - CVE-2019-15946
+#     - CVE-2019-19479
+#     - CVE-2019-19480
+#     - CVE-2019-19481
+#   0.19.0-r0:
+#     - CVE-2018-16391
+#     - CVE-2018-16392
+#     - CVE-2018-16393
+#     - CVE-2018-16418
+#     - CVE-2018-16419
+#     - CVE-2018-16420
+#     - CVE-2018-16421
+#     - CVE-2018-16422
+#     - CVE-2018-16423
+#     - CVE-2018-16424
+#     - CVE-2018-16425
+#     - CVE-2018-16426
+#     - CVE-2018-16427
+
+prepare() {
+	default_prepare
+	./bootstrap
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--enable-zlib \
+		--enable-readline \
+		--enable-openssl \
+		--enable-pcsc \
+		--enable-sm
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -D -m644 etc/opensc.conf \
+		"$pkgdir/etc/opensc.conf"
+
+	mkdir -p "$pkgdir"/usr/share/bash-completion
+	mv "$pkgdir"/etc/bash_completion.d "$pkgdir"/usr/share/bash-completion/completions
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+
+sha512sums="1360ee35f579cbeecf368777bb60d6c23ec2a80a2983328ea2c193530cc9b101a807ff1e2982ad34bfcc2bae2c867feecf300b6229d15057e796bd31ecffb02d  OpenSC-0.20.0.tar.gz"

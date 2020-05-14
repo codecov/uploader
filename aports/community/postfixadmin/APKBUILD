@@ -1,0 +1,36 @@
+# Contributor: Sergei Lukin <sergej.lukin@gmail.com>
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+_php=php7
+pkgname=postfixadmin
+pkgver=3.2.3
+pkgrel=0
+pkgdesc="Web Based Management tool for Postfix"
+url="http://postfixadmin.com/"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="$_php"
+options="!check"
+source="https://github.com/postfixadmin/postfixadmin/archive/postfixadmin-$pkgver.tar.gz"
+
+# secfixes:
+#   3.0.2-r0:
+#     - CVE-2017-5930
+
+builddir="$srcdir/$pkgname-$pkgname-$pkgver"
+
+package() {
+	mkdir -p "$pkgdir"/usr/share/webapps/postfixadmin \
+		"$pkgdir"/etc/postfixadmin
+	cp -r * "$pkgdir"/usr/share/webapps/postfixadmin/
+
+	# move config to /etc/postfixadmin and create symlink
+	mv "$pkgdir"/usr/share/webapps/postfixadmin/config.inc.php \
+		"$pkgdir"/etc/postfixadmin/
+	ln -s /etc/postfixadmin/config.inc.php \
+		"$pkgdir"/usr/share/webapps/postfixadmin/config.inc.php
+	echo -e "User-Agent: *\nDisallow: /" \
+		> "$pkgdir"/usr/share/webapps/postfixadmin/robots.txt
+}
+
+sha512sums="d44addb9a3ca830caf55b603363054df561d659957f21cab7523465ebf02ca18abe7fcf298fe718d957d0b7bf5613e2dde69c78c26e0f7f6f595d79b28fe08ab  postfixadmin-3.2.3.tar.gz"

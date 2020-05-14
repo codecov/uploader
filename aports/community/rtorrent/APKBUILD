@@ -1,0 +1,40 @@
+# Contributor: Peter Bui <pnutzh4x0r@gmail.com>
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Bartłomiej Piotrowski <nospam@bpiotrowski.pl>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=rtorrent
+pkgver=0.9.8
+pkgrel=0
+pkgdesc="Ncurses BitTorrent client based on libTorrent"
+url="https://rakshasa.github.io/rtorrent/"
+license="GPL-2.0-or-later"
+arch="all"
+makedepends="libsigc++-dev libtorrent-dev curl-dev xmlrpc-c-dev ncurses-dev"
+checkdepends="cppunit-dev"
+subpackages="$pkgname-doc"
+source="https://rtorrent.net/downloads/$pkgname-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-ipv6 \
+		--disable-debug \
+		--with-xmlrpc-c
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm644 doc/rtorrent.rc "$pkgdir"/usr/share/doc/rtorrent/rtorrent.rc
+}
+
+sha512sums="016685948d0290694ab9635ae218c7acd876e6d45bea1bdba3a29c545e64f5d824c5e2f6693a4c2e9200196177881d54f312d72e0a19742bd74a03bd19ca05c7  rtorrent-0.9.8.tar.gz"

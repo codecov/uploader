@@ -1,0 +1,109 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Michael Zhou <zhoumichaely@gmail.com>
+# Maintainer: Daniel Sabogal <dsabogalcc@gmail.com>
+pkgname=mupdf
+pkgver=1.17.0
+pkgrel=1
+pkgdesc="Lightweight PDF and XPS viewer"
+url="https://mupdf.com"
+arch="all"
+license="AGPL-3.0-or-later"
+makedepends="freetype-dev
+	harfbuzz-dev
+	jbig2dec-dev
+	jpeg-dev
+	openjpeg-dev
+	readline-dev
+	freeglut-dev
+	zlib-dev
+	libx11-dev
+	libxext-dev
+	libxrandr-dev
+	libxi-dev
+	mesa-dev
+	glu-dev"
+
+subpackages="$pkgname-doc $pkgname-dev $pkgname-x11:_x11
+	$pkgname-gl:_gl $pkgname-tools:_tools"
+options="!check"
+source="https://mupdf.com/downloads/archive/mupdf-$pkgver-source.tar.xz
+	shared-lib.patch
+	fix-big-endian.patch
+	"
+
+# FIXME: shared linking of /usr/lib/libmupdf.so.0
+
+# secfixes:
+#   1.13-r0:
+#     - CVE-2018-1000051
+#     - CVE-2018-6544
+#     - CVE-2018-6192
+#     - CVE-2018-6187
+#     - CVE-2018-5686
+#     - CVE-2017-17858
+#   1.11-r1:
+#     - CVE-2017-6060
+#   1.10a-r2:
+#     - CVE-2017-5991
+#   1.10a-r1:
+#     - CVE-2017-5896
+
+builddir="$srcdir/$pkgname-$pkgver-source"
+prepare() {
+	default_prepare
+
+	local library=
+	for library in curl freeglut freetype harfbuzz jbig2dec \
+			libjpeg openjpeg zlib; do
+		rm -r thirdparty/"$library"
+	done
+}
+
+build() {
+	make USE_SYSTEM_LIBS=yes prefix=/usr CURL_LIBS='-lcurl -lpthread' build=release libs apps
+}
+
+package() {
+	make USE_SYSTEM_LIBS=yes prefix=/usr DESTDIR="$pkgdir" install
+
+	cd build/release
+	local app; for app in muraster; do
+		install -Dm755 $app "$pkgdir"/usr/bin/$app
+	done
+
+	ln -s libmupdf.so.0 "$pkgdir"/usr/lib/libmupdf.so
+	ln -s libmupdf-third.so.0 "$pkgdir"/usr/lib/libmupdf-third.so
+}
+
+_x11() {
+	pkgdesc="$pkgdesc with X11 backend"
+	depends=""
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/mupdf-x11 \
+		"$subpkgdir"/usr/bin/
+	ln -s /usr/bin/mupdf-x11 "$subpkgdir"/usr/bin/mupdf
+}
+
+_gl() {
+	pkgdesc="$pkgdesc with OpenGL backend"
+	depends=""
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/mupdf-gl \
+		"$subpkgdir"/usr/bin/
+}
+
+_tools() {
+	pkgdesc="Tools for a lightweight PDF and XPS viewer"
+	depends=""
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/mutool \
+		"$pkgdir"/usr/bin/muraster \
+		"$subpkgdir"/usr/bin/
+}
+
+sha512sums="39188e6ce3eaefb525b2c32767c4bf52ed881b41889edef086aa64bfe1c38e6f3cb853450c8284d175ef8854f32e9bc67415a692048ead26cf31c35645f9e0e5  mupdf-1.17.0-source.tar.xz
+212ea566b6f1d60a1087054a8eb29d0d9ca08eef237219151fc4fe8880461cd86fcb03b0266a7347015af458b557dfd914e827f5ff8fee78e9e50c7f358fc8e0  shared-lib.patch
+486d09df319050ddb33dbd1e2e0638a7bc6a3e188032a35b81119c45b0de911629b827b21aa47cde6669b66d73fb22cff54d190a8449151fdc27eace71beefbd  fix-big-endian.patch"

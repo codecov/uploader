@@ -1,0 +1,145 @@
+# Contributor: Mathias LANG <pro.mathias.lang@gmail.com>
+# Maintainer: Mathias LANG <pro.mathias.lang@gmail.com>
+pkgname=ldc
+pkgver=1.20.1
+pkgrel=6
+pkgdesc="The LLVM-based D Compiler"
+url="https://github.com/ldc-developers/ldc"
+# LDC does not support host compiling on most of the architecture Alpine supports
+arch="x86 x86_64 aarch64"
+license="BSD-3-Clause AND BSL-1.0 AND ( Artistic-1.0 OR GPL-2.0-or-later ) AND NCSA AND MIT"
+depends="libexecinfo tzdata"
+makedepends="chrpath cmake curl-dev diffutils gdmd llvm10-dev llvm10-static
+	libedit-dev libexecinfo-static zlib-dev"
+checkdepends="bash gdb grep llvm10-test-utils"
+# A user might want to install the '-runtime' subpackage when they have
+# a dynamically-linked D program.
+subpackages="
+	$pkgname-runtime
+	$pkgname-static
+	$pkgname-dbg
+	$pkgname-bash-completion:bashcomp:noarch"
+source="https://github.com/ldc-developers/ldc/releases/download/v$pkgver/ldc-$pkgver-src.tar.gz
+	01-conf.patch
+	disable-static-assert.patch
+	3332.patch
+	add-missing-musl-definitions.patch
+	"
+builddir="$srcdir/ldc-$pkgver-src/"
+
+build() {
+	# First, build LDC using GDC
+	mkdir -p "$builddir/stage1"
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DD_COMPILER='gdmd' \
+		$CMAKE_CROSSOPTS -S "$builddir" -B "$builddir/stage1"
+	make -C "$builddir/stage1"
+
+	# Then, self-build
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	# Don't use None buildtype for now, see
+	# https://github.com/ldc-developers/ldc/issues/3386#issuecomment-603370855
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=RelWithDebInfo \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DD_COMPILER="$builddir/stage1/bin/ldmd2" \
+		$CMAKE_CROSSOPTS "$builddir"
+	make
+
+	# Build the test runners
+	make all-test-runners
+
+	# CMake added the rpaths to the shared libs (of stage1!) - strip them
+	chrpath -d "$builddir"/lib/*.so*
+	chrpath -d \
+		"$builddir"/bin/ldc2 \
+		"$builddir"/bin/ldmd2 \
+		"$builddir"/bin/ldc-build-runtime \
+		"$builddir"/bin/ldc-prune-cache
+}
+
+check() {
+	# Find the libraries we just built as final (not stage1!)
+	export LD_LIBRARY_PATH="$builddir"/lib
+
+	case "$CARCH" in
+		# Math & numeric related tests fail due to https://github.com/ldc-developers/ldc/issues/3270#issuecomment-613132406
+		# druntime-test-thread fails due to https://github.com/ldc-developers/ldc/issues/3403
+		aarch64)
+			_tests_ignore="|core\.thread\.fiber|std.*math.*|std\.numeric.*|std\.format|std\.algorithm\.sorting.*|druntime-test-thread"
+			;;
+		# https://github.com/ldc-developers/ldc/issues/3404
+		x86)
+			_tests_ignore="|druntime-test-thread"
+			;;
+	esac
+
+
+	# Note: The testsuite does not parallelize well, as the 'clean' target get run in parallel.
+	# Hence '-j${JOBS}' was left out on purpose
+	#
+	# - dmd-testsuite takes too long to run and has more to do with language checks
+	#	which are less relevant to us than platform integration tests
+	# - lit-test disabled because 'TEST 'LDC :: debuginfo/print_gdb.d' FAILED'
+	#	Something to do with TLS variables not being printable in GDB
+	# - 'druntime-test-shared' fails, probably because it is using 'Object.factory'
+	# - 'druntime-test-stdcpp' fails for an unknown reason and is temporarily disabled
+	# - 'druntime-test-exceptions' fails for an unknown reason and is temporarily disabled
+	ctest --output-on-failure -E "dmd-testsuite|lit-tests|druntime-test-exceptions|druntime-test-shared|druntime-test-stdcpp$_tests_ignore"
+}
+
+package() {
+	depends="$pkgname-static=$pkgver-r$pkgrel"
+	# Use -j1, the install is flaky with too many build jobs
+	make -j1 DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/share/bash-completion
+	mv "$pkgdir"/etc/bash_completion.d "$pkgdir"/usr/share/bash-completion/completions
+}
+
+runtime() {
+	depends="libexecinfo-dev"
+	pkgdesc="Dynamic runtime library for D code compiled with $pkgname-$pkgver"
+
+	mkdir -p "$subpkgdir/usr/lib/"
+	for libn in "libdruntime" "libphobos2";
+	do
+		mv "$pkgdir"/usr/lib/$libn-ldc-shared.so* "$subpkgdir/usr/lib/"
+	done
+	mv "$pkgdir"/usr/lib/libldc-jit.so* "$subpkgdir/usr/lib"
+
+	mv "$pkgdir"/usr/lib/*.so* "$subpkgdir/usr/lib/"
+}
+
+static() {
+	depends="libexecinfo-static"
+	pkgdesc="$pkgdesc (static library)"
+
+	mkdir -p "$subpkgdir/usr/lib/"
+	mv "$pkgdir"/usr/lib/*.a "$subpkgdir/usr/lib/"
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+
+sha512sums="bb699999a69de1773a10998c653b5a1b0bce30e39cfcee0e19b036378b28519b3118ac369b341cfd305a8a9bd904564ffffe83f720a62ab4f2c1942c2e26bb53  ldc-1.20.1-src.tar.gz
+1a8ec8d75a5d01a1bc41e4b641e0663344fcbc44f3f10287f8cc716095faeadfa3dfc4ce7d84d72522151454e54d95e9f623ec5862e98e837d8fe44057307ce9  01-conf.patch
+b6f3af48a927ae9f0517389f355e23746165322065525af0cd81a82c3402fff29198f2db5d118d9509dd961fef5971f359617c6a4d938fa57d64a544521984fe  disable-static-assert.patch
+086bb8e7f6528fcc9aa715b6a9f99556b6f8c859377604d823c27fd615e815fe03e5c2ba805453ac4fce6253307616621a81c37577ce62564e7b954c5ccd9ac9  3332.patch
+09eed3314ff9e223052e411b12ca6e68ae572ec20ac96d24f4cf6b847575a5877e12d6687c9b19a1874f1636e0ff083735d295793d741edd4d84ef702bfb7912  add-missing-musl-definitions.patch"

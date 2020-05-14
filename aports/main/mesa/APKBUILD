@@ -1,0 +1,336 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=mesa
+pkgver=20.0.6
+pkgrel=0
+pkgdesc="Mesa DRI OpenGL library"
+url="https://www.mesa3d.org"
+arch="all"
+license="MIT SGI-B-2.0 BSL-1.0"
+subpackages="
+	$pkgname-dbg
+	$pkgname-dev
+	$pkgname-dri-classic:_dri
+	$pkgname-dri-gallium:_dri
+	$pkgname-va-gallium:_va
+	$pkgname-vdpau-gallium:_vdpau
+	$pkgname-glapi $pkgname-egl $pkgname-gl $pkgname-gles
+	$pkgname-xatracker $pkgname-osmesa $pkgname-gbm
+	$pkgname-vulkan-ati:_vulkan
+	$pkgname-dri-ati:_dri_deprecated
+	$pkgname-dri-nouveau:_dri_deprecated
+	"
+_llvmver=10
+depends_dev="
+	libdrm-dev
+	libxext-dev
+	libxdamage-dev
+	libxcb-dev
+	libxshmfence-dev
+	"
+makedepends="
+	$depends_dev
+	bison
+	eudev-dev
+	expat-dev
+	findutils
+	flex
+	gettext
+	elfutils-dev
+	libtool
+	libxfixes-dev
+	libva-dev
+	libvdpau-dev
+	libx11-dev
+	libxrandr-dev
+	libxt-dev
+	libxvmc-dev
+	libxxf86vm-dev
+	llvm$_llvmver-dev
+	makedepend
+	meson
+	py3-mako
+	py3-libxml2
+	python3
+	talloc-dev
+	wayland-dev
+	wayland-protocols
+	xorgproto
+	zlib-dev
+	zstd-dev
+	"
+source="
+	https://mesa.freedesktop.org/archive/mesa-$pkgver.tar.xz
+	adjust-cache-deflate-buffer.patch
+	musl-fix-includes.patch
+	add-use-elf-tls.patch
+	missing-dep-on-sha1_h.patch
+	time_h.patch
+	disable-rgb10-by-default.patch
+	"
+replaces="mesa-dricore"
+
+if [ "$CARCH" = x86 ]; then
+	# Bug upstream that needs to be fixed
+	options="$options textrels"
+fi
+
+_dri_driverdir=/usr/lib/xorg/modules/dri
+_dri_drivers="r100,r200,nouveau"
+_gallium_drivers="r300,r600,radeonsi,nouveau,swrast,virgl"
+_gallium_provides="
+	$pkgname-dri-swrast=$pkgver-r$pkgrel
+	$pkgname-dri-virtio=$pkgver-r$pkgrel
+	"
+_vulkan_drivers="amd"
+_arch_opts=""
+_vulkan_overlay_layer=false
+case "$CARCH" in
+x86*)
+	_dri_drivers="${_dri_drivers},i915,i965"
+	_gallium_drivers="${_gallium_drivers},svga,iris"
+	_vulkan_drivers="${_vulkan_drivers},intel"
+	_vulkan_overlay_layer=true
+	makedepends="$makedepends glslang"
+	subpackages="$subpackages \
+			$pkgname-dri-intel:_dri_deprecated \
+			$pkgname-vulkan-intel:_vulkan
+			$pkgname-vulkan-layer:_vulkan_layer"
+	_gallium_provides="$_gallium_provides $pkgname-dri-vmwgfx=$pkgver-r$pkgrel"
+	_arch_opts="-Ddri3=true"
+	case "$CARCH" in
+	x86)
+		_arch_opts="$_arch_opts -Dglx-read-only-text=true -Dasm=false";;
+	esac
+	;;
+armhf|armv7|aarch64)
+	_gallium_drivers="${_gallium_drivers},vc4,v3d,freedreno,kmsro,lima,panfrost,etnaviv,tegra"
+	_gallium_provides="$_gallium_provides
+		$pkgname-dri-vc4=$pkgver-r$pkgrel
+		$pkgname-dri-v3d=$pkgver-r$pkgrel
+		$pkgname-dri-freedreno=$pkgver-r$pkgrel
+		$pkgname-dri-kmsro=$pkgver-r$pkgrel
+		$pkgname-dri-lima=$pkgver-r$pkgrel
+		$pkgname-dri-panfrost=$pkgver-r$pkgrel
+		$pkgname-dri-etnaviv=$pkgver-r$pkgrel
+		$pkgname-dri-tegra=$pkgver-r$pkgrel
+		"
+	;;
+esac
+
+build() {
+	export CFLAGS="$CFLAGS -D_XOPEN_SOURCE=700"
+	export MESA_GIT_SHA1_OVERRIDE=53b2b224dc2de982c37915a0ad218e33365ff75e
+
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Ddri-drivers-path=$_dri_driverdir \
+		-Dgallium-drivers=$_gallium_drivers \
+		-Ddri-drivers=$_dri_drivers \
+		-Dvulkan-drivers=$_vulkan_drivers \
+		-Dvulkan-overlay-layer=$_vulkan_overlay_layer \
+		-Dplatforms=x11,drm,wayland,surfaceless \
+		-Dllvm=true \
+		-Dshared-llvm=true \
+		-Dshared-glapi=true \
+		-Dgbm=true \
+		-Dglx=dri \
+		-Dopengl=true \
+		-Dosmesa=gallium \
+		-Dgles1=false \
+		-Dgles2=true \
+		-Degl=true \
+		-Dgallium-xa=true \
+		-Dgallium-vdpau=true \
+		-Dgallium-va=true \
+		-Dgallium-xvmc=false \
+		-Dgallium-nine=false \
+		-Db_ndebug=true \
+		$_arch_opts \
+		. output
+
+	# Print config
+	meson configure output
+
+	# parallel build workaround
+	ninja -C output src/compiler/nir/nir_intrinsics.h
+
+	ninja -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+egl() {
+	pkgdesc="Mesa libEGL runtime libraries"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	install -d "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libEGL.so* "$subpkgdir"/usr/lib/
+}
+
+gl() {
+	pkgdesc="Mesa libGL runtime libraries"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	install -d "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libGL.so* "$subpkgdir"/usr/lib/
+}
+
+glapi() {
+	pkgdesc="Mesa shared glapi"
+	replaces="$pkgname-gles=$pkgver-r$pkgrel"
+
+	install -d "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libglapi.so.* "$subpkgdir"/usr/lib/
+}
+
+gles() {
+	pkgdesc="Mesa libGLESv2 runtime libraries"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	install -d "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libGLES*.so* "$subpkgdir"/usr/lib/
+}
+
+xatracker() {
+	pkgdesc="Mesa XA state tracker for vmware"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	install -d "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libxatracker*.so.* "$subpkgdir"/usr/lib/
+}
+
+osmesa() {
+	pkgdesc="Mesa offscreen rendering libraries"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	install -d "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libOSMesa.so.* "$subpkgdir"/usr/lib/
+}
+
+gbm() {
+	pkgdesc="Mesa gbm library"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	install -d "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libgbm.so.* "$subpkgdir"/usr/lib/
+}
+
+# Move links referencing the same file to the subpackage.
+# Usage: _mv_links <base directory> <example>
+# where <example> is one of the libraries covered by the megadriver.
+# The example is used to find other links that point to the same file.
+_mv_links() {
+	install -d "$subpkgdir"/$1
+	find -L "$pkgdir"/$1 -samefile "$pkgdir"/$1/$2 -print0 \
+		| xargs -0 -I{} mv {} "$subpkgdir"/$1/
+}
+
+_mv_vulkan() {
+	local i
+	install -d "$subpkgdir"/usr/lib
+	install -d "$subpkgdir"/usr/share/vulkan/icd.d
+	for i in "$@"; do
+		mv "$pkgdir"/usr/lib/libvulkan_$i.so "$subpkgdir"/usr/lib/
+		mv "$pkgdir"/usr/share/vulkan/icd.d/${i}* "$subpkgdir"/usr/share/vulkan/icd.d/
+	done
+}
+
+# Mesa uses "megadrivers" where multiple drivers are linked into one shared
+# library. This library is then hard-linked to separate files (one for each driver).
+# Each subpackage contains one megadriver so that all the hard-links are preserved.
+
+_dri() {
+	local n=${subpkgname##*-dri-}
+	pkgdesc="Mesa $n DRI drivers"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	case $n in
+	classic)
+		# libmesa_dri_drivers.so
+		_mv_links $_dri_driverdir radeon_dri.so ;;
+	gallium)
+		# libgallium_dri.so
+		_mv_links $_dri_driverdir swrast_dri.so
+		provides="$_gallium_provides"
+		;;
+	esac
+}
+
+# Compatibility packages for upgrading from the old (driver-specific) subpackages
+_dri_deprecated() {
+	local n=${subpkgname##*-dri-}
+	pkgdesc="Mesa DRI drivers for $n (DEPRECATED)"
+	depends="
+		mesa-dri-classic=$pkgver-r$pkgrel
+		mesa-dri-gallium=$pkgver-r$pkgrel
+		"
+
+	case $n in
+	ati|nouveau)
+		depends="$depends mesa-va-gallium mesa-vdpau-gallium" ;;
+	esac
+
+	mkdir "$subpkgdir"
+}
+
+_va() {
+	local n=${subpkgname##*-va-}
+	pkgdesc="Mesa $n VAAPI drivers"
+	depends="mesa=$pkgver-r$pkgrel libva"
+
+	case $n in
+	gallium)
+		# libgallium_drv_video.so
+		_mv_links /usr/lib/dri radeonsi_drv_video.so ;;
+	esac
+}
+
+_vdpau() {
+	local n=${subpkgname##*-vdpau-}
+	pkgdesc="Mesa $n VDPAU drivers"
+	depends="mesa=$pkgver-r$pkgrel libvdpau"
+
+	case $n in
+	gallium)
+		# libvdpau_gallium.so.1.0.0
+		_mv_links /usr/lib/vdpau libvdpau_radeonsi.so.1.0.0 ;;
+	esac
+}
+
+_vulkan() {
+	local n=${subpkgname##*-vulkan-}
+	pkgdesc="Mesa Vulkan API driver for $n"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	case $n in
+	ati)
+		_mv_vulkan radeon ;;
+	intel)
+		_mv_vulkan intel ;;
+	esac
+}
+
+_vulkan_layer() {
+	pkgdesc="Vulkan overlay layer to display information about the application"
+	depends=""
+
+	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share/vulkan "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/share/vulkan/explicit_layer.d "$subpkgdir"/usr/share/vulkan
+	mv "$pkgdir"/usr/lib/libVkLayer_MESA_overlay.so "$subpkgdir"/usr/lib
+
+	mv "$pkgdir"/usr/bin/mesa-overlay-control.py "$subpkgdir"/usr/bin
+}
+
+sha512sums="a93dc3ed57ed7469b7c60cdbdcf4f29c5da4ec3986171c7b534e009e136ca21fec16207ffab38a6747437a9b1060e2e6c4b74c4e5cdc168b9aba0fc1940b5e90  mesa-20.0.6.tar.xz
+cdf22d2da3328e116c379264886bd01fd3ad5cc45fe03dc6fd97bdc4794502598ee195c0b9d975fa264d6ac31c6fa108c0535c91800ecf4fcabfd308e53074cc  adjust-cache-deflate-buffer.patch
+cf849044d6cc7d2af4ff015208fb09d70bf9660538699797da21bda2ecb7c1892d312af83d05116afd826708d9caafb1d05a13f09139c558aea6fee931e3eee7  musl-fix-includes.patch
+9aa207a38d538abbd8e7a7210e3081508563e85e8c27b2269b8f40fd62d9fc6fee0cb2f573a0e62c42f8ba0fb85740459b761f009d5991cfd9813d7614541908  add-use-elf-tls.patch
+250a048193d1e2f4044c6850e707e1b0f67812f03357cb53bc4c3c501ade14dc9b0f40bf6a7d87903a65d5d87af58d210fd2729fa658f10b63d4d2d60b6bcc11  missing-dep-on-sha1_h.patch
+0e704e0082697170ff33a600988b59b4690f1560af4193c86920ca31128409c64f89f302707cb1ac58f8bc47653b5a8a5d38f36f634e7b7def7659894d4c6c5a  time_h.patch
+ede642ae9be64c3fc5fee46e8bf1b2f982191febcfadb235b0261868213c7cca11d38bb53b972f3184a887430f37b9f470a9b12fd03cf54b98315ec75c4d8ed4  disable-rgb10-by-default.patch"

@@ -1,0 +1,28 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=py3-signedjson
+pkgver=1.1.1
+pkgrel=0
+pkgdesc="Sign JSON objects with ED25519 signatures"
+url="https://github.com/matrix-org/python-signedjson"
+arch="noarch"
+license="Apache-2.0"
+depends="python3 py3-pynacl py3-canonicaljson py3-unpaddedbase64
+	py3-typing-extensions py3-importlib-metadata"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/s/signedjson/signedjson-$pkgver.tar.gz"
+builddir="$srcdir/signedjson-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="9ae67d191f115b80182a6578dadcedeb5898bc2a5f25cb3270c03e132b99f058b482e39828bbf05f9288dce712697a034aaa9fc46812d748121fbbf48a57e741  signedjson-1.1.1.tar.gz"

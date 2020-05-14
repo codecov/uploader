@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kidentitymanagement
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="KDE PIM libraries"
+arch="all !armhf"
+url="https://kontact.kde.org"
+license="LGPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev kcoreaddons-dev kcompletion-dev ktextwidgets-dev kxmlgui-dev kio-dev kconfig-dev kcodecs-dev kiconthemes-dev kpimtextedit-dev"
+makedepends="$depends_dev extra-cmake-modules"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kidentitymanagement-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="fd58af20cc637ff489db4da44341b1d601bafd7e615d6d99ff056e2d2d58fa64d4e5017cb925d2fc721900ff64e0a60b2fb7c53d67649732a69738fc81797213  kidentitymanagement-20.04.0.tar.xz"

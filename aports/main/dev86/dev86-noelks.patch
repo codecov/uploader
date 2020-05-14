@@ -1,0 +1,16 @@
+--- a/makefile.in
++++ b/makefile.in
+ #ifdef __CYGWIN__
+@@ -92,10 +92,10 @@
+ 
+ #ifdef GNUMAKE
+ all: check_config bcc86 cpp unproto copt as86 ar86 ld86 objdump86 \
+-     library lib-bsd alt-libs elksemu
++     library lib-bsd alt-libs 
+ 
+ install: check_config install-bcc install-man \
+-     install-lib install-emu
++     install-lib
+ 
+ install-all: install install-other
+ 

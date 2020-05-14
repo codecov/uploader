@@ -1,0 +1,25 @@
+#!/sbin/openrc-run
+
+# init.d file for music player daemon
+
+supervisor=supervise-daemon
+
+name="Music Player Daemon"
+description="A daemon for playing music"
+
+command=/usr/bin/mpd
+command_args="$MPD_OPTS"
+command_args_foreground="--no-daemon"
+
+command_user="${M_USER:-mpd}:${M_GROUP:-audio}"
+
+depend() {
+	need localmount
+	use net netmount nfsmount esound pulseaudio
+	after firewall
+} 
+
+start_pre() {
+	checkpath --directory --quiet \
+		--owner "${M_USER:-mpd}" --mode 0775 /var/run/mpd
+}

@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=solid
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Hardware integration and detection"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-only OR LGPL-3.0-only"
+depends_dev="qt5-qtdeclarative-dev"
+makedepends="$depends_dev extra-cmake-modules qt5-qttools-dev doxygen eudev-dev flex-dev bison upower-dev udisks2-dev"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/solid-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-libs $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="31e7de3cd726d07452d40d43c6280a95f54abcccc63858e7af198ec0a5f01754b721539e26feb5f5cb16c07e58b6029b0a660d55d1efb3887a658ed93c5fe33f  solid-5.70.0.tar.xz"

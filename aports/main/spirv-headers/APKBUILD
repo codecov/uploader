@@ -1,0 +1,31 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=spirv-headers
+_pkgname=SPIRV-Headers
+pkgver=1.5.3
+pkgrel=0
+pkgdesc="Machine-readable files for the SPIR-V Registry"
+options="!check" # No testsuite
+url="https://github.com/KhronosGroup/SPIRV-Headers"
+arch="noarch"
+license="GPL-3.0-or-later"
+makedepends="cmake samurai"
+source="$pkgname-$pkgver.tar.gz::https://github.com/KhronosGroup/SPIRV-Headers/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	cmake \
+		-GNinja \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		$CMAKE_CROSSOPTS .
+	ninja
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja install
+}
+
+sha512sums="f678cd66c61bfdff4650cf3e14ab9dfd2fe11566f0ac7c50148be412f4d217c55b71541e92a31d8b5ea51748048539ad7b2645f7d54abc146045fd4a8c06b5b1  spirv-headers-1.5.3.tar.gz"

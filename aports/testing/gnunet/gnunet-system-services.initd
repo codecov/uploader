@@ -1,0 +1,18 @@
+#!/sbin/openrc-run
+
+name="gnunet-system-services"
+description="A secure and privacy enhancing peer-to-peer overlay network"
+command="/usr/lib/gnunet/libexec/gnunet-service-arm"
+command_args="-c /etc/gnunet.conf"
+command_user="gnunet:gnunet"
+command_background="yes"
+pidfile="/run/${SVCNAME}.pid"
+
+depend() {
+	need net
+}
+
+start_pre() {
+	checkpath --directory --owner $command_user --mode 2755 \
+		/var/lib/gnunet
+}

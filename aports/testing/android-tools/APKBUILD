@@ -1,0 +1,32 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=android-tools
+pkgver=29.0.6
+pkgrel=1
+pkgdesc="Android platform tools"
+url="https://sites.google.com/a/android.com/tools/"
+arch="x86 x86_64 aarch64 armv7 armhf"
+license="Apache-2.0 MIT"
+options="!check" # upstream doesn't have a test suite
+makedepends="pcre2-dev linux-headers libusb-dev gtest-dev go perl cmake"
+source="https://github.com/nmeum/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.xz"
+
+build() {
+	cd "$builddir"
+
+	mkdir build && cd build
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		..
+	make
+}
+
+package() {
+	cd "$builddir/build"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="35f9eed7d67e726ba549cfd7b662308aaa86a595f93cbc30c59b371df7784931062e271c78ade2a0b51c3433e12ec4d141b70f1738625ab3af026ba278b9e612  android-tools-29.0.6.tar.xz"

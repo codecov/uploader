@@ -1,0 +1,43 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=sipsak
+pkgver=0.9.7
+pkgrel=0
+pkgdesc="SIP swiss army knife"
+url="https://github.com/nils-ohlmeier/sipsak"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="openssl-dev c-ares-dev autoconf automake"
+subpackages="$pkgname-dbg $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/nils-ohlmeier/sipsak/archive/$pkgver.tar.gz
+	musl-fix-strcasestr.patch
+	fix-aaaa-record-segfault.patch
+	"
+
+prepare() {
+	default_prepare
+	autoreconf --install
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info
+	make
+}
+
+check() {
+	./sipsak --version
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="088da5b5b81e7ff89bdc920dc8fdfc559ba36d599de9ba5ca22c35f2bea24f0c7c76e10125baa8ae517c3f03b1b936adacde4e236be8a13797651adc624f14a7  sipsak-0.9.7.tar.gz
+95fb13a5b3bc108544e6ac3a0c5e7a00890926df02b390c1fdb3e28a3cf4aa7ef3ffafd904cc4665547135fe45b412c4b676ae1c52d133d8deef62f062ac909f  musl-fix-strcasestr.patch
+7bdad66145b37ca1039f01e4b523b1555bda8fc387e6b4745d53e89473c0b23d675b403b83ff9b59a75002fd26345699d71720e4c15fd419a56122dbc68c8682  fix-aaaa-record-segfault.patch"

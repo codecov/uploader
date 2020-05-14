@@ -1,0 +1,30 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=py3-serpent
+_pyname=serpent
+pkgver=1.30.2
+pkgrel=0
+pkgdesc="Serialization based on ast.literal_eval for Python"
+url="https://pypi.org/project/serpent/"
+arch="noarch"
+license="MIT"
+makedepends="py3-setuptools"
+checkdepends="py3-attrs py3-tz"
+source="https://files.pythonhosted.org/packages/source/${_pyname:0:1}/$_pyname/$_pyname-$pkgver.tar.gz"
+builddir="$srcdir/$_pyname-$pkgver"
+
+replaces="py-serpent" # Backwards compatiblity
+provides="py-serpent=$pkgname-r$pkgrel" # Backwards compatiblity
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="1cbc490deae3fb81c59abf74a98437e8c31f1ad88ce31a96c7ae48f344701dfcd67e973d2829cf793c405c6c1930cb7f15dec129c0a0e1b475286dd4f219ff99  serpent-1.30.2.tar.gz"

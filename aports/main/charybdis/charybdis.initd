@@ -1,0 +1,9 @@
+#!/sbin/openrc-run
+
+command="/usr/bin/charybdis"
+command_user="${CHARYBDIS_USER:-ircd}"
+
+depend() {
+	use net
+	provide ircd
+}

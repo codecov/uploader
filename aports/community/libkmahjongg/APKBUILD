@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libkmahjongg
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/games"
+pkgdesc="Common code, backgrounds and tile sets for games using Mahjongg tiles"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev kcoreaddons-dev kconfig-dev kconfigwidgets-dev kwidgetsaddons-dev kcompletion-dev ki18n-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/libkmahjongg-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+options="!check" # No tests found
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="bcc31c90121a16d0be9188eae806608a721f087703289b7c2096ceca702906b4dcb7c3cd2acb684fc5beede7ee8aec1a9381d2ab8af57519f667ed9e43dffdb4  libkmahjongg-20.04.0.tar.xz"

@@ -1,0 +1,43 @@
+# Contributor: Francesco Zanini <francesco@zanini.me>
+# Contributor: Katie Holly <holly@fuslvz.ws>
+# Maintainer: Francesco Zanini <francesco@zanini.me>
+pkgname=bird
+pkgver=2.0.7
+pkgrel=0
+pkgdesc="BIRD Internet Routing Daemon"
+url="https://bird.network.cz/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="bison flex ncurses-dev readline-dev linux-headers"
+subpackages="$pkgname-openrc"
+source="
+	ftp://bird.network.cz/pub/bird/bird-$pkgver.tar.gz
+	bird-make-test-bsprintf.patch
+	bird.initd
+	"
+
+# flawed test on big-endian
+case "$CARCH" in
+s390x|mips*) options="!check";;
+esac
+
+build() {
+	./configure --prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm755 "$srcdir"/bird.initd "$pkgdir"/etc/init.d/bird
+}
+
+sha512sums="48ca63be923285dd282e80d7e2b240256953fd7ad4f6eaa5dcba2648f3f148be20198bc8c6e7e888aac1588ecb005a4f4c03e979853e76ea6f8680643a874b35  bird-2.0.7.tar.gz
+e0a9bab1bb84ab4efbf51c4c015bf35196d146560f737979d3a17c44dc2397d9578e61a3bba0c58f3cdbb108074f17288bf536db5d8d4dce87c91f1be3dc6282  bird-make-test-bsprintf.patch
+da2fd6eaf5e468eed1054c23299ae899d5b1152c94a500db2242c63cdd543a32218e45373470ff367d5736022ced18e6a427f6b98e69a34ae2d3bf811550d828  bird.initd"

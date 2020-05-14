@@ -1,0 +1,19 @@
+#!/sbin/openrc-run
+
+command="/usr/bin/telegraf"
+command_args="$TELEGRAF_OPTS"
+command_background=yes
+command_user=telegraf:telegraf
+pidfile="/run/$RC_SVCNAME.pid"
+extra_started_commands="reload"
+
+depend() {
+	need net
+	after firewall
+}
+
+reload() {
+	ebegin "Reloading ${RC_SVCNAME}"
+	start-stop-daemon --signal HUP --pidfile "${pidfile}"
+	eend $?
+}

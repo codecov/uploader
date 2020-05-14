@@ -1,0 +1,83 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=arpack
+_pkgname=$pkgname-ng
+pkgver=3.7.0
+pkgrel=1
+pkgdesc="Collection of Fortran77 subroutines designed to solve large scale eigenvalue problems"
+url="https://github.com/opencollab/arpack-ng"
+arch="all !mips !mips64"
+license="BSD-3-Clause"
+depends_dev="openblas-dev>=0.3.0 lapack-dev"
+makedepends="$depends_dev autoconf automake gfortran libtool"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/opencollab/$_pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+# Tests hang on ppc64le when running via abuild, don't know why.
+case "$CARCH" in
+	ppc64le) options="!check";;
+esac
+
+_ilp64=no
+_builddir64="$builddir-64"
+if [ "$CARCH" = "x86_64" ]; then
+	subpackages="$subpackages $pkgname-ilp64"
+	_ilp64=yes
+fi
+
+prepare() {
+	default_prepare
+	./bootstrap
+	cp -ar "$builddir" "$_builddir64"
+}
+
+build() {
+	_build
+	if [ "$_ilp64" = yes ]; then
+		msg "Building with ILP64..."
+
+		cd "$builddir-64"
+		_build LIBSUFFIX=64_ \
+			SYMBOLSUFFIX=_64 \
+			INTERFACE64=1 \
+			--with-blas=openblas64_ \
+			--with-lapack=openblas64_
+	fi
+}
+
+_build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		"$@"
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	if [ "$_ilp64" = yes ]; then
+		make -C "$_builddir64" DESTDIR="$pkgdir" install
+	fi
+
+	make DESTDIR="$pkgdir" install
+
+	install -D -m644 COPYING \
+		"$pkgdir"/usr/share/licenses/$pkgname/COPYING
+
+	install -d "$pkgdir"/usr/share/doc/$pkgname
+	mv DOCUMENTS/* "$pkgdir"/usr/share/doc/$pkgname/
+}
+
+ilp64() {
+	pkgdesc="$pkgdesc (ILP64)"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libarpack64_* "$subpkgdir"/usr/lib/
+}
+
+sha512sums="cc07cdd1fba4881907b507ff6b6c9bce9e3dadd8ef744194f08ee718a6210c039ac0c51c12edd720503f8e59bcd11c178fc323e1a59696be8c3b8262cf47a452  arpack-3.7.0.tar.gz"

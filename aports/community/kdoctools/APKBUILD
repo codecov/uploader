@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kdoctools
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Documentation generation from docbook"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-only OR LGPL-3.0-only"
+depends="docbook-xml docbook-xsl"
+depends_dev="qt5-qtbase-dev ki18n-dev karchive-dev libxslt-dev libxml2-dev libxml2-utils"
+makedepends="$depends_dev extra-cmake-modules doxygen graphviz perl-uri qt5-qttools-dev"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kdoctools-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="646f37a6e4d233affa5d2ee38e490a1da30845d66ec758841fa1f39d630492a80cc3c4aad3d46d9808ecbb73b90af56e5f8009f1aba2e7db1da7d88a19634353  kdoctools-5.70.0.tar.xz"

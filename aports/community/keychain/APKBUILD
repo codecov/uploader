@@ -1,0 +1,18 @@
+# Maintainer: François Chavant <alpine@mail.chavant.info>
+pkgname=keychain
+pkgver=2.8.5
+pkgrel=1
+pkgdesc="keychain ssh-agent front-end"
+url="https://www.funtoo.org/Keychain"
+arch="noarch"
+license="GPL-2.0-only"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/funtoo/keychain/archive/$pkgver.tar.gz"
+options="!check" # no test suite, see https://github.com/funtoo/keychain
+
+package() {
+	install -Dm755 keychain "$pkgdir/usr/bin/keychain"
+	install -Dm644 keychain.1 "$pkgdir/usr/share/man/man1/keychain.1"
+}
+
+sha512sums="2b98a9937b058267150d62d4f95653c4bbab6117a0774ac266abf95020c41905412b1522a82abf71722f25f6af31ba3498f6d54622009498c845802bf2df6024  keychain-2.8.5.tar.gz"

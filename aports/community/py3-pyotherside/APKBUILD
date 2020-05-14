@@ -1,0 +1,26 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=py3-pyotherside
+pkgver=1.5.9
+pkgrel=0
+pkgdesc="Asynchronous Python 3 Bindings for Qt5"
+url="https://thp.io/2011/pyotherside"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative"
+license="ISC"
+makedepends="python3-dev qt5-qtbase-dev qt5-qtdeclarative-dev qt5-qtsvg-dev"
+options="!check" # can't run tests if not installed.
+source="py3-pyotherside-$pkgver.tar.gz::https://github.com/thp/pyotherside/archive/$pkgver.tar.gz"
+builddir="$srcdir/pyotherside-$pkgver"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir"/ install
+
+	rm -r "$pkgdir"/usr/tests
+}
+
+sha512sums="62c171b273b921d8e0220c7b73f0ff95a0a911eb3785cc37f3dab2ec624e54301ac5fbccfb57cac6a4bee967728624d4738b03aff0c5762452b99674cdff6ab2  py3-pyotherside-1.5.9.tar.gz"

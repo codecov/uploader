@@ -1,0 +1,43 @@
+# Contributor: Frank Hunleth <fhunleth@troodon-software.com>
+# Maintainer: Frank Hunleth <fhunleth@troodon-software.com>
+pkgname=fwup
+pkgver=1.5.2
+pkgrel=0
+pkgdesc="Configurable embedded Linux firmware update creator and runner"
+url="https://github.com/fhunleth/fwup"
+arch="all"
+license="Apache-2.0"
+makedepends="linux-headers confuse-dev libarchive-dev help2man dosfstools mtools zip unzip"
+subpackages="$pkgname-doc $pkgname-bash-completion:bashcomp:noarch"
+source="$pkgname-$pkgver.tar.gz::https://github.com/fhunleth/fwup/releases/download/v$pkgver/fwup-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions
+	mv "$pkgdir"/usr/share/bash-completion/completions/* \
+		"$subpkgdir"/usr/share/bash-completion/completions
+}
+
+sha512sums="7552aa3ad4d91e8c20d7955690d5bd3c5418f3a7899a34b506e889dce83df6845bbbc259e57ac46bedbd2f941d399a3d8f691be58135c16a0f0d14f7eaf6eeb3  fwup-1.5.2.tar.gz"

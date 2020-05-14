@@ -1,0 +1,39 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libical
+pkgver=3.0.8
+pkgrel=2
+pkgdesc="Reference implementation of the iCalendar format"
+url="https://libical.github.io/libical/"
+arch="all"
+license="LGPL-2.1-only OR MPL-2.0"
+depends_dev="db-dev"
+makedepends="$depends_dev perl cmake glib-dev icu-dev libxml2-dev
+	gobject-introspection-dev vala"
+checkdepends="tzdata py3-gobject3"
+subpackages="$pkgname-dev"
+source="https://github.com/libical/libical/releases/download/v$pkgver/libical-$pkgver.tar.gz"
+
+
+build() {
+	cmake -B build . \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DSHARED_ONLY=true \
+		-DENABLE_GTK_DOC=false \
+		-DGOBJECT_INTROSPECTION=true \
+		-DICAL_GLIB_VAPI=true
+	make -C build
+}
+
+check() {
+	cd build
+	ctest -E regression
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="ce015e6d4c1c7cb4af7b45748ce8251c663f80f6a4357ddff6a97796642619abe882f4cadeca10cabeb1b25577869f436da15bca882e032eb3ff0475f6010d8b  libical-3.0.8.tar.gz"

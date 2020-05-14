@@ -1,0 +1,39 @@
+# Contributor: Mika Havela <mika.havela@gmail.com>
+# Maintainer: Mika Havela <mika.havela@gmail.com>
+pkgname=perl-carp-clan
+_realname=Carp-Clan
+pkgver=6.08
+pkgrel=0
+pkgdesc="Perl - Report errors from perspective of caller of a 'clan' of modules"
+url="https://metacpan.org/pod/Carp::Clan"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl perl-test-exception"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/E/ET/ETHER/Carp-Clan-$pkgver.tar.gz"
+
+builddir="$srcdir/$_realname-$pkgver"
+
+prepare() {
+	cd "$builddir"
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+}
+
+build() {
+	cd "$builddir"
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="bc7f74d75e1eae0f528d530b47f1841493aae7eecdeeb58f85f5d8ef7a5b4d92c479b45468d0e7175f228056295d3d7159a7b404fecd542cf04c75ddc3a9886f  Carp-Clan-6.08.tar.gz"

@@ -1,0 +1,34 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=racktables
+_realname=RackTables
+pkgver=0.21.4
+pkgrel=1
+pkgdesc="Server room asset management"
+url="http://racktables.org"
+arch="noarch"
+license="GPL-2.0"
+_php=php7
+depends="$_php $_php-bcmath $_php-gd $_php-mysqli $_php-pdo_mysql
+	$_php-json $_php-mbstring"
+subpackages="$pkgname-doc"
+pkggroups="www-data"
+source="https://github.com/RackTables/racktables/archive/RackTables-$pkgver.tar.gz"
+options="!check" # no test suite
+builddir="$srcdir"/$pkgname-$_realname-$pkgver
+
+package() {
+	export prefix="/usr/share/webapps"
+	export datadir="$prefix"
+	export docdir="/usr/share/doc/RackTables"
+	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" install-docs
+	mkdir -p "$pkgdir"/etc/racktables
+	touch "$pkgdir"/etc/racktables/secret.php
+	chown -R :www-data "$pkgdir"/etc/racktables
+	chmod 770 "$pkgdir"/etc/racktables
+	sed -i "s%<?php%<?php\n\n\$racktables_confdir = '/etc/racktables';%" \
+	 "$pkgdir"/usr/share/webapps/RackTables/wwwroot/index.php
+}
+
+sha512sums="fa49fca6ec15944982bbdb98e2fe1dc87b468ab83bd7759433ddb9886814edce35d0fd47cefa67fb3c7eb88d234ccf4985f7bd3d4cee06b4c16b7ac3296687ca  RackTables-0.21.4.tar.gz"

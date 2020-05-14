@@ -1,0 +1,175 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=faenza-icon-theme
+pkgver=1.3.1
+pkgrel=6
+pkgdesc="icons designed to go in tandem with equinox themes"
+options="!check" # No testsuite, just icons
+arch="noarch"
+url="http://tiheum.deviantart.com/art/Faenza-Icons-173323228"
+license="GPL-3.0-or-later"
+subpackages="
+	$pkgname-abiword
+	$pkgname-audacious
+	$pkgname-bluefish
+	$pkgname-chromium
+	$pkgname-evince
+	$pkgname-firefox
+	$pkgname-geany
+	$pkgname-gnome-panel:gnome_panel
+	$pkgname-gparted
+	$pkgname-inkscape
+	$pkgname-libreoffice-calc:lo_calc
+	$pkgname-libreoffice-common:lo_common
+	$pkgname-libreoffice-draw:lo_draw
+	$pkgname-libreoffice-impress:lo_impress
+	$pkgname-libreoffice-main:lo_main
+	$pkgname-libreoffice-math:lo_math
+	$pkgname-libreoffice-writer:lo_writer
+	$pkgname-libreoffice
+	$pkgname-midori
+	$pkgname-shotwell
+	$pkgname-stellarium
+	$pkgname-thunar
+	$pkgname-transmission
+	$pkgname-vim
+	$pkgname-vlc
+	$pkgname-wine
+	$pkgname-xbmc
+	$pkgname-xfce4-appfinder:xfce4_appfinder
+	$pkgname-xfce4-panel:xfce4_panel
+	$pkgname-xterm
+	$pkgname-lxterminal
+	$pkgname-gucharmap
+	$pkgname-xarchiver
+	$pkgname-gvim
+	$pkgname-filezilla
+	$pkgname-bash
+	$pkgname-xscreensaver
+
+	$pkgname-deadbeef
+	$pkgname-dia
+	$pkgname-emacs
+	$pkgname-thunderbird
+	$pkgname-ibus
+	$pkgname-gdm
+	$pkgname-nautilus
+
+
+	$pkgname-baobab
+	$pkgname-cheese
+	$pkgname-devhelp
+	$pkgname-meld
+	$pkgname-onboard
+	$pkgname-openttd
+	$pkgname-synapse
+	$pkgname-terminator
+	$pkgname-tracker
+	$pkgname-xournal
+	$pkgname-zim
+
+	$pkgname-sound-juicer:sound_juicer
+	$pkgname-deja-dup:deja_dup
+	$pkgname-gnome-documents:gnome_documents
+	$pkgname-gnome-sound-recorder:gnome_sound_recorder
+	$pkgname-gnome-terminal:gnome_terminal
+	"
+
+
+source="https://launchpad.net/~tiheum/+archive/equinox/+files/faenza-icon-theme_$pkgver.tar.gz"
+
+builddir="$srcdir"/$pkgname-${pkgver%.[0-9]}
+
+package() {
+	mkdir -p "$pkgdir"/usr/share/icons
+	cp -dpRf Faenza* "$pkgdir"/usr/share/icons
+	find "$pkgdir"/usr/share/icons -name 'xchat*' | while read i; do
+		ln -s "${i##*/}" "${i/xchat/hexchat}" || break
+	done
+}
+
+_app() {
+	local app="$1" glob=
+	shift
+	pkgdesc="$pkgname - $app"
+	replaces="$pkgname"
+	depends=
+	if [ -n "$app" ]; then
+		install_if="$pkgname=$pkgver-r$pkgrel $app"
+	else
+		install_if=
+	fi
+	cd "$pkgdir"
+	for glob in "$@"; do
+		find . -name "$glob" | while read path; do
+			mkdir -p "$subpkgdir/${path%/*}"
+			mv "$pkgdir/$path" "$subpkgdir/$path"
+		done
+	done
+}
+
+baobab()	{ _app baobab 'baobab.*'; }
+cheese()	{ _app cheese 'cheese.*'; }
+deja_dup()	{ _app deja_dup 'deja-dup.*'; }
+devhelp()	{ _app devhelp 'devhelp.*'; }
+gnome_documents()	{ _app  gnome_documents 'gnome-documents.*'; }
+gnome_sound_recorder()	{ _app  gnome_sound_recorder 'gnome-sound-recorder.*'; }
+gnome_terminal()	{ _app  gnome_terminal 'gnome-terminal.*'; }
+meld()		{ _app meld 'meld.*'; }
+onboard()	{ _app onboard 'onboard.*'; }
+openttd()	{ _app openttd 'openttd.*'; }
+sound_juicer()	{ _app  sound_juicer 'sound-juicer.*'; }
+synapse()	{ _app synapse 'synapse.*'; }
+terminator()	{ _app terminator 'terminator.*'; }
+tracker()	{ _app tracker 'tracker.*'; }
+xournal()	{ _app xournal 'xournal.*'; }
+zim()		{ _app zim 'zim.*'; }
+
+abiword()	{ _app abiword 'abiword*'; }
+audacious()	{ _app audacious 'audacious*'; }
+bluefish()	{ _app bluefish 'bluefish*'; }
+chromium()	{ _app chromium 'chromium*' 'google-chrome*' ; }
+evince()	{ _app evince 'evince*'; }
+firefox()	{ _app firefox '*firefox*'; }
+geany()		{ _app geany 'geany*'; }
+gnome_panel()	{ _app gnome-panel 'gnome-panel.*'; }
+gparted()	{ _app gparted 'gparted*'; }
+inkscape()	{ _app inkscape 'inkscape*'; }
+lo_base()	{ _app libreoffice-base 'libreoffice*-base*'; }
+lo_calc()	{ _app libreoffice-calc 'libreoffice*-calc*'; }
+lo_common()	{ _app libreoffice-common 'libreoffice*-startcenter*'; }
+lo_draw()	{ _app libreoffice-draw 'libreoffice*-draw*'; }
+lo_impress()	{ _app libreoffice-impress 'libreoffice*-impress*'; }
+lo_main()	{ _app libreoffice-main 'libreoffice*-main*'; }
+lo_math()	{ _app libreoffice-math 'libreoffice*-math*'; }
+lo_writer()	{ _app libreoffice-writer 'libreoffice*-writer*' 'ooo-writer*' 'office-writer.*'; }
+libreoffice()	{ _app libreoffice 'libreoffice*' 'openoffice*' 'ooo*'; }
+midori()	{ _app midori 'midori*'; }
+shotwell()	{ _app shotwell 'shotwell*'; }
+stellarium()	{ _app stellarium 'stellarium*'; }
+thunar()	{ _app thunar 'thunar.*' 'Thunar.*'; }
+transmission()	{ _app transmission 'transmission*'; }
+vim()		{ _app vim 'vim*'; }
+vlc()		{ _app vlc 'vlc*'; }
+wine()		{ _app wine '*wine*'; }
+xbmc()		{ _app xbmc 'xbmc*'; }
+xfce4_appfinder() { _app xfce4-appfinder 'xfce4-appfinder*'; }
+xfce4_panel()	{ _app xfce4-panel 'xfce4-panel*'; }
+xterm()		{ _app xterm 'xterm*'; }
+lxterminal() { _app lxterminal 'lxterminal*'; }
+gucharmap()	{ _app gucharmap 'gucharmap*'; }
+xarchiver() { _app xarchiver 'xarchiver*'; }
+gvim()		{ _app gvim 'gvim*'; }
+filezilla()	{ _app filezilla 'filezilla*'; }
+bash()		{ _app bash 'bash*'; }
+xscreensaver()	{ _app xscreensaver 'xscreensaver*'; }
+
+# testing
+deadbeef()	{ _app deadbeef 'deadbeef*'; }
+dia()		{ _app dia 'dia.*'; }
+emacs()		{ _app emacs 'emacs*'; }
+thunderbird()	{ _app thunderbird '*thunderbird*'; }
+ibus()		{ _app ibus 'ibus*'; }
+gdm()		{ _app gdm 'gdm.*'; }
+nautilus()	{ _app nautilus 'nautilus*'; }
+
+sha512sums="0c017ddbaa2dba485341d3bb1e321fafad026aafc893fa2519ddfd3fe0475fc8d011c99ce3de581c9b1c6aa7d250312673dda7c10bb12783db2d45816646ddc9  faenza-icon-theme_1.3.1.tar.gz"

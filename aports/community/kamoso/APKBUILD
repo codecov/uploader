@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kamoso
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by kirigami2 -> qt5-qtdeclarative
+url="https://kde.org/applications/multimedia/org.kde.kamoso"
+pkgdesc="An application to take pictures and videos out of your webcam"
+license="GPL-2.0-or-later AND LGPL-2.1-only"
+depends="kirigami2 qt5-qtquickcontrols2 gst-plugins-good gst-plugins-bad"
+makedepends="extra-cmake-modules qt5-qtbase-dev kconfig-dev kdoctools-dev kio-dev ki18n-dev purpose-dev knotifications-dev gstreamer-dev glib-dev gobject-introspection-dev gst-plugins-base-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kamoso-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # Broken
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="0c37e4bda9c2f0902cb30bb50559ef9f1a7b2d0be31237e86477f1e59deca57c458dec9a34835115bcf79cc186d1c767698a1bdcdddd53cff3d3fb0b45205d0f  kamoso-20.04.0.tar.xz"

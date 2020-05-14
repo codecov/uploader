@@ -1,0 +1,23 @@
+# Contributor: <xmingske@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+_pkgname=django-simple-captcha
+pkgname=py3-$_pkgname
+pkgver=0.5.12
+pkgrel=0
+pkgdesc="simple, yet highly customizable Django application to add captcha images to any Django"
+url="https://github.com/mbi/django-simple-captcha"
+arch="noarch"
+license="MIT"
+depends="python3 py3-six py3-django py3-pillow" # Missing django-ranged-response
+makedepends="py3-setuptools"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/mbi/django-simple-captcha/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+sha512sums="c6c95b81ecede95bb0fcfb3a4c46abcb7aeb39a1a59bed4a5bedde9a46ac7696e46db99dc4ba73fa0201755d1bbb1be955035cb632c63fc3d597633c5514dd73  django-simple-captcha-0.5.12.tar.gz"

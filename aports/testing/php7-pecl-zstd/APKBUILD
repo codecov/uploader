@@ -1,0 +1,36 @@
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=php7-pecl-zstd
+_pkgreal=zstd
+pkgver=0.8.0
+pkgrel=0
+pkgdesc="PECL Zstandard extension."
+url="https://pecl.php.net/package/zstd"
+arch="all"
+license="MIT"
+depends="php7-common"
+makedepends="php7-dev autoconf re2c zstd-dev"
+checkdepends="php7-openssl"
+source="https://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+provides="php7-zstd=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-zstd" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7 --with-libzstd
+	make
+}
+
+check() {
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test PHP_TEST_SHARED_EXTENSIONS=" \
+		-d extension=/usr/lib/php7/modules/openssl.so \
+		-d extension=modules/$_pkgreal.so"
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir"/ install
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_pkgreal.so" > "$pkgdir"/etc/php7/conf.d/$_pkgreal.ini
+}
+
+sha512sums="01ef7a2ab8b5900f5c861884e6cc79d7a0147b29e5f434dab13a10a09fd79d9008a0cd58f1ae2b29b901155b0e783f0b2bb84fa86340c9fe7eadf20e8b1fe947  zstd-0.8.0.tgz"

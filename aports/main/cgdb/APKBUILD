@@ -1,0 +1,41 @@
+# Contributor: Harry
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=cgdb
+pkgver=0.7.1
+pkgrel=0
+pkgdesc="The Curses Debugger"
+arch="all"
+license="GPL-2.0"
+url="http://cgdb.sourceforge.net/"
+depends="gdb"
+makedepends="flex bison texinfo help2man ncurses-dev readline-dev"
+source="http://cgdb.me/files/cgdb-$pkgver.tar.gz"
+subpackages="$pkgname-doc"
+
+build() {
+	cd "$builddir"
+	CFLAGS="$CFLAGS -std=c11" \
+	CXXFLAGS="$CXXFLAGS -std=c++11" \
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--libdir=/usr/lib
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make install \
+		pkgconfigdir="/usr/lib/pkgconfig" \
+		DESTDIR="$pkgdir"
+	mkdir -p "$pkgdir"/usr/share/doc
+	mv "$pkgdir"/usr/share/cgdb "$pkgdir"/usr/share/doc/
+}
+
+sha512sums="34f1fa53cfc9fbf7a2603db169e8338c0bf32200ed7a63e9944951f446e295e49f4ff3c5d0998a4c70bc872376263e1469d7e518becc13b4959f66495d5b9521  cgdb-0.7.1.tar.gz"

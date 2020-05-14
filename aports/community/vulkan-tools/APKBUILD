@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=vulkan-tools
+_pkgname=Vulkan-Tools
+pkgver=1.2.137
+pkgrel=0
+arch="all"
+url="https://www.khronos.org/vulkan"
+pkgdesc="Vulkan Utilities and Tools"
+license="Apache-2.0"
+depends="vulkan-loader"
+makedepends="cmake python3 libx11-dev wayland-dev vulkan-headers<1.2.140 vulkan-loader-dev glslang-dev libxrandr-dev"
+source="vulkan-tools-$pkgver.tar.gz::https://github.com/KhronosGroup/Vulkan-Tools/archive/v$pkgver.tar.gz"
+options="!check" # No tests
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DCMAKE_INSTALL_SYSCONFDIR=/etc \
+		-DCMAKE_INSTALL_DATADIR=/usr/share \
+		-DCMAKE_SKIP_RPATH=True \
+		-DBUILD_CUBE=ON \
+		-DBUILD_VULKANINFO=ON \
+		-DGLSLANG_INSTALL_DIR=/usr
+	make -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="879529ccea9a894f62222cd0110b946ddf055f092994bf71942a3c5c50906dc062edc5081ea2150757cdb501426ca341e9a4260319c6565acdcb731f172d43d8  vulkan-tools-1.2.137.tar.gz"

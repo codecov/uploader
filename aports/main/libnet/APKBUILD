@@ -1,0 +1,40 @@
+# Contributor: Mika Havela <mika.havela@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libnet
+pkgver=1.1.6
+pkgrel=3
+pkgdesc="A generic networking API that provides access to several protocols."
+url="https://sourceforge.net/projects/libnet-dev/"
+arch="all"
+license="BSD-2-Clause"
+makedepends="autoconf automake libtool linux-headers"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://downloads.sourceforge.net/project/libnet-dev/libnet-$pkgver.tar.gz
+	fix-includes.patch
+	"
+
+
+prepare() {
+	default_prepare
+	cd "$builddir"
+	update_config_sub
+}
+
+build() {
+	cd "$builddir"
+
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--with-link-layer=linux
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="a67e502b0e6957ca590e47cb50b0472dd83d622d84c62818d665d771616df91b5a8fa8fcf1040d13b7860aaabaf338152ef40f66ab97c3fc9502edb08cea0bb6  libnet-1.1.6.tar.gz
+6cde8d5c5c3c34f9a02df5ae472f23b823aab293eed2588bbd6c836d228b1c180dc04208916cd6be7b11e02d6e5b2bfffda5e34ec1ceb99e83d1adfafff09231  fix-includes.patch"

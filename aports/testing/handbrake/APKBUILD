@@ -1,0 +1,62 @@
+# Maintainer: Nathan Angelacos <nangel@alpinelinux.org>
+pkgname=handbrake
+_pkgname=HandBrake
+pkgver=1.3.1
+pkgrel=1
+pkgdesc="Handbrake video transcoder"
+url="https://handbrake.fr"
+arch="x86_64 x86 armhf armv7 ppc64le"
+license="GPL-2.0-only"
+makedepends="yasm autoconf libtool zlib-dev libbz2 libogg-dev libtheora-dev
+	libvorbis-dev fribidi-dev freetype-dev tinyxml-dev fontconfig-dev
+	libass-dev intltool glib-dev dbus-glib-dev gtk+3.0-dev libgudev-dev
+	libnotify-dev libdvdread-dev gst-plugins-base-dev x264-dev lame-dev
+	linux-headers cmake automake ffmpeg-dev coreutils libdvdnav-dev
+	libbluray-dev libvpx-dev fdk-aac-dev jansson-dev opus-dev python2
+	speex-dev xz-dev meson nasm dav1d-dev"
+subpackages="$pkgname-lang $pkgname-gtk"
+source="https://download.handbrake.fr/releases/$pkgver/HandBrake-$pkgver-source.tar.bz2
+	handbrake-9999-remove-dvdnav-dup.patch
+	handbrake-9999-remove-faac-dependency.patch
+	"
+options="!check"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+prepare() {
+	default_prepare
+	# build against external libs
+	sed -i 's:.*contrib/.*::g' \
+		make/include/main.defs
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--force \
+		--verbose \
+		--disable-nvenc \
+		--disable-numa \
+		--disable-x265 \
+		--disable-gtk-update-checks
+
+	cd build
+	make
+}
+
+package() {
+	cd "$builddir"/build
+	make -j1 install DESTDIR="$pkgdir"
+}
+
+gtk() {
+	pkgdesc="HandBrake Video Transcoder - GUI"
+	install -d "$subpkgdir"/usr/bin
+
+	mv "$pkgdir"/usr/bin/ghb "$subpkgdir"/usr/bin/ghb
+	mv "$pkgdir"/usr/share "$subpkgdir"/usr
+
+}
+
+sha512sums="b713c70155feff765fb21e201e1c1599c970bf56581584281d883e57046409731cb663c11ee8ea2c141ba75852746be81d6db813f2d481b72429e53c89d584d2  HandBrake-1.3.1-source.tar.bz2
+a3d57dd37d518286a62554cfcc4722d6fd588a0c3966d30785100edc4476febb2b48fc4f9b2a7eb5b5dc049043fabd4398e1e190e10cbd63c25b2936824977d3  handbrake-9999-remove-dvdnav-dup.patch
+9d070e50a9b7d4b8ac25b7d56bd341aca6dc979ba506c84f4b95109909f70020723915cd120bed24e84a8fc242ee3c3a5775f43a78b7995e53cd499444c9f6dc  handbrake-9999-remove-faac-dependency.patch"

@@ -1,0 +1,57 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=supertuxkart
+pkgver=1.1
+pkgrel=2
+arch="all"
+url="https://supertuxkart.net/"
+pkgdesc="Kart racing game featuring Tux and his friends"
+license="GPL-3.0-or-later"
+depends="$pkgname-data"
+makedepends="cmake glew-dev jpeg-dev libpng-dev libxrandr-dev wayland-dev libxkbcommon-dev bluez-dev openal-soft-dev libvorbis-dev freetype-dev fribidi-dev curl-dev harfbuzz-dev"
+source="$pkgname-$pkgver.tar.xz::https://downloads.sourceforge.net/supertuxkart/supertuxkart-$pkgver-src.tar.xz"
+subpackages="$pkgname-static $pkgname-data::noarch"
+builddir="$srcdir/$pkgname-$pkgver-src"
+
+prepare() {
+	default_prepare
+
+	mkdir "$builddir"/build
+}
+
+build() {
+	cd "$builddir"/build
+
+	case "$CARCH" in
+		arm*|aarch64) GLES2_RENDERER=ON ;;
+		* ) GLES2_RENDERER=OFF ;;
+	esac
+
+	cmake "$builddir" \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_RECORDER=0 \
+		-DUSE_GLES2=$GLES2_RENDERER
+	make
+}
+
+check() {
+	cd "$builddir"/build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	cd "$builddir"/build
+	DESTDIR="$pkgdir" make install
+}
+
+data() {
+	pkgdesc="$pkgdesc (data files)"
+
+	mkdir -p "$subpkgdir"/usr/share/supertuxkart
+	mv "$pkgdir"/usr/share/supertuxkart/data \
+		"$subpkgdir"/usr/share/supertuxkart
+}
+
+sha512sums="81d5ff59bb33eba8a00547239d54cacfde25eed0c56c857712a00a62032e4cf371cdd367159eaa4bfec6d4dd5781b705e41b58a26b864aa43678cfe9926bb804  supertuxkart-1.1.tar.xz"

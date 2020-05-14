@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=mailimporter
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="KDE PIM library providing support for mail applications"
+arch="all !armhf"
+url="https://kontact.kde.org/"
+license="GPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev karchive-dev kconfig-dev kcoreaddons-dev ki18n-dev akonadi-dev kmime-dev akonadi-mime-dev libkdepim-dev"
+makedepends="$depends_dev extra-cmake-modules"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/mailimporter-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="b3e81671ad8bc4f7030e5e29357ad5479022cfc222c1065cab885371f903cd64ede6ef0a5519662a403ad1033b31ead89eb95d2e68b45e4d190a906dafe17158  mailimporter-20.04.0.tar.xz"

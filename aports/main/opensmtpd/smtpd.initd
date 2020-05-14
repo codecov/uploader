@@ -1,0 +1,32 @@
+#!/sbin/openrc-run
+extra_commands="checkconfig"
+description_checkconfig="Check the configuration file for validity"
+
+name="OpenSMTPD"
+
+command=/usr/sbin/smtpd
+command_args="-F ${command_args:-$SMTPD_OPTS}"  # SMTPD_OPTS is deprecated
+command_background=yes
+
+pidfile=/run/$RC_SVCNAME.pid
+required_files=/etc/smtpd/smtpd.conf
+
+depend() {
+	need net localmount
+	after bootmisc firewall
+	use logger dns
+	provide mta
+}
+
+start_pre() {
+	checkconfig
+}
+
+checkconfig() {
+	# Don't output anything unless something is *not* ok.
+	output=$($command -n 2>&1)
+	ret=$?
+
+	[ $ret -ne 0 ] && echo $output 1>&2
+	return $ret
+}

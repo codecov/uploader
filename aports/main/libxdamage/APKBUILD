@@ -1,0 +1,32 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libxdamage
+pkgver=1.1.5
+pkgrel=0
+pkgdesc="X11 damaged region extension library"
+url="http://xorg.freedesktop.org/"
+arch="all"
+license="MIT"
+options="!check"  # No test suite.
+depends=
+makedepends="xorgproto libx11-dev libxfixes-dev util-macros"
+subpackages="$pkgname-dev"
+source="https://www.x.org/releases/individual/lib/libXdamage-$pkgver.tar.bz2"
+
+builddir="$srcdir"/libXdamage-$pkgver
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="a3ca6cc33b1727f717a3e2aa5593f660508a81a47918a0aa949e9e8fba105e303fe5071983b48caac92feea0fe6e8e01620805e4d19b41f21f20d837b191c124  libXdamage-1.1.5.tar.bz2"

@@ -1,0 +1,48 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=lua-basexx
+_pkgname=basexx
+pkgver=0.4.1
+pkgrel=0
+pkgdesc="A Lua library for base2, base16, base32, base64, base85 decoding and encoding of data strings"
+url="https://github.com/aiq/basexx/"
+arch="noarch"
+license="MIT"
+checkdepends="lua-busted luajit"
+source="$pkgname-$pkgver.tar.gz::https://github.com/aiq/$_pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+_luaversions="5.1 5.2 5.3"
+for _v in $_luaversions; do
+	subpackages="$subpackages lua$_v-${pkgname#lua-}:_subpackage"
+	checkdepends="$checkdepends lua$_v lua$_v-busted"
+done
+
+check() {
+	local lver; for lver in $_luaversions jit; do
+		msg "Testing on lua$lver"
+		lua$lver /usr/bin/busted
+	done
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+_subpackage() {
+	local lver="${subpkgname:3:3}"
+	pkgdesc="$pkgdesc (for Lua $lver)"
+	depends="lua$lver"
+	install_if="$pkgname=$pkgver-r$pkgrel lua$lver"
+	local lmod_dir="$subpkgdir/usr/share/lua/$lver"
+	local rockdir="$subpkgdir/usr/lib/luarocks/rocks-$lver/$_pkgname/$pkgver-1"
+
+	cd "$builddir"
+	mkdir -p "$lmod_dir"
+	cp -r lib/* "$lmod_dir"/
+
+	mkdir -p "$rockdir"
+	echo 'rock_manifest = {}' > "$rockdir"/rock_manifest
+}
+
+sha512sums="b52ac9573196129e5af3f6d4fdc69b26d77ed3c114cf95c3dc46aa58e5f288a3212a91e8ee48257609607a71088c24205ca79c5512f077a6e9cef6ad7f136ba0  lua-basexx-0.4.1.tar.gz"

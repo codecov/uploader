@@ -1,0 +1,31 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=py3-magic
+_pkgname=python-magic
+pkgver=0.4.18
+pkgrel=0
+pkgdesc="Python3 wrapper for libmagic"
+url="https://pypi.python.org/pypi/python-magic/"
+arch="noarch"
+license="MIT"
+depends="python3 libmagic"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ahupp/$_pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-magic" # Backwards compatibility
+provides="py-magic=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	LC_ALL=en_US.UTF-8 PYTHONPATH="$PWD/build/lib" python3 test/test.py
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="d5f0047c7537ce0598537629c60aa708623480792d489fa003328b5c6c5b0d42748b6e996f27dc2c164c598813fcf19393567e7ea266a9f0718cf2ddafbd33ac  py3-magic-0.4.18.tar.gz"

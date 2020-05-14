@@ -1,0 +1,45 @@
+# Contributor: Henrik Riomar <henrik.riomar@gmail.com>
+# Maintainer: Henrik Riomar <henrik.riomar@gmail.com>
+pkgname=apt-dater
+pkgver=1.0.4
+pkgrel=0
+pkgdesc="terminal-based remote package update manager"
+url="https://github.com/DE-IBH/apt-dater"
+arch="all"
+license="GPL-2.0-or-later"
+depends="lockfile-progs screen openssh-client"
+makedepends="automake popt-dev glib-dev ncurses-dev tcl-dev libconfig-dev libxml2-dev
+	xxd"
+subpackages="$pkgname-doc $pkgname-lang"
+source="apt-dater-$pkgver.tar.gz::https://github.com/DE-IBH/apt-dater/archive/v$pkgver.tar.gz
+	apt-dater-fix-includes.patch
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-tclfilter \
+		--enable-xmlreport \
+		--enable-autoref \
+		--enable-history \
+		--enable-debug
+
+	make
+}
+
+check() {
+	HOME="$builddir" ./src/apt-dater -v
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+	rm -f "$pkgdir"/usr/share/man/man1/apt-dater-host.1
+}
+
+sha512sums="6b4c3fe555d5b1ecdab63ff0f05713657cd0a0ac89fa114b4d23a95059fc1b91159cae180afeea3d58ef476629566c495e35f126ce19c3922c2896f8c1790020  apt-dater-1.0.4.tar.gz
+562631999cbcf0dcfeb987705c3ec66b274b0f6914527229adbe9281b2a791f601052ed51dff9004220c376b3de9e3da812e0961b3e999174c9c4fb75593499c  apt-dater-fix-includes.patch"

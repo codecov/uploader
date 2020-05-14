@@ -1,0 +1,29 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer:
+pkgname=py3-django-taggit
+_pkgname=django-taggit
+pkgver=1.2.0
+pkgrel=0
+pkgdesc="Simple tagging for django"
+options="!check" # Testsuite for coverage and flake8
+url="https://github.com/alex/django-taggit"
+arch="noarch"
+license="BSD-3-Clause"
+depends="py3-django"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/alex/$_pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-djanog-taggit" # Backwards compatibility
+provides="py-djanog-taggit=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py --quiet install --prefix=/usr --root="$pkgdir"
+}
+
+
+sha512sums="7d47d5ea72cb785e4687e99f08ff558b89d41d20453c959c117c065641c2d23afe67b3d5a14542db810851b8f86b9dbfa43a98ce4954e68c2bef9d2a7345ca03  py3-django-taggit-1.2.0.tar.gz"

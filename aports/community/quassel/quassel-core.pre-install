@@ -1,0 +1,6 @@
+#!/bin/sh
+
+addgroup -S quassel 2>/dev/null
+adduser -S -D -h /var/lib/quassel -s /sbin/nologin -G quassel -g quassel quassel 2>/dev/null
+
+exit 0

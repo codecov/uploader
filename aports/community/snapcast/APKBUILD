@@ -1,0 +1,80 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=snapcast
+pkgver=0.19.0
+pkgrel=1
+pkgdesc="Synchronous multi-room audio player"
+url="https://github.com/badaix/snapcast"
+arch="all"
+license="GPL-3.0-or-later"
+depends="$pkgname-client $pkgname-server"
+makedepends="cmake asio-dev avahi-dev flac-dev libvorbis-dev alsa-lib-dev opus-dev"
+pkgusers="$pkgname"
+pkggroups="$pkgname audio"
+install="$pkgname-client.pre-install $pkgname-server.pre-install"
+subpackages="$pkgname-doc $pkgname-client $pkgname-server"
+source="$pkgname-$pkgver.tar.gz::https://github.com/badaix/snapcast/archive/v$pkgver.tar.gz
+	$pkgname-client.initd
+	$pkgname-client.confd
+	$pkgname-server.initd
+	$pkgname-server.confd
+	"
+options="!check" # No testsuite
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DBUILD_WITH_FLAC=ON \
+		-DBUILD_WITH_VORBIS=ON \
+		-DBUILD_WITH_OPUS=ON \
+		-DBUILD_WITH_AVAHI=ON
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+
+	mkdir -p "$pkgdir"/usr/share/man/man1
+	install client/snapclient.1 "$pkgdir"/usr/share/man/man1/snapclient.1.gz
+	install server/snapserver.1 "$pkgdir"/usr/share/man/man1/snapserver.1.gz
+}
+
+client() {
+	pkgdesc="$pkgname client"
+	depends=
+
+	mkdir -p "$subpkgdir"/usr/bin
+
+	mv "$pkgdir"/usr/bin/snapclient \
+		"$subpkgdir"/usr/bin/
+	install -Dm755 "$srcdir/$subpkgname.initd" \
+		"$subpkgdir"/etc/init.d/"$subpkgname"
+	install -Dm644 "$srcdir/$subpkgname.confd" \
+		"$subpkgdir"/etc/conf.d/"$subpkgname"
+}
+
+server() {
+	pkgdesc="$pkgname server"
+	depends=
+
+	mkdir -p "$subpkgdir"/usr/bin
+
+	mv "$pkgdir"/usr/bin/snapserver \
+		"$subpkgdir"/usr/bin/
+	install -Dm755 "$srcdir/$subpkgname.initd" \
+		"$subpkgdir"/etc/init.d/"$subpkgname"
+	install -Dm644 "$srcdir/$subpkgname.confd" \
+		"$subpkgdir"/etc/conf.d/"$subpkgname"
+}
+
+sha512sums="0ea838e565b39a0e34de05fb96a591232990dabcd00b5f24ac86f8e8bb916bedcd3486d2ced6a4f7a83d0ea7926aacb604684743bb2d12838e9442878698076c  snapcast-0.19.0.tar.gz
+bc2219f00fa70890be0c12f6fb8da0ac86949f65c1714648d20f6e83a80e075b8482bafd65ebadcc65708f0c488f9655ad2ddd803e5a061973de4132134acbc0  snapcast-client.initd
+fa353d7974d3a8b3b22ff009b762c7c4ee318f9f83e22762a9ebf550484b9fc3cc4dffd389b6d756630dc035cb86d5c5643541957785f8bbf71fe4915691c337  snapcast-client.confd
+47feaf72d96ccab6996d24619b1d36a89a74e50d402fb6760792ee62d5c2460718324ef8f437ce2be121488f164372c2c0883b9ff0e45d484b5b0e3778d6d99b  snapcast-server.initd
+48d494143d044a413b414b32cd8be51d4242234b6d7cb03102914a42b1ea6b1913c2c31b223c23c6be316918e731875149a2505daa03165659d0a1be3ca7e75c  snapcast-server.confd"

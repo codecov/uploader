@@ -1,0 +1,87 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Kiyoshi Aman <kiyoshi.aman@gmail.com>
+# Maintainer: Lucas Ramage <ramage.lucas@openmailbox.org>
+pkgname=bash-completion
+pkgver=2.10
+pkgrel=0
+pkgdesc="Command-line tab-completion for bash"
+options="!check" # 7 Tests fail
+url="https://github.com/scop/bash-completion"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="bash"
+makedepends="autoconf automake bc grep iputils musl-utils procps psmisc sed usbutils"
+checkdepends="py3-pexpect py3-pytest"
+subpackages="$pkgname-doc"
+source="https://github.com/scop/bash-completion/releases/download/$pkgver/bash-completion-$pkgver.tar.xz"
+builddir="$srcdir"/$pkgname-$pkgver
+
+# Provided with util-linux and networkmanager:
+_conflicting="
+	cal
+	chsh
+	dmesg
+	eject
+	hd
+	hexdump
+	hwclock
+	ionice
+	look
+	ncal
+	newgrp
+	renice
+	rfkill
+	rtcwake
+	su
+	nmcli
+	umount
+	mount
+	"
+
+prepare() {
+	cd "$builddir"
+	default_prepare
+
+	# ifup/down tests are still failing
+	rm $builddir/test/t/test_ifdown.py
+	rm $builddir/test/t/test_ifup.py
+	sed -i '/test_ifdown.py \\/d' $builddir/test/t/Makefile.am
+	sed -i '/test_ifup.py \\/d' $builddir/test/t/Makefile.am
+	autoreconf -fiv
+}
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	cd "$builddir"
+	mkdir ./bin
+	ln -sf "$(command -v pytest-3)" ./bin/pytest
+	export PATH="${PATH}:$PWD/bin"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make -j1 DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/share/doc/$pkgname/
+	install -m644 AUTHORS CHANGES CONTRIBUTING.md README.md \
+		"$pkgdir"/usr/share/doc/$pkgname/
+
+	cd "$pkgdir"/usr/share/bash-completion/completions
+	for c in $_conflicting; do
+		rm -f $c
+	done
+}
+
+sha512sums="d434e0e48b25328e8c6b43ed64e58f56459186434754ee972795edd031ce1864038b53926b218fe06e5b3882682db4dec5101b3124362c0137101d3fa6d87cd7  bash-completion-2.10.tar.xz"

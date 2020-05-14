@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kalgebra
+pkgver=20.04.0
+pkgrel=0
+# armhf blocked by qt5-qtdeclarative
+# mips blocked by analitza
+arch="all !armhf !mips !mips64"
+url="https://edu.kde.org/kalgebra/"
+pkgdesc="2D and 3D Graph Calculator"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev qt5-qtdeclarative-dev analitza-dev ki18n-dev kcoreaddons-dev kconfigwidgets-dev kwidgetsaddons-dev kio-dev kdoctools-dev ncurses-dev readline-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kalgebra-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="5281066c5a860e9ad13210bec87e72d867d0f204c9923818a17dc973ba2655f214ae21bdc1bf9ac795a0de003229a0318f28863122c594c983d66456355bcb7f  kalgebra-20.04.0.tar.xz"

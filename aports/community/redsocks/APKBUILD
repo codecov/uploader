@@ -1,0 +1,28 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=redsocks
+pkgver=0.5
+pkgrel=2
+pkgdesc="Transparent redirector of any TCP connection to proxy using your firewall"
+options="!check" # Tests require docker
+url="https://darkk.net.ru/redsocks/"
+arch="all"
+license="Apache-2.0"
+makedepends="libevent-dev iptables-dev"
+subpackages="$pkgname-openrc"
+source="$pkgname-$pkgver.zip::https://github.com/darkk/redsocks/archive/release-$pkgver.zip
+	redsocks.initd"
+builddir="$srcdir"/$pkgname-release-$pkgver
+
+build() {
+	make
+}
+
+package() {
+	install -Dm755 redsocks "$pkgdir/usr/bin/redsocks"
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -Dm644 redsocks.conf.example "$pkgdir"/etc/$pkgname/redsocks.conf
+}
+
+sha512sums="3141679953a8011973c47dbef973462c38a84b26426d67cfb9178711e25c2aea0ef23c5788fdb4ab13c9a1df4b266267c63342dff9d6268599844ab54d8fd680  redsocks-0.5.zip
+e2da5e1c5025a46c1f64daec4017d34a700d9d269cc463ef9395989c73d9aeefad222409f6cdfba92742011c4ef4a9edef554706f3353dfd0f7bc526247551c5  redsocks.initd"

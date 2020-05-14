@@ -1,0 +1,184 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+# Contributor: Kiyoshi Aman <kiyoshi.aman@gmail.com>
+
+pkgname=python3
+# the python3-tkinter's pkgver needs to be synchronized with this.
+pkgver=3.8.2
+_bluez_ver=5.54
+_basever="${pkgver%.*}"
+pkgrel=7
+pkgdesc="A high-level scripting language"
+url="https://www.python.org/"
+arch="all"
+license="PSF-2.0"
+subpackages="$pkgname-dbg $pkgname-dev $pkgname-doc $pkgname-tests::noarch
+	$pkgname-wininst"
+makedepends="expat-dev openssl-dev zlib-dev ncurses-dev bzip2-dev xz-dev
+	sqlite-dev libffi-dev tcl-dev linux-headers gdbm-dev readline-dev
+	automake autoconf libtool !gettext-dev"
+source="https://www.python.org/ftp/python/$pkgver/Python-$pkgver.tar.xz
+	https://www.kernel.org/pub/linux/bluetooth/bluez-$_bluez_ver.tar.xz
+	fix-xattrs-glibc.patch
+	musl-find_library.patch
+	custom-bluetooth-h-path.patch
+	arm-alignment.patch
+	"
+builddir="$srcdir/Python-$pkgver"
+
+# secfixes:
+#   3.8.2-r0:
+#     - CVE-2020-8315
+#   3.7.5-r0:
+#     - CVE-2019-16056
+#     - CVE-2019-16935
+#   3.6.8-r1:
+#     - CVE-2019-5010
+
+prepare() {
+	default_prepare
+
+	# force system libs
+	rm -r Modules/expat \
+		Modules/_ctypes/darwin* \
+		Modules/_ctypes/libffi*
+
+	mv "$srcdir"/bluez-$_bluez_ver/lib "$srcdir"/bluez-$_bluez_ver/bluetooth
+
+	autoreconf -fi
+
+	sed "s|@bluetoothdir@|\"$srcdir/bluez-$_bluez_ver\"|g" -i setup.py
+}
+
+build() {
+	# -Os overwrites --enable-optimizations
+	export CFLAGS="${CFLAGS/-Os/} -fno-semantic-interposition"
+
+	# Include bluez headers. Python only needs bluetooth/bluetoot.h and doesn't
+	# link against bluez. Depending on bluez-dev introduces a circular dep:
+	# Python -> bluez -> glib -> meson -> python
+	./configure \
+		--prefix=/usr \
+		--disable-rpath \
+		--enable-ipv6 \
+		--enable-loadable-sqlite-extensions \
+		--enable-optimizations \
+		--enable-shared \
+		--with-lto \
+		--with-computed-gotos \
+		--with-dbmliborder=gdbm:ndbm \
+		--with-system-expat \
+		--with-system-ffi \
+		--with-threads \
+		--without-ensurepip \
+		--with-bluetoothdir="$srcdir/bluez-$_bluez_ver"
+
+	# set thread stack size to 1MB so we don't segfault before we hit
+	# sys.getrecursionlimit()
+	make EXTRA_CFLAGS="$CFLAGS -DTHREAD_STACK_SIZE=0x100000"
+}
+
+check() {
+	# test that we reach recursionlimit before we segfault
+	cat > test-stacksize.py <<-EOF
+	import threading
+	import sys
+
+	def fun(i):
+	  try:
+	    fun(i+1)
+	  except:
+	    sys.exit(0)
+
+	t = threading.Thread(target=fun, args=[1])
+	t.start()
+EOF
+	LD_LIBRARY_PATH=$PWD ./python test-stacksize.py
+
+	local fail
+
+	# musl related
+	fail="test__locale test_locale test_strptime test_re"	# various musl locale deficiencies
+	fail="$fail test_c_locale_coercion"
+	fail="$fail test_datetime"				# hangs if 'tzdata' installed
+	fail="$fail test_os"					# fpathconf, ttyname errno values
+	fail="$fail test_posix"					# sched_[gs]etscheduler not impl
+	fail="$fail test_shutil"				# lchmod, requires real unzip
+
+	# FIXME: failures needing investigation
+	fail="$fail test_faulthandler test_gdb"			# hangs(?)
+	fail="$fail test_tokenize test_tools"			# SLOW (~60s)
+	fail="$fail test_capi"					# test.test_capi.EmbeddingTests
+	fail="$fail test_threadsignals"				# test_{,r}lock_acquire_interruption
+	fail="$fail test_time"					# strftime/strptime %Z related
+	fail="$fail test_cmath test_math"			# hang(?) on x86
+	fail="$fail test_hash test_plistlib"			# fail on armhf
+	fail="$fail test_ctypes"				# fail on aarch64 (ctypes.test.test_win32.Structures)
+	fail="$fail test_cmd_line_script"			# fails on x86_64
+	fail="$fail test_multiprocessing_main_handling"		# fails on x86_64
+	fail="$fail test_runpy"					# fails on x86_64
+	fail="$fail test_threading"				# hangs on all arches (except x86_64?)
+
+	# kernel related
+	fail="$fail test_fcntl"					# wants DNOTIFY, we don't have it
+
+	# just a single subtest test_memoryview_struct_module is breaking on pc64le.
+	if [ "$CARCH" = "ppc64le" ]; then
+		fail="$fail test_buffer"			# fail on ppc64le
+	fi
+	case "$CARCH" in
+		mips64)			fail="$fail test_compileall" ;;	# FIXME: crashes on octeon3
+	esac
+
+	make quicktest TESTOPTS="-j${JOBS:-$(nproc)} --exclude $fail"
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" EXTRA_CFLAGS="$CFLAGS" install maninstall
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+	# those are provided by python3-tkinter
+	rm -r "$pkgdir"/usr/bin/idle* "$pkgdir"/usr/lib/python*/idlelib \
+		"$pkgdir"/usr/lib/python*/tkinter
+
+	# TODO(Leo): some stuff still wants /usr/bin/python to be python2
+	# which is a bummer because they are holding back progress but they
+	# are important enough that we need to do it
+	#
+	# Python3 is the canonical python for the moment
+	# ln -s /usr/bin/python3 "$pkgdir"/usr/bin/python
+}
+
+dev() {
+	default_dev
+
+	# pyconfig.h is needed runtime so we move it back
+	mkdir -p "$pkgdir"/usr/include/python$_basever
+	mv "$subpkgdir"/usr/include/python$_basever/pyconfig.h \
+		"$pkgdir"/usr/include/python$_basever/
+}
+
+tests() {
+	pkgdesc="The test modules from the main python package"
+
+	cd "$pkgdir"/usr/lib/python$_basever
+	local i; for i in */test */tests; do
+		mkdir -p "$subpkgdir"/usr/lib/python$_basever/"$i"
+		mv "$i"/* "$subpkgdir"/usr/lib/python$_basever/"$i"
+		rm -rf "$i"
+	done
+	mv "$pkgdir"/usr/lib/python$_basever/test \
+		"$subpkgdir"/usr/lib/python$_basever/
+}
+
+wininst() {
+	pkgdesc="Python wininst files"
+	mkdir -p "$subpkgdir"/usr/lib/python$_basever/distutils/command
+	mv "$pkgdir"/usr/lib/python$_basever/distutils/command/*.exe \
+		"$subpkgdir"/usr/lib/python$_basever/distutils/command
+}
+
+sha512sums="ca37ad0e7c5845f5f228566aa8ff654a8f428c7d4a5aaabff29baebb0ca3219b31ba8bb2607f89e37cf3fc564f023b8407e53a4f2c47bd99122c1cc222613e37  Python-3.8.2.tar.xz
+e19d15d3a478a7af47c1921c8827843492e38787b1182152155bd3d8ad9e1d8ee25c5fda1f24e38c54ebbf946b09fe75007dca9a24d1c35f73303558e558dcbe  bluez-5.54.tar.xz
+37b6ee5d0d5de43799316aa111423ba5a666c17dc7f81b04c330f59c1d1565540eac4c585abe2199bbed52ebe7426001edb1c53bd0a17486a2a8e052d0f494ad  fix-xattrs-glibc.patch
+ab8eaa2858d5109049b1f9f553198d40e0ef8d78211ad6455f7b491af525bffb16738fed60fc84e960c4889568d25753b9e4a1494834fea48291b33f07000ec2  musl-find_library.patch
+d489b5d5f374e2b298954a2388771e500c6cf9b274012e06b3e71a34aa85c354369b3fa2a37c3121808075c1f1f340a9fa097996c149399e10b9424170211d90  custom-bluetooth-h-path.patch
+a84483246e413650a904c34c18f5e4f4168c39067d069f48557c330de6eb3db19fd96a4d453d742db3dcb7c7f962722903f62823c752ff90510c89830435ffc0  arm-alignment.patch"

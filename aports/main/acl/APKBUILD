@@ -1,0 +1,40 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=acl
+pkgver=2.2.53
+pkgrel=0
+pkgdesc="Access control list utilities"
+url="https://savannah.nongnu.org/projects/acl"
+arch="all"
+license="LGPL-2.1-or-later AND GPL-2.0-or-later"
+makedepends_host="attr-dev"
+makedepends="$makedepends_host"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc libacl"
+# depends on order of nftw, and requires test machine to have ACLs enabled on FS
+options="!check"
+source="https://download.savannah.nongnu.org/releases/acl/acl-$pkgver.tar.gz"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--libdir=/lib \
+		--libexecdir=/usr/libexec
+	make
+}
+
+package() {
+	cd "$builddir"
+	DESTDIR="$pkgdir" make install
+}
+
+libacl() {
+	pkgdesc="Dynamic library for access control list support"
+	mkdir -p "$subpkgdir"/lib
+	mv "$pkgdir"/lib/libacl.so.* "$subpkgdir"/lib/
+}
+
+sha512sums="176b7957fe0e7618e0b7bf2ac5071f7fa29417df718cce977661a576fa184e4af9d303b591c9d556b6ba8923e799457343afa401f5a9f7ecd9022185a4e06716  acl-2.2.53.tar.gz"

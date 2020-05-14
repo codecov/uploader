@@ -1,0 +1,219 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=uwsgi
+pkgver=2.0.18
+pkgrel=8
+pkgdesc="uWSGI application container server"
+url="http://projects.unbit.it/uwsgi/"
+arch="all"
+license="custom" # GPL-2.0-only + linking exception
+depends="mailcap"
+install="$pkgname.pre-install $pkgname.post-upgrade"
+pkgusers="uwsgi"
+pkggroups="uwsgi"
+makedepends="
+	attr-dev
+	curl-dev
+	geoip-dev
+	jansson-dev
+	libcap-dev
+	libucontext-dev
+	linux-headers
+	linux-pam-dev
+	libxml2-dev
+	libxslt-dev
+	lua5.3-dev
+	paxmark
+	pcre-dev
+	postgresql-dev
+	python3-dev
+	zeromq-dev
+	zlib-dev
+	"
+source="http://projects.unbit.it/downloads/uwsgi-$pkgver.tar.gz
+	uwsgi.initd
+	uwsgi.ini
+	readme.emperor
+	alpine.buildconf
+	musl-fix-python.patch
+	musl-ucontext.patch
+	close-fd.patch
+	"
+options="!check"
+
+# secfixes:
+#   2.0.16-r0:
+#     - CVE-2018-6758
+
+# You may specify a custom name for so lib and subpackage after a colon.
+_plugins="
+	alarm_curl
+	cache
+	carbon
+	cgi
+	cheaper_backlog2
+	cheaper_busyness
+	corerouter
+	curl_cron
+	dumbloop
+	dummy
+	echo
+	emperor_amqp
+	emperor_pg
+	emperor_zeromq
+	fastrouter
+	forkptyrouter
+	geoip
+	gevent:gevent3
+	graylog2
+	http
+	legion_cache_fetch
+	logcrypto
+	logfile
+	logpipe
+	logsocket
+	logzmq
+	lua
+	msgpack
+	nagios
+	notfound
+	pam
+	ping
+	pty
+	python:python3
+	rawrouter
+	redislog
+	router_basicauth
+	router_cache
+	router_expires
+	router_hash
+	router_http
+	router_memcached
+	router_metrics
+	router_radius
+	router_redirect
+	router_redis
+	router_rewrite
+	router_static
+	router_uwsgi
+	rpc
+	rrdtool
+	rsyslog
+	signal
+	spooler
+	sslrouter
+	stats_pusher_file
+	stats_pusher_socket
+	stats_pusher_statsd
+	symcall
+	syslog
+	transformation_chunked
+	transformation_gzip
+	transformation_offload
+	transformation_template
+	transformation_tofile
+	tuntap
+	ugreen
+	webdav
+	xslt
+	zabbix
+	zergpool
+	"
+
+for _p in $_plugins; do
+	subpackages="$subpackages uwsgi-${_p#*:}:_plugin"
+done
+
+
+prepare() {
+	default_prepare
+	cp "$srcdir"/alpine.buildconf buildconf/alpine.ini
+}
+
+build() {
+	cd "$builddir"
+
+	msg "Building core"
+	# ccache seems to trigger some weird bug on musl
+	CC="gcc" python3 uwsgiconfig.py --build alpine
+
+	export UWSGICONFIG_LUAPC="lua5.3"
+
+	local item; for item in $_plugins; do
+		_build_plugin "${item%:*}" "${item#*:}"
+	done
+}
+
+_build_plugin() {
+	local plugin="$1"
+	local myname="$2"
+
+	msg "Building $plugin plugin ($myname)"
+	python3 uwsgiconfig.py --plugin plugins/$plugin alpine $myname
+}
+
+package() {
+	cd "$builddir"
+
+	install -m 755 -D uwsgi "$pkgdir"/usr/sbin/uwsgi
+	install -m 644 -D "$srcdir"/readme.emperor "$pkgdir"/etc/uwsgi/conf.d/readme.emperor
+	install -m 644 -D "$srcdir"/uwsgi.ini "$pkgdir"/etc/uwsgi/uwsgi.ini
+	install -m 755 -D "$srcdir"/uwsgi.initd "$pkgdir"/etc/init.d/uwsgi
+
+	install -m 775 -d -o root -g uwsgi "$pkgdir"/var/log/uwsgi
+	install -D LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+
+	# Disable emutramp/mprotect, this is needed for luajit and cffi.
+	paxmark -em "$pkgdir"/usr/sbin/uwsgi
+}
+
+_plugin() {
+	local name="${subpkgname#$pkgname-}"
+	pkgdesc="uWSGI plugin $name"
+	depends="uwsgi"
+
+	cd "$builddir"
+
+	local requires=$(sed '$a print(" ".join(REQUIRES))' \
+		plugins/$name/uwsgiplugin.py 2>/dev/null | python3 2>/dev/null)
+
+	local req; for req in $requires; do
+		if echo "$_plugins" | grep -qw "$req"; then
+			depends="$depends $pkgname-$req"
+		else
+			error "There's no subpackage for requirement $req!"
+			return 1
+		fi
+	done
+
+	install -m 755 -D ${name}_plugin.so \
+		"$subpkgdir"/usr/lib/uwsgi/${name}_plugin.so
+
+	case "$name" in
+		# Mitigate breakages caused by injudicious rename in v3.11.
+		python3)
+			pkgdesc="uWSGI plugin for Python 3"
+			provides="uwsgi-python=$pkgver-r$pkgrel"
+			replaces="uwsgi-python"
+			ln -s python3_plugin.so "$subpkgdir"/usr/lib/uwsgi/python_plugin.so
+		;;
+		# Mitigate breakages caused by injudicious rename in v3.11.
+		gevent3)
+			pkgdesc="uWSGI plugin for gevent (Python 3)"
+			provides="uwsgi-gevent=$pkgver-r$pkgrel"
+			replaces="uwsgi-gevent"
+			ln -s gevent3_plugin.so "$subpkgdir"/usr/lib/uwsgi/gevent_plugin.so
+		;;
+	esac
+}
+
+sha512sums="6561703279bcc4a81311d033810ac066d0f113bab13b0942f3eef86cac29c584a6641b52476840d6895151aee5ed064ae2d03b18932cf7f47e62f4eeed76da61  uwsgi-2.0.18.tar.gz
+1fef8a30e8e20b0322cf464a2adf744a4b46a35f4c9e104acacab4c99b913c5a0b537783bdfedf8900a4e7397e08079b675be2414beb571fd0b330985ac676cc  uwsgi.initd
+370202e143d0e041a2e36905346080d3ca592c9a74705a8c4e142a1307d22b921c10e673d683ca284ea27d184474ed86edd7723a6e590d35a562ad7cf6afa529  uwsgi.ini
+2798c9d2e49e29292ffe6a5a29b866301c78d5f322fc5d07dfa9569efdaa5220237a5f6744652fbdd957be29311ddaff190541333f042cbf0e907dfa98ce3e2a  readme.emperor
+f3cff00926929a5bb40afafb65fd5228582af35fbf524562282020c4c4ae9c659231b2381f4b3cceb18e8f3f6c888c21bdd8ed4ddcd81e92fbc6a0891800ce38  alpine.buildconf
+de68b16b44e554a79c073c9befa10566796316dbf4c375b4d6b633d80b0282694cca233f0a70f3d6570584324f14276826bbeb8f38b550c00087a05f9ba9227f  musl-fix-python.patch
+d4b93e51619af5f8839cdc7279c69462947910df03104cfe6180d606403940fc60ad5dac66425ce8acbab67cc0c4f3e13126da0a329720cb03c67d447cd94ad9  musl-ucontext.patch
+be5859c38101f34630fbe0cce4213565fc4d8dd6c63dcc47fd44fa36c001b437677795db9abb470bcd522861c4936d49c43422846e0a8fff8730eac4ce8d75d3  close-fd.patch"

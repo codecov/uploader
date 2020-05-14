@@ -1,0 +1,31 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=json-c
+pkgver=0.14
+pkgrel=0
+pkgdesc="A JSON implementation in C"
+url="https://github.com/json-c/json-c/wiki"
+arch="all"
+license="MIT"
+makedepends="cmake"
+subpackages="$pkgname-dev"
+source="https://s3.amazonaws.com/json-c_releases/releases/json-c-$pkgver.tar.gz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		$CMAKE_CROSSOPTS .
+	make -C build
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="75537c61d0632a01f94d2394d7a4387ef1eca0b68aa56c495d3d96dd29b38ed20eb0cc3f6e5e24dc6660c8939669f8954005d9c3ba20437f3fcc9f9dd896b00d  json-c-0.14.tar.gz"

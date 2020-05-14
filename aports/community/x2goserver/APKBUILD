@@ -1,0 +1,47 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Contributor: Jeff Bilyk <jbilyk@gmail.com>
+# Contributor: Jean-Charles de Longueville <jch@hellea.eu>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=x2goserver
+pkgver=4.1.0.3
+pkgrel=3
+pkgdesc="X2Go enables you to access a graphical desktop of a computer over a low bandwidth (or high bandwidth) connection"
+options="!check" # No option to run testsuite in make
+url="https://wiki.x2go.org/doku.php"
+arch="all !mips !mips64"
+license="GPL-2.0-or-later"
+options="suid"
+depends="perl perl-config-simple perl-dbi perl-file-readbackwards
+	perl-capture-tiny perl-dbd-sqlite bash iproute2 makepasswd
+	openssh lsof xauth perl-file-basedir mcookie nx-libs perl-file-which"
+makedepends="libssh2-dev mandoc"
+install="$pkgname.pre-install $pkgname.post-install"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="http://code.x2go.org/releases/source/x2goserver/x2goserver-$pkgver.tar.gz
+	$pkgname.initd
+	xsession-alpine-support.patch"
+pkgusers="x2gouser"
+pkggroups="x2gouser"
+
+prepare() {
+	default_prepare
+	local dir
+	for dir in x2goserver*; do
+		if [ -d $dir ]; then
+			sed -i -e "s/^build-indep:.*/build-indep: /g" $dir/Makefile
+		fi
+	done
+}
+
+build() {
+	make PREFIX=/usr
+}
+
+package() {
+	make DESTDIR="$pkgdir" PREFIX=/usr install
+	install -Dm 755 "$srcdir/$pkgname.initd" "$pkgdir/etc/init.d/$pkgname"
+}
+
+sha512sums="9d7257dd454bfedca9e3ef1b07bc38b540cb833fae4535f2225a1f0bfea93c0f04c638d411b57c50e7170106a5ae1d7f41c19f043832129a7a9460dcfd34c56a  x2goserver-4.1.0.3.tar.gz
+1784894c3f04abbb626bf8178dc6c8383a0d2883eb168cb805e707581d547584ac8eb767155153ee7d50d2192b757fa8c71e40fa9393c8df39e3cda94e05b7b4  x2goserver.initd
+5235028e1e2e164a9c94e5bc925661108614bdafa7c430892f1797267112eeb83984ca340211629a10ac4817b0462ce89a3b2d48b8dfc068b5cd7b4d60ddd618  xsession-alpine-support.patch"

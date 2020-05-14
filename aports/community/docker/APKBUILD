@@ -1,0 +1,200 @@
+# Contributor: Eivind Uggedal <eu@eju.no>
+# Contributor: Jake Buchholz <tomalok@gmail.com>
+# Maintainer: Jake Buchholz <tomalok@gmail.com>
+pkgname=docker
+pkgver=19.03.8
+_gitcommit=afacb8b7f0d8d4f9d2a8e8736e9c993e672b41f3	# https://github.com/docker/docker-ce/commits/v$pkgver
+pkgrel=1
+pkgdesc="Pack, ship and run any application as a lightweight container"
+url="https://www.docker.io/"
+arch="all !mips !mips64" # blocked by containerd
+license="Apache-2.0"
+depends="docker-engine docker-cli"
+makedepends="go go-md2man btrfs-progs-dev bash linux-headers coreutils lvm2-dev libtool
+	libseccomp-dev"
+install="$pkgname.pre-install"
+
+# from components/engine/vendor.conf:
+#    grep libnetwork components/engine/vendor.conf
+#    grep cobra components/engine/vendor.conf
+_libnetwork_ver=9fd385be8302dbe1071a3ce124891893ff27f90f
+_cobra_ver="0.0.3"
+
+# secfixes:
+#   19.03.1-r0:
+#     - CVE-2019-14271
+#   18.09.8-r0:
+#     - CVE-2019-13509
+#   18.09.7-r0:
+#     - CVE-2018-15664
+
+subpackages="
+	$pkgname-engine:engine
+	$pkgname-openrc:engine_openrc:noarch
+	$pkgname-cli:cli
+	$pkgname-doc:cli_doc:noarch
+	$pkgname-bash-completion:cli_bashcomp:noarch
+	$pkgname-fish-completion:cli_fishcomp:noarch
+	$pkgname-zsh-completion:cli_zshcomp:noarch
+	$pkgname-vim:cli_vim:noarch
+	"
+
+source="
+	docker-$pkgver.tar.gz::https://github.com/docker/docker-ce/archive/v$pkgver.tar.gz
+	libnetwork-$_libnetwork_ver.tar.gz::https://github.com/docker/libnetwork/archive/$_libnetwork_ver.tar.gz
+	cobra-$_cobra_ver.tar.gz::https://github.com/spf13/cobra/archive/v$_cobra_ver.tar.gz
+	docker.initd
+	docker.confd
+	"
+
+builddir="$srcdir"/docker-ce-$pkgver
+_cli_builddir="$builddir"/components/cli
+_daemon_builddir="$builddir"/components/engine
+_buildtags="seccomp"
+
+_libnetwork_builddir="$srcdir"/libnetwork-$_libnetwork_ver
+
+build() {
+	export AUTO_GOPATH=1
+	export GITCOMMIT=$_gitcommit		# for cli
+	export DOCKER_GITCOMMIT=$_gitcommit	# for engine
+	export DOCKER_BUILDTAGS=$_buildtags
+	unset CC # prevent possible ccache issues
+
+	# libnetwork (docker-proxy)
+	msg "building docker-proxy"
+	cd "$_libnetwork_builddir"
+	mkdir -p src/github.com/docker/
+	ln -s "$_libnetwork_builddir" src/github.com/docker/libnetwork
+	GOPATH="$PWD" go build -v -ldflags="-linkmode=external" -o docker-proxy github.com/docker/libnetwork/cmd/proxy
+
+	# daemon
+	msg "building daemon"
+	cd "$_daemon_builddir"
+	mkdir -p src/github.com/docker/
+	ln -s "$_daemon_builddir" src/github.com/docker/docker
+	GOPATH="$PWD" VERSION="$pkgver" hack/make.sh dynbinary
+
+	# Required for building man-pages
+	export GOPATH="$_cli_builddir"
+	export GOBIN="$GOPATH/bin"
+	export PATH="$GOBIN:$PATH"
+
+	# cli
+	msg "building cli"
+	cd "$_cli_builddir"
+	mkdir -p "$GOPATH"/src/github.com/docker/
+	ln -s "$_cli_builddir" "$GOPATH"/src/github.com/docker/cli
+	LDFLAGS="" make VERSION="$pkgver" dynbinary
+
+	# docker man
+	msg "building docker man pages"
+	cd "$srcdir"
+	# cobra
+	mkdir -p "$GOPATH"/src/github.com/spf13/
+	ln -sf "$PWD"/cobra-$_cobra_ver "$GOPATH"/src/github.com/spf13/cobra
+
+	# convert md to man pages
+	msg "generating man pages"
+	cd "$_cli_builddir"
+	# make manpages (from cli/Makefile, but using installed go-md2man)
+	mkdir -p ./man/man1
+	# Generate man pages from cobra commands
+	go build -o /tmp/gen-manpages github.com/docker/cli/man
+	/tmp/gen-manpages --root "$(pwd)" --target "$(pwd)/man/man1"
+	# generate legacy manpages from markdown
+	./man/md2man-all.sh -q
+}
+
+# docker itself is a meta package
+package() {
+	mkdir -p "$pkgdir"
+}
+
+engine() {
+	pkgdesc="Docker Engine (dockerd)"
+	depends="ca-certificates containerd iptables tini-static"
+
+	install -Dm755 "$_daemon_builddir"/bundles/dynbinary-daemon/dockerd \
+		"$subpkgdir"/usr/bin/dockerd
+
+	install -Dm755 "$_libnetwork_builddir"/docker-proxy \
+		"$subpkgdir"/usr/bin/docker-proxy
+
+	# symlink externally provided tini-static binary
+	ln -s /sbin/tini-static "$subpkgdir"/usr/bin/docker-init
+}
+
+engine_openrc() {
+	pkgdesc="OpenRC init scripts for Docker"
+	depends=""
+	install_if="openrc $pkgname-engine=$pkgver-r$pkgrel"
+
+	install -Dm755 "$srcdir"/docker.initd "$subpkgdir"/etc/init.d/docker
+	install -Dm644 "$srcdir"/docker.confd "$subpkgdir"/etc/conf.d/docker
+}
+
+cli() {
+	pkgdesc="Docker CLI"
+	depends="ca-certificates"
+
+	# 'build/docker' is a symlink to 'docker-linux-$arch' e.g. 'docker-linux-amd64'
+	install -Dm755 "$_cli_builddir"/build/docker \
+		"$subpkgdir"/usr/bin/docker
+}
+
+cli_doc() {
+	pkgdesc="Documentation for Docker"
+	depends=""
+	install_if="docs $pkgname-cli=$pkgver-r$pkgrel"
+
+	mkdir -p "$subpkgdir"/usr/share/man/man1
+	gzip -9 "$_cli_builddir"/man/man1/*
+	install -Dm644 "$_cli_builddir"/man/man1/* \
+		"$subpkgdir"/usr/share/man/man1
+}
+
+cli_bashcomp() {
+	pkgdesc="Bash completion for Docker"
+	depends=""
+	install_if="bash-completion $pkgname-cli=$pkgver-r$pkgrel"
+
+	install -Dm644 "$_cli_builddir"/contrib/completion/bash/$pkgname \
+		"$subpkgdir"/usr/share/bash-completion/completions/$pkgname
+}
+
+cli_fishcomp() {
+	pkgdesc="Fish shell completion for Docker"
+	depends=""
+	install_if="fish<3 $pkgname-cli=$pkgver-r$pkgrel" # fish above version 3 has docker completion
+
+	install -Dm644 "$_cli_builddir"/contrib/completion/fish/$pkgname.fish \
+		"$subpkgdir"/usr/share/fish/completions/$pkgname.fish
+}
+
+cli_zshcomp() {
+	pkgdesc="Zsh completion for Docker"
+	depends=""
+	install_if="zsh $pkgname-cli=$pkgver-r$pkgrel"
+
+	install -Dm644 "$_cli_builddir"/contrib/completion/zsh/_$pkgname \
+		"$subpkgdir"/usr/share/zsh/site-functions/_$pkgname
+}
+
+cli_vim() {
+	pkgdesc="Vim syntax for Docker"
+	depends=""
+	install_if="vim $pkgname-cli=$pkgver-r$pkgrel"
+
+	local f=
+	for f in ftdetect/dockerfile.vim syntax/dockerfile.vim; do
+		install -Dm644 "$_daemon_builddir"/contrib/syntax/vim/$f \
+			"$subpkgdir"/usr/share/vim/vimfiles/$f
+	done
+}
+
+sha512sums="2e2266d4cc832c2c2afb7c0fba92ffd39b92cce988c9bedd40430eb87fa97c32dcf97d8e4c651ceda7c292c904f83c49a12e39861a9a69c9c9e6d54770f95d02  docker-19.03.8.tar.gz
+699d1250ef79b451fb2ab5cbb245a603596c09c440dc916c71fb5078c66457c92cfd3d8691d3ecd81601a2a25f0694e5548f13fd25842aad2a21ca6c71c435d0  libnetwork-9fd385be8302dbe1071a3ce124891893ff27f90f.tar.gz
+c38db9432a168f913b41a1e1b11d84bedfade82ff70791be9d343a6cc86b8a05b18bae344d67ebd8bae4c98662db7ac664a9dc86fa9b9ad4aa5c96cbf0178efb  cobra-0.0.3.tar.gz
+db771b9142a7cb0c3e84cc5e2dfd10c4fb11422e6b488d3518eab5f631d39471c0c2b6c64714daf48869e0e3ad8052c69edc5bbfe065611b68d304198fff61a5  docker.initd
+f25523f43376ccef71a49618e556e0a16db3acad29eb09fe86c4e572562bdea0bc1eabab00159278835ad9d7c007f2cd10b2ed31f7213b0d9074582dc80a976f  docker.confd"

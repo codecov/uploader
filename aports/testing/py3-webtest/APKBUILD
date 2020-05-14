@@ -1,0 +1,29 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-webtest
+_pkgname=WebTest
+pkgver=2.0.34
+pkgrel=0
+pkgdesc="A Helper to test WSGI applications"
+options="!check" # Requires unpackaged dependencies
+url="http://webtest.pythonpaste.org/"
+arch="noarch"
+license="MIT"
+depends="python3"
+makedepends="py3-setuptools py3-waitress py3-six py3-beautifulsoup4 py3-webob"
+source="https://pypi.io/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+
+replaces="py-webtest" # Backwards compat
+provides="py-webtest=$pkgver-r$pkgrel" # Backwards compat
+
+builddir="$srcdir"/$_pkgname-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="12f0d3e891d436f011f4a3a2e8e64363d87713d2a410b9220271e5f0c0b918b5cd87dc4359d1164cb67e02ad318eabfae282b4eaacb4804afbf475abebc6fd95  WebTest-2.0.34.tar.gz"

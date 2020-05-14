@@ -1,0 +1,37 @@
+# Contributor: Curt Tilmes <Curt.Tilmes@nasa.gov>
+# Maintainer: Curt Tilmes <Curt.Tilmes@nasa.gov>
+pkgname=zef
+pkgver=0.8.4
+pkgrel=0
+pkgdesc="Raku / Perl6 Module Management"
+url="https://github.com/ugexe/zef"
+arch="all !x86 !armhf !armv7 !s390x !mips !mips64" # limited by rakudo
+options="!archcheck" # Precompiled arch dependent files included (quiet noarch warning)
+license="Artistic-2.0"
+depends="rakudo git wget curl tar unzip perl perl-utils"
+makedepends="rakudo-dev"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ugexe/zef/archive/v$pkgver.tar.gz"
+
+check() {
+	prove -e 'raku -Ilib'
+}
+
+package() {
+	RAKUDO_RERESOLVE_DEPENDENCIES=0 /usr/share/perl6/bin/install-dist.p6 \
+		--to="$pkgdir/usr/share/perl6/vendor" --for=vendor
+	rm "$pkgdir"/usr/share/perl6/vendor/bin/zef-j \
+		"$pkgdir"/usr/share/perl6/vendor/bin/zef-m
+	mkdir -p "$pkgdir"/usr/bin
+	ln -s /usr/share/perl6/vendor/bin/zef "$pkgdir"/usr/bin/zef
+}
+
+doc() {
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr/share/doc/"$pkgname"
+	for file in LICENSE META6.json README.pod; do
+		cp $file "$subpkgdir"/usr/share/doc/"$pkgname"
+	done
+}
+
+sha512sums="02542ab26c63213bfa4cc06d9643201ad0ea5f1148a4ab4bd366f2273ba00f598753bf56d64f2296e1438f53122ed4b0142695eead6180025301aeb01bda5c78  zef-0.8.4.tar.gz"

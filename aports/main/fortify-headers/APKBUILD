@@ -1,0 +1,25 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=fortify-headers
+pkgver=1.1
+pkgrel=0
+pkgdesc="standalone fortify source implementation"
+url="http://git.2f30.org/fortify-headers/"
+arch="noarch"
+options="!check"  # No test suite.
+license="BSD-0"
+source="http://dl.2f30.org/releases/$pkgname-$pkgver.tar.gz
+	"
+
+builddir="$srcdir"/$pkgname-$pkgver
+
+build() {
+	cd "$builddir"
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" PREFIX=/usr install
+}
+
+sha512sums="a39d6e7c002bf91085f712aa46bc3f53ff934cc963694a229fa82d84ff4a7556105212a84a231ab5367c01c6a1e385172173f1f4a34d5eb4d2d9c58472c23dd0  fortify-headers-1.1.tar.gz"

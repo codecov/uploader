@@ -1,0 +1,30 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=xorgxrdp
+pkgver=0.2.13
+pkgrel=0
+pkgdesc="Xorg drivers for xrdp"
+options="!check" # Testsuite is non-functional
+url="https://github.com/neutrinolabs/xorgxrdp"
+arch="all !x86"
+license="X11"
+makedepends="xorg-server-dev xrdp-dev nasm libpciaccess-dev"
+subpackages="$pkgname-dev"
+source="https://github.com/neutrinolabs/xorgxrdp/releases/download/v$pkgver/xorgxrdp-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="1f0f6982917b4cd18660ab950a0f04ba962643a71fc2a7d7caeb3c30a6cd37ecb6e757efce3571c6c12f928eddb4e3311080a65f9074c7719980d3d7a6201185  xorgxrdp-0.2.13.tar.gz"

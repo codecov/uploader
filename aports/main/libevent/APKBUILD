@@ -1,0 +1,62 @@
+# Contributor: Sergei Lukin <sergej.lukin@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libevent
+pkgver=2.1.11
+_pkgver=$pkgver-stable
+pkgrel=1
+pkgdesc="An event notification library"
+url="http://libevent.org/"
+arch="all"
+license="BSD-3-Clause"
+options="!check" # regression tests failed
+depends_dev="python3"
+makedepends="$depends_dev openssl-dev"
+subpackages="$pkgname-static $pkgname-dev"
+source="https://github.com/libevent/libevent/releases/download/release-$_pkgver/libevent-$_pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$_pkgver"
+
+# secfixes:
+#   2.1.8-r0:
+#     - CVE-2016-10195
+#     - CVE-2016-10196
+#     - CVE-2016-10197
+
+prepare() {
+	default_prepare
+
+	sed -i '1s|^#!/usr/bin/env python$|#!/usr/bin/python3|' event_rpcgen.py
+	# help provides tracing work out correctly
+	sed -i -e "s/@VERSION@/$pkgver-r$pkgrel/" *.pc.in
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc
+	make
+}
+
+check() {
+	make -j1 check
+}
+
+package() {
+	make -j1 DESTDIR=$pkgdir install
+}
+
+dev() {
+	replaces="libevent"
+	default_dev
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}
+
+static() {
+	depends=""
+	pkgdesc="$pkgdesc (static libraries)"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*.a "$subpkgdir"/usr/lib
+}
+
+sha512sums="9d0517b117f128f4f196b19a810524814bab75fa967d533063aaa619d3cf2dca97b443edd5805b764da2993d8e37caa536dce39f68ffcc2a88d32a89204c2de3  libevent-2.1.11-stable.tar.gz"

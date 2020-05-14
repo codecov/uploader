@@ -1,0 +1,69 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=cmake
+pkgver=3.17.2
+pkgrel=0
+pkgdesc="Cross-platform, open-source make system"
+url="https://www.cmake.org/"
+arch="all"
+license="BSD-3-Clause"
+makedepends="bzip2-dev curl-dev expat-dev libarchive-dev linux-headers
+	libuv-dev ncurses-dev rhash-dev xz-dev zlib-dev"
+options="!check"
+checkdepends="file musl-utils"
+subpackages="$pkgname-doc $pkgname-bash-completion:bashcomp:noarch
+	"
+case $pkgver in
+*.*.*.*) _v=v${pkgver%.*.*};;
+*.*.*) _v=v${pkgver%.*};;
+esac
+
+source="https://www.cmake.org/files/$_v/cmake-$pkgver.tar.gz
+	"
+
+_parallel_opt() {
+	local i n
+	for i in $MAKEOPTS; do
+		case "$i" in
+			-j*) n=${i#-j};;
+		esac;
+	done
+	[ -n "$n" ] && echo "--parallel $n"
+}
+
+build() {
+	# jsoncpp needs cmake to build so to avoid recursive build
+	# dependency, we use the bundled version of jsoncpp.
+	# Do NOT remove --no-system-jsoncpp unless you consulted
+	# maintainer
+	./bootstrap \
+		--prefix=/usr \
+		--mandir=/share/man \
+		--datadir=/share/$pkgname \
+		--docdir=/share/doc/$pkgname \
+		--system-libs \
+		--no-system-jsoncpp \
+		$(_parallel_opt)
+	make
+}
+
+check() {
+	CTEST_OUTPUT_ON_FAILURE=TRUE bin/ctest
+}
+
+package() {
+	cd $startdir/src/$pkgname-$pkgver
+	make DESTDIR="$pkgdir" install
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion
+	mv "$pkgdir"/usr/share/cmake/completions \
+		"$subpkgdir"/usr/share/bash-completion/
+}
+
+sha512sums="4998ec3ac7367cec237187b1568a1935b402c39959c1869c9ae94e013060f6d2e03089eba34187f91063de169df78425dee2aa01acb925347aeb97f99bcad6a2  cmake-3.17.2.tar.gz"

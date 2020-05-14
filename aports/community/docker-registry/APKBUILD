@@ -1,0 +1,63 @@
+# Maintainer: Christian Kampka <christian@kampka.net>
+
+pkgname=docker-registry
+pkgver=2.7.1
+pkgrel=2
+pkgdesc="An implementation of the Docker Registry HTTP API V2 for use with docker 1.6+"
+url="https://github.com/docker/distribution"
+arch="all !s390x !mips !mips64"
+license="Apache-2.0"
+makedepends="git go"
+install="$pkgname.pre-install"
+pkgusers="docker-registry"
+pkggroups="docker-registry"
+subpackages="$pkgname-dbg $pkgname-openrc"
+source="$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz
+	docker-registry.initd
+	config-example.patch"
+builddir="$srcdir/src/github.com/docker/distribution"
+
+prepare() {
+	mkdir -p "${builddir%/*}"
+	mv "$srcdir"/distribution-$pkgver "$builddir"
+
+	default_prepare
+}
+
+build() {
+	cd "$builddir"
+
+	make clean binaries \
+		DISTRIBUTION_DIR="$builddir" \
+		GOPATH="$srcdir" \
+		VERSION="$pkgver"
+}
+
+check() {
+	cd "$builddir"
+
+	./bin/registry --version
+}
+
+package() {
+	cd "$builddir"
+
+	install -D -m 755 bin/registry \
+		"$pkgdir"/usr/bin/$pkgname
+
+	install -D -m 644 cmd/registry/config-example.yml \
+		"$pkgdir"/etc/$pkgname/config.yml
+
+	install -D -m 644 LICENSE \
+		"$pkgdir"/usr/share/licenses/$pkgname
+
+	install -D -m 755 "$srcdir"/$pkgname.initd \
+		"$pkgdir"/etc/init.d/$pkgname
+
+	install -d -m 750 -o $pkgusers -g $pkggroups \
+		"$pkgdir"/var/lib/$pkgname
+}
+
+sha512sums="f6baf0e7aa96ebe828c628f7dfd84ee899331c3c1bdab86662aef595b092702b6d9b2c9be766a6de6d153ff4ca55d85c5fd8785a0968f285f56a32a50092c754  docker-registry-2.7.1.tar.gz
+96100a4de311afa19d293a3b8a63105e1fcdf49258aa8b1752befd389e6b4a2b1f70711341ea011b450d4468bd37dbd07a393ffab3b9aa1b2213cf0fdd915904  docker-registry.initd
+5a38f4d3f0ee5cd00c0a5ced744eb5b29b839da5921adea26c5de3eb88b6b2626a7ba29b1ab931e5f8fbfafbed8c94cb972a58737ec0c0a69cf515c32139e387  config-example.patch"

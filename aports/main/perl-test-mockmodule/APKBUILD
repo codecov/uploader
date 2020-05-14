@@ -1,0 +1,37 @@
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-test-mockmodule
+_pkgname=Test-MockModule
+pkgver=0.172.0
+pkgrel=0
+pkgdesc="Override subroutines in a module for unit testing"
+url="https://metacpan.org/release/Test-MockModule"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl"
+makedepends="perl-dev perl-module-build perl-test-warnings perl-super
+	perl-sub-identify"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/G/GF/GFRANKS/Test-MockModule-v$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-v$pkgver"
+
+prepare() {
+	default_prepare
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Build.PL installdirs=vendor prefix=/usr
+}
+
+build() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Build
+}
+
+check() {
+	PERL_MM_USE_DEFAULT=1 perl Build test
+}
+
+package() {
+	PERL_MM_USE_DEFAULT=1 perl Build install destdir="$pkgdir"
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="056c53bc36d2b63f5eb5572c40721f252e33bc008547e46f4af2ecece868b8e9bbf91daca0484cb9d01ae489fa81cb18fdcd3325208d1f409e5e52d6f09ee323  Test-MockModule-v0.172.0.tar.gz"

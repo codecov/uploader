@@ -1,0 +1,57 @@
+# Contributor: Ivan Tham <pickfire@riseup.net>
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=john
+pkgver=1.9.0
+_pkgrel=jumbo-1
+pkgrel=2
+pkgdesc="John the Ripper password cracker"
+url="https://www.openwall.com/john"
+arch="all !s390x !x86 !ppc64le"
+license="GPL-2.0-or-later"
+depends="nss"
+options="!strip !check"  # needs config files in /usr which are not there during build/check
+makedepends="libpcap-dev openssl-dev gmp-dev yasm-dev zlib-dev"
+subpackages="$pkgname-doc"
+
+source="https://www.openwall.com/john/k/john-$pkgver-$_pkgrel.tar.xz"
+builddir="$srcdir"/$pkgname-$pkgver-$_pkgrel
+
+build() {
+	cd "$builddir"/src
+	./configure --prefix=/usr
+	make
+}
+
+check() {
+	cd "$builddir"/run
+	./john --test
+}
+
+package() {
+	cd "$builddir/src"
+	make DESTDIR="$pkgdir" install
+	cd "$builddir"
+	mkdir -p "$pkgdir"/usr/bin
+	mkdir -p "$pkgdir"/usr/share/doc/$pkgname
+	mkdir -p "$pkgdir"/usr/share/$pkgname/rules
+
+	mv doc/extras "$pkgdir"/usr/share/doc/$pkgname
+	install -Dm644 doc/* "$pkgdir"/usr/share/doc/$pkgname
+	install -Dm644 run/rules/* "$pkgdir"/usr/share/$pkgname/rules
+	install -Dm644 run/*.conf "$pkgdir"/usr/share/$pkgname/
+	install -Dm644 run/*.chr "$pkgdir"/usr/share/$pkgname/
+	install -Dm644 doc/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+	rm "$pkgdir"/usr/share/doc/$pkgname/LICENSE*
+
+	find run -type f -executable | while read bin; do
+		install -Dm755 $bin "$pkgdir"/usr/bin
+	done
+
+	for link in unafs unique unshadow; do
+		ln -s john "$pkgdir"/usr/bin/$link
+	done
+	install -Dm644 run/password.lst "$pkgdir"/usr/share/john/password.lst
+}
+
+sha512sums="c5cb5dc739ee4c666f8479cdf10511fddc391b590c59f90c060d3ccd8449b794ac7b831a6d1f7553883892499e709a66578cfa4d62caef9b7e0a831eb827e808  john-1.9.0-jumbo-1.tar.xz"

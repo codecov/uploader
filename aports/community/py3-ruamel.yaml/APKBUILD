@@ -1,0 +1,39 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Keith Maxwell <keith.maxwell@gmail.com>
+pkgname=py3-ruamel.yaml
+_pyname=ruamel.yaml
+pkgver=0.16.10
+pkgrel=0
+pkgdesc="A YAML parser/emitter"
+options="!check" # tests are not included in the latest artifact on PyPI
+url="https://sourceforge.net/projects/ruamel-yaml/"
+arch="noarch"
+license="MIT"
+replaces="py-ruamel py3-ruamel"
+provides="py-ruamel=$pkgver-r$pkgrel py3-ruamel=$pkgver-r$pkgrel"
+depends="py3-ruamel.yaml.clib"
+makedepends="python3-dev py3-setuptools"
+checkdepends="py3-pytest py3-ruamel.std.pathlib"
+source="https://files.pythonhosted.org/packages/source/r/$_pyname/$_pyname-$pkgver.tar.gz"
+builddir="$srcdir/$_pyname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir" \
+		--single-version-externally-managed
+}
+
+check() {
+	PYTHONPATH="$PWD/build/lib" pytest-3 \
+		--deselect=_test/test_issues.py::TestIssues::test_issue_82 \
+		--deselect=_test/test_issues.py::TestIssues::test_issue_220 \
+		--deselect=_test/test_issues.py::TestIssues::test_issue_238 \
+		--deselect=_test/test_yamlobject.py::test_monster \
+		--deselect=_test/test_yamlobject.py::test_qualified_name00 \
+		_test/test_*.py
+}
+
+sha512sums="f124575a5054f993d5826d03aa7a9500a1084c5201be1517be36e587bfc60ea4d13b29dbdb3e62bfbd309fe9992590fd0a5028a43f0fd26a5a5cbc9f3dcf423b  ruamel.yaml-0.16.10.tar.gz"

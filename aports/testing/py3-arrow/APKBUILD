@@ -1,0 +1,35 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-arrow
+_pkgname=arrow
+pkgver=0.15.6
+pkgrel=0
+pkgdesc="Python3 library to create and manipulate dates, times, and timestamps"
+options="!check" # Requires unpackaged 'chai'
+url="https://arrow.readthedocs.io/"
+arch="noarch"
+license="Apache-2.0"
+depends="py3-dateutil"
+makedepends="py3-setuptools"
+checkdepends="py3-tz py3-simplejson py3-mock"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-arrow" # for backwards compatibility
+provides="py-arrow=$pkgver-r$pkgrel" # for backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	# Requires unpackaged 'dateparser' module
+	rm -f tests/factory_tests.py
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="c56316f8c535c6f14ccaab32e2559b45309170fd47e8728cdd8c0e2af9398264f90fbdd0ece82d14e3f959d24b186fac3e8bb52cf7a64fe0dcd4c247650c73b5  arrow-0.15.6.tar.gz"

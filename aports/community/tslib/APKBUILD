@@ -1,0 +1,31 @@
+# Contributor: Clayton Craft <clayton@craftyguy.net>
+# Maintainer: Clayton Craft <clayton@craftyguy.net>
+pkgname=tslib
+pkgver=1.21
+pkgrel=0
+pkgdesc="Touchscreen Access Library"
+arch="all"
+url="https://github.com/kergoth/tslib"
+license="LGPL-2.0-or-later"
+makedepends="autoconf automake libtool linux-headers"
+source="https://github.com/kergoth/tslib/releases/download/$pkgver/tslib-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc"
+
+prepare() {
+	default_prepare
+	./autogen.sh
+}
+
+build() {
+	./configure --prefix=/usr --sysconfdir=/etc
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="66c5e5dc4e2314277e19af29b5dce1181573579f13b0e79fa43e658838d4c19a77feb978b60d7c6458337e8d6100ee54a42fc4af3a99fd8d6840cccafa6323c4  tslib-1.21.tar.xz"

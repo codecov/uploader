@@ -1,0 +1,28 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=py3-i3ipc
+pkgver=2.2.1
+pkgrel=0
+pkgdesc="An improved Python library to control i3wm and sway"
+options="!check" # Requires unpackaged 'asyncio'
+url="https://github.com/altdesktop/i3ipc-python"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3 py3-xlib"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/altdesktop/i3ipc-python/archive/v$pkgver.tar.gz"
+builddir="$srcdir/i3ipc-python-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="edbcec3cd0da53815dba22d696a17ddf909c39db771cf234befaa3130f8b56003ccc70eb28a07b286ab31c2cbb9d5893caf42b01ed20d61efdcd6359afbecc18  py3-i3ipc-2.2.1.tar.gz"

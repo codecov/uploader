@@ -1,0 +1,104 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=dolphin-emu
+pkgver=5.0_git20200413
+pkgrel=0
+_commit="39f107f360b22e2b3e3757136c80629c44dbfb9f"
+ # Upstream doesn't actively support non 64-bit platforms and they're too slow
+ # to emulate any games anyway
+arch="x86_64 aarch64"
+url="https://dolphin-emu.org"
+pkgdesc="A Gamecube / Wii emulator"
+license="GPL-2.0-or-later"
+depends="mbedtls"
+makedepends="
+	cmake
+	ninja
+	mesa-dev
+	mesa-egl
+	ffmpeg-dev
+	libevdev-dev
+	eudev-dev
+	pugixml-dev
+	zlib-dev
+	lzo-dev
+	libpng-dev
+	sfml-dev
+	libusb-dev
+	miniupnpc-dev
+	mbedtls-dev
+	curl-dev
+	hidapi-dev
+	libx11-dev
+	qt5-qtbase-dev
+	libxi-dev
+	bluez-dev
+	pulseaudio-dev
+	vulkan-headers
+	libxrandr-dev
+	fmt-dev
+	enet-dev
+	"
+# The following dependencies are required, but atm not supported for using system wide libraries
+# minizip-dev xxhash-dev soundtouch-dev gtest-dev
+source="https://github.com/dolphin-emu/dolphin/archive/$_commit/dolphin-emu-$_commit.tar.gz"
+subpackages="$pkgname-doc $pkgname-lang"
+builddir="$srcdir/dolphin-$_commit"
+
+prepare() {
+	default_prepare
+
+	# Make sure we never use non-system libraries except the ones that are not
+	# supported being used system-wide by removing them from the Externals
+	# folder
+
+	KEEP_SOURCES="
+		Bochs_disasm
+		FreeSurround
+		cpp-optparse
+		glslang
+		imgui
+		xxhash
+		minizip
+		soundtouch
+		cubeb
+		gtest
+		picojson
+	"
+
+	# Move the libraries we want to keep out of the externals folder
+	for s in $KEEP_SOURCES; do
+		mv -v "Externals/$s" .
+	done
+
+	# Remove the rest
+	rm -r Externals/*
+
+	# Move them back
+	for s in $KEEP_SOURCES; do
+		mv -v "$s" "Externals/"
+	done
+}
+
+build() {
+	cmake -B build -G Ninja  \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DUSE_DISCORD_PRESENCE=OFF \
+		-DUSE_SHARED_ENET=ON \
+		-DDISTRIBUTOR="alpinelinux.org"
+	ninja -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+
+	install -Dm 644 Data/51-usb-device.rules -t "$pkgdir"/usr/lib/udev/rules.d/
+}
+
+sha512sums="a03c4d9a3f49115ccae764b9b8bf033b8b3257a141b4dbfbc345666b1beb7fc3f684b19811f28dd97a5f8bba4e317e71fbf09f033b84e39905fc4513fe7df62a  dolphin-emu-39f107f360b22e2b3e3757136c80629c44dbfb9f.tar.gz"

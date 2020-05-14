@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kcrash
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Support for application crash analysis and bug report from apps"
+arch="all !armhf"
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-or-later"
+depends_dev="kcoreaddons-dev kwindowsystem-dev"
+makedepends="$depends_dev extra-cmake-modules doxygen qt5-qttools-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kcrash-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="1d038c30f610311504564c2b41b558b27ea2c009c82f8f5ce1b1e468e386cdcfa3ce4571fee5b1d618c2ee79db58649ddb2ec747eb66a1ee2ad18ffc7ca3ff5e  kcrash-5.70.0.tar.xz"

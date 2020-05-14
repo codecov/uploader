@@ -1,0 +1,31 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=archivemount
+pkgver=0.9.1
+pkgrel=0
+pkgdesc="FUSE based filesystem for mounting compressed archives"
+options="!check" # No testsuite
+url="https://github.com/bramp/archivemount"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="fuse-dev libarchive-dev"
+subpackages="$pkgname-doc"
+source="https://www.cybernoia.de/software/archivemount/archivemount-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="ecfa8abc1dcae34c855f9a2943113ddd3eb1b81011f23ef6a8dddd344c1db44b132683a1181f17b5691a783df764523ee0d2b802202d93890dcbdb78bee53522  archivemount-0.9.1.tar.gz"

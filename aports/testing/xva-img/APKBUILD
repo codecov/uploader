@@ -1,0 +1,25 @@
+# Contributor:
+# Maintainer:
+pkgname=xva-img
+pkgver=1.4.1
+pkgrel=0
+pkgdesc="tool for converting XVA images"
+url="https://github.com/eriklax/xva-img"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="openssl-dev cmake"
+source="xva-img-$pkgver.tar.gz::https://github.com/eriklax/xva-img/archive/$pkgver.tar.gz"
+
+build() {
+	cmake -B build . \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DPREFIX=/usr
+	make -C build
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="4f296f4e6dd923de16894b20a691b64048aecba529785bd7b17918ea9ece0b12a8534c4ef293822beb2135a90eaa290025da8ca162807f5958527444d5349870  xva-img-1.4.1.tar.gz"

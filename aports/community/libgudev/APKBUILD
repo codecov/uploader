@@ -1,0 +1,34 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=libgudev
+pkgver=233
+pkgrel=1
+pkgdesc="GObject-based wrapper library for libudev"
+url="https://wiki.gnome.org/Projects/libgudev"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="glib-dev gobject-introspection-dev eudev-dev"
+subpackages="$pkgname-dev $pkgname-dbg"
+source="https://download.gnome.org/sources/libgudev/$pkgver/libgudev-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-umockdev
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="0e7beb35478bba2aed3cf8e750f524c562038b04fd59e4dd31618b0ae7cbd29545e5909c422325e4be84dcab9177a5256bf0f3ce7df7b6c07e4866cbb8ce570b  libgudev-233.tar.xz"

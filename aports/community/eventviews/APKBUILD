@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=eventviews
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Library for creating events"
+# ppc64le, s390x and armhf blocked by akonadi-calendar -> kmailtransport -> libkgapi -> qt5-qtwebengine
+arch="all !ppc64le !s390x !armhf !mips !mips64"
+url="https://kontact.kde.org/"
+license="GPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev qt5-qttools-static akonadi-dev ki18n-dev kcodecs-dev kguiaddons-dev
+	kiconthemes-dev kservice-dev kcompletion-dev kholidays-dev kdiagram-dev
+	libkdepim-dev kcalutils-dev kcalendarcore-dev calendarsupport-dev
+	akonadi-calendar-dev kmime-dev"
+makedepends="$depends_dev extra-cmake-modules"
+source="https://download.kde.org/stable/release-service/$pkgver/src/eventviews-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="5c9203213b4abace14e39ad586fc9129844f385a9927d87e561efb39756f5296022672948543394cdc2bf67a68640b62cfb5b01e9a3fb8d76887f575457d4920  eventviews-20.04.0.tar.xz"

@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=networkmanager-qt
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Qt wrapper for NetworkManager API"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-only OR LGPL-3.0-only"
+depends="networkmanager"
+depends_dev="networkmanager-dev"
+makedepends="$depends_dev extra-cmake-modules doxygen qt5-qttools-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/networkmanager-qt-$pkgver.tar.xz"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	# The excluded tests currently fail
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest -E '(manager|settings|activeconnection)test'
+}
+
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="e4cf7916b042b35d1e895a46973925659c2f8827c71cdc26c4e4a3b1a3ca2a2307cbca19e79b675e7ae41483618bfcaa93b635933bbc7e4ad7fa353077db01d6  networkmanager-qt-5.70.0.tar.xz"

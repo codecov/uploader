@@ -1,0 +1,70 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Contributor: Kiyoshi Aman <kiyoshi.aman+adelie@gmail.com>
+# Maintainer: Kiyoshi Aman <kiyoshi.aman+adelie@gmail.com>
+pkgname=nheko
+pkgver=0.7.1
+pkgrel=1
+pkgdesc="Qt5-based client for Matrix protocol"
+url="https://github.com/Nheko-Reborn/nheko/releases"
+arch="all !armhf" # Limited by qt5-qtmultimedia
+license="GPL-3.0-or-later"
+options="!check" # no test suite
+depends="qt5-qtquickcontrols2 qt5-qtmultimedia"
+makedepends="
+	cmake
+	ninja
+	boost-dev
+	lmdb-dev
+	lmdbxx
+	tweeny
+	qt5-qtbase-dev
+	qt5-qttools-dev
+	qt5-qtmultimedia-dev
+	qt5-qtsvg-dev
+	qt5-qtdeclarative-dev
+	qt5-qtquickcontrols2-dev
+	zlib-dev
+	openssl-dev
+	olm-dev
+	nlohmann-json
+	cmark-dev
+	spdlog-dev
+	mtxclient-dev
+	libsodium-dev
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/Nheko-Reborn/nheko/archive/v$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	sed -e '/-Wall/d' \
+		-e '/-Wextra/d' \
+		-e '/-Werror/d' \
+		-e '/-pedantic/d' \
+		-e '/-pipe/d' \
+		-i CMakeLists.txt
+}
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build \
+		-GNinja \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_SKIP_RPATH=True \
+		-DCMAKE_BUILD_TYPE=None \
+		$CMAKE_CROSSOPTS .
+	ninja -C build
+}
+
+check() {
+	ninja -C build check
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+}
+
+sha512sums="c3f8325c865b4021709114ab7f658ae5198404242eb8761c8589d42b08d175323406a65ff0706b16a4139155ac7676e12282bce078cc0a02284ecd70a7d62bdc  nheko-0.7.1.tar.gz"

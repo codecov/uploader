@@ -1,0 +1,40 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=pixman
+pkgver=0.40.0
+pkgrel=2
+pkgdesc="Low-level pixel manipulation library"
+url="https://gitlab.freedesktop.org/pixman"
+arch="all"
+license="MIT"
+makedepends="meson libpng-dev linux-headers"
+subpackages="$pkgname-static $pkgname-dev $pkgname-dbg"
+source="https://gitlab.freedesktop.org/pixman/pixman/-/archive/pixman-$pkgver/pixman-pixman-$pkgver.tar.gz"
+builddir="$srcdir/pixman-pixman-$pkgver"
+
+case "$CARCH" in
+	# broken test (likely due to endianness assumptions)
+	s390x) options="!check" ;;
+esac
+
+build() {
+	# We need to increase the stacksize here: https://gitlab.gnome.org/GNOME/librsvg/-/issues/595
+	LDFLAGS="$LDFLAGS -Wl,-z,stack-size=2097152" meson \
+		-Ddefault_library=both \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	meson test -C output -t 10
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="18774e22add5c5442edede5467fa07234c2b9e57a79d88110f25424e4253c6ab0c2921e951c5686cefebf4724ff19ad053d0c28f4d2f8d642bbcf6fc71764ef6  pixman-pixman-0.40.0.tar.gz"

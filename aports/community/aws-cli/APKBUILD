@@ -1,0 +1,76 @@
+# Maintainer: Valery Kartel <valery.kartel@gmail.com>
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+pkgname=aws-cli
+pkgver=1.18.55
+pkgrel=0
+pkgdesc="Universal Command Line Interface for Amazon Web Services"
+url="https://github.com/aws/aws-cli"
+arch="noarch"
+license="Apache-2.0"
+depends="python3 groff py3-botocore py3-jmespath py3-s3transfer py3-docutils
+	py3-colorama py3-yaml py3-rsa"
+makedepends="python3-dev py3-setuptools"
+subpackages="
+	$pkgname-doc
+	$pkgname-zsh-completion:zshcomp
+	$pkgname-bash-completion:bashcomp
+	$pkgname-completer
+	"
+source="aws-cli-$pkgver.tar.gz::https://github.com/aws/aws-cli/archive/$pkgver.tar.gz"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+	cd "$pkgdir"
+	rm -fr usr/bin/aws.cmd \
+		usr/lib/python*/site-packages/awscli-*-py*.egg-info
+}
+
+bashcomp() {
+	depends="$pkgname-completer"
+	pkgdesc="$pkgdesc (bash completions)"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions
+	mv "$pkgdir"/usr/bin/aws_bash_completer \
+		"$subpkgdir"/usr/share/bash-completion/completions
+}
+
+zshcomp() {
+	depends="$pkgname-completer"
+	pkgdesc="$pkgdesc (zsh completions)"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+	mkdir -p "$subpkgdir"/usr/share/zsh/site-functions
+	mv "$pkgdir"/usr/bin/aws_zsh_completer.sh \
+		"$subpkgdir"/usr/share/zsh/site-functions
+}
+
+completer() {
+	depends=""
+	pkgdesc="$pkgdesc (completions helper)"
+	cd "$pkgdir"
+	for i in \
+		usr/bin/aws_completer \
+		usr/lib/python*/site-packages/awscli/completer.py \
+		usr/lib/python*/site-packages/awscli/__pycache__/completer.cpython-*.pyc \
+		; do
+		install -D "$i" "$subpkgdir/$i"
+		rm "$i"
+	done
+}
+
+doc() {
+	default_doc
+	local path
+	path="$(python3 -c 'import sys;print(sys.path[-1])')/awscli"
+	mkdir -p "$subpkgdir/$path"
+	mv "$pkgdir/$path/examples" "$pkgdir/$path/topics" \
+		"$subpkgdir/$path/"
+}
+sha512sums="5e0ca4dff916d45fdafbec51a8e0f3e911c14c55c1ebbc40a345f7b1135bf73fcf06d436e25e29bda89aa737278fe5efdd8f6f2ad5e58bac01dd0b12af4afaa1  aws-cli-1.18.55.tar.gz"

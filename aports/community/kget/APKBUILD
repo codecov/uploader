@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kget
+pkgver=20.04.0
+pkgrel=0
+# ppc64le and s390x blocked by plasma-workspace -> libksysguard -> qt5-qtwebengine
+# armhf blocked by extra-cmake-modules
+# mips blocked by libktorrent
+arch="all !ppc64le !s390x !armhf !mips !mips64"
+url="https://kde.org/applications/internet/org.kde.kget"
+pkgdesc="A versatile and user-friendly download manager"
+license="GPL-2.0-or-later AND LGPL-2.0-only AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kcompletion-dev kconfig-dev kconfigwidgets-dev kcoreaddons-dev kcrash-dev kdbusaddons-dev kdoctools-dev ki18n-dev kiconthemes-dev kitemviews-dev kcmutils-dev kio-dev knotifications-dev knotifyconfig-dev kparts-dev kservice-dev ktextwidgets-dev kwallet-dev kwidgetsaddons-dev kwindowsystem-dev kxmlgui-dev kitemmodels-dev kdelibs4support-dev plasma-workspace-dev sqlite-dev qca-dev gpgme-dev libktorrent-dev libmms-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kget-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="1c8d8946c3f5a1e566447de1fba1c46881d987953b07bdf079864c691d9d3143dadd5e987d5f757a2ac5cf8af324560154948154d77f36f95637697e84c91087  kget-20.04.0.tar.xz"

@@ -1,0 +1,23 @@
+# Contributor: Ted Trask <ttrask01@yahoo.com>
+# Maintainer: Ted Trask <ttrask01@yahoo.com>
+pkgname=acf-heimdal
+pkgver=0.6.0
+pkgrel=2
+pkgdesc="ACF module for heimdal"
+url="http://git.alpinelinux.org/cgit/acf/$pkgname"
+arch="noarch"
+license="GPL-2.0"
+depends="acf-core heimdal"
+makedepends=""
+install=
+subpackages=""
+source="https://dev.alpinelinux.org/archive/$pkgname/$pkgname-$pkgver.tar.xz"
+
+package() {
+        cd "$srcdir/$pkgname-$pkgver"
+
+        make DESTDIR="$pkgdir" install
+
+}
+
+sha512sums="8843c2f5b580f400c398826566bf4a5b3e8bd4d53f01ee8cf3c41972fc89d9bcf80fdc7e787c48fac25cbec2bc671821f63c5ab6453f9243d13b9674fd168af3  acf-heimdal-0.6.0.tar.xz"

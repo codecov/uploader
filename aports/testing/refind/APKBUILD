@@ -1,0 +1,31 @@
+# Maintainer: Eric Molitor <eric@molitor.org>
+pkgname=refind
+pkgver=0.12.0
+pkgrel=0
+pkgdesc="rEFInd EFI Boot Manager"
+url="http://www.rodsbooks.com/refind"
+arch="x86_64"
+options="!check"  # No test suite.
+license="GPL-3.0-only"
+depends="efibootmgr"
+makedepends="gnu-efi-dev bash"
+subpackages="$pkgname-doc"
+source="https://sourceforge.net/projects/refind/files/$pkgver/refind-src-$pkgver.tar.gz
+	10-refind-disable-fortify.patch"
+
+build() {
+	make gnuefi
+}
+
+package() {
+	install -Dm0755 refind/*.efi -t "$pkgdir"/usr/share/refind
+	install -Dm0755 refind.conf-sample -t "$pkgdir"/usr/share/refind
+
+	install -Dm0644 docs/man/*.8 -t "$pkgdir"/usr/share/man/man8
+
+	install -Dm0755 mkrlconf mvrefind refind-mkdefault refind-install -t "$pkgdir"/usr/sbin
+
+	cp -r icons $pkgdir/usr/share/refind
+}
+sha512sums="3ade9642d7acf31097daa5308acb96a9fa3371314073b5a09601a886fc30444752efa08ed9fb35e421efb0b4eb9efbccd7b5c9bd6b3b9ed4af74c58f22a74729  refind-src-0.12.0.tar.gz
+ccb61e6e5ae0d762932941d7edd5b9a3506db42cfce70ebc57468837799e60fee73b3c568ae603a6ebb677ae702fb5beb5d13b16daf976b954b35047b6f4ecc0  10-refind-disable-fortify.patch"

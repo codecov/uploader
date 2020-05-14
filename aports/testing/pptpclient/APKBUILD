@@ -1,0 +1,25 @@
+# Contributor: Mikhail Ivko <ivko.mv@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=pptpclient
+pkgver=1.10.0
+pkgrel=1
+pkgdesc="Client for the proprietary Microsoft Point-to-Point Tunneling Protocol, PPTP."
+url="http://pptpclient.sourceforge.net/"
+arch="all"
+license="GPL-2.0-or-later"
+depends="ppp-daemon iproute2"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://downloads.sourceforge.net/sourceforge/$pkgname/pptp-$pkgver.tar.gz"
+
+builddir="$srcdir"/pptp-$pkgver
+build() {
+	cd "$srcdir"/pptp-$pkgver
+	make IP=/sbin/ip
+}
+
+package() {
+	cd "$srcdir"/pptp-$pkgver
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="d2b925fb9cb5dbc4da576dce0cfae62f466576ae5b5ed7d6edeaec9be16ab6e0d17c307df43ebdc06138f1269ef61ba8910462a4629b6262c452e8287cabe41c  pptp-1.10.0.tar.gz"

@@ -1,0 +1,69 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=tinyssh
+pkgver=20190101
+pkgrel=1
+pkgdesc="Small SSH server using NaCl / TweetNaCl (no dependency on OpenSSL)"
+url="https://tinyssh.org/"
+arch="all"
+license="CC0-1.0"
+_openrc_deps="ucspi-tcp6"
+makedepends="libsodium-dev"
+options="!check"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/janmojzis/tinyssh/archive/$pkgver.tar.gz
+	$pkgname.initd
+	$pkgname.confd
+	"
+builddir="$srcdir"/$pkgname-$pkgver
+
+build() {
+	cd "$builddir"
+	export LIBS="-lsodium"
+	export CFLAGS="$CFLAGS -I/usr/include/sodium"
+	export LDFLAGS="-L/usr/lib"
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make install DESTDIR="${pkgdir}"
+
+	mkdir -p "$pkgdir"/etc/$pkgname
+	install -m755 -D "$srcdir"/$pkgname.initd \
+		"$pkgdir"/etc/init.d/tinysshd
+	install -m644 -D "$srcdir"/$pkgname.confd \
+		"$pkgdir"/etc/conf.d/tinysshd
+
+	# post-install message
+	mkdir -p "$pkgdir/usr/share/doc/$pkgname"
+	cat > $pkgdir/usr/share/doc/$pkgname/README.alpine <<EOF
+TinySSH can be run in 3 different ways:
+--------------------------------------
+(1) /etc/init.d/tinysshd (requires tcpserver & takes care of key generation)
+
+(2) via inetd (you will need to 'tinysshd-makekeys <dir>' manually):
+
+echo '22 stream tcp nowait root /usr/sbin/tinysshd tinysshd -l -v /etc/tinyssh/sshkeys' >> /etc/inetd.conf
+rc-service inetd start
+
+(3) Using runit with either (1) or (2)
+
+Stealth SSH with FWKNOP: https://it-offshore.co.uk/security/53-stealth-your-ssh-port-ssh-into-lxc-containers
+EOF
+}
+
+
+openrc() {
+	default_openrc
+	depends="$_openrc_deps"
+}
+
+sha512sums="bf3829a71c29e8b0d5c2a145be9dfaf05efb1b98932f34f19f76e07871da4be10022bdde4c57ca49557b69931077b451bc2efbeab38d8ef24151fb73990f1012  tinyssh-20190101.tar.gz
+08e0779154d0b2be428b4fb2acd11ecc0535cfe14bd99e37194ede96947a693b932178b64aacab433e08ed89a606a2d8f5ff97ac17a8cea7349acccef48561b1  tinyssh.initd
+7c6282a6ae972d83d3e624530cac4958adee1e2313d0e44aff38c94bde1a3f549a536ec80e594d44c29a6a981919dd30322e8d8511626fdb6493c98587047392  tinyssh.confd"

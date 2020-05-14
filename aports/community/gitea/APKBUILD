@@ -1,0 +1,83 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Contributor: 6543 <6543@obermui.de>
+# Maintainer: Carlo Landmeter <clandmeter@gmail.com>
+pkgname=gitea
+pkgver=1.11.5
+pkgrel=0
+pkgdesc="A self-hosted Git service written in Go"
+url="https://gitea.io"
+arch="all !mips !mips64"
+license="MIT"
+options="chmod-clean"
+depends="git git-lfs gnupg"
+makedepends="go libcap nodejs npm"
+checkdepends="bash openssh openssh-keygen sqlite"
+install="$pkgname.pre-install"
+pkgusers="gitea"
+pkggroups="www-data"
+subpackages="$pkgname-openrc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/go-gitea/gitea/archive/v$pkgver.tar.gz
+	$pkgname.initd
+	$pkgname.ini
+	"
+builddir="$srcdir/src/code.gitea.io/$pkgname"
+
+case "$CARCH" in
+	x86_64|s390x|x86|armhf) options="$options !check" ;;
+esac
+
+prepare() {
+	mkdir -p ${builddir%/*}
+	mv "$srcdir"/$pkgname-$pkgver "$builddir"/
+	default_prepare
+}
+
+build() {
+	export GOPATH="$srcdir"
+	export TAGS="tidb sqlite sqlite_unlock_notify"
+	export GITEA_VERSION="$pkgver"
+	unset LDFLAGS
+	make build
+}
+
+check() {
+	## "make test" - modified (exclude broken tests)
+	## 'code.gitea.io/gitea/modules/migrations': github hase rate limits! 403 API
+	PACKAGES=$(go list ./... | grep -v /vendor/ | \
+		grep -v 'code.gitea.io/gitea/modules/migrations' | \
+		grep -v 'code.gitea.io/gitea/modules/charset' | \
+		grep -v 'code.gitea.io/gitea/integrations' | \
+		grep -v 'code.gitea.io/gitea/modules/git')
+	GO111MODULE=on go test -mod=vendor -tags='sqlite sqlite_unlock_notify' $PACKAGES
+
+	timeout -s ABRT 20m make test-sqlite
+}
+
+package() {
+	for dir in $pkgname $pkgname/git $pkgname/data $pkgname/db $pkgname/custom; do
+		install -d -m 750 -o gitea -g www-data \
+			"$pkgdir"/var/lib/$dir
+	done
+
+	install -d -m 755 -o gitea -g www-data "$pkgdir"/var/log/$pkgname
+
+	install -D -m 755 $pkgname "$pkgdir"/usr/bin/$pkgname
+
+	# Allow non root to bind to port 80.
+	setcap cap_net_bind_service=+ep \
+		"$pkgdir"/usr/bin/$pkgname
+
+	install -D -m 644 -o gitea -g www-data "$srcdir"/gitea.ini \
+		"$pkgdir"/etc/$pkgname/app.ini
+	chown gitea:www-data "$pkgdir"/etc/$pkgname
+
+	install -d -m 755 "$pkgdir"/usr/share/webapps/$pkgname
+	mv options public templates "$pkgdir"/usr/share/webapps/$pkgname/
+
+	install -D -m 755 "$srcdir"/$pkgname.initd \
+		"$pkgdir"/etc/init.d/$pkgname
+}
+
+sha512sums="ba80ba77f6f761a03d062d5ceaacf0d2f9a7c5ad3c414f3d34ff31ee37ac00c4af562ecba0f14c6dca3ad2012e6cbfd8aea105dd87cfb06aedc80cf22a9ff12b  gitea-1.11.5.tar.gz
+2497e6f2a18e3ceb65352cd220eab2c1c0893d0e731600462a60397de2b70d7c1de7db2af2769b25fe708b0822c811bb20dc797b59b9dd93efb376bea1c35796  gitea.initd
+431184faffa8996873d92d7b0d16bc4b1a0178d264cd2928d1f49b13ad3e6470d9ede7a18c12112deeeb38f0647ccc0b012e98bcbd96e7b8496a3dc18f5b1fb7  gitea.ini"

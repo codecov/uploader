@@ -1,0 +1,52 @@
+# Maintainer: Guilherme Felipe da Silva <gfsilva.eng@gmail.com>
+pkgname=lua-jsonschema
+_rockname=${pkgname#lua-}
+pkgver=0.8
+pkgrel=0
+pkgdesc="Pure Lua JSON schema validator for Lua/LuaJIT"
+url="https://github.com/iresty/jsonschema"
+license="MIT"
+arch="noarch"
+depends="lua-net-url lua-rex-pcre"
+makedepends="luarocks"
+options="!check" # Test dependencies not available
+source="$_rockname-$pkgver.tar.gz::https://github.com/iresty/jsonschema/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_rockname-$pkgver"
+_luaversions="5.1 5.2 5.3"
+
+for _luaversion in $_luaversions; do
+	makedepends="$makedepends lua$_luaversion-dev"
+	subpackages="$subpackages lua$_luaversion-$_rockname:_subpackage"
+done
+
+build() {
+	local lver; for lver in $_luaversions; do
+		msg "Building for Lua $lver..."
+
+		luarocks-$lver \
+		               --deps-mode=none \
+		               LUA_INCDIR="$(pkg-config --variable=includedir lua$lver)" \
+		               LUA_LIBDIR="$(pkg-config --variable=libdir lua$lver)" \
+		               make --tree="./build" \
+		               "rockspec/$_rockname-master-"*".rockspec"
+
+		rm "./build/lib/luarocks/rocks-$lver/manifest"
+	done
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+_subpackage() {
+	local lver="${subpkgname:3:3}"
+	pkgdesc="$pkgdesc (for Lua $lver)"
+	depends="lua$lver"
+	install_if="$pkgname=$pkgver-r$pkgrel lua$lver"
+
+	local path; for path in "lib/luarocks/rocks-$lver" "share/lua/$lver"; do
+		mkdir -p "$subpkgdir/usr/${path%/*}"
+		mv "$builddir/build/$path" "$subpkgdir/usr/$path/"
+	done
+}
+sha512sums="4791b42a6e94984b245db60079035addab59e429451558217a52bbc03753355d0cd61ffb66b2623a944b08515d28f1ebd9b97a0b50cde444c26f6ad788792a53  jsonschema-0.8.tar.gz"

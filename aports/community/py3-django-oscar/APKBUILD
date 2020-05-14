@@ -1,0 +1,30 @@
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+pkgname=py3-django-oscar
+pkgver=2.0.4
+pkgrel=0
+pkgdesc="Domain-driven e-commerce for Django"
+url="http://oscarcommerce.com/"
+arch="noarch"
+license="BSD-3-Clause"
+depends="py3-babel py3-django py3-django-extra-views py3-django-haystack
+         py3-django-phonenumber-field py3-django-sorl-thumbnail
+         py3-django-tables2 py3-django-treebeard py3-django-widget-tweaks
+         py3-factory-boy py3-pillow py3-purl"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/d/django-oscar/django-oscar-$pkgver.tar.gz
+	"
+builddir="$srcdir/django-oscar-$pkgver"
+
+replaces="py-django-oscar" # Backwards compatibility
+provides="py-django-oscar=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --root "$pkgdir"
+}
+
+sha512sums="af618400356c0c55940367e42fcd76d3f5929144e0ee240ca338b6ed26a09ca2cf38067bdc22e9f82e249d07fe6c5e12ffea95314676072ef85ae9f79704f497  django-oscar-2.0.4.tar.gz"

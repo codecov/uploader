@@ -1,0 +1,38 @@
+# Contributor: August Klein <amatcoder@gmail.com>
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: August Klein <amatcoder@gmail.com>
+pkgname=meld
+pkgver=3.20.2
+pkgrel=0
+pkgdesc="A visual diff and merge tool"
+url="https://meldmerge.org"
+arch="noarch !s390x !mips !mips64" # missing gtksourceview
+license="GPL-2.0-or-later"
+depends="dconf gtksourceview gsettings-desktop-schemas py3-gobject3
+	py3-cairo"
+makedepends="intltool itstool libxml2-utils"
+checkdepends="py3-pytest xvfb-run gtk-update-icon-cache"
+subpackages="$pkgname-lang $pkgname-doc"
+source="https://download.gnome.org/sources/meld/${pkgver%.*}/meld-$pkgver.tar.xz"
+
+prepare() {
+	default_prepare
+
+	# Needs meld icons, so we'd need to mess around with gtk discovering the icons
+	# in place and generating an icon cache etc. so let's disable it for now.
+	rm test/test_gutterrendererchunk.py
+}
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	PYTHONPATH="$PWD/build/lib" xvfb-run pytest-3
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="9c9074cb879e3574eb9a1025eb1212771419ab0d8e92bf8a99f38e70ca583ff5c8cbeaccb87b414e6ff73a61afa08e10742991d574b810cc90e8c4a5ac82ddaa  meld-3.20.2.tar.xz"

@@ -1,0 +1,24 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=py3-regex
+pkgver=2020.4.4
+pkgrel=0
+pkgdesc="More featureful implementation of the 're' module"
+url="https://bitbucket.org/mrabarnett/mrab-regex"
+arch="all"
+license="CNRI-Python"
+depends="python3"
+makedepends="python3-dev py3-setuptools"
+options="!check" # no tests
+source="https://files.pythonhosted.org/packages/source/r/regex/regex-$pkgver.tar.gz"
+builddir="$srcdir/regex-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="95eadaaffaf87a19b31024ad3cff670d34a31de8b9be430fc276a533a584203842d1634b66a346c4aaecf2407b973bb1ae9c8ee8b48785d03bd5e45a67a271a9  regex-2020.4.4.tar.gz"

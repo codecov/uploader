@@ -1,0 +1,37 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=flit
+pkgver=2.3.0
+pkgrel=0
+pkgdesc="Simple packaging tool for simple Python packages"
+options="!check"
+url="https://flit.readthedocs.io"
+arch="noarch"
+license="BSD-3-Clause"
+depends="
+	python3
+	py3-docutils
+	py3-pytoml
+	py3-requests
+	"
+makedepends="unzip"
+_wheel_cli="flit-$pkgver-py3-none-any.whl"
+_wheel_core="flit_core-$pkgver-py2.py3-none-any.whl"
+source="https://files.pythonhosted.org/packages/py3/f/flit/$_wheel_cli
+	https://files.pythonhosted.org/packages/py2.py3/f/flit_core/$_wheel_core
+	install-wheel-scripts.py
+	"
+builddir="$srcdir"
+
+package() {
+	local site="$pkgdir"/usr/lib/"$(readlink /usr/bin/python3)"/site-packages
+	mkdir -p "$site"
+	unzip "$_wheel_core" -d "$site"
+	unzip "$_wheel_cli" -d "$site"
+	"$srcdir"/install-wheel-scripts.py --prefix="$pkgdir"/usr "$_wheel_cli"
+	chmod 644 "$site"/*.dist-info/*
+}
+
+sha512sums="5586f7b0687d0f35e8a1eb90c051f7a104260081954ad2aa02b3b2bc36fe1c8ceab59a41244ebe953b568a6c63093897b3a5532e98e866bf751e534f55c541f8  flit-2.3.0-py3-none-any.whl
+bb7acbfa41759bb7d15c6d8029184aaa6531ce34ea23204ceb616c6752bf3ade6df44a9acc72db424000e9e7e1fff72a4d1dfd087216ec0df689568a134ba46c  flit_core-2.3.0-py2.py3-none-any.whl
+96a9eeebec7b362dec9e19309386a28df3243b5b8d84643de8d043a12ae174ca7b111b67a0a335ed0fa1069690b990ef66de5670326e225251ad3bbfef9e3b1e  install-wheel-scripts.py"

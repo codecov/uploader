@@ -1,0 +1,49 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libsmbios
+pkgver=2.4.3
+pkgrel=0
+pkgdesc="library for interacting with Dell SMBIOS tables"
+url="https://github.com/dell/libsmbios"
+arch="x86_64 x86"
+license="GPL-2.0-or-later AND OSL-2.1"
+makedepends="autoconf automake bash libtool chrpath help2man
+	linux-headers gettext-dev libintl libxml2-dev"
+checkdepends="python3"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang smbios-utils:utils"
+source="libsmbios-$pkgver.tar.gz::https://github.com/dell/libsmbios/archive/v$pkgver.tar.gz
+	fixes.patch"
+
+prepare() {
+	default_prepare
+	./autogen.sh --no-configure
+}
+
+build() {
+	export LIBS="$LIBS -lintl"
+	CONFIG_SHELL=/bin/bash \
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--disable-python \
+		--disable-static
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	chrpath -d "$pkgdir"/usr/sbin/*
+}
+
+utils() {
+	mkdir -p "$subpkgdir"/usr/
+	mv "$pkgdir"/usr/sbin "$subpkgdir"/usr/
+}
+
+sha512sums="7f6fb36fa9653e123b416b275953fb5652025e76dac3b4ec5600168e193ea56f8ac3ea1a3b5db29d2770e73d88152d712a35bf77a9b3fc5596570fae885585ad  libsmbios-2.4.3.tar.gz
+5dd3d95e4d57abc392b64d1ed2f7fc04ce42de78730d6835a6ff8cb22931b57ef2873b1ef9744d723e2c814b710bb3ee5c2446c171387293840b557b2ad93182  fixes.patch"

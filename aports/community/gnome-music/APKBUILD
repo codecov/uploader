@@ -1,0 +1,40 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-music
+pkgver=3.36.2
+pkgrel=0
+pkgdesc="Music is the new GNOME music playing application"
+url="https://wiki.gnome.org/Apps/Music"
+arch="all !s390x !mips !mips64"
+license="GPL-2.0-or-later"
+depends="grilo grilo-plugins gnome-online-accounts libdazzle libsoup py3-gobject3
+	tracker libmediaart py3-cairo gst-plugins-good tracker-miners"
+makedepends="meson gnome-online-accounts-dev libdazzle-dev gtk+3.0-dev libsoup-dev
+	gobject-introspection-dev grilo-dev grilo-plugins-dev tracker-dev py3-gobject3-dev
+	libmediaart-dev py3-cairo-dev itstool"
+checkdepends="desktop-file-utils appstream-glib"
+subpackages="$pkgname-lang $pkgname-doc $pkgname-dbg"
+source="https://download.gnome.org/sources/gnome-music/${pkgver%.*}/gnome-music-$pkgver.tar.xz
+	dont-require-py3-gettext-support.patch"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="653da6c0a449c43680dd5d121c0c607f91d826b7090727e826d2953ab3a88015330fe5f3b643dbf169f6ada589b3329fc07cf9be3963b9209f246a426f1a59ae  gnome-music-3.36.2.tar.xz
+0437214912794981cdb6df4309f34b40b65ec4412cc0ec9a384da07e22a0c1d3cc8272e2a210f1e614f0e9a9767d96b83624ad1f1f82bd3445ff62c8f1234dc9  dont-require-py3-gettext-support.patch"

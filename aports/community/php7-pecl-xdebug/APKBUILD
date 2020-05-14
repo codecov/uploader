@@ -1,0 +1,44 @@
+# Contributor: Andy Postnikov <apostnikov@gmail.com>
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=php7-pecl-xdebug
+_pkgname=xdebug
+pkgver=2.9.5
+pkgrel=0
+pkgdesc="PHP extension that provides functions for function traces and profiling - PECL"
+url="https://pecl.php.net/package/xdebug"
+arch="all"
+license="PHP-3.0"
+depends="php7-common"
+makedepends="php7-dev autoconf re2c"
+source="$pkgname-$pkgver.tgz::https://pecl.php.net/get/$_pkgname-$pkgver.tgz"
+builddir="$srcdir/$_pkgname-$pkgver"
+provides="php7-xdebug=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-xdebug" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	# PECL package has no test suite.
+	php7 -z "$builddir"/modules/xdebug.so -r "in_array('Xdebug', get_loaded_extensions(true)) ? exit(0) : exit(1);"
+}
+
+package() {
+	local confdir="$pkgdir/etc/php7/conf.d"
+
+	make INSTALL_ROOT="$pkgdir" install
+	install -D -m644 contrib/tracefile-analyser.php "$pkgdir"/usr/share/php7/xdebug/tracefile-analyser.php
+
+	mkdir -p "$confdir"
+	cat > "$confdir"/$_pkgname.ini <<-EOF
+		; Uncomment to enable this extension.
+		;zend_extension=$_pkgname.so
+	EOF
+}
+
+sha512sums="a0b6c96f4230c86b7df6ae99434473bcdbfbf7e53706cc103f2fef0538a5c4bf8180cf02819deaadff7aa0e50559f98f9f363167686db12c5d226e451ba2a098  php7-pecl-xdebug-2.9.5.tgz"

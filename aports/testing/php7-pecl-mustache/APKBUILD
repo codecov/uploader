@@ -1,0 +1,38 @@
+# Maintainer: Renoir Boulanger <hello@renoirboulanger.com>
+pkgname=php7-pecl-mustache
+_phpext=mustache
+pkgver=0.9.1
+pkgrel=1
+pkgdesc="PHP 7 PECL extension: C++ implementation of Mustache"
+url="https://pecl.php.net/package/mustache"
+arch="all"
+license="MIT"
+depends="php7-common"
+makedepends="php7-dev autoconf re2c libmustache"
+source="https://pecl.php.net/get/$_phpext-$pkgver.tgz"
+builddir="$srcdir"/$_phpext-$pkgver
+provides="php7-mustache=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-mustache" # for backward compatibility
+
+build() {
+	phpize7
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--with-php-config=php-config7 \
+		--enable-mustache
+	make
+}
+
+check() {
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_phpext.so" > "$pkgdir"/etc/php7/conf.d/70_$_phpext.ini
+}
+
+sha512sums="0ff16f300cec312370effd68574e289a0993f3d45b1bb26469f19f3312ff8bfa9d2b3c682a3f2e5c4e20f41cb2c668269b17f3bd70272285dd007ab6bdf5327e  mustache-0.9.1.tgz"

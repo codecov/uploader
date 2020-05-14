@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kpackage
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Framework that lets applications manage user installable packages of non-binary assets"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-or-later"
+depends_dev="qt5-qtbase-dev karchive-dev ki18n-dev kcoreaddons-dev"
+makedepends="$depends_dev extra-cmake-modules qt5-qttools-dev kdoctools-dev doxygen"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kpackage-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+options="!check" # Fails due to requiring installed Plasma, which causes a circular dependency
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="3a7bf919c76a4d4fef851e4320d6d5cefa2b9f168b5da56d5159f73be9923d0f1f9185919ae38f9d3a628715d92ec232a47f19803f5207f3fd825adb260ad077  kpackage-5.70.0.tar.xz"

@@ -1,0 +1,67 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=restic
+pkgver=0.9.6
+pkgrel=1
+pkgdesc="Fast, secure, efficient backup program"
+url="https://restic.net/"
+arch="all"
+license="BSD-2-Clause"
+makedepends="go"
+options="net"
+subpackages="$pkgname-doc
+	$pkgname-zsh-completion:zshcomp:noarch
+	$pkgname-bash-completion:bashcomp:noarch"
+source="https://github.com/restic/restic/releases/download/v$pkgver/restic-$pkgver.tar.gz"
+builddir="$srcdir/src/github.com/$pkgname/$pkgname"
+
+export GOPATH="$srcdir"
+
+prepare() {
+	mkdir -p "${builddir%/*}"
+	ln -s "$srcdir"/$pkgname-$pkgver "$builddir"
+	default_prepare
+}
+
+build() {
+	go build ./cmd/...
+}
+
+check() {
+	RESTIC_TEST_FUSE=0 make test
+}
+
+package() {
+	install -Dm755 $pkgname "$pkgdir"/usr/bin/$pkgname
+
+	local man
+	for man in doc/man/*.?; do
+		install -Dm644 "$man" \
+			"$pkgdir"/usr/share/man/man${man##*.}/${man##*/}
+	done
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	install -Dm644 "$builddir"/doc/bash-completion.sh \
+		"$subpkgdir"/usr/share/bash-completion/completions/$pkgname
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	install -Dm644 "$builddir"/doc/zsh-completion.zsh \
+		"$subpkgdir"/usr/share/zsh/site-functions/_$pkgname
+}
+
+cleanup_srcdir() {
+	go clean -modcache
+	default_cleanup_srcdir
+}
+
+sha512sums="f6f7797dc17644e8f0217d81f7194e8e6416f6e740bad0eb11bcf83ab72d1729025e59fd1b81eb9d57bdd60e98b3324026ddb2325c654eb1b51f8f30ed247089  restic-0.9.6.tar.gz"

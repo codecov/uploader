@@ -1,0 +1,37 @@
+# Contributor: Jeff Bilyk <jbilyk at gmail>
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-dbd-odbc
+_pkgname=DBD-ODBC
+pkgver=1.61
+pkgrel=0
+pkgdesc="Perl CPAN DBD::ODBC module"
+url="https://metacpan.org/release/DBD-ODBC/"
+arch="all"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl perl-dbi"
+makedepends="perl-dev unixodbc-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/M/MJ/MJEVANS/DBD-ODBC-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+prepare() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+}
+
+build() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make
+}
+
+check() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="cd20a505b64fd6a6d9a5158c134f9337a9f40879516e4fcb45270dcc20d88ade1ddcf856e36db72b8ca57e34052284f794532f55f0a1f6469cd3d8dff0103435  DBD-ODBC-1.61.tar.gz"

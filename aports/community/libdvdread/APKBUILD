@@ -1,0 +1,30 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libdvdread
+pkgver=6.1.1
+pkgrel=0
+pkgdesc="Simple foundation for reading DVD video disks"
+url="http://dvdnav.mplayerhq.hu/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="libdvdcss-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://download.videolan.org/pub/videolan/libdvdread/$pkgver/libdvdread-$pkgver.tar.bz2"
+options="!check" # No testsuite
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--disable-static \
+		--enable-shared \
+		--with-libdvdcss
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="f02c2d33ec3e79a4efd0b4ed9172935b092c9f827eb6810ed354328c34b5206ee4ffd646239ce50b9401cab1758f1a746113e004461b20df4f44bc7fa6bc2278  libdvdread-6.1.1.tar.bz2"

@@ -1,0 +1,57 @@
+--- ./third_party/breakpad/breakpad/src/client/linux/dump_writer_common/ucontext_reader.cc
++++ ./third_party/breakpad/breakpad/src/client/linux/dump_writer_common/ucontext_reader.cc
+@@ -49,7 +49,7 @@
+ }
+ 
+ void UContextReader::FillCPUContext(RawContextCPU *out, const ucontext_t *uc,
+-                                    const struct _libc_fpstate* fp) {
++                                    const struct _fpstate* fp) {
+   const greg_t* regs = uc->uc_mcontext.gregs;
+ 
+   out->context_flags = MD_CONTEXT_X86_FULL |
+@@ -97,7 +97,7 @@
+ }
+ 
+ void UContextReader::FillCPUContext(RawContextCPU *out, const ucontext_t *uc,
+-                                    const struct _libc_fpstate* fpregs) {
++                                    const struct _fpstate* fpregs) {
+   const greg_t* regs = uc->uc_mcontext.gregs;
+ 
+   out->context_flags = MD_CONTEXT_AMD64_FULL;
+--- ./third_party/breakpad/breakpad/src/client/linux/dump_writer_common/ucontext_reader.h
++++ ./third_party/breakpad/breakpad/src/client/linux/dump_writer_common/ucontext_reader.h
+@@ -50,7 +50,7 @@
+   //   info: the collection of register structures.
+ #if defined(__i386__) || defined(__x86_64)
+   static void FillCPUContext(RawContextCPU *out, const ucontext_t *uc,
+-                             const struct _libc_fpstate* fp);
++                             const struct _fpstate* fp);
+ #elif defined(__aarch64__)
+   static void FillCPUContext(RawContextCPU *out, const ucontext_t *uc,
+                              const struct fpsimd_context* fpregs);
+--- ./third_party/breakpad/breakpad/src/client/linux/handler/exception_handler.cc
++++ ./third_party/breakpad/breakpad/src/client/linux/handler/exception_handler.cc
+@@ -490,7 +490,9 @@
+   siginfo.si_code = SI_USER;
+   siginfo.si_pid = getpid();
+   ucontext_t context;
++#if defined(__GLIBC__)
+   getcontext(&context);
++#endif
+   return HandleSignal(sig, &siginfo, &context);
+ }
+ 
+@@ -675,9 +677,13 @@
+   sys_prctl(PR_SET_DUMPABLE, 1, 0, 0, 0);
+ 
+   CrashContext context;
++#if defined(__GLIBC__)
+   int getcontext_result = getcontext(&context.context);
+   if (getcontext_result)
+     return false;
++#else
++  return false;
++#endif
+ 
+ #if defined(__i386__)
+   // In CPUFillFromUContext in minidumpwriter.cc the stack pointer is retrieved

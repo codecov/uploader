@@ -1,0 +1,58 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=gimp
+pkgver=2.10.18
+pkgrel=0
+pkgdesc="GNU Image Manipulation Program"
+url="https://www.gimp.org/"
+arch="all !s390x !mips !mips64" # librsvg
+license="GPL-3.0-or-later"
+depends="dbus"
+makedepends="gtk+-dev libxpm-dev libxmu-dev librsvg-dev dbus-glib-dev
+	libexif-dev desktop-file-utils intltool gegl-dev tiff-dev
+	libjpeg-turbo-dev libpng-dev iso-codes-dev lcms2-dev poppler-dev
+	babl-dev gexiv2-dev glib-networking xz-dev mypaint-brushes libmypaint-dev
+	poppler-data libexecinfo-dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://download.gimp.org/pub/gimp/v${pkgver%.*}/gimp-$pkgver.tar.bz2"
+options="!check"
+
+# secfixes:
+#   2.8.22-r2:
+#     - CVE-2017-17784
+#     - CVE-2017-17785
+#     - CVE-2017-17786
+#     - CVE-2017-17787
+#     - CVE-2017-17788
+#     - CVE-2017-17789
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--disable-dependency-tracking \
+		--sysconfdir=/etc \
+		--enable-mp \
+		--enable-gimp-console \
+		--disable-python \
+		--without-aa \
+		--disable-check-update
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+dev() {
+	default_dev
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/gimptool* "$subpkgdir"/usr/bin
+}
+
+sha512sums="88990f2d70508b22f4acadeab6b687e20af19b765ebc6f245d0c99b3dd853fcd3d237c3b7607e50133aa95a1d71931069029dfd7ee94441ff419c542c141bc9f  gimp-2.10.18.tar.bz2"

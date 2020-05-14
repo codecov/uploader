@@ -1,0 +1,42 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=hidapi
+pkgver=0.9.0
+pkgrel=2
+pkgdesc="Simple library for communicating with USB and Bluetooth HID devices"
+url="https://github.com/libusb/hidapi"
+arch="all"
+license="custom"
+options="!check"
+makedepends="libusb-dev libtool eudev-dev linux-headers autoconf automake"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/libusb/$pkgname/archive/$pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+
+	./bootstrap
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-static
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/share/licenses/$pkgname
+	mv "$pkgdir"/usr/share/doc/$pkgname/LICENSE* \
+		"$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="d9f28d394b78daece7d2dfb946e62349a56b388b3a06241585c6fad5a4e24dc914723de6c0f12a9e51cd23fb245f6b5ac9b3721319646d5ba5912bbe0a3f9a52  hidapi-0.9.0.tar.gz"

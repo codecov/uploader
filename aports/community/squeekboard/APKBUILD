@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=squeekboard
+pkgver=1.9.1
+pkgrel=0
+pkgdesc="The final Phosh keyboard"
+arch="all !s390x !ppc64le !mips !mips64" # Blocked by rust, fails to build on ppc64le
+url="https://source.puri.sm/Librem5/squeekboard"
+license="GPL-3.0-or-later"
+makedepends="meson ninja rust cargo bash glib-dev wayland-protocols wayland-dev
+	gtk+3.0-dev libcroco-dev gnome-desktop-dev"
+checkdepends="xvfb-run"
+source="https://source.puri.sm/Librem5/squeekboard/-/archive/v$pkgver/squeekboard-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	xvfb-run ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+sha512sums="1924bc062e4e130e9d840152f36bcc2a0ebaed529b53dfe65116246f090785a9d0d1555b5e5ae7a941726a5a46d004bc7e16a73309bff472300cd9880bed9e59  squeekboard-v1.9.1.tar.gz"

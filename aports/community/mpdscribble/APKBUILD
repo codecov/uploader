@@ -1,0 +1,38 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: 
+pkgname=mpdscribble
+pkgver=0.22
+pkgrel=2
+pkgdesc="last.fm client for mpd"
+url="https://github.com/MusicPlayerDaemon/mpdscribble"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="libmpdclient-dev curl-dev glib-dev automake libtool autoconf"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="https://www.musicpd.org/download/mpdscribble/${pkgver}/mpdscribble-${pkgver}.tar.bz2
+	mpdscribble.initd"
+
+prepare() {
+	autoreconf -fi
+	default_prepare
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -D -m755 "$srcdir"/mpdscribble.initd "$pkgdir"/etc/init.d/mpdscribble
+}
+
+sha512sums="bedd93392a4d5a0609dcaf7aefeeff3851f3084da8c34a4fc1f8fde51c2ba10b8370ac52cc8d55f0c9a96fffed975827a0935087c2c51880b7bfef8d79182dc8  mpdscribble-0.22.tar.bz2
+b82d3e5678aba145a5c8d172ebf74960d164e3e934426cc755948d795743bb07158f502705d40c1730a40b6a6d73e84c5792419adaf6ab83ec7c33756f0abb43  mpdscribble.initd"

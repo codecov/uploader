@@ -1,0 +1,35 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libxdg-basedir
+pkgver=1.2.0
+pkgrel=1
+pkgdesc="library for XDG base dir specification"
+url="https://git.universe-factory.net/libuecc"
+arch="all"
+license="MIT"
+makedepends="autoconf automake libtool"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/devnev/libxdg-basedir/archive/libxdg-basedir-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgname-$pkgver"
+
+prepare() {
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--disable-static
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="8584405d45e0b57e570666b6eab6d99d70411d00f88965826c9ed0292372385668f190157a10ff536f3a5a59fd0031b332ecbb8a38ac64eda1b04a0603997406  libxdg-basedir-1.2.0.tar.gz"

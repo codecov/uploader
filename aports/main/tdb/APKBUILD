@@ -1,0 +1,50 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=tdb
+pkgver=1.4.3
+pkgrel=0
+pkgdesc="The tdb library"
+url="https://tdb.samba.org/"
+arch="all"
+license="LGPL-3.0-or-later"
+depends_dev="python3"
+makedepends="$depends_dev python3-dev docbook-xsl"
+subpackages="$pkgname-dev py3-$pkgname:_py3
+	$pkgname-libs $pkgname-doc"
+source="https://samba.org/ftp/tdb/tdb-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-rpath \
+		--bundled-libraries=NONE \
+		--builtin-libraries=replace
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+_py3() {
+	pkgdesc="Python 3 binding for the tdb library"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/python3* "$subpkgdir"/usr/lib/
+}
+
+libs() {
+	default_libs
+	replaces="tdb"
+}
+
+sha512sums="99488839e7da396f04df60412d21a7d3e09efeab52772d6cb5e9470a3dfd585d73ef2422c51cd0d8ccc123a65d455de400d5d6b24a21a2a50d3da60d9a70e67a  tdb-1.4.3.tar.gz"

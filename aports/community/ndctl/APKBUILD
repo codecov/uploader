@@ -1,0 +1,50 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Breno Leitao <breno.leitao@gmail.com>
+pkgname=ndctl
+pkgver=68
+pkgrel=1
+pkgdesc="Utility library for managing the libnvdimm (non-volatile memory device) sub-system in the Linux kernel"
+url="https://github.com/pmem/ndctl"
+arch="all"
+license="GPL-2.0-only LGPL-2.1-only"
+depends="libuuid json-c kmod"
+makedepends="autoconf automake libtool asciidoc xmlto kmod-dev
+	eudev-dev util-linux-dev json-c-dev linux-headers asciidoctor
+	bash-completion keyutils-dev"
+subpackages="$pkgname-doc $pkgname-dev $pkgname-libs
+	$pkgname-bash-completion:bashcomp:noarch"
+source="ndctl-$pkgver.tar.gz::https://github.com/pmem/ndctl/archive/v$pkgver.tar.gz"
+options="!check" # tests require building & loading the nfit_test.ko kernel module
+
+prepare() {
+	default_prepare
+	echo $pkgver >"$builddir/version"
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--without-systemd
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/bash-completion "$subpkgdir"/usr/share/
+}
+
+sha512sums="dd8abbb63f612d10dd4a879cb98f80df2ef773c547a89051789128eee1f52c3c0fdae82007b51ce99a603243e5c28e5b2f1a7864c606f4b14d3fe9c4fd790883  ndctl-68.tar.gz"

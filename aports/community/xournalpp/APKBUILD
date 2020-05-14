@@ -1,0 +1,40 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=xournalpp
+pkgver=1.0.18
+pkgrel=0
+pkgdesc="Xournal++ is a handwriting notetaking software with PDF annotation support"
+url="https://github.com/xournalpp/xournalpp"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="cmake libx11-dev libxi-dev glib-dev gtk+3.0-dev libxml2-dev
+	poppler-dev libzip-dev libsndfile-dev lua5.3-dev portaudio-dev
+	libexecinfo-dev"
+options="!check" # no tests
+subpackages="$pkgname-lang $pkgname-dbg"
+source="xournalpp-$pkgver.tar.gz::https://github.com/xournalpp/xournalpp/archive/$pkgver.tar.gz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+
+	# Increase stack-size to avoid crashes when using pen for input
+	env LDFLAGS="$LDFLAGS -Wl,-z,stack-size=2097152" \
+		cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		$CMAKE_CROSSOPTS .
+	make
+	make translations
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="90568a2674a18ff711ecef5f1a66ea1c5746d7f1fde271b36342d9bf48e096e63075cf7fd8b69e39e144273a4d1b922c415eee929eba94b2fa515a0bb481815a  xournalpp-1.0.18.tar.gz"

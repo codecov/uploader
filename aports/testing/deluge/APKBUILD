@@ -1,0 +1,50 @@
+# Contributor: August Klein <amatcoder@gmail.com>
+# Contributor: Antoine Fontaine <antoine.fontaine@epfl.ch>
+# Maintainer: August Klein <amatcoder@gmail.com>
+pkgname=deluge
+pkgver=2.0.3
+pkgrel=5
+pkgdesc="A lightweight, Free Software, cross-platform BitTorrent client"
+url="https://deluge-torrent.org/"
+arch="noarch"
+license="GPL-3.0-or-later"
+options="!check" # `setup.py check` run no test
+depends="
+	py3-setuptools
+	py3-twisted
+	py3-rencode
+	py3-openssl
+	py3-xdg
+	py3-pillow
+	py3-mako
+	py3-chardet
+	py3-six
+	py3-setproctitle
+	py3-zope-interface
+	py3-asn1
+	py3-markupsafe
+	py3-service_identity
+	py3-pyhamcrest
+	py3-hyperlink
+	py3-libtorrent-rasterbar
+	py3-gobject3
+	py3-cairo
+	py3-wheel
+	"
+subpackages="$pkgname-doc"
+source="http://download.deluge-torrent.org/source/${pkgver%.*}/deluge-$pkgver.tar.xz
+	10-python38-logging.patch
+	"
+
+replaces="$pkgname-lang" # Overwrite removed subpackage
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="3abec24495b22ec10649865c7ce7c3271224c7d25c0647b43f3c177b7ccb45d4c5c593f8c89d8bc8eac85ae5dc737f9960827587912dd527bb96100304a7d480  deluge-2.0.3.tar.xz
+8ab11f87ddf62a7cba2d2783eec2c439fdc416e5d165ac6b510a9818c28573df32ef408bb16ca61d93b27bb5090782f5b4005a4ad50cfa9fa6dfb869aa2be57c  10-python38-logging.patch"

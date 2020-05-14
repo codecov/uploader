@@ -1,0 +1,28 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=py3-pytest-flake8
+_pyname=pytest-flake8
+pkgver=1.0.5
+pkgrel=0
+pkgdesc="pytest plugin for efficiently checking PEP8 compliance"
+url="https://pypi.org/project/pytest-flake8/"
+arch="noarch"
+license="BSD-3-Clause"
+depends="py3-pytest py3-flake8"
+makedepends="py3-setuptools"
+_pypiprefix="${_pyname%${_pyname#?}}"
+source="https://files.pythonhosted.org/packages/source/$_pypiprefix/$_pyname/$_pyname-$pkgver.tar.gz"
+builddir="$srcdir/$_pyname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="c7d598dbe0c8eb032b175231b2662d15f9f2bd349e83210269cdaa7aaed79e618beab4d07d04143a87fe00b50c20f803350006362326a7918c930618dad2c324  pytest-flake8-1.0.5.tar.gz"

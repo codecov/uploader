@@ -1,0 +1,23 @@
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+# Contributor: Steve Holweg <skytep@gmail.com>
+pkgname=kea-hook-runscript
+pkgver=1.3.3
+pkgrel=2
+pkgdesc="This a hook for the Kea DHCP server that allows to run an external script."
+url="https://github.com/zorun/kea-hook-runscript"
+arch="all !armhf !armv7 !s390x"  # limited by kea
+license="MPL2"
+depends="kea-common>=1.4.0"
+makedepends="boost-dev kea-dev"
+source="https://github.com/zorun/kea-hook-runscript/releases/download/v$pkgver/$pkgname-$pkgver.tar.gz"
+options="!check"  # Library and makefile provide no tests
+
+build() {
+	make
+}
+
+package() {
+	install -Dm755 kea-hook-runscript.so "$pkgdir"/usr/lib/kea/hooks/kea-hook-runscript.so
+}
+
+sha512sums="cff385314d2187ff81b63e426b14f6fdc6ebb58228c3ec5b44259eb29162708858e4cb59578c9d4050a441ac7a5f307c1beace99b963d3ee790a057c20de7d50  kea-hook-runscript-1.3.3.tar.gz"

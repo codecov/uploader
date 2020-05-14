@@ -1,0 +1,65 @@
+# Contributor: Pedro Filipe <xpecex@outlook.com>
+# Contributor: Stefan Wagner <stw@bit-strickerei.de>
+# Maintainer: Stefan Wagner <stw@bit-strickerei.de>
+pkgname=gcc-avr
+pkgver=9.2.0
+pkgrel=0
+pkgdesc="The GNU Compiler Collection for AVR targets"
+url="https://gcc.gnu.org/"
+depends="binutils-avr"
+makedepends="bash linux-headers gmp-dev mpfr-dev mpc1-dev zlib-dev"
+arch="all"
+license="GPL LGPL"
+subpackages="$pkgname-doc"
+_islver=0.18
+source="https://mirrors.kernel.org/gnu/gcc/gcc-$pkgver/gcc-$pkgver.tar.xz
+	http://isl.gforge.inria.fr/isl-${_islver}.tar.bz2"
+
+builddir="$srcdir/gcc-$pkgver"
+_workingdir="$builddir/build"
+
+build() {
+	mkdir "$_workingdir"
+	cd "$_workingdir"
+
+	# link isl for in-tree build
+	ln -s "$srcdir"/isl-"$_islver" "$builddir"/isl
+
+	export CFLAGS_FOR_TARGET='-pipe'
+	export CXXFLAGS_FOR_TARGET='-pipe'
+
+	"$builddir"/configure \
+		--build="$CBUILD" \
+		--target=avr \
+		--prefix=/usr \
+		--enable-languages=c,c++ \
+		--enable-ld=default \
+		--enable-__cxa_atexit \
+		--disable-install-libiberty \
+		--disable-libssp \
+		--disable-libstdcxx-pch \
+		--disable-libunwind-exceptions \
+		--disable-linker-build-id \
+		--disable-nls \
+		--disable-werror \
+		--libdir=/usr/lib \
+		--libexecdir=/usr/lib \
+		--with-as=/usr/bin/avr-as \
+		--with-gnu-as \
+		--with-gnu-ld \
+		--with-ld=/usr/bin/avr-ld \
+		--with-system-zlib \
+		--with-isl
+	make
+}
+
+package() {
+	cd "$_workingdir"
+	make install DESTDIR="$pkgdir"
+	rm -rf "$pkgdir"/usr/share/man/man7
+	rm -f "$pkgdir"/usr/lib/libcc1.*
+	find "$pkgdir"/usr/lib -type f -name "*.a" -exec /usr/bin/avr-strip --strip-debug '{}' \;
+}
+
+sha512sums="a12dff52af876aee0fd89a8d09cdc455f35ec46845e154023202392adc164848faf8ee881b59b681b696e27c69fd143a214014db4214db62f9891a1c8365c040  gcc-9.2.0.tar.xz
+85d0b40f4dbf14cb99d17aa07048cdcab2dc3eb527d2fbb1e84c41b2de5f351025370e57448b63b2b8a8cf8a0843a089c3263f9baee1542d5c2e1cb37ed39d94  isl-0.18.tar.bz2"

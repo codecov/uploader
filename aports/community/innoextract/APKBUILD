@@ -1,0 +1,33 @@
+# Contributor: Michael Koloberdin <koloberdin@gmail.com>
+# Maintainer: Michael Koloberdin <koloberdin@gmail.com>
+pkgname=innoextract
+pkgver=1.8
+pkgrel=3
+pkgdesc="A tool to extract installers created by Inno Setup"
+url="https://constexpr.org/innoextract/"
+arch="all"
+license="Zlib"
+makedepends="cmake boost-dev xz-dev"
+subpackages="$pkgname-doc"
+source="http://constexpr.org/innoextract/files/$pkgname-$pkgver.tar.gz"
+
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr \
+		-DCMAKE_BUILD_TYPE=None \
+		-DBoost_NO_BOOST_CMAKE=ON \
+		.
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	install -Dm644 README.md "$pkgdir"/usr/share/doc/$pkgname/README.md
+	install -m644 CHANGELOG "$pkgdir"/usr/share/doc/$pkgname/CHANGELOG
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
+
+sha512sums="2c68009333f02a8a677c084e9c95c835d84a73e60c9b0c70fee5f23fd9a7a640cf2aa7e0476c55579774ac7079498fa24668f9388493bbc13415ff5a5b06ac9c  innoextract-1.8.tar.gz"

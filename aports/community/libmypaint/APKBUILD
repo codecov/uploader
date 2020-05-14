@@ -1,0 +1,29 @@
+# Contributor: Sascha Paunovic <azarus@posteo.net>
+# Maintainer: Sascha Paunovic <azarus@posteo.net>
+pkgname=libmypaint
+pkgver=1.5.1
+pkgrel=1
+pkgdesc="library for making brushstrokes"
+url="http://mypaint.org/"
+arch="all"
+license="ISC"
+makedepends="glib-dev json-c-dev gobject-introspection-dev intltool"
+subpackages="$pkgname-dev $pkgname-lang"
+source="https://github.com/mypaint/libmypaint/releases/download/v$pkgver/libmypaint-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="2259cfe56ae10559b94f37d3b1cd7cd74967c32ea0c02bfb48df4f79e31ea241b79f5f8b714ca5538647a71986c8ee257beb1724f7dfd732ea4cc26227ec20d3  libmypaint-1.5.1.tar.xz"

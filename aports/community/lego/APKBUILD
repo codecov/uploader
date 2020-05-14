@@ -1,0 +1,35 @@
+# Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
+pkgname=lego
+pkgver=3.4.0
+pkgrel=1
+pkgdesc="Let's Encrypt client and ACME library written in Go"
+url="https://github.com/go-acme/lego"
+arch="all"
+license="MIT"
+depends="ca-certificates"
+makedepends="go libcap"
+source="$pkgname-$pkgver.tar.gz::https://github.com/go-acme/lego/archive/v$pkgver.tar.gz"
+
+export GOPATH="$srcdir"
+export CGO_ENABLED=0
+
+build() {
+	go build -v -ldflags "-X main.version=$pkgver" -o ./bin/lego ./cmd/lego
+}
+
+package() {
+	install -Dm755 ./bin/lego "$pkgdir"/usr/bin/lego
+	setcap cap_net_bind_service=+ep "$pkgdir"/usr/bin/lego
+}
+
+cleanup_srcdir() {
+	go clean -modcache
+	default_cleanup_srcdir
+}
+
+check() {
+	go test -v -cover ./...
+}
+
+sha512sums="ec4613e757920b9671e9749738883fcf95bb179706a514141a3e593c244099afe264813ee2b233c2c0dcf7be48bd96393dc7847e8b756c9e67e4c62ae5e9aa0a  lego-3.4.0.tar.gz"

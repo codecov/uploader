@@ -1,0 +1,19 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=cesnet-tcs-cli
+pkgver=0.3.2
+pkgrel=0
+pkgdesc="Client utility for CESNET TCS API"
+url="https://github.com/jirutka/cesnet-tcs-cli"
+arch="noarch"
+license="MIT"
+depends="ca-certificates curl openssl"
+options="!check"  # no tests provided
+source="https://github.com/jirutka/$pkgname/archive/v$pkgver/$pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+package() {
+	make install DESTDIR="$pkgdir" prefix=/usr
+}
+
+sha512sums="789d35e62a203cb81624816c589fe8b8ba33016f4aabb4f4f8a969db350f702361b15d81386a6dc5e9cdf5de79c9b56daf9a5b065dd26a76fc824df89d0a25c0  cesnet-tcs-cli-0.3.2.tar.gz"

@@ -1,0 +1,24 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=corepins
+pkgver=2.8.0
+pkgrel=0
+pkgdesc="A bookmarking app from the CoreApps family."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtsvg"
+makedepends="qt5-qtbase-dev libcprime-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/corepins/-/archive/v$pkgver/corepins-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+sha512sums="1287261ca507daf764f3fc2192ac11955fdf45098074dbe579b4aa885d791263bb4076bdc4636f6bde64932ca902b564fab5f2a7f700af2ba678ba32406817c9  corepins-2.8.0.tar.gz"

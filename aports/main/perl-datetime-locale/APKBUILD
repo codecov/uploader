@@ -1,0 +1,36 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=perl-datetime-locale
+pkgver=1.25
+pkgrel=0
+pkgdesc="DateTime::Locale perl module"
+url="https://search.cpan.org/dist/DateTime-Locale"
+arch="noarch"
+license="Artistic-1.0-Perl GPL-1.0-or-later"
+depends="perl perl-cpan-meta-check perl-dist-checkconflicts perl-file-sharedir perl-file-sharedir-install
+	perl-list-moreutils perl-namespace-autoclean perl-params-validate perl-params-validationcompiler
+	perl-scalar-list-utils perl-test-fatal perl-test-requires perl-test-warnings"
+checkdepends="perl-test-file-sharedir perl-ipc-system-simple"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://search.cpan.org/CPAN/authors/id/D/DR/DROLSKY/DateTime-Locale-$pkgver.tar.gz"
+
+builddir="$srcdir"/DateTime-Locale-$pkgver
+build() {
+	cd "$builddir"
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="31fb6c2a4d38350dea0160dc816c21ed2b97f11510fe9f545fe52530d00260b7bb64b1cab3a7e30531a1337aac2dd2983d0b3af09d24da0c4451498729d8777a  DateTime-Locale-1.25.tar.gz"

@@ -1,0 +1,47 @@
+# Contributor: August Klein <amatcoder@gmail.com>
+# Maintainer: August Klein <amatcoder@gmail.com>
+pkgname=libtorrent-rasterbar
+pkgver=1.2.6
+_pkgver=${pkgver//./_}
+pkgrel=0
+pkgdesc="Feature complete C++ bittorrent implementation"
+options="!check" # Tests hang on all arches
+url="https://www.rasterbar.com/products/libtorrent"
+arch="all"
+license="BSD-3-Clause"
+depends_dev="boost-dev openssl-dev python3-dev"
+makedepends="$depends_dev linux-headers"
+subpackages="py3-$pkgname:_py3 $pkgname-static $pkgname-dev"
+source="https://github.com/arvidn/libtorrent/releases/download/libtorrent-$_pkgver/libtorrent-rasterbar-$pkgver.tar.gz"
+
+build() {
+	local _py3ver=$(python3 -c 'import sys; print("{}{}".format(sys.version_info.major, sys.version_info.minor))')
+	PYTHON=/usr/bin/python3 \
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--enable-tests \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-python-binding \
+		--with-boost-system=boost_python$_py3ver
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+_py3() {
+	pkgdesc="Python3 bindings for $pkgname"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/python* "$subpkgdir"/usr/lib/
+}
+
+sha512sums="78f9120b1b824dac37ec8bd16a29abdfcd7fd6af3c56e0cc9048d74412d000ef5ea1e8421f757eddb914f8bb20de9fb4192d5b8a3f781fa2e1d4f134ea24b1ee  libtorrent-rasterbar-1.2.6.tar.gz"

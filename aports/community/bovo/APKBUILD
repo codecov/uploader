@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=bovo
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="A Gomoku like game for two players"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://kde.org/applications/games/org.kde.bovo"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev kcoreaddons-dev kcrash-dev kdbusaddons-dev kdoctools-dev kxmlgui-dev libkdegames-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/bovo-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="e6a16e68f54795761885276901d2c8142ba43e124792bab5d8262711f23f256fd0b30e8b1dc076ef15185e5a6bf4e6256aa2287ef111cdc3fa77fe6e5ba772f3  bovo-20.04.0.tar.xz"

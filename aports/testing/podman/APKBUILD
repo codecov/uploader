@@ -1,0 +1,37 @@
+# Contributor: Michał Polański <michal@polanski.me>
+# Maintainer: Michał Polański <michal@polanski.me>
+pkgname=podman
+pkgver=1.9.2
+pkgrel=0
+pkgdesc="Simple management tool for pods, containers, and images"
+url="https://podman.io/"
+options="!check" # TODO: enable tests
+arch="all !mips !mips64" # fails to build on mips
+license="Apache-2.0"
+depends="conmon cni-plugins crun iptables ip6tables slirp4netns shadow-uidmap skopeo"
+makedepends="go gpgme-dev libseccomp-dev libassuan-dev go-md2man btrfs-progs-dev bash"
+subpackages="$pkgname-doc $pkgname-bash-completion $pkgname-zsh-completion"
+source="$pkgname-$pkgver.tar.gz::https://github.com/containers/libpod/archive/v$pkgver.tar.gz
+	libpod-config.patch"
+builddir="$srcdir/libpod-$pkgver"
+
+# secfixes:
+#   1.8.1-r0:
+#     - CVE-2020-1726
+
+build() {
+	export BUILDTAGS="exclude_graphdriver_devicemapper seccomp"
+	make podman PREFIX=/usr
+}
+
+package() {
+	make install.bin install.man install.cni install.config \
+		PREFIX=/usr DESTDIR="$pkgdir"
+	install -Dm644 "$builddir"/completions/bash/$pkgname \
+		"$pkgdir"/usr/share/bash-completion/completions/$pkgname
+	install -Dm644 "$builddir"/completions/zsh/_$pkgname \
+		"$pkgdir"/usr/share/zsh/site-functions/_$pkgname
+}
+
+sha512sums="5f28239814e8df5cc3d938fc0743c92b6fa588c152cd49afa12fa580557d688915c1c171b1d8be83ae1c8ba3b51301324119201b56da9cbe428c476fa539009d  podman-1.9.2.tar.gz
+5b21c99940ed1d81ef0ae1bb0e192b92158d84d0f227d1170e03b63e6062806a1093bd345c26279bfb66a01c721ac589f17ef095e35c89f052405d2af09a6032  libpod-config.patch"

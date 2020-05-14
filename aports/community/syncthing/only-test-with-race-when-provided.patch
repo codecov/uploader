@@ -1,0 +1,14 @@
+Only use -race when -race is also given to build.go on the command line:
+x86_64 musl targets do not support the Go race runtime.
+
+--- a/build.go
++++ b/build.go
+@@ -364,7 +364,7 @@
+ 
+ 	args := []string{"test", "-short", "-timeout", timeout, "-tags", "purego"}
+ 
+-	if runtime.GOARCH == "amd64" {
++	if race && runtime.GOARCH == "amd64" {
+ 		switch runtime.GOOS {
+ 		case "darwin", "linux", "freebsd": // , "windows": # See https://github.com/golang/go/issues/27089
+ 			args = append(args, "-race")

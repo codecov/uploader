@@ -1,0 +1,38 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=umbrello
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # Blocked by extra-cmake-modules
+arch="$arch !mips !mips64" # Blocked by qt5-qtwebkit
+url="https://umbrello.kde.org/"
+pkgdesc="GUI for diagramming Unified Modelling Language (UML)"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtwebkit-dev karchive-dev kcompletion-dev kconfig-dev kcoreaddons-dev kcrash-dev kdoctools-dev ki18n-dev kiconthemes-dev kdelibs4support-dev kio-dev ktexteditor-dev kwidgetsaddons-dev kwindowsystem-dev kxmlgui-dev kitemmodels-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/umbrello-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+case "$CARCH" in
+	ppc64le|armv7) options="!check";; # FIXME: testsuite fails
+esac
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_KF5=ON
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="e7bc99268a11446376b7b0158ad08f46e284ea6a66301ca18bd0f4930934aa744acde42e36b9b11539c318440774096c6ac2c43e4a6d81be8ab6cc941ba4e189  umbrello-20.04.0.tar.xz"

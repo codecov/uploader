@@ -1,0 +1,58 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=evolution-data-server
+pkgver=3.36.2
+pkgrel=1
+pkgdesc="data server for evolution"
+url="https://projects.gnome.org/evolution"
+arch="all"
+license="GPL-2.0-or-later"
+depends_dev="libgdata-dev db-dev gcr-dev icu-dev"
+makedepends="$depends_dev gperf flex bison glib-dev gtk+3.0-dev libsecret-dev
+	libsoup-dev libxml2-dev nss-dev sqlite-dev krb5-dev gnu-libiconv-dev
+	openldap-dev json-glib-dev webkit2gtk-dev libgweather-dev
+	cmake libical-dev libcanberra-dev vala gobject-introspection-dev
+	gnome-online-accounts-dev"
+subpackages="$pkgname-dev $pkgname-lang"
+source="https://download.gnome.org/sources/evolution-data-server/${pkgver%.*}/evolution-data-server-$pkgver.tar.xz"
+
+case "$CARCH" in
+mips*)	options="!check" ;;
+esac
+
+prepare() {
+	default_prepare
+	mkdir -p "$builddir"/build
+}
+
+build() {
+	cd "$builddir"/build
+	CFLAGS="$CFLAGS -I/usr/include/gnu-libiconv" \
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=/usr/lib \
+		-DSYSCONF_INSTALL_DIR=/etc \
+		-DCMAKE_BUILD_TYPE=None \
+		-DENABLE_GOA=ON \
+		-DENABLE_UOA=OFF \
+		-DENABLE_INTROSPECTION=ON \
+		-DENABLE_VALA_BINDINGS=ON \
+		-DWITH_SYSTEMUSERUNITDIR=no \
+		..
+	make
+}
+
+check() {
+	# failing tests
+	case "$CARCH" in
+		s390x) ;;
+		*) make -C build check ;;
+	esac
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="3549d8ce4cf47080c426a023b88d4a1f4432096018d69c1cf6628f96c4b56312b487ba53c4813968a7aea051c3cf9e8d5438bd3fbdb9605e49eb4f1402b8c8fa  evolution-data-server-3.36.2.tar.xz"

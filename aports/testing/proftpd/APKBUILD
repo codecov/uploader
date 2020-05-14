@@ -1,0 +1,193 @@
+# Contributor: Pedro Filipe <pedrofilipe64@gmail.com>
+# Contributor: Elizabeth Jennifer Myers <elizabeth@sporksirc.net>
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Valery Kartel <valery.kartel@gmail.com>
+pkgname=proftpd
+pkgver=1.3.7_rc3
+_pkgver=${pkgver/_/}
+pkgrel=1
+pkgdesc="Highly configurable FTP server software"
+url="https://github.com/proftpd/proftpd"
+pkgusers=$pkgname
+pkggroups=$pkgname
+arch="all"
+license="GPL-2.0-or-later"
+options="!check" # almost all checks fail, disbled for now
+makedepends="autoconf
+	automake
+	pcre-dev
+	libmemcached-dev
+	openssl-dev
+	sqlite-dev
+	mariadb-connector-c-dev
+	hiredis-dev
+	unixodbc-dev
+	postgresql-dev
+	openldap-dev
+	geoip-dev
+	net-snmp-dev"
+install="$pkgname.pre-install"
+
+_modules=
+_modules="$_modules:mod_unique_id:mod_site_misc:mod_load:mod_ban:mod_quotatab:mod_sql:mod_sql_mysql:mod_sql_postgres:mod_sql_sqlite:mod_sql_odbc:mod_dynmasq"
+_modules="$_modules:mod_quotatab_sql:mod_ldap:mod_quotatab_ldap:mod_ratio:mod_tls:mod_rewrite:mod_radius:mod_wrap2:mod_wrap2_file"
+_modules="$_modules:mod_wrap2_sql:mod_quotatab_file:mod_quotatab_radius:mod_facl:mod_ctrls_admin:mod_copy:mod_deflate:mod_ifversion"
+_modules="$_modules:mod_geoip:mod_exec:mod_sftp:mod_sftp_sql:mod_shaper:mod_sql_passwd:mod_ifsession:mod_auth_otp:mod_tls_redis"
+_modules="$_modules:mod_wrap2_redis:mod_redis:mod_memcache:mod_tls_memcache:mod_readme:mod_snmp:mod_tls_shmcache"
+
+subpackages="$pkgname-doc
+	$pkgname-utils
+	$pkgname-openrc"
+
+for _module in ${_modules//:/ };  do
+	subpackages="$subpackages $pkgname-$_module:_module"
+done
+
+source="$pkgname-$_pkgver.tar.gz::https://github.com/proftpd/proftpd/archive/v$_pkgver.tar.gz
+	fix-autoconf.patch
+
+	$pkgname.logrotate
+	$pkgname.initd
+	$pkgname.conf
+	mod_sftp.conf
+	mod_tls_shmcache.conf"
+
+builddir="$srcdir/$pkgname-$_pkgver/"
+
+prepare() {
+	default_prepare
+	update_config_guess
+	autoreconf -f
+}
+
+check() {
+	make check
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc/$pkgname \
+		--localstatedir=/run/$pkgname \
+		--libexecdir=/usr/lib/$pkgname \
+		--disable-static \
+		--enable-sendfile \
+		--enable-facl \
+		--enable-dso \
+		--enable-autoshadow \
+		--enable-ctrls \
+		--enable-ipv6 \
+		--enable-pcre \
+		--disable-strip \
+		--disable-wtmp \
+		--disable-auth-pam \
+		--enable-openssl \
+		--with-shared=$_modules
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	mkdir -p "$pkgdir"/var/log/$pkgname \
+		"$pkgdir"/etc/$pkgname/conf.d \
+		"$pkgdir"/etc/$pkgname/modules.d
+
+	install -Dm644 "$srcdir"/$pkgname.conf "$pkgdir"/etc/$pkgname/$pkgname.conf
+	install -dm750 -o ftp -g ftp "$pkgdir"/var/lib/ftp
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -Dm644 "$srcdir"/$pkgname.logrotate "$pkgdir"/etc/logrotate.d/$pkgname
+
+	rm -fr "$pkgdir"/run "$pkgdir"/usr/share/locale \
+		"$pkgdir"/usr/sbin/in.$pkgname \
+		"$pkgdir"/usr/lib/pkgconfig \
+		"$pkgdir"/usr/include
+}
+
+dev() {
+	default_dev
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/prxs "$subpkgdir"/usr/bin
+}
+
+doc() {
+	default_doc
+	mkdir -p "$subpkgdir"/usr/share/doc/$pkgname
+	cd "$builddir"
+	cp -r RELEASE_NOTES doc/* contrib/README* \
+		contrib/mod_quotatab_ldap.ldif \
+		contrib/mod_quotatab_ldap.schema \
+		"$subpkgdir"/usr/share/doc/$pkgname
+}
+
+utils() {
+	pkgdesc="$pkgdesc (utilities)"
+	depends="$pkgname perl-mail-sendmail"
+	mkdir -p "$subpkgdir"/usr/sbin
+	mv "$pkgdir"/usr/sbin/ftpscrub \
+		"$pkgdir"/usr/sbin/ftpshut \
+		"$subpkgdir"/usr/sbin
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr
+}
+
+_module() {
+	local name=${subpkgname#$pkgname-}
+	local module_name=${name#mod_}
+	local module_dep=${module_name%%_*}
+
+	pkgdesc="ProFTPd module: $name"
+	depends="$pkgname"
+	mkdir -p "$subpkgdir"/usr/lib/$pkgname
+	mv "$pkgdir"/usr/lib/$pkgname/$name.so "$subpkgdir"/usr/lib/$pkgname
+	if [ -f "$srcdir"/$name.conf ]; then
+		install -Dm644 "$srcdir"/$name.conf \
+			"$subpkgdir"/etc/$pkgname/conf.d/$module_name.conf
+	fi
+
+	local file="$subpkgdir"/etc/$pkgname/modules.d/$module_name.conf
+	mkdir -p ${file%/*}
+	{
+		echo "<IfModule !$name.c>"
+		if [ "$module_name" != "$module_dep" ]; then
+			depends="$depends $pkgname-mod_$module_dep"
+			echo "  <IfModule !mod_$module_dep.c>"
+			echo "    LoadModule mod_$module_dep.c"
+			echo "  </IfModule>"
+		fi
+		echo "  LoadModule $name.c"
+		echo "</IfModule>"
+	} >$file
+
+	# thats fine
+	# shellcheck disable=2015
+	type -q _post_$name && eval _post_$name || true
+}
+
+_post_mod_snmp() {
+	mkdir -p "$subpkgdir"/usr/share/snmp/mibs
+	mv "$pkgdir"/etc/$pkgname/PROFTPD-MIB.txt \
+		"$subpkgdir"/usr/share/snmp/mibs
+}
+
+_post_mod_ldap() {
+	mkdir -p "$subpkgdir"/etc/$pkgname
+	cp "$builddir"/contrib/mod_quotatab_ldap.ldif \
+		"$builddir"/contrib/mod_quotatab_ldap.schema \
+		"$subpkgdir"/etc/$pkgname
+}
+
+_post_mod_sftp() {
+	mkdir -p "$subpkgdir"/etc/$pkgname/authorized_keys
+	mv "$pkgdir"/etc/$pkgname/dhparams.pem \
+		"$pkgdir"/etc/$pkgname/blacklist.dat \
+		"$subpkgdir"/etc/$pkgname/
+}
+
+sha512sums="cab3ffee0ce6b921596cafc5fd2e0059c59a03f790791973b502e6384d45f0880b94e0d0961c3b230541a1785e9b0afa3d80276c82f4720696a46ea6594d744f  proftpd-1.3.7rc3.tar.gz
+d127ffe52df1d0130cc838eaf8aaf2e2980704cd840afd7e2ee30b1c0cd40440a1552b652c7e47b13306accd0cabdf35b8ab78e04141f2a83d60c310bcfbf311  fix-autoconf.patch
+142f8ba096844eb48883cdd3890fa3c0c4c8f73f7ce4f2acd5fb742053f8a3605b3f6ca5d5ab6c62c673d76eb60885d796af55bd7b53950794c4e7e2837973b8  proftpd.logrotate
+a03124a88c0c9f3981762804c62aa479f36227f24408a60437bf737c1e783c539a2d2c0aed0b1d95e56a587bdb5c372f6d670c298cdb7433ecd1f64d4bef7c42  proftpd.initd
+c6c6b6c32dd00d31fc1e328e989c77944aac993818747da05794c9560a270630e9bc7e09ac29215b57bcc709299d3720ae9009d3e2a94a0aef8cc5729fae1d0b  proftpd.conf
+8c810838219dd0663d3a7390c4e3a31739c1389238f92f856a4c74cd5a71317e1cae0dcfecc4e43cc3057f8c4132539e87511e06620debb2f166694a15adc13e  mod_sftp.conf
+2b5beaa4e01588b6d936b7ffda790e270fcba1e337eb43af11a1ad9c615d443d627c4bf66fe2b7946e57c65f5b1075568ab32df3c982e7e7d263b39d422693cd  mod_tls_shmcache.conf"

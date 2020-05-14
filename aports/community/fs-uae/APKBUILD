@@ -1,0 +1,42 @@
+# Contributor: Taner Tas <taner76@gmail.com>
+# Maintainer: Taner Tas <taner76@gmail.com>
+pkgname=fs-uae
+# Remember to upgrade fs-uae-launcher to same version of fs-uae
+pkgver=3.0.3
+pkgrel=0
+pkgdesc="Amiga emulator."
+url="https://fs-uae.net/"
+arch="all !armhf !armv7 !aarch64 !s390x !mips !mips64"  # --enable-jit not supported for these arches
+license="GPL-2.0-only"
+makedepends="zip sdl2-dev libpng-dev libx11-dev libxi-dev openal-soft-dev linux-headers libmpeg2-dev glib-dev"
+subpackages="$pkgname-lang"
+source="https://fs-uae.net/stable/$pkgver/fs-uae-$pkgver.tar.gz"
+options="!check"
+
+build() {
+	local _jitoptions=
+	unset CFLAGS CXXFLAGS
+	case "$CARCH" in
+		ppc64le)
+			_jitoptions="--disable-jit"
+			export CFLAGS="-g -O2 -U__ALTIVEC__"
+			export CXXFLAGS="-D__STRICT_ANSI__ -g -O2 -U__ALTIVEC__"
+		;;
+	esac
+
+	./configure \
+		--build=$CBUILD \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		$_jitoptions \
+		--enable-sdl2
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	rm -rf "$pkgdir"/usr/share/doc
+}
+sha512sums="dce5f4b7e769902d334b48a5d5ff50cd152f48c8e50d5089a11abfe1a405e574eec460842b0bd74540375b80e65faca58b223cf6b03da6f84e326433f52f7c98  fs-uae-3.0.3.tar.gz"

@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kontactinterface
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kontact.kde.org/"
+pkgdesc="Kontact Plugin Interface Library"
+license="LGPL-2.0-only OR LGPL-3.0-only"
+depends_dev="kcoreaddons-dev kparts-dev kwindowsystem-dev ki18n-dev kxmlgui-dev kiconthemes-dev"
+makedepends="$depends_dev extra-cmake-modules"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kontactinterface-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="3629a73e192a68d036b452950212f2c5640d6baccdf37b7282ce7bbb95e7a24157d4208601e48f7e6180bfaf4c7265d43d663bb16c57011351d31ad3ed735e79  kontactinterface-20.04.0.tar.xz"

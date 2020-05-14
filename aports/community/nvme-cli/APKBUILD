@@ -1,0 +1,45 @@
+# Contributor: Florian Heigl <florian.heigl@gmail.com>
+# Maintainer: Florian Heigl <florian.heigl@gmail.com>
+pkgname=nvme-cli
+pkgver=1.11.1
+pkgrel=0
+pkgdesc="NVM-Express user space tooling for Linux"
+options="!check" # Requires nose2
+arch="all"
+url="https://github.com/linux-nvme/nvme-cli"
+license="GPL-2.0-only"
+makedepends="linux-headers coreutils util-linux-dev util-linux"
+subpackages="
+	$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/linux-nvme/nvme-cli/archive/v$pkgver.tar.gz
+	"
+
+build() {
+	make PREFIX=/usr
+}
+
+package() {
+	make PREFIX=/usr DESTDIR="$pkgdir" UDEVDIR=/usr/lib/udev install
+	rm -rf "$pkgdir"/usr/lib/systemd
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh compltions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	amove usr/share/zsh/site-functions
+}
+
+sha512sums="467e327f45500d80cebd6e5e55d4e6d3731a754423e71180efa9d4f5e98f0774f7a31393fefc2794250b487446005dad8e7002a27aff1f2b285983d55ec0d0b3  nvme-cli-1.11.1.tar.gz"

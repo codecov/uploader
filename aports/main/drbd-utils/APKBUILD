@@ -1,0 +1,64 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=drbd-utils
+pkgver=9.12.2
+pkgrel=1
+pkgdesc="Network-based RAID 1"
+url="https://www.drbd.org"
+arch="all"
+license="GPL-2.0-or-later"
+depends="bash"
+makedepends="bison docbook-xsl flex libxslt linux-headers po4a"
+options="!check"  # no tests provided
+provides="drbd=$pkgver-r$pkgrel"
+subpackages="$pkgname-doc $pkgname-pacemaker::noarch
+	$pkgname-bash-completion:bashcomp:noarch $pkgname-openrc"
+source="https://www.linbit.com/downloads/drbd/utils/drbd-utils-$pkgver.tar.gz
+	drbdsetup-permissions.patch
+	drbd.initd
+	"
+
+build() {
+	./configure --prefix=/usr \
+		--sbindir=/sbin \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--with-pacemaker \
+		--with-drbdmon \
+		--with-bashcompletion \
+		--without-udev \
+		--without-heartbeat \
+		--without-rgmanager \
+		--without-xen \
+		--without-83support
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	install -m755 -D "$srcdir/drbd.initd" "$pkgdir/etc/init.d/drbd"
+}
+
+pacemaker() {
+	depends="$pkgname=$pkgver-r$pkgrel"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/ocf "$subpkgdir"/usr/lib
+}
+
+bashcomp() {
+	pkgdesc="Bash completions for $pkgname"
+	depends=""
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion
+	mv "$pkgdir"/etc/bash_completion.d \
+		"$subpkgdir"/usr/share/bash-completion/completions
+}
+
+sha512sums="051c2b7c2b1804a70a48b7784e80e49604b910027b67f1cb6041069f94ad31468c038f505a3bc20e22b11f76e69cf5a8ae623ee1913c5dc410f146fc03da677e  drbd-utils-9.12.2.tar.gz
+562ae8eee03148666fb6e6e700c1eb9086f6901e176ea6cd007e3ac4e39d1cdaf967064de74dc1ad620155996dc7011bd0e2abd1c9595ff9bf5f4413673726f3  drbdsetup-permissions.patch
+f61a833dc5eea79000a7dd85e83ae10e284109c76b5d59974ed69f92dbab6c389d6d20f7ea374b7c066519c6d1d816ed27b48dbaee6b91fb9754974acf52f46e  drbd.initd"

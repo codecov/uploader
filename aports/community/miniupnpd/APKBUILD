@@ -1,0 +1,62 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=miniupnpd
+pkgver=2.1
+pkgrel=1
+pkgdesc="Lightweight UPnP IGD daemon"
+url="http://miniupnp.free.fr"
+arch="all"
+license="BSD-3-Clause"
+makedepends="bsd-compat-headers iptables-dev libnfnetlink-dev"
+checkdepends="util-linux-dev"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="http://miniupnp.free.fr/files/miniupnpd-$pkgver.tar.gz
+	$pkgname.initd
+	$pkgname.confd
+	build-with-linux-kernel-5.0.patch
+	makefile-check.patch
+"
+
+prepare() {
+	default_prepare
+	mv Makefile.linux Makefile
+	sed -i \
+		-e "s#^CFLAGS = .*-D#CPPFLAGS += -I/usr/include -D#" \
+		-e '/^CFLAGS :=/s/CFLAGS/CPPFLAGS/g' \
+		-e "s/CFLAGS += -ansi/#CFLAGS += -ansi/g" \
+		-e "s/LIBS = -liptc/LIBS = -lip4tc/g" \
+		-e 's/genuuid||//' \
+		-e "s/--mode=/-m /g" \
+		Makefile
+	sed -i \
+		-e 's/\(strncpy(\([->a-z.]\+\), "[a-zA-Z]\+", \)IPT_FUNCTION_MAXNAMELEN);/\1sizeof(\2));/' \
+		netfilter/iptcrdr.c
+
+	make config.h
+
+	sed -i \
+		-e 's/\/\*#define ENABLE_LEASEFILE\*\//#define ENABLE_LEASEFILE/g' \
+		config.h
+}
+
+build() {
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make PREFIX="$pkgdir/" install
+	install -m755 -D "$srcdir"/$pkgname.initd \
+		"$pkgdir"/etc/init.d/$pkgname
+	install -m644 -D "$srcdir"/$pkgname.confd \
+		"$pkgdir"/etc/conf.d/$pkgname
+}
+
+sha512sums="c737faad21bfba1f59346cbe0082d24827f36c0422cfaa5e71180aa9f61e784eb19ea9d6abf2d005f92d4cde106eac8c66ecc88b30421de710f3c129ac15f4ae  miniupnpd-2.1.tar.gz
+e00fcd1e55620929617d2c4958294461894b10f3d08dcaa4d66fe5c51cf4b2a634dbf8b27d63943a8fdc9fa0e75c169ba615cb30957f16443540ba26d4570750  miniupnpd.initd
+81aa2dac0643bbd1331549427c438900319adce91928b6bad6f7d470492f6f48e04e4d1af89f961db53fc132a7ff89ea52625441f051afd5a1b48680917f4ff7  miniupnpd.confd
+57319ba5c5bf4be2f7394e047d28f10aec9d49bb474e92ce5ce1d14807de5535e8842d5055f00c0a713082e012a5c26ba5484195c3ff2fe0bca3ccf49e3e33df  build-with-linux-kernel-5.0.patch
+678024e641483824505dd1a916a48c8392a96317a2eb60c59b2e1fbb436f1a134d8ba50fa974f6072facb4894adffaa52f8400db5c8356f18a40074719eee3c0  makefile-check.patch"

@@ -1,0 +1,35 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=keybinder3
+_pkgname=keybinder-3.0
+pkgver=0.3.2
+pkgrel=2
+pkgdesc="Library for registering global key bindings, for gtk-based applications. GTK3 version"
+url="https://github.com/engla/keybinder"
+arch="all"
+license="MIT"
+makedepends="gtk+3.0-dev gobject-introspection-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/kupferlauncher/keybinder/releases/download/keybinder-3.0-v$pkgver/keybinder-3.0-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--enable-shared \
+		--disable-static \
+		--disable-gtk-doc
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="14171875e03ade88165f28c7267b66cf9efe34259d7a3072a786ba49dacf8f8d6d84753b1aeedec5dfb0a24028be86bceeebee2f6b1bf5ef2eb79ee45f909b11  keybinder-3.0-0.3.2.tar.gz"

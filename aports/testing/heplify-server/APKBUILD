@@ -1,0 +1,34 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=heplify-server
+pkgver=1.27
+pkgrel=1
+pkgdesc="HEP Capture Server & Switch in Go"
+url="http://sipcapture.io"
+arch="all"
+license="AGPL-3.0-or-later"
+makedepends="go"
+install="$pkgname.pre-install"
+subpackages="$pkgname-openrc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/sipcapture/heplify-server/archive/$pkgver.tar.gz
+	$pkgname.initd
+	default-config.patch
+	"
+
+build() {
+	make all
+}
+
+check() {
+	make test
+}
+
+package() {
+	install -D -m755 heplify-server "$pkgdir"/usr/bin/heplify-server
+	install -D -m644 example/homer7_config/heplify-server.toml \
+		"$pkgdir"/etc/homer/heplify-server.toml
+	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+}
+
+sha512sums="b49b4b388246fe26a82433fbffa7984eff7064acf004db57bca06912e432f848b157544b6b01236c8b593d79978d6b06ca15d9533e563d6e277626983cc5d425  heplify-server-1.27.tar.gz
+5c2c950e93bdbe5514be67e5012763883795d4ad3d83889d0fa360151b7eb860e9d4d00a47d188ab12722bc8db708cc557fbc3ea6dd912994e801758be62c02b  heplify-server.initd
+56f1d859f3933390d3d88e5260eeb270ccf6999e124e526afd4294cc20fdd81a7cdcf91a5596b2105ad2317200852371652be8505355467f80ab0e30a12733f8  default-config.patch"

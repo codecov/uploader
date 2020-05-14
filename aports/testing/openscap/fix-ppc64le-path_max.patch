@@ -1,0 +1,34 @@
+--- a/src/OVAL/probes/unix/linux/iflisteners_probe.c
++++ b/src/OVAL/probes/unix/linux/iflisteners_probe.c
+@@ -53,6 +53,7 @@
+ #include <netdb.h>
+ #include <arpa/inet.h>
+ #include <regex.h>
++#include <limits.h>
+ 
+ #include "_seap.h"
+ #include "probe-api.h"
+diff --git a/src/OVAL/probes/unix/process58_probe.c b/src/OVAL/probes/unix/process58_probe.c
+index 95ef0a7..3ab2cb0 100644
+--- a/src/OVAL/probes/unix/process58_probe.c
++++ b/src/OVAL/probes/unix/process58_probe.c
+@@ -67,6 +67,7 @@
+ #include <fcntl.h>
+ #include <sched.h>
+ #include <time.h>
++#include <limits.h>
+ 
+ #ifdef HAVE_PROC_DEVNAME_H
+  #include <proc/devname.h>
+diff --git a/src/OVAL/probes/independent/environmentvariable58_probe.c b/src/OVAL/probes/independent/environmentvariable58_probe.c
+index 552ce67..e2490ac 100644
+--- a/src/OVAL/probes/independent/environmentvariable58_probe.c
++++ b/src/OVAL/probes/independent/environmentvariable58_probe.c
+@@ -50,6 +50,7 @@
+ #include <fcntl.h>
+ #include <sys/types.h>
+ #include <dirent.h>
++#include <limits.h>
+ 
+ #include <probe/probe.h>
+ #include "_seap.h"

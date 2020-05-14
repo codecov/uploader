@@ -1,0 +1,28 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libglacierapp
+pkgver=0.6
+pkgrel=0
+pkgdesc="Glacier applications wrapper library"
+url="https://github.com/nemomobile-ux/libglacierapp"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+license="LGPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev qt5-qtdeclarative-dev"
+makedepends="$depends_dev cmake"
+subpackages="$pkgname-dev"
+source="https://github.com/nemomobile-ux/libglacierapp/archive/$pkgver/libglacierapp-$pkgver.tar.gz"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	cmake --build build
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="6136e5a787704d2a02174d89506e9e81a160149a8f178523c9023acd037b5302e76403205545225dda4c061067ed47593ccbaeaa7bf27a3604d27172ec8fd4bd  libglacierapp-0.6.tar.gz"

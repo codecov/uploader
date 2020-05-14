@@ -1,0 +1,32 @@
+# Contributor: TBK <alpine@jjtc.eu>
+# Maintainer: TBK <alpine@jjtc.eu>
+pkgname=trivy
+pkgver=0.6.0
+pkgrel=1
+pkgdesc="A Simple and Comprehensive Vulnerability Scanner for Containers, Suitable for CI"
+url="https://github.com/aquasecurity/trivy"
+arch="all !s390x !mips !mips64" # tests SIGSEGV on s390x - https://github.com/aquasecurity/trivy/issues/430
+license="Apache 2.0"
+makedepends="btrfs-progs-dev go linux-headers lvm2-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/aquasecurity/trivy/archive/v$pkgver.tar.gz"
+builddir="$srcdir/src/github.com/aquasecurity/$pkgname"
+
+prepare() {
+	mkdir -p "$srcdir/src/github.com/aquasecurity/"
+	ln -sf "$srcdir/$pkgname-$pkgver" "$srcdir/src/github.com/aquasecurity/$pkgname"
+	default_prepare
+}
+
+build() {
+	make build
+}
+
+check() {
+	make test
+}
+
+package() {
+	install -Dm755 $pkgname "$pkgdir"/usr/bin/$pkgname
+}
+
+sha512sums="352602218d8eb87632a355a917a551f09b4551ec623208366e04773891d12f6d25c7b55b4abe6333403b020457d4b939e80f7c5b0f1a613f36b722d281afe5ac  trivy-0.6.0.tar.gz"

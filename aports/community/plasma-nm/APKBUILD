@@ -1,0 +1,47 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=plasma-nm
+pkgver=5.18.5
+pkgrel=0
+pkgdesc="Plasma applet written in QML for managing network connections"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://www.kde.org/workspaces/plasmadesktop/"
+license="(LGPL-2.1-only OR LGPL-3.0-only) AND LGPL-2.0-or-later"
+depends="kirigami2 networkmanager"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtdeclarative-dev ki18n-dev kwindowsystem-dev kservice-dev kcompletion-dev kwidgetsaddons-dev kio-dev kcoreaddons-dev kwallet-dev kconfigwidgets-dev kiconthemes-dev solid-dev kdbusaddons-dev knotifications-dev plasma-framework-dev kdeclarative-dev qca-dev networkmanager-qt-dev modemmanager-qt-dev mobile-broadband-provider-info"
+source="https://download.kde.org/stable/plasma/$pkgver/plasma-nm-$pkgver.tar.xz"
+subpackages="$pkgname-lang $pkgname-mobile"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_MOBILE=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+mobile() {
+	pkgdesc="$pkgdesc (mobile KCM's)"
+
+	mkdir -p \
+		"$subpkgdir"/usr/lib/qt5/plugins \
+		"$subpkgdir"/usr/share/kservices5
+
+	mv "$pkgdir"/usr/share/kpackage "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/lib/qt5/plugins/kcms "$subpkgdir"/usr/lib/qt5/plugins
+	mv \
+		"$pkgdir"/usr/share/kservices5/mobilebroadbandsettings.desktop \
+		"$pkgdir"/usr/share/kservices5/wifisettings.desktop \
+		"$subpkgdir"/usr/share/kservices5/
+}
+sha512sums="8f785f257f274fb9384bf2afbe4231a057c46706483e26dd2270a93a6fc97e6198916ff119d258a67d4f8bb73facb0ff67412f43e5fa66812962edb64331db4a  plasma-nm-5.18.5.tar.xz"

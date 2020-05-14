@@ -1,0 +1,39 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-db_file
+_pkgname=DB_File
+pkgver=1.853
+pkgrel=0
+pkgdesc="Perl5 access to Berkeley DB"
+url="https://metacpan.org/pod/DB_File"
+arch="all"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl"
+makedepends="perl-dev db-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/P/PM/PMQS/DB_File-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+
+}
+
+build() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make
+}
+
+check() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="484186dcad8b6310e60782c01f531b11f1088db2218e1aba3c303db458c220671d7cf6ba2d4ba88572ecc4abb8cfee32865aea1c78ba7e594ddaf132780130e4  DB_File-1.853.tar.gz"

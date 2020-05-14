@@ -1,0 +1,45 @@
+# Maintainer: Laurent Bercot <ska-devel@skarnet.org>
+# Contributor: John Regan <john@jrjrtech.com>
+pkgname=skalibs
+pkgver=2.9.2.1
+pkgrel=0
+pkgdesc="Set of general-purpose C programming libraries for skarnet.org software."
+url="http://skarnet.org/software/skalibs/"
+arch="all"
+license="ISC"
+options="!check"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="http://skarnet.org/software/skalibs/skalibs-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--enable-shared \
+		--enable-static \
+		--libdir=/usr/lib
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+dev() {
+	default_dev
+	mkdir -p "$subpkgdir"/usr/lib/"$pkgname"/sysdeps
+	mv "$pkgdir/usr/lib/$pkgname"/sysdeps/* \
+		"$subpkgdir/usr/lib/$pkgname"/sysdeps
+	rm -rf "$pkgdir"/usr
+}
+
+doc() {
+	default_doc
+	mkdir -p "$subpkgdir/usr/share/doc"
+	cp -a "$builddir/doc" "$subpkgdir/usr/share/doc/$pkgname"
+}
+
+static() {
+	default_static
+	rmdir -p "$pkgdir"/usr/lib || :
+}
+
+sha512sums="bd507faf30f0564fb8d3e5f86de04ab4b39961dab2497ba9f4a81980a57f7ff68cad366b9847b25d555b5b9263460d13f096e1774d080d1d286979f2e7324c54  skalibs-2.9.2.1.tar.gz"

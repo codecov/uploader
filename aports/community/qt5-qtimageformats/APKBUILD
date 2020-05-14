@@ -1,0 +1,39 @@
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtimageformats
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="Qt5 - QtImageFormats component"
+url="https://www.qt.io/developers/"
+arch="all"
+license="(LGPL-2.0-or-later OR GPL-3.0-only OR GPL-2.0-or-later) AND Qt-GPL-exception-1.0"
+makedepends="qt5-qtbase-dev libmng-dev tiff-dev libwebp-dev"
+builddir="$srcdir/qtimageformats-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtimageformats-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make install INSTALL_ROOT="$pkgdir"
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="e835489bdd1cf19aaa1c04e6ae1c480d4077cf24eee1d46b2f4deb03c093f64df6beaf83adb69b7edcba67c952a60deb89a26923addf2b4254aff18bc2ebf6a6  qtimageformats-everywhere-src-5.14.2.tar.xz"

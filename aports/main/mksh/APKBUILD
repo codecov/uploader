@@ -1,0 +1,42 @@
+# Contributor: Eivind Uggedal <eu@eju.no>
+# Maintainer: Sören Tempel <soeren+alpinelinux@soeren-tempel.net>
+pkgname=mksh
+pkgver=59
+_pkgver=R$pkgver
+pkgrel=0
+pkgdesc="MirBSD KSH Shell"
+url="https://www.mirbsd.org/mksh"
+arch="all"
+license="MirOS"
+checkdepends="perl"
+install="$pkgname.post-install $pkgname.post-upgrade $pkgname.pre-deinstall"
+subpackages="$pkgname-doc"
+source="https://www.mirbsd.org/MirOS/dist/mir/mksh/mksh-$_pkgver.tgz"
+builddir="$srcdir/$pkgname"
+
+prepare() {
+	default_prepare
+
+	# This test case checks if a controlling tty is not present when
+	# '-C regress:no-ctty' has been passed. However, a controlling
+	# tty might be present when building this APKBUILD locally but
+	# isn't present on the builder. To make sure the tests pass both
+	# locally and on the builders we remove this test case.
+	sed -i "$builddir"/check.t -e '/^name: selftest-tty-absent$/,/^---$/d'
+}
+
+build() {
+	sh Build.sh -r
+}
+
+check() {
+	./test.sh -v -f -C regress:no-ctty
+}
+
+package() {
+	install -Dm755 mksh "$pkgdir"/bin/mksh
+	install -Dm644 mksh.1 "$pkgdir"/usr/share/man/man1/mksh.1
+	install -Dm644 dot.mkshrc "$pkgdir"/usr/share/doc/mksh/dot.mkshrc
+}
+
+sha512sums="be5009ce8f02eab1392f95d7f85f5aad57b1445684b4fe8cd0284a7d79386170979303ef19f039fdbb53bd2a791f3e3603d2fe57e015fed4cb4a24ab710bcfbb  mksh-R59.tgz"

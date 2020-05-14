@@ -1,0 +1,29 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=lua-resty-http
+pkgver=0.15
+pkgrel=0
+pkgdesc="Lua HTTP client cosocket driver for OpenResty / ngx_lua"
+url="https://github.com/pintsized/lua-resty-http"
+arch="noarch"
+license="BSD-2-Clause"
+depends="lua"
+provides=""
+source="$pkgname-$pkgver.tar.gz::https://github.com/pintsized/$pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+options="!check"  # FIXME: tests require OpenResty and additional dependencies
+
+for _v in 5.1 5.2 5.3; do
+	provides="$provides lua$_v-${pkgname#lua-}=$pkgver-r$pkgrel"  # for backward compatibility
+done
+
+package() {
+	cd "$builddir"
+	make install DESTDIR="$pkgdir" LUA_LIB_DIR="/usr/share/lua/common"
+
+	echo 'rock_manifest = {}' > rock_manifest
+	install -D -m 644 rock_manifest \
+		"$pkgdir"/usr/lib/luarocks/rocks-common/$pkgname/$pkgver-1
+}
+
+sha512sums="3d969e9cd7e39b69d2386dc3602707e76d85573b5aafcbd7a8f4f6549dc2d180753472b6d5dcf652ec86839eeb473c427ecfa6963eced48128c774e81cab235a  lua-resty-http-0.15.tar.gz"

@@ -1,0 +1,21 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=binwalk
+pkgver=2.2.0
+pkgrel=2
+pkgdesc="Fast, easy to use tool for analyzing and extracting firmware images"
+url="https://github.com/ReFirmLabs/binwalk/"
+arch="noarch"
+license="MIT"
+depends="py3-pycryptodome python3"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ReFirmLabs/binwalk/archive/v$pkgver.tar.gz"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="5f3ed31c0b5f9ca3057f86e82787a73b06f9f73747b51dd72130a78e4d69cf43a0207bffc495d177e97811de5bf835b3d0507f314b7a0c960eddf6d1efe0f0f9  binwalk-2.2.0.tar.gz"

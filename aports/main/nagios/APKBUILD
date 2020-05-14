@@ -1,0 +1,73 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Carlo Landmeter <clandmeter@gmail.com>
+pkgname=nagios
+pkgver=3.5.1
+pkgrel=6
+pkgdesc="Popular monitoring tool"
+url="https://www.nagios.org/"
+arch="all"
+license="GPL-2.0"
+depends="perl"
+install="$pkgname.pre-install"
+makedepends="gd-dev perl-dev libpng-dev libjpeg perl-net-snmp"
+source="https://downloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.gz
+	nagios.confd
+	nagios.initd
+	lighttpd-nagios.conf"
+subpackages="${pkgname}-web::noarch"
+pkgusers="nagios"
+pkggroups="nagios"
+
+_builddir="$srcdir/$pkgname"
+
+prepare() {
+	cd "$_builddir"
+	update_config_sub || return 1
+}
+
+build() {
+	cd "$_builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc/nagios \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--datadir=/usr/share/nagios \
+		--localstatedir=/var \
+		--bindir=/usr/sbin \
+		--sbindir=/usr/lib/nagios/cgi-bin \
+		--datadir=/usr/share/nagios/htdocs \
+		--libexecdir=/usr/lib/nagios/plugins \
+		--localstatedir=/var/nagios \
+		--with-nagios-user=nagios \
+		--with-nagios-group=nagios \
+		--enable-embedded-perl \
+		--with-perlcache \
+		|| return 1
+	make all || return 1
+}
+
+package() {
+	cd "$_builddir"
+	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" install-config
+	make DESTDIR="$pkgdir" install-commandmode
+
+	install -m755 -D "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -m644 -D "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+}
+
+
+web() {
+	#depends="php lighttpd"
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/share "$subpkgdir"/usr/
+	install -m644 -D "$srcdir"/lighttpd-nagios.conf "$subpkgdir"/etc/lighttpd/nagios.conf
+}
+
+sha512sums="48e2ecb91002b08203937b12a438c87c62cd3c5c401a0ed9e861cd6d79074c7017ed373e9379f013d87dea1fd7cb8e3d85112d55c87ac91aed96b256868c112d  nagios-3.5.1.tar.gz
+8575902dcb7252f195847f9997b424c1ef9bee7dfacdd124c922fc119f583923c34847ce77c505783662d91f7290b1a85dc5e382ac50d177406bfb3876d4e40a  nagios.confd
+a004ed1cf8e7d9faeb849cd714095dbe5157c707618d2cce92c98c78604b896bb806b55aa69b2db8ca3e954bd629f9e3db5d2676015f87d6be5da32fa9ec5664  nagios.initd
+6f1448db1964e378dbc7460a6d321638f4d0f7a08bc078824edca12fb6653fb0200b3be365fa519e7b2ff566802701878975bb97e65d65dc54d3da34dae21588  lighttpd-nagios.conf"

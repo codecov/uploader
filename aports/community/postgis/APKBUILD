@@ -1,0 +1,29 @@
+# Contributor: Bjoern Schilberg <bjoern@intevation.de>
+# Maintainer: Bjoern Schilberg <bjoern@intevation.de>
+pkgname=postgis
+pkgver=3.0.1
+pkgrel=2
+pkgdesc="PostGIS is a spatial database extender for PostgreSQL object-relational database."
+url="https://postgis.net/"
+arch="all !x86 !armhf !armv7 !s390x !mips !mips64" # missing proj-dev on these arch's
+license="GPL-2.0-or-later"
+depends="postgresql perl"
+makedepends="postgresql-dev geos-dev gdal-dev libxml2-dev proj-dev perl-dev
+	json-c-dev pcre-dev protobuf-c-dev clang-dev"
+subpackages="$pkgname-doc"
+source="http://download.osgeo.org/postgis/source/postgis-$pkgver.tar.gz"
+options="!check" # tests depends on a running PostgreSQL server
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr
+	make -j1
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="5ebce2303d672bb342f7fae6cade08140c8a687fc38e82e5b41eebb8465cdf3dc7bdbeae53b1179df8112a01842dd65f362fc107b381e2a1fa6e161b77a50227  postgis-3.0.1.tar.gz"

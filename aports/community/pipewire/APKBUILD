@@ -1,0 +1,43 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=pipewire
+pkgver=0.3.4
+pkgrel=0
+pkgdesc="Multimedia processing graphs"
+url="https://pipewire.org/"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="meson alsa-lib-dev libx11-dev sdl2-dev ffmpeg-dev eudev-dev dbus-dev
+	glib-dev gstreamer-dev gst-plugins-base-dev sbc-dev doxygen xmltoman graphviz
+	bluez-dev jack-dev vulkan-loader-dev pulseaudio-dev"
+options="!check" # no tests
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/PipeWire/pipewire/archive/$pkgver.tar.gz
+	fix-s390x.patch
+	e83bf8a33f720050c7f1ec5f00530fafd5af5698.patch
+	"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Ddocs=true \
+		-Dman=true \
+		-Dgstreamer=true \
+		-Dexamples=true \
+		-Dffmpeg=true \
+		-Dsystemd=false \
+		. output
+	ninja -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="d53990e54a657e58fcab52bb75c0b8b81cc621c8e1ed851d8780e2940bb19bdc8f9e894fe261a11180579a9536ade92f93278b31ff04bba35f51e252f00376eb  pipewire-0.3.4.tar.gz
+576a6fbb7d457bda70822a175a188b6f9dbf3b5cf9efa660e458f6d54ff6b88376821164534ec073f20b929d81c2232783f63612fc9ec5803bfe23356449f314  fix-s390x.patch
+5fca169b5f16b60cc3e0bd5ce9f3ee2a76300811868f11590dd4a752cb5dd63f98391e6b526c4711338b1829a0a6cd02b451aca53ad9936e87b99814b5ed8d5c  e83bf8a33f720050c7f1ec5f00530fafd5af5698.patch"

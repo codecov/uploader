@@ -1,0 +1,70 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=linphone
+pkgver=4.3.1
+pkgrel=0
+pkgdesc="An opensource SIP phone for voice/video calls and instant messaging"
+url="https://linphone.org/"
+arch="all !mips !mips64" # blocked by belle-sip-dev
+license="GPL-2.0-or-later"
+options="!check" # no test available
+makedepends="cmake ortp-dev readline-dev sqlite-dev
+	bctoolbox-dev libxml2-dev zlib-dev libnotify-dev
+	speex-dev mediastreamer2-dev belle-sip-dev belcard-dev belr-dev
+	libxv-dev v4l-utils-dev graphviz-dev xerces-c-dev"
+subpackages="$pkgname-dev"
+source="https://gitlab.linphone.org/BC/public/liblinphone/-/archive/$pkgver/liblinphone-$pkgver.tar.gz"
+builddir="$srcdir/lib$pkgname-$pkgver"
+
+build() {
+	cmake -B build\
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DCMAKE_SKIP_BUILD_RPATH=ON \
+		-DENABLE_SHARED=YES \
+		-DENABLE_STATIC=NO \
+		-DENABLE_CONSOLE_UI=YES \
+		-DENABLE_TOOLS=YES \
+		-DENABLE_DAEMON=YES \
+		-DENABLE_SQLITE_STORAGE=YES \
+		-DENABLE_STRICT=NO \
+		-DENABLE_VIDEO=YES \
+		-DENABLE_VCARD=YES \
+		-DENABLE_NLS=NO \
+		-DENABLE_LIME=NO \
+		-DENABLE_NOTIFY=YES \
+		-DENABLE_GTK_UI=NO \
+		-DENABLE_ASSISTANT=NO \
+		-DENABLE_STRICT=NO \
+		-DENABLE_ROOTCA_DOWNLOAD=NO \
+		-DENABLE_ADVANCED_IM=NO \
+		-DENABLE_DB_STORAGE=NO \
+		-DENABLE_LIME_X3DH=NO \
+		-DENABLE_UNIT_TESTS=NO \
+		-DENABLE_CXX_WRAPPER=NO \
+		-DENABLE_DOC=NO
+	make -C build
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+dev() {
+	default_dev
+	mkdir -p "$subpkgdir"/usr/lib/cmake/Linphone
+	mv "$pkgdir"/usr/share/Linphone/cmake/* "$subpkgdir"/usr/lib/cmake/Linphone
+
+	# Fix includes
+	sed -i -e 's/INTERFACE_INCLUDE_DIRECTORIES.*/INTERFACE_INCLUDE_DIRECTORIES\  \"\/usr\/include\"/g' "$subpkgdir"/usr/lib/cmake/Linphone/LinphoneTargets.cmake
+}
+
+sounds() {
+	pkgdesc="Sound files for $pkgname"
+	mkdir -p "$subpkgdir"/usr/share/sounds/linphone
+	mv "$pkgdir"/usr/share/sounds "$subpkgdir"/usr/share/sounds/linphone
+	# Remove empty dirs
+	rmdir "$pkgdir"/usr/share
+}
+
+sha512sums="5d47d947f9f9a5cf1a2484a8e6395bfb47bc9953a7833010dcd15939cb3fe019b47d2ea1c218cfc424dabf6b1015a01c085bcf68244e4fd73d4f741caf9ea979  liblinphone-4.3.1.tar.gz"

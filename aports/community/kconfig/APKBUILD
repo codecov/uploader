@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kconfig
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Configuration system"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.0-or-later AND LGPL-2.0-only AND LGPL-2.1-or-later"
+makedepends="extra-cmake-modules qt5-qttools-dev doxygen"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kconfig-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E '(kconfigcore-kconfigtest|kconfigcore-kdesktopfiletest|kconfigcore-test_kconf_update)'
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="73618b8e36ed23f99a4d574dc1b15e4e0d4b127ad7b61f0c3d28b85fa4eb61b57d3333ba0df33b4d079fdfe90c4294be89881bdea62253e9e7f4f57b13d0c1b5  kconfig-5.70.0.tar.xz"

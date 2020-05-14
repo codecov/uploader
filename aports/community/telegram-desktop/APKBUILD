@@ -1,0 +1,96 @@
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+pkgname=telegram-desktop
+pkgver=2.1.5
+pkgrel=0
+pkgdesc="Telegram Desktop messaging app"
+options="!check" # Requires Catch2 to be packaged.
+url="https://desktop.telegram.org/"
+arch="all !s390x !mips !mips64" # Need support on lib_base
+license="GPL-3.0-or-later WITH OpenSSL"
+depends="qt5-qtimageformats libappindicator"
+makedepends="
+	cmake
+	samurai
+	zlib-dev
+	opus-dev
+	libva-dev
+	libvdpau-dev
+	ffmpeg-dev
+	portaudio-dev
+	openal-soft-dev
+	openssl-dev
+	libxkbcommon-dev
+	qt5-qtbase-dev
+	libexif-dev
+	xz-dev
+	minizip-dev
+	alsa-lib-dev
+	libexecinfo-dev
+	lz4-dev
+	qtchooser
+	pulseaudio-dev
+	libdbusmenu-glib-dev
+	libappindicator-dev
+	xxhash-dev
+	enchant2-dev
+	range-v3-dev
+	python3
+	libdbusmenu-qt-dev
+	tl-expected
+	hunspell-dev
+	"
+source="
+	https://github.com/telegramdesktop/tdesktop/releases/download/v$pkgver/tdesktop-$pkgver-full.tar.gz
+	qt-plugin-path.patch
+	small-sizes.patch
+	"
+builddir="$srcdir/tdesktop-$pkgver-full"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build -G Ninja \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DDESKTOP_APP_DISABLE_CRASH_REPORTS=ON \
+		-DDESKTOP_APP_DISABLE_SPELLCHECK=OFF \
+		-DDESKTOP_APP_LOTTIE_USE_CACHE=ON \
+		-DDESKTOP_APP_USE_GLIBC_WRAPS=OFF \
+		-DDESKTOP_APP_USE_PACKAGED=ON \
+		-DTDESKTOP_API_ID=17349 \
+		-DTDESKTOP_API_HASH=344583e45741c457fe1862106095a5eb \
+		-DDESKTOP_APP_USE_PACKAGED_RLOTTIE=OFF \
+		-DTDESKTOP_USE_PACKAGED_TGVOIP=OFF \
+		-DTDESKTOP_LAUNCHER_BASENAME=telegram-desktop \
+		-DTDESKTOP_FORCE_GTK_FILE_DIALOG=ON \
+		-DDESKTOP_APP_USE_PACKAGED_GSL=OFF \
+		-DDESKTOP_APP_USE_PACKAGED_VARIANT=OFF \
+		$CMAKE_CROSSOPTS .
+	ninja -C build
+}
+
+package() {
+	install -d "$pkgdir"/usr/bin \
+				"$pkgdir"/usr/share/applications \
+				"$pkgdir"/usr/share/appdata \
+				"$pkgdir"/usr/share/kservices5 \
+
+	install -m755 build/bin/telegram-desktop -t "$pkgdir"/usr/bin
+	install -m644 lib/xdg/telegramdesktop.desktop "$pkgdir"/usr/share/applications/org.telegram.desktop.desktop
+	install -m644 build/Telegram/telegramdesktop.appdata.xml "$pkgdir"/usr/share/appdata/org.telegram.desktop.appdata.xml
+
+	for icon_size in 16 32 48 64 128 256 512; do
+		icon_dir="$pkgdir/usr/share/icons/hicolor/${icon_size}x$icon_size/apps"
+
+		install -d "$icon_dir"
+		install -m644 "$builddir/Telegram/Resources/art/icon$icon_size.png" \
+			"$icon_dir/telegram.png"
+	done
+}
+
+sha512sums="393ee98d511a8bcf1343b3599fddf8782682bddc3e158e641c73990146cb717b04e69d6d171f2bc7011a5a5d775b0f00e883b54184944d8f114f149a8a879a39  tdesktop-2.1.5-full.tar.gz
+183767e9a291dd605797cdc46382d8cb6a73a342348a40df7d52864ea27b3aa8709808cd51c46f5e611c247229ed336cb569bed1185c4c97b03171b56bbe5653  qt-plugin-path.patch
+3d1b8e6f870fc780f9ae8bc6a67eb676a5c5f686dc79e84cd6d64cb3cfafb1be626d0cc3960ffc67cecca21568764a0137c7303a89045fa59f91ba4eb5d8caed  small-sizes.patch"

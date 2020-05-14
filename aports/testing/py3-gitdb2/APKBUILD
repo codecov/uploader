@@ -1,0 +1,28 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer:
+pkgname=py3-gitdb2
+pkgver=4.0.2
+pkgrel=0
+pkgdesc="Git Object Database"
+options="!check" # (failures=1,errors=9)
+url="https://github.com/gitpython-developers/gitdb"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3 py3-smmap2"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/gitpython-developers/gitdb/archive/$pkgver.tar.gz"
+builddir="$srcdir/gitdb-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 -m unittest
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="d84c7ae598d9b3cca9899b324dcae969f4a3f2463df89f78411e1038a15cbaf67d8ae568bc2ab5e314a7807b5eceeefae30fb59c29b10f8a6c1eb9725eaf63bd  py3-gitdb2-4.0.2.tar.gz"

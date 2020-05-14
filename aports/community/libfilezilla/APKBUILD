@@ -1,0 +1,32 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+# filezilla needs to be rebuilt when libfilezilla version changes, ABI is not stable
+pkgname=libfilezilla
+pkgver=0.21.0
+pkgrel=0
+pkgdesc="C++ library for filezilla"
+url="https://filezilla-project.org"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="cppunit-dev gettext gnutls-dev nettle-dev"
+subpackages="$pkgname-dev $pkgname-lang"
+source="https://download.filezilla-project.org/libfilezilla/libfilezilla-$pkgver.tar.bz2"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--disable-static
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="a4986f8da4ac6980e7b1e564d3b033853b0e5442e4bbdee337238ad5e896b80c74e7176f973055593bd45789c41725a6315c6d510ad44354588188a1cc9f29f9  libfilezilla-0.21.0.tar.bz2"

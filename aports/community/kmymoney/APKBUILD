@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kmymoney
+pkgver=5.0.8
+pkgrel=0
+arch="all !armhf !mips !mips64" # Limited by qt5-qtwebkit
+url="https://kmymoney.org/"
+pkgdesc="Personal finance manager for KDE which operates similarly to MS-Money or Quicken"
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev qt5-qtwebkit-dev kdewebkit-dev kdoctools-dev kholidays-dev kcontacts-dev akonadi-dev kidentitymanagement-dev kactivities-dev karchive-dev kcoreaddons-dev kconfig-dev kconfigwidgets-dev ki18n-dev kcompletion-dev kcmutils-dev kitemmodels-dev kitemviews-dev kservice-dev kwallet-dev kiconthemes-dev kxmlgui-dev ktextwidgets-dev knotifications-dev kio-dev alkimia-dev kdiagram-dev gpgme-dev doxygen"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/kmymoney/$pkgver/src/kmymoney-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	cmake --build build
+}
+
+check() {
+	cd build
+	# reports-chart-test requires OpenGL
+	# csvimport-csvdate-test is broken
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "(reports-chart|csvimport-csvdate)-test"
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="f332327dd40cc5667cd0141bd8e0c9cd81a2d996a4d482b2976f6bbd258cc27c73b2190d4631b8e0b9ee9d435ef8934312da399234830eb51b3e4ec942350988  kmymoney-5.0.8.tar.xz"

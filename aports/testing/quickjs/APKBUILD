@@ -1,0 +1,48 @@
+# Maintainer: Chloe Kudryavtsev <toast@toastin.space>
+pkgname=quickjs
+_pkgver=2020-03-16
+pkgver=0.${_pkgver//-}
+pkgrel=0
+pkgdesc="A small and embeddable Javascript engine"
+url="https://bellard.org/quickjs/"
+arch="all !s390x !ppc64le !mips !mips64" # build segfaults on s390x and ppc64le, requires hardfloat
+license="MIT"
+options="!check" # disabled because bug/issue on builders
+subpackages="$pkgname-doc $pkgname-static"
+source="https://bellard.org/quickjs/quickjs-$_pkgver.tar.xz
+	00-makefile.patch
+	"
+builddir="$srcdir/$pkgname-$_pkgver"
+
+build() {
+	make CONFIG_STATIC=y
+	for bin in qjs qjsc ; do
+		cp $bin $bin.static
+	done
+	make clean
+
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make install prefix="$pkgdir"/usr
+	for bin in qjs.static qjsc.static ; do
+		install -Dm755 $bin "$pkgdir"/usr/bin/$bin
+	done
+	for doc in doc/*.html; do
+		install -Dm644 $doc "$pkgdir"/usr/share/doc/quickjs/$doc
+	done
+}
+
+static() {
+	pkgdesc="$pkgdesc - static binaries"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/*.static "$subpkgdir"/usr/bin/
+}
+
+sha512sums="04b017c6bfd50b3d5029946178eb870270ca146a2ca99eb142f91acf0b8e04ce02e3e99549ee9832706aed72849beaaf33f95662aad6172a8cf109a0d78d8370  quickjs-2020-03-16.tar.xz
+510831029ef4f76ea159ce22b81ff679d0f99482347802545b2f7071b0b48c631a947f57d350e6482b2cce058533f9175ea354b77fa3a5b4741cfa8028e8b249  00-makefile.patch"

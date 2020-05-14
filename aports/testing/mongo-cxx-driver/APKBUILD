@@ -1,0 +1,77 @@
+# Contributor: Russ Webber <russ@rw.id.au>
+# Maintainer: Russ Webber <russ@rw.id.au>
+pkgname=mongo-cxx-driver
+pkgver=3.4.1
+pkgrel=0
+pkgdesc="C++ driver for MongoDB"
+url="http://mongocxx.org/"
+arch="all"
+license="Apache-2.0"
+makedepends="cmake mongo-c-driver-dev libbson-dev openssl-dev python3 snappy-dev zstd-dev"
+subpackages="$pkgname-dev:_dev libbsoncxx libbsoncxx-dev"
+source="mongo-cxx-driver-$pkgver.tar.gz::https://github.com/mongodb/mongo-cxx-driver/archive/r$pkgver.tar.gz
+	01-dont-build-mongo-tests.patch"
+builddir="$srcdir/mongo-cxx-driver-r$pkgver"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build . \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DCMAKE_CXX_STANDARD=17 \
+		-DBSONCXX_POLY_USE_STD=ON \
+		-DBUILD_VERSION="$pkgver" \
+		$CMAKE_CROSSOPTS .
+	make -C build
+}
+
+check() {
+	# mongo tests require a running server, so they are disabled.
+	# libbsoncxx tests are still ran
+	make -C build test
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+	rm -rf "$pkgdir"/usr/share/mongo-cxx-driver/
+}
+
+libbsoncxx() {
+	pkgdesc="Building, parsing, and iterating BSON documents using C++"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libbsoncxx.so.* "$subpkgdir"/usr/lib/
+}
+
+_dev() {
+	# This should be removed once abuild knows how to search for pkg-config
+	# files that are in another subpackage that is also being created alongside
+	# this one.
+	depends_dev="libbsoncxx-dev"
+
+	default_dev
+
+	# libbsoncxx pkg-config files
+	mkdir -p "$pkgdir"/usr/lib/pkgconfig
+	mv "$subpkgdir"/usr/lib/pkgconfig/libbsoncxx.pc "$pkgdir"/usr/lib/pkgconfig
+
+	# libbsoncxx solink
+	mkdir -p "$pkgdir"/usr/lib
+	mv "$subpkgdir"/usr/lib/libbsoncxx.so "$pkgdir"/usr/lib
+
+	# libbsoncxx cmake file
+	mkdir -p "$pkgdir"/usr/lib/cmake
+	mv "$subpkgdir"/usr/lib/cmake/libbsoncxx-* "$pkgdir"/usr/lib/cmake
+
+	# libbsoncxx include files
+	mkdir -p "$pkgdir"/usr/include
+	mv "$subpkgdir"/usr/include/bsoncxx "$pkgdir"/usr/include
+}
+
+sha512sums="c34d7e06946c89db88a6122ab4e7e4952bd6403ca80e57adc7d91264505e1ac1d623fe932f7b82546e26033078ab1f96bb6048a0e343b26d4b8b630658be0e71  mongo-cxx-driver-3.4.1.tar.gz
+4eed3eb4236bd13eb6f80f90938481c35d6d728c7b777f2cf6e459c5b3776d612cf7d8e000fa7e5c74f741943b2900325cbcd623584081cbb931cab04ce36828  01-dont-build-mongo-tests.patch"

@@ -1,0 +1,51 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Contributor: Claas Störtenbecker <claas.stoertenbecker@gmail.com>
+# Maintainer: Anjandev Momi <anjan@momi.ca>
+pkgname=gopass
+pkgver=1.9.1
+pkgrel=0
+pkgdesc="The slightly more awesome Standard Unix Password Manager for Teams. Written in Go."
+url="https://www.gopass.pw"
+arch="all !mips !mips64"
+license="MIT"
+depends="gnupg git"
+makedepends="go ncurses"
+source="$pkgname-$pkgver.tar.gz::https://github.com/gopasspw/gopass/archive/v$pkgver.tar.gz"
+builddir="$srcdir/src/github.com/gopasspw/$pkgname"
+options="chmod-clean"
+subpackages="
+	$pkgname-bash-completion
+	$pkgname-zsh-completion
+	$pkgname-fish-completion
+	"
+
+prepare() {
+	mkdir -p "$srcdir/src/github.com/gopasspw"
+	mv "$srcdir/$pkgname-$pkgver" "$srcdir/src/github.com/gopasspw/gopass"
+	default_prepare
+}
+
+check() {
+	GOPATH="$srcdir" make test-integration
+}
+
+build() {
+	GOPATH="$srcdir" make build
+
+	for completion in bash zsh fish; do
+		./gopass completion $completion > $completion.completion;
+	done
+}
+
+package() {
+	install -Dm755 "$builddir/$pkgname" -t "$pkgdir/usr/bin"
+
+	install -Dm0644 "$builddir"/bash.completion \
+		"$pkgdir"/usr/share/bash-completion/completions/gopass
+	install -Dm0644 "$builddir"/zsh.completion \
+		"$pkgdir"/usr/share/zsh/site-functions/_gopass
+	install -Dm0644 "$builddir"/fish.completion \
+		"$pkgdir"/usr/share/fish/completions/gopass.fish
+}
+
+sha512sums="a70affc278b5d46582a3362c28f1aff8be4481aae3d07f3b7e200117fc2ac79466c475d558fe5a642b0102a46fc95242334f406deca6ee4abd7d5e9f674451ab  gopass-1.9.1.tar.gz"

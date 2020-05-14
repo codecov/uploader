@@ -1,0 +1,39 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kpimtextedit
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Advanced text editor which provide advanced html feature"
+arch="all !armhf"
+url="https://api.kde.org/kdepim/kpimtextedit/html"
+license="LGPL-2.0-or-later AND GPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev qt5-qtspeech-dev grantlee-dev kcodecs-dev kconfig-dev kconfigwidgets-dev kcoreaddons-dev kemoticons-dev ki18n-dev kiconthemes-dev kio-dev sonnet-dev syntax-highlighting-dev kwidgetsaddons-dev kxmlgui-dev"
+makedepends="$depends_dev extra-cmake-modules qt5-qttools-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kpimtextedit-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_DESIGNERPLUGIN=ON
+	make -C build
+}
+
+check() {
+	cd build
+
+	# kpimtextedit-plaintext-textgotolinewidgettest requires OpenGL
+	# kpimtextedit-texttospeech-texttospeechwidgettest requires texttospeech
+	# kpimtextedit-texttospeech-texttospeechactionstest is broken
+	# kpimtextedit-composerng-richtextcomposertest requires OpenGL
+	# kpimtextedit-composerng-richtextcomposercontrolertest requires OpenGL
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "kpimtextedit-(plaintext-textgotolinewidget|texttospeech-texttospeechwidget|texttospeech-texttospeechactions|composerng-richtextcomposer|composerng-richtextcomposercontroler)test"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="109a6e69f1a29ad681d44df7417086606d60d714dd090276911fd77835d97a64daa7ec09ae898762a725b4e21e1a9929a8680f10bed7f40451ec100f5013f176  kpimtextedit-20.04.0.tar.xz"

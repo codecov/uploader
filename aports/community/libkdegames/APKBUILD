@@ -1,0 +1,40 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libkdegames
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://kde.org/applications/games"
+pkgdesc="Common code and data for many KDE games"
+license="LGPL-2.0-only AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtdeclarative-dev qt5-qtsvg-dev kcoreaddons-dev kconfig-dev kwidgetsaddons-dev kcodecs-dev karchive-dev kdbusaddons-dev kdnssd-dev kdeclarative-dev ki18n-dev kguiaddons-dev kservice-dev kconfigwidgets-dev kitemviews-dev kiconthemes-dev kcompletion-dev kjobwidgets-dev ktextwidgets-dev kglobalaccel-dev kxmlgui-dev kcrash-dev kbookmarks-dev knewstuff-dev openal-soft-dev libsndfile-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/libkdegames-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang carddecks::noarch"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+carddecks() {
+	pkgdesc="Contains all carddecks for KDE cardgames"
+	depends="$pkgname"
+
+	mkdir -p "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/"$subpkgname" "$subpkgdir"/usr/share/
+}
+
+sha512sums="b08b8ae2c614075f496309376b6bb892d6bb8f8e084b25c2c35256f7615e5a019db12b9af762945e23f4d4e5ddb885bba7c7dbe0529262d2a79e814ee0c84935  libkdegames-20.04.0.tar.xz"

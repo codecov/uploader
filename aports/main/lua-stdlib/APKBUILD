@@ -1,0 +1,68 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+_luaversions="5.1 5.2 5.3"
+pkgname=lua-stdlib
+pkgver=41.2.2
+pkgrel=0
+pkgdesc="Lua library of modules for common programming tasks"
+url="https://github.com/lua-stdlib/lua-stdlib"
+arch="noarch"
+license="MIT/X"
+makedepends="autoconf automake"
+subpackages="$pkgname-doc"
+for _v in $_luaversions; do
+	makedepends="$makedepends lua$_v lua$_v-dev"
+	subpackages="$subpackages lua$_v-stdlib:split_${_v/./_}"
+done
+source="$pkgname-$pkgver.tar.gz::https://github.com/lua-stdlib/lua-stdlib/archive/release-v$pkgver.tar.gz"
+builddir="$srcdir"/lua-stdlib-release-v$pkgver
+
+prepare() {
+	default_prepare
+	cd "$builddir"
+
+	aclocal && autoconf && automake --add-missing
+	for _i in $_luaversions; do
+		cp -r "$builddir" "$srcdir"/build-$_i
+	done
+}
+
+build() {
+	for _i in $_luaversions; do
+		msg "build for Lua $_i"
+		cd "$srcdir"/build-$_i
+		LUA=lua$_i LUA_INCLUDE=$(pkg-config lua$_i --cflags) \
+			./configure --prefix=/usr \
+			--libdir=/usr/lib/lua/$_i \
+			--datadir=/usr/share/lua/$_i
+		make
+	done
+}
+
+package() {
+	cd "$builddir"
+	for _i in $_luaversions; do
+		cd "$srcdir"/build-$_i
+		make DESTDIR="$pkgdir" luadir="/usr/share/lua/$_i" install
+	done
+}
+
+_split() {
+	local d= _ver=$1
+	pkgdesc="$pkgdesc for Lua $_ver"
+	install_if="lua$_ver $pkgname=$pkgver-r$pkgrel"
+	depends=
+	for d in usr/lib/lua usr/share/lua; do
+		if [ -d "$pkgdir"/$d/$_ver ]; then
+			mkdir -p "$subpkgdir"/$d
+			mv "$pkgdir"/$d/$_ver "$subpkgdir"/$d/
+		fi
+	done
+}
+
+
+for _v in $_luaversions; do
+	eval "split_${_v/./_}() { _split $_v; }"
+done
+
+
+sha512sums="b477ff90f2c3e49ad83194b1a67592d786c91dbc9dfe199a701fa68bc84b6ba8c820d37ac2fc74c2ebc3fb7a83aac8bcf0af58041ce14fc1dc6b297f3ae054aa  lua-stdlib-41.2.2.tar.gz"

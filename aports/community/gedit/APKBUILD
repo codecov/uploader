@@ -1,0 +1,38 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gedit
+pkgver=3.36.2
+pkgrel=0
+pkgdesc="gedit is the GNOME text editor"
+url="https://wiki.gnome.org/Apps/Gedit"
+arch="all !s390x !mips !mips64" # Limited by librsvg
+license="GPL-2.0-only"
+depends_dev="gedit=$pkgver-r$pkgrel"
+makedepends="meson glib-dev gtk+3.0-dev gtksourceview4-dev libpeas-dev
+	libxml2-dev libsoup-dev gspell-dev libx11-dev gobject-introspection-dev
+	vala gtk-doc itstool perl tepl-dev"
+checkdepends="appstream-glib desktop-file-utils"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://download.gnome.org/sources/gedit/${pkgver%.*}/gedit-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Ddocumentation=true \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="20c3592aaf08ad4a5842b14ecb1eb0c9ddbef190412dc3f70b60bbf6125c9c4791a48260c89402ce4773720ae65b36fab510f9d1e104f548e243d11bc49279b5  gedit-3.36.2.tar.xz"

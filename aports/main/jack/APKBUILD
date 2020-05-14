@@ -1,0 +1,54 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=jack
+_realname=jack2
+pkgver=1.9.14
+pkgrel=0
+pkgdesc="The Jack Audio Connection Kit"
+url="http://www.jackaudio.org"
+arch="all"
+license="GPL-2.0 GPL-2.0-or-later LGPL-2.0-or-later"
+makedepends="$depends_dev alsa-lib-dev dbus-dev expat-dev libsamplerate-dev
+	libsndfile-dev ncurses-dev readline-dev python3 linux-headers"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-dbus $pkgname-example-clients:_clients"
+source="$pkgname-$pkgver.tar.gz::https://github.com/jackaudio/jack2/archive/v$pkgver.tar.gz
+	fix-execinfo.patch
+	"
+builddir="$srcdir"/$_realname-$pkgver
+
+prepare() {
+	default_prepare
+	sed -i -e '1s:#!/bin/bash:#!/bin/sh:' svnversion_regenerate.sh
+}
+
+build() {
+	./waf configure \
+		-j1 \
+		--prefix=/usr \
+		--mandir=/usr/share/man/man1 \
+		--libdir=/usr/lib \
+		--dbus \
+		--alsa \
+		--classic
+
+	./waf build -j${JOBS:-2} -v
+}
+
+package() {
+	./waf --destdir="$pkgdir" install
+}
+
+dbus() {
+	pkgdesc="Jack D-Bus launcher"
+	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/bin/jackdbus "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/share/dbus* "$subpkgdir"/usr/share/
+}
+
+_clients() {
+	pkgdesc="Example clients that use Jack"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/*_* "$subpkgdir"/usr/bin/
+}
+
+sha512sums="ca9738fd5aadcb7e125f98a358437905959afebe0b792cab316fc31410e89ea3aefdb85154792a9d0a80fa988aa7eff379ff5c7ac6c4bfa1d57ad3d7de7b5fdd  jack-1.9.14.tar.gz
+b5abec7e67485d1c13f399b5961539177dd35d21c5dd95e0aa767adb0f5b1e588e9ca2f9b29cc4d66fc039311ff7eacc4cf21f6700ef0a2c8de99b63cb00f84d  fix-execinfo.patch"

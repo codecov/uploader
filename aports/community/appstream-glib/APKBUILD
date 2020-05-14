@@ -1,0 +1,88 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=appstream-glib
+pkgver=0.7.17
+pkgrel=2
+pkgdesc="Library for AppStream metadata"
+url="https://people.freedesktop.org/~hughsient/appstream-glib/"
+arch="all"
+license="LGPL-2.0-or-later"
+depends="gsettings-desktop-schemas"
+makedepends="
+	meson
+	glib-dev
+	libarchive-dev
+	libsoup-dev
+	json-glib-dev
+	gdk-pixbuf-dev
+	gtk+3.0-dev
+	freetype-dev
+	fontconfig-dev
+	yaml-dev
+	gperf
+	libgcab-dev
+	gobject-introspection-dev
+	"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-lang
+	$pkgname-builder
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-dbg"
+source="https://people.freedesktop.org/~hughsient/appstream-glib/releases/appstream-glib-$pkgver.tar.xz"
+options="!check" # selftest fails due to updated metadata at upstream
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		-Ddep11=true \
+		-Dbuilder=true \
+		-Drpm=false \
+		-Dalpm=false \
+		-Dfonts=true \
+		-Dstemmer=false \
+		-Dman=true \
+		-Dgtk-doc=false \
+		-Dintrospection=true \
+		output
+	ninja -C output
+}
+
+check() {
+	case "$CARCH" in
+		armv7|armhf)
+			# Flaky tests, fail or pass on drone ci alternating between pushes
+			return 0
+			;;
+	esac
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+
+	# Remove installed tests
+	rm -rf "$pkgdir"/usr/share/installed-tests/appstream-glib
+}
+
+builder() {
+	pkgdesc="Library and command line tools for building AppStream metadata"
+	mkdir -p "$subpkgdir"/usr/bin "$subpkgdir"/usr/lib \
+		"$subpkgdir"/usr/share/bash-completion/completions
+	mv "$pkgdir"/usr/bin/appstream-builder "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/share/bash-completion/completions/appstream-builder \
+		"$subpkgdir"/usr/share/bash-completion/completions/
+	mv "$pkgdir"/usr/lib/asb-plugins-5 \
+		"$subpkgdir"/usr/lib/
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+sha512sums="72eae6057a4b18b6eca34c795c2bfd982fd7a31500b70beb9553bdf8a7617a03319a2813eb93af20f2e39678ef6ee524dee48b2cbcccde0736f9d10a547ca223  appstream-glib-0.7.17.tar.xz"

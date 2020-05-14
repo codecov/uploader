@@ -1,0 +1,35 @@
+# Contributor:
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=ftgl
+pkgver=2.4.0
+pkgrel=0
+_commit=483639219095ad080538e07ceb5996de901d4e74
+pkgdesc="freetype OpenGL layer"
+url="https://github.com/frankheckenbach/ftgl"
+arch="all"
+license="MIT"
+depends_dev="mesa-dev freeglut-dev bash"
+makedepends="$depends_dev freetype-dev autoconf automake libtool"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$_commit.tar.gz::https://github.com/frankheckenbach/ftgl/archive/$_commit.tar.gz"
+builddir="$srcdir/$pkgname-$_commit"
+
+prepare() {
+	default_prepare
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--with-pic \
+		--disable-static
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dt "$pkgdir/usr/include/FTGL" -m644 src/FTSize.h
+	install -Dt "$pkgdir/usr/include/FTGL" -m644 src/FTFace.h
+}
+sha512sums="d5bf95db8db6a5c9f710bd274cb9bb82e3e67569e8f3ec55b36e068636a09252e6f191e36d8279e61b5d12408c065ce51829fc38d4d7afe5bda724752d2f084f  ftgl-483639219095ad080538e07ceb5996de901d4e74.tar.gz"

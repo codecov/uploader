@@ -1,0 +1,28 @@
+# Contributor: Bennett Goble <nivardus@gmail.com>
+# Contributor: Mike Milner <milner@blissisland.ca>
+# Maintainer: Bennett Goble <nivardus@gmail.com>
+pkgname=librdkafka
+pkgver=1.4.0
+pkgrel=0
+pkgdesc="The Apache Kafka C/C++ library"
+url="https://github.com/edenhill/librdkafka"
+arch="all"
+license="BSD-2-Clause"
+makedepends="bash openssl-dev cyrus-sasl-dev lz4-dev zlib-dev zstd-dev rapidjson-dev"
+subpackages="$pkgname-static $pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/edenhill/librdkafka/archive/v$pkgver.tar.gz"
+
+build() {
+	./configure --prefix=/usr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="cd343597707d22490dfcd513a6b24ca5487dca5230a5a6775e7d6f10be2dc5481deb3a76968bb244d5f7514db92aceca541823c5841a7b54d8e00aeb9088731c  librdkafka-1.4.0.tar.gz"

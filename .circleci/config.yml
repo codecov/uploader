@@ -70,16 +70,21 @@ jobs:
 
       - run:
           name: Create new user
-          command: adduser -D codecov-builder
+          command: |
+            adduser -D codecov-builder
+            # Add the new user to sudoers. Yes, I know this is the wrong way. I'm in CI.
+            echo "codecov-builder    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
       - run:
           name: Test new user
           command: |
-            sudo -u codecov-builder whoami
+            login codecov-builder
+            whoami
       - run:
           name: Clone the aports tree
           command: |
-            sudo -u codecov-builder git clone git://git.alpinelinux.org/aports
+            login codecov-builder
+            ls aports
           working_directory: /home/codecov-builder
 
       - run: exit 1

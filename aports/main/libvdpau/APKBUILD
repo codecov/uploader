@@ -1,0 +1,34 @@
+# Contributor: Carlo Landmeter
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libvdpau
+pkgver=1.4
+pkgrel=0
+pkgdesc="Hardware-accelerated video playback library"
+url="https://gitlab.freedesktop.org/vdpau/libvdpau"
+arch="all"
+license="MIT"
+makedepends="xorgproto libx11-dev libxext-dev meson"
+subpackages="$pkgname-dev"
+source="https://gitlab.freedesktop.org/vdpau/libvdpau/-/archive/$pkgver/libvdpau-$pkgver.tar.gz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Ddri2=true \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="5329ef08d749a5835c4df303339956a027c66ab0d83d94adb1c0469cdca29a82c2300b0da50bee4a4d6f6e966a1aad9b40b73dc3b796d73566cea81a86ac731d  libvdpau-1.4.tar.gz"

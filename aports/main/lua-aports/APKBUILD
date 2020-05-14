@@ -1,0 +1,20 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=lua-aports
+pkgver=1.0.1
+pkgrel=0
+pkgdesc="Lua modules for parsing aports tree"
+url="https://dev.alpinelinux.org/archive/lua-aports/"
+arch="noarch"
+license="MIT"
+depends="lua5.2-cjson lua5.2-filesystem lua5.2-optarg lua5.2"
+replaces="abuild"
+source="https://dev.alpinelinux.org/archive/lua-aports/lua-aports-$pkgver.tar.xz
+	"
+builddir="$srcdir/$pkgname-$pkgver"
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="e2368b0cb52712de1f698f208c3f30e72099dc640f963f931e5380704c03290e2425a0ff1cfbb181cc04cad586e932e03f9620f40978319c7b6fcd5cda1da342  lua-aports-1.0.1.tar.xz"

@@ -1,0 +1,23 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libretro-mgba
+pkgver=0.1.1_git20191026
+pkgrel=0
+_commit="429d2f2a6ab55716a3465cd709d3d16e3a1b70de"
+arch="all"
+url="https://github.com/libretro/mgba"
+pkgdesc="Nintendo Game Boy Advance core"
+license="MPL-2.0"
+source="$pkgname-$_commit.tar.gz::https://github.com/libretro/mgba/archive/$_commit.tar.gz"
+builddir="$srcdir/mgba-$_commit"
+options="!check" # No tests
+
+build() {
+	make
+}
+
+package() {
+	install -Dm644 mgba_libretro.so "$pkgdir"/usr/lib/libretro/mgba_libretro.so
+}
+
+sha512sums="0ded62712a55823efc6d7333423285446e58eae613bb5e93533f14ce36f40e4e068892f1a5b2073bfa0d0baabc95dbc9b60fef04cb516cb5f4dae25e3e050c38  libretro-mgba-429d2f2a6ab55716a3465cd709d3d16e3a1b70de.tar.gz"

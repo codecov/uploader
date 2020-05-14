@@ -1,0 +1,7 @@
+# Replace SECRET with actual secret. To generate one see:
+# /usr/sbin/mtg generate-secret --help
+MTG_OPTS="-b 0.0.0.0:3128 SECRET"
+
+# Uncomment both lines if you want mtg to send logs to syslog.
+#error_logger="logger -t $RC_SVCNAME"
+#rc_need=logger

@@ -1,0 +1,165 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome
+pkgver=3.36.0
+pkgrel=5
+pkgdesc="GNOME (Base) meta package"
+url="https://www.gnome.org"
+arch="x86 x86_64 armv7 aarch64" # GNOME isn't available on all arches yet
+options="!check" # No tests for a metapkg
+license="GPL-3.0-or-later"
+depends="
+	chrome-gnome-shell
+	dbus-x11
+	gdm
+	gnome-backgrounds
+	gnome-control-center
+	gnome-getting-started-docs
+	gnome-initial-setup
+	gnome-keyring
+	gnome-online-accounts
+	gnome-online-miners
+	gnome-remote-desktop
+	gnome-shell
+	gnome-shell-extensions
+	gnome-user-docs
+	gsettings-desktop-schemas
+	gvfs
+	iio-sensor-proxy
+	libgnome-keyring
+	networkmanager-elogind
+	pinentry-gnome
+	polkit-elogind
+	polkit-gnome
+	tracker
+	udisks2
+	xdg-desktop-portal-gtk
+"
+
+# not available on armv7
+if [ "$CARCH" != "armv7" ]; then
+	depends="$depends bolt"
+fi
+
+subpackages="$pkgname-apps-core:_apps_core $pkgname-apps-extra:_apps_extra $pkgname-games-collection:_games"
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+_apps_core() {
+	pkgdesc="Additional core GNOME apps meta package"
+	# From https://wiki.gnome.org/Design/Apps
+	depends="
+		eog
+		epiphany
+		evolution
+		evince
+		gedit
+		gedit-plugins
+		gnome-calculator
+		gnome-calendar
+		gnome-clocks
+		gnome-contacts
+		gnome-disk-utility
+		gnome-maps
+		gnome-screenshot
+		gnome-software
+		gnome-software-plugin-apk
+		gnome-system-monitor
+		gnome-terminal
+		gnome-tweaks
+		gnome-weather
+		grilo
+		grilo-plugins
+		gst-plugins-bad
+		gst-plugins-base
+		gst-plugins-good
+		gvfs-cdda
+		gvfs-afp
+		gvfs-goa
+		gvfs-mtp
+		gvfs-smb
+		gvfs-afc
+		gvfs-nfs
+		gvfs-archive
+		gvfs-dav
+		gvfs-fuse
+		gvfs-gphoto2
+		gvfs-avahi
+		nautilus
+		totem
+	"
+
+	mkdir -p "$subpkgdir"
+}
+
+_apps_extra() {
+	pkgdesc="Additional GNOME apps meta package"
+	replaces="gnome-apps" # splitted into gnome-apps-core and gnome-apps-extra
+	provides="gnome-apps=$pkgver-r$pkgrel"
+	depends="
+		baobab
+		brasero
+		celluloid
+		cheese
+		dconf-editor
+		deja-dup
+		devhelp
+		easytag
+		file-roller
+		fractal
+		geary
+		ghex
+		gitg
+		gnome-apps-core
+		gnome-authenticator
+		gnome-books
+		gnome-boxes
+		gnome-builder
+		gnome-characters
+		gnome-documents
+		gnome-feeds
+		gnome-games
+		gnome-latex
+		gnome-music
+		gnome-obfuscate
+		gnome-passwordsafe
+		gnome-photos
+		gnome-podcasts
+		gnome-power-manager
+		gnome-shortwave
+		gnome-sound-recorder
+		gnote
+		gparted
+		gpaste
+		meld
+		orca
+		peek
+		polari
+		rhythmbox
+		seahorse
+		simple-scan
+		shotwell
+		sound-juicer
+		sushi
+		transmission
+		vinagre
+		vino
+		yelp
+	"
+
+	mkdir -p "$subpkgdir"
+}
+
+_games() {
+	depends="
+		aisleriot
+		gnome-2048
+		gnome-chess
+		gnome-taquin
+		lightsoff
+	"
+
+	mkdir -p "$subpkgdir"
+}

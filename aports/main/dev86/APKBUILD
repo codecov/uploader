@@ -1,0 +1,73 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=dev86
+pkgver=0.16.21
+pkgrel=1
+pkgdesc="A real mode 80x86 assembler and linker"
+url="https://github.com/lkundrak/dev86/"
+arch="all"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later"
+# options="!check"
+makedepends="bash coreutils"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/lkundrak/dev86/archive/v$pkgver.tar.gz
+	dev86-noelks.patch
+	dev86-pic.patch
+	dev86-long.patch
+	"
+
+prepare() {
+	default_prepare
+	# use our CFLAGS
+	sed -i -e "s/-O2 -g/${CFLAGS}/" \
+		makefile.in
+#	if [ "$CARCH" = x86_64 ]; then
+		sed -i \
+			-e 's,alt-libs elksemu,alt-libs,' \
+			-e 's,install-lib install-emu,install-lib,' \
+			makefile.in
+#	fi
+	sed -i \
+		-e "s:-O2 -g:${CFLAGS}:" \
+		-e '/INEXE=/s:-s::' \
+		makefile.in
+	# no stripping
+	sed -i -e '/INSTALL_OPTS=/s:-s::' \
+		bin86/Makefile
+	sed -i -e '/install -m 755 -s/s:-s::' \
+		dis88/Makefile
+}
+
+build() {
+	export CPPFLAGS=""
+	export SHELL=/bin/bash
+	msg "building bcc86 unproto copt as86 ld86"
+	make -j1 bcc86 unproto copt as86 ld86 CFLAGS="$CFLAGS" CC="${CC:-gcc}" \
+		NATIVE='-DA_OUT_INCL=\"../libc/include/a.out.h\"'
+	msg "building cpp"
+	make -C cpp CFLAGS="$CFLAGS"  CC="${CC:-gcc}"
+	msg "building ar"
+	make -C ar CFLAGS="$CFLAGS" CC="${CC:-gcc}"
+	msg "building ld"
+	make -C ld CFLAGS="$CFLAGS" CC="${CC:-gcc}"
+	msg "building the rest..."
+	make -j1 DIST="$pkgdir" CC="${CC:-gcc}"
+}
+
+check() {
+	make tests
+}
+
+package() {
+	make DIST="$pkgdir" \
+		MANDIR=/usr/share/man \
+		LIBDIR=/usr/lib/bcc \
+		INCLDIR=/usr/lib/bcc \
+		LOCALPREFIX=/usr \
+		install install-man
+}
+
+sha512sums="e51d94cecc298f860c1dcbc225d5c77a18769eb7a51f888853ca3bdb3cc6596c07d67cd9b403f7d52155716eb1708396461dc596cd02728d762d0ed5e87d054f  dev86-0.16.21.tar.gz
+a4f2d3caa94f917bfd55eb8f26544b097362e0b5aee91720f0ddb6a1c91284ab875121c176c3225ac54cd2eb08ef5128edcdec4d53960ee64cb0d5cb5c1257d3  dev86-noelks.patch
+1dafea998e3d62e71f069eb6bd6e0e05c7152a0470fbf9baa82c3ac9e3f5fe20c342ed0b35be91e82ce83638346a3e8c9855e77f4a71656f2ee7590e999e55fb  dev86-pic.patch
+94c7532724d6c02a389303f1ce023e13fe95abecb86e1e4126504701cc755053ad810514e599c1151d166c45c51e1af15cbfac9e25895408b1133feb86dce21e  dev86-long.patch"

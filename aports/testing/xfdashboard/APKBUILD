@@ -1,0 +1,27 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=xfdashboard
+pkgver=0.7.7
+pkgrel=0
+pkgdesc="Maybe a Gnome shell like dashboard for Xfce"
+url="https://goodies.xfce.org/projects/applications/xfdashboard/start"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="clutter-dev xfconf-dev garcon-dev gtk+3.0-dev libwnck3-dev"
+subpackages="$pkgname-dev $pkgname-lang"
+source="https://archive.xfce.org/src/apps/xfdashboard/${pkgver%.*}/xfdashboard-$pkgver.tar.bz2"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="561badb0b752dabb095881134050046f98eb4374c8e3c647a4ba7226c1efce650790ef3630b53a30cd48dab190afba31de2faef8991c13af64f7eb980b099989  xfdashboard-0.7.7.tar.bz2"

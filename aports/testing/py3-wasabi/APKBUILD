@@ -1,0 +1,32 @@
+# Contributor: Oleg Titov <oleg.titov@gmail.com>
+# Maintainer: Oleg Titov <oleg.titov@gmail.com>
+pkgname=py3-wasabi
+pkgver=0.6.0
+pkgrel=0
+pkgdesc="A lightweight console printing and formatting toolkit"
+url="https://github.com/ines/wasabi"
+arch="noarch"
+license="MIT"
+depends="python3"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest"
+subpackages="$pkgname-doc"
+source="wasabi-$pkgver.tar.gz::https://github.com/ines/wasabi/archive/v$pkgver.tar.gz"
+builddir="$srcdir/wasabi-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	pytest-3 wasabi
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+	install -Dm644 README.md "$pkgdir/usr/share/doc/$pkgname/README.md"
+}
+
+sha512sums="39346850a0a1d51c233eeecec529ce10aee151d8e14c65a738fcf68ab0e5cc74e1cfcf2e9c18dafdb46b0498e22d9c3fbc9fc08d965b14a74a82276e7346df7d  wasabi-0.6.0.tar.gz"

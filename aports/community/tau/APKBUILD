@@ -1,0 +1,37 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=tau
+pkgver=0.11.3
+# Gitlab puts the sha of the download in the URL...
+_sha=b5f24cd692ec0c2a2c2be460fffaf505
+pkgrel=0
+pkgdesc="GTK frontend for the Xi text editor, written in Rust"
+url="https://gitlab.gnome.org/World/Tau"
+arch="all !s390x !mips !mips64"
+license="MIT"
+makedepends="meson cargo gtk+3.0-dev libhandy-dev vte3-dev"
+checkdepends="appstream-glib desktop-file-utils"
+options="!check" # Rust doesn't like to compile these on musl
+subpackages="$pkgname-lang"
+source="https://gitlab.gnome.org/World/Tau/uploads/$_sha/tau-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="4bce32b015ad48ae62ddc2155ae43c4c3b87c7204f47b2d4de7f2c77e0d51a667252a0d1239e5ddcc138f2053ca65050d3632096edc89f1e19b27cffc9c70c29  tau-0.11.3.tar.xz"

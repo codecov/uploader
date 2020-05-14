@@ -1,0 +1,155 @@
+# Contributor: Kiyoshi Aman <kiyoshi.aman@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=protobuf
+_gemname=google-protobuf
+pkgver=3.11.4
+_tstver=5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081
+pkgrel=2
+pkgdesc="Library for extensible, efficient structure packing"
+url="https://github.com/google/protobuf"
+arch="all"
+license="BSD-3-Clause"
+depends="protoc=$pkgver-r$pkgrel libprotoc=$pkgver-r$pkgrel
+	libprotobuf=$pkgver-r$pkgrel libprotobuf-lite=$pkgver-r$pkgrel"
+depends_dev="zlib-dev"
+makedepends="$depends_dev autoconf automake libtool ruby ruby-dev ruby-rake"
+subpackages="
+	ruby-$_gemname:_ruby
+	$pkgname-dev
+	$pkgname-vim::noarch
+	protoc
+	libprotoc
+	libprotobuf
+	libprotobuf-lite
+	"
+# googletest 1.8 is not enought for protobuf
+# https://github.com/google/googletest/issues/2267
+source="$pkgname-$pkgver.tar.gz::https://github.com/google/protobuf/archive/v$pkgver.tar.gz
+	googletest-$_tstver.tar.gz::https://github.com/google/googletest/archive/$_tstver.tar.gz
+	musl-fix.patch
+	trim-rakefile.patch
+	ruby-fix-cflags.patch
+	"
+
+prepare() {
+	default_prepare
+
+	./autogen.sh
+
+	# symlink tests to the test directory
+	rm -rf third_party/*
+	ln -sf "$srcdir"/googletest-$_tstver \
+		"$builddir"/third_party/googletest
+}
+
+build() {
+	case "$CARCH" in mips|mipsel) export LIBS="$LIBS -latomic";; esac
+
+	CXXFLAGS="$CXXFLAGS -fno-delete-null-pointer-checks" \
+		./configure --prefix=/usr \
+			--sysconfdir=/etc \
+			--mandir=/usr/share/man \
+			--infodir=/usr/share/info \
+			--localstatedir=/var
+	make
+
+	cd "$builddir"/ruby
+
+	# Generate proto files for built-in protocols.
+	rake genproto
+
+	gem build $_gemname.gemspec
+	gem install --local \
+		--install-dir dist \
+		--ignore-dependencies \
+		--no-document \
+		--verbose \
+		$_gemname
+
+	# build test-suite
+	local test; for test in googletest googlemock; do
+		cd "$builddir/third_party/googletest/$test"
+		autoreconf -vfi
+		./configure
+		make
+	done
+}
+
+# TODO: Run tests for ruby gem.
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+_ruby() {
+	depends=""
+	pkgdesc="Ruby bindings to Google's data interchange format"
+
+	local gemdir="$subpkgdir/$(ruby -e 'puts Gem.default_dir')"
+	cd "$builddir"/ruby/dist
+
+	mkdir -p "$gemdir"
+	cp -r extensions gems specifications "$gemdir"/
+
+	# Remove duplicated .so libs (should be only in extensions directory).
+	find "$gemdir"/gems/ -name "*.so" -delete
+
+	# Remove unnecessary files.
+	cd "$gemdir"/gems/$_gemname-$pkgver
+	rm -r ext/ tests/
+}
+
+vim() {
+	pkgdesc="Vim syntax for $pkgname"
+	depends=""
+	install_if="$pkgname=$pkgver-r$pkgrel vim"
+
+	install -Dm644 "$builddir"/editors/proto.vim \
+		"$subpkgdir"/usr/share/vim/vimfiles/syntax/proto.vim
+}
+
+libprotoc() {
+	depends=""
+	pkgdesc="Runtime library for Protocol Buffer compiler"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libprotoc*.so.* "$subpkgdir"/usr/lib
+}
+
+protoc() {
+	depends=""
+	pkgdesc="Protocol buffer compiler binary and library"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/protoc "$subpkgdir"/usr/bin
+}
+
+libprotobuf() {
+	depends=""
+	pkgdesc="Runtime library for C++ users of protocol buffers"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libprotobuf.so.* "$subpkgdir"/usr/lib
+}
+
+lite() {
+	depends=""
+	pkgdesc="Runtime library for C++ users with 'lite runtime' setting of protocol buffers"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libprotobuf-lite.so.* "$subpkgdir"/usr/lib
+}
+
+dev() {
+	depends_dev="$depends_dev protoc=$pkgver-r$pkgrel"
+	default_dev
+}
+
+sha512sums="777bbb0e9e2375eaebe6b8c87abd660bac70ee469c9ad00dd25917b82d7fb5bbe33cf87f0d69c90e19d55c07a7285ec20974ba4768623ce9ccfadf147fd5e261  protobuf-3.11.4.tar.gz
+623b077b3334958fafcbc34aa85891883277994af33be530efd903f47738a3e3562001cbf3b6da1a5e7d03803c5bd51bcc1fab81490db85d5a4f2b15e7de1495  googletest-5ec7f0c4a113e2f18ac2c6cc7df51ad6afc24081.tar.gz
+875592bc5dc5efe9087ea1b340673f54c984ecd5aa3b110a2da136bdc28009af7ce1a9c57f4747ff809fc02eb6c39a0209c277177172af467a54172d9700188a  musl-fix.patch
+495ba43f1e43e49caee6f44bb7e8e1cc52d46b158b946598c2b296a9efa07fd9abadc8649c3751aad34d26380dcdef782239449cbc5fd7654df144d249dd9de2  trim-rakefile.patch
+e2063bfb3f323625449d71cc2fe91e848a93af50cb1688ec5635bb1088aacd17a3282b0e91e05109abcc5fdbd62dff88f2b90bb78273b24f98998ed0009b1170  ruby-fix-cflags.patch"

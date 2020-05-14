@@ -1,0 +1,35 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-io-multiplex
+_realname=IO-Multiplex
+pkgver=1.16
+pkgrel=2
+pkgdesc="Perl module to manage IO on many file handles"
+url="https://metacpan.org/pod/IO::Multiplex"
+arch="noarch"
+license="Artistic-Perl-1.0 OR GPL-1.0-or-later"
+depends="perl"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/B/BB/BBB/$_realname-$pkgver.tar.gz"
+builddir="$srcdir"/$_realname-$pkgver
+
+build() {
+	cd "$builddir"
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	# creates file collision among perl modules
+	find "$pkgdir" -name perllocal.pod -delete
+}
+
+sha512sums="695462be217a107f734e214d2f0a00800962abac24cf4e30272376f5effa25584bc458377feed16b5cc7bab5858c00e547dc97d02962e57b2b8fa6e55df20fa6  IO-Multiplex-1.16.tar.gz"

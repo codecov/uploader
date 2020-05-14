@@ -1,0 +1,23 @@
+# Contributor: Ted Trask <ttrask01@yahoo.com>
+# Maintainer: Ted Trask <ttrask01@yahoo.com>
+pkgname=acf-freeswitch
+pkgver=0.8.0
+pkgrel=3
+pkgdesc="ACF for freeswitch"
+url="https://git.alpinelinux.org/cgit/acf/acf-freeswitch"
+arch="noarch"
+license="GPL-2.0"
+depends="acf-core freeswitch lua-luaxml"
+makedepends=""
+install=
+subpackages=""
+source="https://dev.alpinelinux.org/archive/$pkgname/$pkgname-$pkgver.tar.xz"
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	make DESTDIR="$pkgdir" install
+
+}
+
+sha512sums="c5df1ce9acdd98c160bbeff08be9891a1eefe4ed02fb4b2c720d2cf81444d34eea4f75dd8ff133e1e0837db708398e275b546a29d6669a5c874ec864d9f8f128  acf-freeswitch-0.8.0.tar.xz"

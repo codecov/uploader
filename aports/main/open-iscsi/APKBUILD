@@ -1,0 +1,47 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=open-iscsi
+pkgver=2.1.0
+pkgrel=2
+pkgdesc="High performance, transport independent, multi-platform iSCSI initiator"
+url="https://www.open-iscsi.com"
+arch="all"
+license="GPL-2.0-only"
+makedepends="autoconf automake kmod-dev libmount libtool linux-headers openssl-dev
+	open-isns-dev util-linux-dev"
+options="!check"
+subpackages="$pkgname-dev $pkgname-libs $pkgname-doc $pkgname-openrc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/open-iscsi/open-iscsi/archive/$pkgver.tar.gz
+	iscsid.initd
+	iscsid.confd
+	iscsid.conf
+	musl-fixes.patch
+	add-missing-headers.patch
+	dont-use-lib64.patch
+	remove-werror.patch
+	"
+
+
+build() {
+	make prefix=/usr \
+		exec_prefix=/usr \
+		localstatedir=/var \
+		sysconfdir=/etc \
+		mandir=/usr/share/man \
+		OPTFLAGS="$CFLAGS -DNO_SYSTEMD"
+}
+
+package() {
+	make prefix=/usr DESTDIR="$pkgdir" install
+	install -Dm755 "$srcdir"/iscsid.initd "$pkgdir"/etc/init.d/iscsid
+	install -Dm644 "$srcdir"/iscsid.confd "$pkgdir"/etc/conf.d/iscsid
+	install -Dm644 "$srcdir"/iscsid.conf "$pkgdir"/etc/iscsi/iscsid.conf
+}
+
+sha512sums="bb1a4ff2bab0562bfd4281d757dd888e8f5d2d1ae16561cabf5598073c343e8c2dc9b35992c2bc51398faffceb9b70ea2eae214ab205a586bcb971d741d5f59d  open-iscsi-2.1.0.tar.gz
+febf67065c133fd2f79d5aff509891d557af25739b700e961d2289a941b447099021b01fa29817bcd057147adad3a3f8948049d4f8ff3590cb7255a0fa0d715c  iscsid.initd
+075bb9cb783be7ccbc799947e0e042b85310d40b3045141dc1be40ca84ed1cc0e1e54559df501c512c179e28375314b27a03c15d9a6d4b1cabd428b2279985d3  iscsid.confd
+3686d31c5642e611c0c0c61f0f42a33030a74b518a2a108f004b9bd34b2b98d8e29ee2416a5b9cc447ab0449bdc94158b2323d977e7b7d2930dd4dcf0866da68  iscsid.conf
+1b89ffd6de0dc7bb63fc2702a97e49df4369158c66ee609acfc041b1677c07fbd964b7a709f1f324fa51a9842d4d3e11611d9783e18d526372d468163c0ac8db  musl-fixes.patch
+104b559eb368459a7151657fbca63927b6b1032bda272e903a1633c8b9d3ed199f2c5cca0e6741bcd5fa6e860d1ff2d111caf58d60d9f0a736ad767e8ae0427b  add-missing-headers.patch
+86a9c4be4abd34821f156f9df586c530dc2b0efc96e961cb15fd22846856cc1e76aae85806e8d0eb9f3d3e3acd7f73fe8d2a1de8944903b503e256e6a99bb2dd  dont-use-lib64.patch
+d99ef789d1aab1e7ba81e3f2b334a9518f1174cd53b4600bfd7e866973cdfa87664b2161c994ae7c35526a7d9165e0e2b3036f7dacc139b90fa3d0a90b6f6599  remove-werror.patch"

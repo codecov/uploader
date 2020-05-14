@@ -1,0 +1,43 @@
+# Contributor: Michael Jeanson <mjeanson@efficios.com>
+# Maintainer: Michael Jeanson <mjeanson@efficios.com>
+pkgname=lttng-tools
+pkgver=2.11.2
+pkgrel=0
+pkgdesc="LTTng 2.0 control and utility programs"
+url="https://lttng.org"
+arch="all !aarch64"
+license="GPL-2.0"
+depends="babeltrace"
+depends_dev="popt-dev libxml2-dev userspace-rcu-dev lttng-ust-dev kmod-dev
+	util-linux-dev"
+makedepends="$depends_dev bash grep coreutils automake autoconf libtool"
+checkdepends="util-linux"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="https://lttng.org/files/lttng-tools/lttng-tools-$pkgver.tar.bz2"
+
+build() {
+	unset LDFLAGS
+	# We patch Makefile.am
+	autoreconf -fi
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var
+	make V=1
+}
+
+check() {
+	# only run ubnit tests. all tests takes too much time
+	make -j1 -C tests/unit check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	mkdir -p "$pkgdir"/usr/share/licenses/$pkgname
+	mv "$pkgdir"/usr/share/doc/$pkgname/LICENSE \
+		"$pkgdir"/usr/share/licenses/$pkgname/
+}
+
+sha512sums="1adc8d2205677d2e2f5613e46406cf00d190ceef63b93c6f90bfc4ff024982f971c48c9df82055d7dab9a5f49ccab9a7eb8639aee8cdc4697173f0e222700170  lttng-tools-2.11.2.tar.bz2"

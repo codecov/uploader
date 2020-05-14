@@ -1,0 +1,41 @@
+# Maintainer: Laurent Bercot <ska-devel@skarnet.org>
+# Contributor: Eivind Uggedal <eu@eju.no>
+pkgname=s6-rc
+pkgver=0.5.1.2
+pkgrel=0
+pkgdesc="A service manager for s6-based systems."
+url="http://skarnet.org/software/$pkgname/"
+arch="all"
+license="ISC"
+options="!check"
+makedepends="skalibs-dev execline-dev s6-dev"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="http://skarnet.org/software/s6-rc/s6-rc-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--enable-shared \
+		--enable-static \
+		--disable-allstatic \
+		--libdir=/usr/lib \
+		--libexecdir="/lib/$pkgname" \
+		--with-dynlib=/lib
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+doc() {
+	default_doc
+	mkdir -p "$subpkgdir/usr/share/doc"
+	cp -a "$builddir/doc" "$subpkgdir/usr/share/doc/$pkgname"
+}
+
+static() {
+	default_static
+	rmdir -p "$pkgdir"/usr/lib || :
+}
+
+sha512sums="d52b8b22c709f5d8df7d54d70363f06f7b64b841019d046e9ecaf2cb5f1d319ce8995da5eb5aafb9627f993abfe213c4f75ae3ad6cadad2b3a3175271989ac95  s6-rc-0.5.1.2.tar.gz"

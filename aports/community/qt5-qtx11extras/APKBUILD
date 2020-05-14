@@ -1,0 +1,42 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtx11extras
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="Provides platform-specific APIs for X11"
+url="https://www.qt.io/developers/"
+arch="all"
+license="(LGPL-3.0-or-later OR GPL-3.0-only OR GPL-2.0-or-later) AND Qt-GPL-exception-1.0"
+makedepends="qt5-qtbase-dev"
+subpackages="$pkgname-dev"
+replaces="qt5-x11extras"
+builddir="$srcdir/qtx11extras-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtx11extras-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="cf30e66fda18b9bfd266b41f15713f7ca7390bc533fb8093096853f1554c2a91eb065dc17acb5b355b8fad08df3c695289d8c8081d568061c99659ec35d79b14  qtx11extras-everywhere-src-5.14.2.tar.xz"

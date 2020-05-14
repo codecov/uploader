@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=artikulate
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://edu.kde.org/artikulate"
+pkgdesc="Improve your pronunciation by listening to native speakers"
+license="(GPL-2.0-only OR GPL-3.0-only) AND GFDL-1.2-only"
+depends="kirigami2"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtdeclarative-dev qt5-qtxmlpatterns-dev qt5-qtmultimedia-dev karchive-dev kconfig-dev kcrash-dev ki18n-dev knewstuff-dev kxmlgui-dev kdoctools-dev kirigami2-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/artikulate-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="ac69748c25d6cebde1362702650eec379720d2bf71687fd490b1d457ff8555d252a05b18780880a6946d52ce2c9c2358ab06b79d1df16a4721cd50b70a62883a  artikulate-20.04.0.tar.xz"

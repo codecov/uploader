@@ -1,0 +1,39 @@
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtquickcontrols
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="Qt5 - module with set of QtQuick controls"
+url="https://www.qt.io/developers/"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+license="LGPL-2.1-only AND LGPL-3.0-only AND GPL-3.0-only AND Qt-GPL-exception-1.0"
+makedepends="qt5-qtbase-dev qt5-qtdeclarative-dev"
+builddir="$srcdir/qtquickcontrols-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtquickcontrols-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="e5076d838e54e8fcc62ffd76d66ab322f1927f6489c51dd0fa6e39de1e003c1994d24730da79c8d9d2747839faaa7b1b78f14b58f05447db440a477094be40e4  qtquickcontrols-everywhere-src-5.14.2.tar.xz"

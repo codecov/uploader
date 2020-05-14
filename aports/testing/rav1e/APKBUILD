@@ -1,0 +1,36 @@
+# Contributor: Oleg Titov <oleg.titov@gmail.com>
+# Maintainer: Oleg Titov <oleg.titov@gmail.com>
+pkgname=rav1e
+pkgver=0.3.1
+pkgrel=1
+pkgdesc="The fastest and safest AV1 encoder"
+url="https://github.com/xiph/rav1e"
+arch="all !s390x !mips !mips64" # no cargo for s390x
+license="BSD-2-Clause custom"
+options="!check" # No test suite from upstream
+makedepends="cargo nasm"
+subpackages="$pkgname-doc $pkgname-libs $pkgname-static"
+source="$pkgname-$pkgver.tar.gz::https://github.com/xiph/rav1e/archive/v$pkgver.tar.gz"
+
+prepare() {
+	RUSTFLAGS="-C opt-level=0" \
+		cargo install --force --root "$srcdir" cargo-c
+}
+
+check() {
+	cargo test --release
+}
+
+package() {
+	cargo install --root "$pkgdir/usr" --path .
+	"$srcdir/bin/cargo-cinstall" install \
+		--release --destdir "$pkgdir" --prefix "/usr"
+
+	install -Dm 644 -t "$pkgdir/usr/share/doc/rav1e" README.md
+	install -Dm 644 -t "$pkgdir/usr/share/doc/rav1e" PATENTS
+
+	rm "$pkgdir"/usr/.crates.toml
+	rm "$pkgdir"/usr/.crates2.json
+}
+
+sha512sums="1d53ad875ff780880360c8402e5c0a5ebd5b95e0fcc7a827a82af8746db898da60d286c3d95c795ee15d9e32a49293f9b7ee45eeed882bc8b93395a299403252  rav1e-0.3.1.tar.gz"

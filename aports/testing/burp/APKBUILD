@@ -1,0 +1,90 @@
+# Maintainer: Bernhard J. M. Gruen <bernhard.gruen@googlemail.com>
+pkgname=burp
+pkgver=2.3.22
+pkgrel=0
+pkgdesc="A network backup and restore program"
+url="https://burp.grke.org"
+arch="all"
+license="AGPL-3.0-only"
+makedepends="
+	uthash-dev
+	openssl-dev
+	zlib-dev
+	librsync-dev
+	libtool
+	automake
+	autoconf
+	"
+checkdepends="check-dev"
+subpackages="
+	$pkgname-doc
+	$pkgname-server
+	"
+source="https://github.com/grke/burp/archive/$pkgver.zip
+	burp.init
+	"
+# Check is deactivated as it needs --enable-forks in check/check-dev
+options="!check"
+
+prepare() {
+	default_prepare
+	autoreconf -vif
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sbindir=/usr/bin \
+		--sysconfdir=/etc/burp \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-acl \
+		--disable-xattr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install-all
+
+	cd "$pkgdir"
+	rm -rf var \
+		etc/burp/autoupgrade \
+		etc/burp/clientconfdir
+	chmod -R go-rwx etc/burp
+}
+
+server() {
+	pkgdesc="$pkgdesc (server configuration and helper scripts)"
+	# bash is needed on the server to run burp_ca, timer and notify scripts
+	# I am working on a version that does not need bash anymore
+	depends="bash openssl"
+
+	cd "$builddir"
+
+	mkdir -p "$subpkgdir"/var/spool/burp
+	chmod 0755 "$subpkgdir"/var/spool
+	chmod 0700 "$subpkgdir"/var/spool/burp
+
+	mkdir -p "$subpkgdir"/usr/share/burp/scripts
+	mv "$pkgdir"/usr/share/burp/scripts "$subpkgdir"/usr/share/burp
+	rm -rf "$pkgdir"/usr/share
+
+	mkdir -p "$subpkgdir"/etc/burp
+	mv "$pkgdir"/etc/burp/CA.cnf "$subpkgdir"/etc/burp/CA.cnf
+	mv "$pkgdir"/etc/burp/burp-server.conf \
+		"$subpkgdir"/etc/burp/burp-server.conf
+
+	install -Dm755 "$srcdir"/burp.init "$subpkgdir"/etc/init.d/burp
+
+	mkdir -p "$subpkgdir"/usr/bin
+	local name; for name in bedup bsigs bsparse burp_ca vss_strip; do
+		mv "$pkgdir"/usr/bin/$name "$subpkgdir"/usr/bin/$name
+	done
+}
+
+sha512sums="5180c6a0c2ad8942100965b2c70c3b43b772a36961ec36d5c3643359639281431be38b271530f8129b7b57f51d1ded53776e2732b01f856d8acc0db572a238d3  2.3.22.zip
+ef98c1fb938063fee35cc5ae5ff9179a759b89b3c2629320ff4dffb4c42395cac1ad6b4615c6c1f34cc4be3ce54397b00f583ba5f3cd2fe8498902d4d9445e8f  burp.init"

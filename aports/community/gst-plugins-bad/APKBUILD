@@ -1,0 +1,63 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=gst-plugins-bad
+pkgver=1.16.2
+pkgrel=8
+pkgdesc="GStreamer streaming media framework bad plug-ins"
+url="https://gstreamer.freedesktop.org"
+arch="all"
+license="GPL-2.0-or-later LGPL-2.0-or-later"
+options="!check" # 3 out of 51 tests fail as of 1.16.0
+replaces="gst-plugins-bad1"
+makedepends="alsa-lib-dev bluez-dev bzip2-dev curl-dev directfb-dev faac-dev
+	faad2-dev flite-dev glib-dev glu-dev gsm-dev gst-plugins-base-dev
+	gstreamer-dev libass-dev libdc1394-dev libexif-dev libmms-dev
+	libmodplug-dev libsrtp-dev libvdpau-dev libwebp-dev libnice-dev
+	libx11-dev mesa-dev meson neon-dev openssl-dev opus-dev orc-compiler
+	orc-dev spandsp-dev tiff-dev x265-dev vulkan-loader-dev vulkan-headers
+	wayland-dev wayland-protocols gobject-introspection-dev libusrsctp-dev
+	lcms2-dev pango-dev chromaprint-dev fdk-aac-dev fluidsynth-dev
+	libde265-dev openal-soft-dev openexr-dev openjpeg-dev libdvdnav-dev
+	libdvdread-dev sbc-dev libsndfile-dev soundtouch-dev libxkbcommon-dev
+	zbar-dev gtk+3.0-dev rtmpdump-dev vo-aacenc-dev vo-amrwbenc-dev
+"
+
+case "$CARCH" in
+	s390x) ;;
+	mips*) ;;
+	armv7|armhf) makedepends="$makedepends librsvg-dev" ;;
+	*) makedepends="$makedepends librsvg-dev aom-dev" ;;
+esac
+
+subpackages="$pkgname-lang $pkgname-dev"
+source="https://gstreamer.freedesktop.org/src/gst-plugins-bad/gst-plugins-bad-$pkgver.tar.xz"
+ldpath="/usr/lib/gstreamer-1.0"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dpackage-origin="https://alpinelinux.org" \
+		-Dpackage-name="GStreamer bad plug-ins (Alpine Linux)" \
+		-Dintrospection=enabled \
+		-Dvulkan=enabled \
+		-Dsctp=enabled \
+		. output
+	ninja -C output
+}
+
+check() {
+	# XDG_RUNTIME_DIR is just a temporary directory for a user, created
+	# by pam_systemd (or in Alpine's case elogind's pam_elogind) mounted at
+	# run/user/$(id -u), since we don't run elogind on the builders we can
+	# just point it at /tmp
+	XDG_RUNTIME_DIR=/tmp meson test -C output --print-errorlogs
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="aeaf3388156fe7317e193a3f940d391a6d8a1187f93e6925cee4cb02c4e78d9b456c22c27c318f0f9b2212ca68887c5cdcc256adaf068bfab8ec5c091a1e8805  gst-plugins-bad-1.16.2.tar.xz"

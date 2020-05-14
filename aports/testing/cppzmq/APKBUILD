@@ -1,0 +1,37 @@
+# Contributor: Andreas Laghamn <andreas.laghamn@gmail.com>
+# Maintainer: Andreas Laghamn <andreas.laghamn@gmail.com>
+pkgname=cppzmq
+pkgver=4.6.0
+pkgrel=2
+pkgdesc="High-level C++ binding for ZeroMQ"
+url="https://github.com/zeromq/cppzmq"
+arch="noarch"
+license="MIT"
+makedepends="cmake zeromq-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/zeromq/cppzmq/archive/v$pkgver.tar.gz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_VERBOSE_MAKEFILE=ON \
+		-DCPPZMQ_BUILD_TESTS=ON \
+		$CMAKE_CROSSOPTS .
+	make -C build
+}
+
+check() {
+	cd build
+	ctest
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/lib
+	mv "$pkgdir"/usr/share/cmake "$pkgdir"/usr/lib
+}
+sha512sums="f30b37c970790de2684086638084e65310396072c1c1d00415c9a36b7ef6d79fe500ce174fddab699a602a80341e2fb7f309dec2eb96252531b5ca5cf7ac5027  cppzmq-4.6.0.tar.gz"

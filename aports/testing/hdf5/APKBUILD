@@ -1,0 +1,82 @@
+# Contributor: Isaac Dunham <ibid.ag@gmail.com>
+# Maintainer:
+#
+# HDF5 depends on zlib and provides a C interface by default.
+# Optionally, it can be built with szip (which has limitations on
+# commercial use and thus is non-free), MPI, and C++ and Fortran bindings.
+# C++ and Fortran bindings may not be thread-safe:
+# building either and passing --enable-threadsafe is unsupported.
+# Additionally, the 'high-level' bindings are incompatible with threadsafe
+# builds, due to inadequate locking.
+
+pkgname=hdf5
+pkgver=1.10.6
+pkgrel=1
+pkgdesc="HDF5 is a data model, library, and file format for storing and managing data"
+url="https://www.hdfgroup.org/solutions/hdf5/"
+arch="all"
+license="custom"
+options="!check" # test suite takes a very long time
+depends_dev="zlib-dev"
+makedepends="cmake $depends_dev perl"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="http://www.hdfgroup.org/ftp/HDF5/current18/src/hdf5-$pkgver.tar.bz2"
+source="https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-${pkgver%.*}/hdf5-$pkgver/src/hdf5-$pkgver.tar.bz2"
+
+prepare() {
+	mkdir -p "$builddir"/build
+	default_prepare
+}
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+
+	cd build
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DHDF5_BUILD_HL_LIB=ON \
+		-DHDF5_BUILD_CPP_LIB=ON \
+		-DHDF5_BUILD_FORTRAN=OFF \
+		-DHDF5_ENABLE_Z_LIB_SUPPORT=ON \
+		-DHDF5_ENABLE_SZIP_SUPPORT=OFF \
+		-DHDF5_ENABLE_SZIP_ENCODING=OFF \
+		${CMAKE_CROSSOPTS} ..
+	cd ..
+	./configure \
+		--prefix=/usr \
+		--docdir=/usr/share/doc/hdf5/ \
+		--enable-static \
+		--disable-sharedlib-rpath \
+		--enable-build-mode=production \
+		--enable-hl \
+		--enable-cxx \
+		--disable-fortran \
+		--with-pic \
+		--with-zlib \
+		--without-szlib
+	make
+}
+
+check() {
+	export LD_LIBRARY_PATH="$srcdir"/$pkgname-${pkgver/_/-}/src/.libs/
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"$srcdir"/$pkgname-${pkgver/_/-}/c++/src/.libs/
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"$srcdir"/$pkgname-${pkgver/_/-}/fortran/src/.libs/
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"$srcdir"/$pkgname-${pkgver/_/-}/hl/src/.libs/
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"$srcdir"/$pkgname-${pkgver/_/-}/hl/c++/src/.libs/
+	export LD_LIBRARY_PATH="$LD_LIBRARY_PATH":"$srcdir"/$pkgname-${pkgver/_/-}/hl/fortran/src/.libs/
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm0644 COPYING "$pkgdir"/usr/share/licenses/"$pkgname"/COPYING
+
+}
+
+sha512sums="821392718605e3f7a287d4729d022a55fd7b91ddaa2e9a3f35ab8fce3d3d4871a0cc88215be3052887cbac3615cc8953569c7f131217962103c98151c0ab58d4  hdf5-1.10.6.tar.bz2"

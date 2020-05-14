@@ -1,0 +1,42 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ruby-rake-compiler
+_gemname=${pkgname#ruby-}
+pkgver=1.1.0
+pkgrel=2
+pkgdesc="Provide a standard and simplified way to build and package Ruby extensions"
+url="https://github.com/rake-compiler/rake-compiler"
+arch="noarch"
+license="MIT"
+depends="ruby ruby-rake"
+checkdepends="ruby-rspec"
+source="$pkgname-$pkgver.tar.gz::https://github.com/rake-compiler/$_gemname/archive/v$pkgver.tar.gz
+	gemfile-remove-unwanted-files.patch"
+builddir="$srcdir/$_gemname-$pkgver"
+
+build() {
+	gem build $_gemname.gemspec
+}
+
+check() {
+	rspec spec
+}
+
+package() {
+	local gemdir="$pkgdir/$(ruby -e 'puts Gem.default_dir')"
+
+	gem install --local \
+		--install-dir "$gemdir" \
+		--bindir "$pkgdir/usr/bin" \
+		--ignore-dependencies \
+		--no-document \
+		--verbose \
+		$_gemname
+
+	# Remove unnecessary files and empty directories.
+	cd "$gemdir"
+	rm -r cache build_info doc
+}
+
+sha512sums="77338776506df66c2e99e9b1b82dc4d54cc4e7c8fdb1f8b7b6d7507b9f9cb0718839e5139e9c0cb6295259e819dc8a011101e2427cdd387b568b639889321d60  ruby-rake-compiler-1.1.0.tar.gz
+beeae2e2eb9dcbcc532c18a3f08e8d6b3b4a86195851a512eb66f0c80c8d68d472e3ca0c2d056496927c7e6c0e273d02587a3dfe42bca2f87ac4934baee79af8  gemfile-remove-unwanted-files.patch"

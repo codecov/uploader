@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kcachegrind
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/development/org.kde.kcachegrind"
+pkgdesc="A profile data visualization tool, used to determine the most time consuming parts in the execution of a program"
+license="GPL-2.0-only AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qttools-dev karchive-dev kcoreaddons-dev kdoctools-dev kwidgetsaddons-dev kxmlgui-dev ki18n-dev kconfig-dev kio-dev kdbusaddons-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kcachegrind-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="57350b917c226421aa3d500130c72f67b31b457ece4255f4aa46ea480ee62c26aa39277edbec02fe679a4d073dbf2d86185b725d11b975c0f3565cee0ea7002d  kcachegrind-20.04.0.tar.xz"

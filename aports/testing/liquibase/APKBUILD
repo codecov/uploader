@@ -1,0 +1,32 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Contributor: Curt Tilmes <Curt.Tilmes@nasa.gov>
+# Maintainer: Curt Tilmes <Curt.Tilmes@nasa.gov>
+pkgname=liquibase
+pkgver=3.8.8
+pkgrel=0
+pkgdesc="Source Control for your Database"
+url="http://www.liquibase.org/"
+arch="noarch !mips !mips64" # java
+license="Apache-2.0"
+depends="openjdk8-jre bash"
+subpackages="$pkgname-doc"
+source="https://github.com/liquibase/liquibase/releases/download/v$pkgver/liquibase-$pkgver.tar.gz"
+builddir="$srcdir"
+options="!check" # No tests
+
+package() {
+	mkdir -p "$pkgdir"/usr/share/"$pkgname"
+	for file in lib liquibase liquibase.jar; do
+		cp -r $file "$pkgdir"/usr/share/"$pkgname"
+	done
+	mkdir -p "$pkgdir"/usr/bin
+	ln -s /usr/share/liquibase/liquibase "$pkgdir"/usr/bin/liquibase
+
+	mkdir -p "$pkgdir"/usr/share/doc/"$pkgname"
+	for file in ABOUT.txt GETTING_STARTED.txt LICENSE.txt README.txt \
+		changelog.txt; do
+		cp -r $file "$pkgdir"/usr/share/doc/"$pkgname"
+	done
+}
+
+sha512sums="48cdd205e1edc44d968a079ad3dd23737971db36a9eae3488819a271b18a5d4e6259e8d107b3018628eaf1dade118709d4fe4da5a8267e4c352b16f8ad634cc9  liquibase-3.8.8.tar.gz"

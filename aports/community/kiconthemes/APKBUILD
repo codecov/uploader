@@ -1,0 +1,35 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kiconthemes
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Support for icon themes"
+arch="all !armhf"
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-only"
+depends_dev="qt5-qtsvg-dev karchive-dev ki18n-dev kcoreaddons-dev kconfigwidgets-dev kwidgetsaddons-dev kitemviews-dev"
+makedepends="$depends_dev extra-cmake-modules doxygen qt5-qttools-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kiconthemes-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+options="!check" # 1 Test fail
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="8138f4667ea25f11c32ebc221abe4ea5c5d308e531edffaab977390c92632286a0a8d28eede337279aa84de4833aeff93a1321bbbea85e0f2096c56466250e62  kiconthemes-5.70.0.tar.xz"

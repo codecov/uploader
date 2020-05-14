@@ -1,0 +1,43 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+_luaversions="5.1 5.2 5.3"
+pkgname=lua-mqtt-publish
+pkgver=0.3
+pkgrel=1
+pkgdesc="Lua module for simple MQTT connect, publish and disconnect"
+url="https://github.com/ncopa/lua-mqtt-publish"
+arch="all"
+license="MIT"
+makedepends="lua-mosquitto" # so build order can be calculated
+
+for _v in $_luaversions; do
+	subpackages="$subpackages lua$_v-mqtt-publish:_split"
+done
+
+source="lua-mqtt-publish-$pkgver.tar.gz::https://github.com/ncopa/lua-mqtt-publish/archive/v$pkgver.tar.gz"
+
+build() {
+	return 0
+}
+
+package() {
+	for i in $_luaversions; do
+		install -Dm644 "$builddir"/mqtt/publish.lua \
+			"$pkgdir"/usr/share/lua/$i/mqtt/publish.lua
+	done
+}
+
+_split() {
+	local d= _ver=${subpkgname#lua}; _ver=${_ver%%-*}
+	msg "_ver=$_ver"
+	pkgdesc="$pkgdesc for Lua $_ver"
+	install_if="lua$_ver $pkgname=$pkgver-r$pkgrel"
+	depends="lua$_ver-mosquitto"
+	for d in usr/lib/lua usr/share/lua; do
+		if [ -d "$pkgdir"/$d/$_ver ]; then
+			mkdir -p "$subpkgdir"/$d
+			mv "$pkgdir"/$d/$_ver "$subpkgdir"/$d/
+		fi
+	done
+}
+
+sha512sums="ccbf87c53305e19a2dd04f07ac7b3d1fdae3ce0a6c726b89f357d3d5a68a73c0ce830d0ca47d57eaf1990224fcc97794720bdbc8e4e0caa408003cc33dce3b65  lua-mqtt-publish-0.3.tar.gz"

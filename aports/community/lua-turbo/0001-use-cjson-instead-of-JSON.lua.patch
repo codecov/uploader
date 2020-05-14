@@ -1,0 +1,29 @@
+--- ./turbo/escape.lua.orig
++++ ./turbo/escape.lua
+@@ -20,7 +20,7 @@
+ -- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ -- SOFTWARE."
+ 
+-local json = require('turbo.3rdparty.JSON')
++local json = require('cjson')
+ 
+ local escape = {} -- escape namespace
+ 
+@@ -28,7 +28,7 @@
+ -- @param t Value to JSON encode.
+ -- @note May raise a error if table could not be decoded.
+ function escape.json_encode(t)
+-    return json:encode(t)
++    return json.encode(t)
+ end
+ 
+ --- Decode a JSON string to table.
+@@ -36,7 +36,7 @@
+ -- Lua primitives.
+ -- @return (Table)
+ function escape.json_decode(s)
+-    return json:decode(s)
++    return json.decode(s)
+ end
+ 
+ local function _unhex(hex) return string.char(tonumber(hex, 16)) end

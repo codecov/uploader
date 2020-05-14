@@ -1,0 +1,85 @@
+# Contributor: Henrik Riomar <henrik.riomar@gmail.com>
+# Contributor: Antoine Fontaine <antoine.fontaine@epfl.ch>
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=sway
+pkgver=1.4
+pkgrel=5
+pkgdesc="i3 compatible window manager for Wayland"
+url="https://swaywm.org"
+arch="all"
+license="MIT"
+options="suid !check" # no test suite
+depends="swaybg"
+makedepends="cairo-dev
+	gdk-pixbuf-dev
+	json-c-dev
+	libevdev-dev
+	libinput-dev
+	libxkbcommon-dev
+	linux-pam-dev
+	meson
+	ninja
+	pango-dev
+	pcre2-dev
+	scdoc
+	wayland-dev
+	wayland-protocols
+	wlroots-dev
+	"
+subpackages="
+	$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-fish-completion:fishcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/swaywm/sway/archive/$pkgver.tar.gz
+	sway.desktop
+	"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/bash-completion "$subpkgdir"/usr/share/
+}
+
+fishcomp() {
+	depends=""
+	pkgdesc="Fish completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel fish"
+
+	mkdir -p "$subpkgdir"/usr/share/fish
+	mv "$pkgdir"/usr/share/fish/vendor_completions.d "$subpkgdir"/usr/share/fish/completions
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	mkdir -p "$subpkgdir"/usr/share/zsh
+	mv "$pkgdir"/usr/share/zsh/site-functions "$subpkgdir"/usr/share/zsh
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+	chmod u+s "$pkgdir"/usr/bin/sway
+
+	install -D -m644 "$srcdir"/sway.desktop \
+		"$pkgdir"/usr/share/wayland-sessions/sway.desktop
+}
+
+sha512sums="3b280bdfdbdae8fb9b4f555bc630c64e7c1d09f7b2c783b99413863a6b620d50cd2b6d10d63e11fdfb9c678fce9a403228ac52fa69fb52561ffbd06790505a71  sway-1.4.tar.gz
+c9bc08fbd9d059c037ad1e3b7ab5e91bcde27dce248cc558c1f126b01c85b1d0d4ed4bb10e3f27bc818a06e60a81f19478b95529d4eeb32036e2c6ea9f29db36  sway.desktop"

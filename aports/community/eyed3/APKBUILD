@@ -1,0 +1,27 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: prspkt <prspkt@protonmail.com>
+pkgname=eyed3
+_pkgname=eyeD3
+pkgver=0.9.5
+pkgrel=0
+pkgdesc="ID3 tag editor in Python"
+url="https://eyed3.nicfit.net/"
+arch="noarch"
+license="GPL-3.0-or-later"
+depends="python3 py3-magic py3-six"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-eyed3 py3-eyed3" # for backwards compatibility
+provides="py-eyed3=$pkgver-r$pkgrel py3-eyed3=$pkgver-r$pkgrel" # for backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="74f75bc583a6cf7ee277a581b3ef4111804fd220371b65ab4d0a4491ce8434da6ce48f32e2b845426819948e4cb2b224e8a263137b9fad5297d5b9fd57befd9e  eyeD3-0.9.5.tar.gz"

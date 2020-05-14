@@ -1,0 +1,68 @@
+# Contributor: Henrik Riomar <henrik.riomar@gmail.com>
+# Maintainer: Henrik Riomar <henrik.riomar@gmail.com>
+pkgname=etckeeper
+pkgver=1.18.14
+pkgrel=0
+pkgdesc="Store /etc in git."
+url="http://etckeeper.branchable.com"
+arch="noarch"
+license="GPL-2.0-or-later"
+checkdepends="bats fakeroot"
+depends="findutils git"
+subpackages="
+	$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+install="$pkgname.post-install $pkgname.pre-deinstall"
+source="$pkgname-$pkgver.tar.gz::https://git.joeyh.name/index.cgi/etckeeper.git/snapshot/etckeeper-$pkgver.tar.gz
+	apk-commit_hook
+	"
+
+prepare() {
+	default_prepare
+
+	sed -i 's|^PYTHON=python$|PYTHON=/bin/false|' Makefile
+	sed -i 's/_PACKAGE_MANAGER=.*/_PACKAGE_MANAGER=apk/' etckeeper.conf
+}
+
+check() {
+	make test
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	install -dm755 "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/bash-completion \
+		"$subpkgdir"/usr/share/
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	install -dm755 "$subpkgdir"/usr/share/zsh
+	mv "$pkgdir"/usr/share/zsh/vendor-completions \
+		"$subpkgdir"/usr/share/zsh/site-functions
+	rmdir "$pkgdir"/usr/share/zsh
+}
+
+package() {
+	make install DESTDIR="$pkgdir"
+	rm -rf "$pkgdir"/lib/systemd
+	rmdir "$pkgdir"/lib/
+	rm -rf "$pkgdir"/etc/apt
+
+	install -m755 -D "$builddir"/debian/cron.daily \
+		"$pkgdir"/etc/periodic/daily/"$pkgname"
+
+	install -m755 -D "$srcdir"/apk-commit_hook \
+		"$pkgdir"/etc/apk/commit_hooks.d/"$pkgname"
+}
+
+sha512sums="1bc01845d47ce3af1ef56474745843e8be6e005da90a21bed302fe73476fbf1f64b84fae7dac73139c394ca698bd146e1609fa34ebbc6737ba73a6f61e670948  etckeeper-1.18.14.tar.gz
+d0ff88615359e8b03da5f9162a7bae3f32c06891a8899096025283d77e950dd72280c6c19b8eb8a4cde08742c6ca715cd32c37c16e8bbf2d030e9fd16a1fc940  apk-commit_hook"

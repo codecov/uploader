@@ -1,0 +1,51 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=heirloom-doctools
+pkgver=191015
+pkgrel=2
+pkgdesc="The Heirloom Documentation Tools"
+url="http://n-t-roff.github.io/heirloom/doctools.html"
+arch="all !mips !mips64" # FTBFS on mips due to missing yyval()
+license="CDDL"
+depends="!coreutils !util-linux !mandoc-soelim"
+# TODO: Switch to bison <https://github.com/n-t-roff/heirloom-doctools/issues/85>
+makedepends="flex byacc"
+subpackages="$pkgname-doc"
+source="heirloom-doctools-$pkgver.tar.gz::https://github.com/n-t-roff/heirloom-doctools/archive/$pkgver.tar.gz"
+
+_makeargs="
+	CC="${CC:-gcc}" \
+	CCC="${CCX:-g++}" \
+	EUC=-DEUC \
+	STRIP=true \
+	RANLIB=ranlib \
+	INSTALL=install \
+	BINDIR=/usr/bin \
+	MANDIR=/usr/share/man \
+	LIBDIR=/usr/lib/$pkgname \
+	REFDIR=/usr/lib/$pkgname/reftools \
+	MACDIR=/usr/share/$pkgname/tmac \
+	FNTDIR=/usr/share/$pkgname/font \
+	TABDIR=/usr/share/$pkgname/nterm \
+	HYPDIR=/usr/share/$pkgname/hyphen \
+	PUBDIR=/usr/share/$pkgname/pub \
+	PSTDIR=/usr/share/$pkgname/font/devpost/postscript
+"
+
+build() {
+	# Unfortunately parallel build isn't supported.
+	make -j1 $_makeargs -C "$builddir"
+}
+
+package() {
+	# Unfortunately parallel install isn't supported.
+	make -j1 ROOT="$pkgdir" $_makeargs \
+		-C "$builddir" install
+
+	# Don't conflict with mandoc-doc
+	rm -f "$pkgdir"/usr/share/man/man1/soelim.1 \
+		"$pkgdir"/usr/share/man/man7/man.7 \
+		"$pkgdir"/usr/share/man/man7/mdoc.7
+}
+
+sha512sums="60fd531c29edc7ecee479b69111effa30555c6ba93de3aa4c9f3f06d50a504848eaf800f8fd39865f83d6ed73c03b14e1a416bf942ba82f8a4211344002ad179  heirloom-doctools-191015.tar.gz"

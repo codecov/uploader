@@ -1,0 +1,32 @@
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+pkgname=py3-django-treebeard
+pkgver=4.3.1
+pkgrel=0
+pkgdesc="Efficient tree implementations for Django"
+url="https://github.com/django-treebeard/django-treebeard"
+arch="noarch"
+license="Apache-2.0"
+depends="py3-django"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest"
+source="$pkgname-$pkgver.tar.gz::https://github.com/django-treebeard/django-treebeard/archive/$pkgver.tar.gz"
+
+builddir="$srcdir/django-treebeard-$pkgver"
+
+replaces="py-django-treebeard" # Backwards compatibility
+provides="py-django-treebeard=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 -m pytest
+}
+
+package() {
+	python3 setup.py install --root "$pkgdir"
+}
+
+sha512sums="0028bec918e3a269eade270842dac29bdbff4c87ad2606b240fc6796b04c2ff723b0fafae9c7c110aee3ef72e11f3a1a5877e6f21e29ea70c3e059f4cf32435a  py3-django-treebeard-4.3.1.tar.gz"

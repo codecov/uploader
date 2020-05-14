@@ -1,0 +1,72 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=virt-manager
+pkgver=2.2.1
+pkgrel=3
+pkgdesc="GUI for managing virtual machines"
+url="https://virt-manager.org/"
+arch="noarch !s390x !mips !mips64"
+license="GPL-2.0-or-later"
+depends="python3 $pkgname-common spice-gtk vte3 py3-cairo gtk-vnc>=0.5.2-r2
+	gtksourceview4"
+_common_deps="libvirt-glib py3-libxml2 py3-libvirt py3-gobject3 py3-requests
+	libosinfo"
+makedepends="intltool glib"
+subpackages="
+	$pkgname-doc
+	$pkgname-lang
+	$pkgname-common
+	virt-install:virt_install
+	$pkgname-bash-completion:bashcomp:noarch
+	"
+source="https://releases.pagure.org/virt-manager/virt-manager-$pkgver.tar.gz"
+
+# secfixes:
+#   2.2.1-r0:
+#     - CVE-2019-10183
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py --no-update-icon-cache --no-compile-schemas install --root "$pkgdir"
+	python3 -m compileall "$pkgdir/usr/share/virt-manager"
+	python3 -O -m compileall "$pkgdir/usr/share/virt-manager"
+}
+
+common() {
+	pkgdesc="Common files used by virt-manager and virt-install"
+	depends="$_common_deps"
+	mkdir -p "$subpkgdir"/usr/share/virt-manager "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/share/virt-manager/virtconv \
+		"$pkgdir"/usr/share/virt-manager/virtinst \
+		"$subpkgdir"/usr/share/virt-manager
+}
+
+virt_install() {
+	pkgdesc="Utilities for installing virtual machines"
+	depends="$pkgname-common=$pkgver-r$pkgrel"
+	mkdir -p "$subpkgdir"/usr/share/virt-manager "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/share/virt-manager/virt-install \
+		"$pkgdir"/usr/share/virt-manager/virt-clone \
+		"$pkgdir"/usr/share/virt-manager/virt-convert \
+		"$subpkgdir"/usr/share/virt-manager/
+	mv "$pkgdir"/usr/bin/virt-install \
+		"$pkgdir"/usr/bin/virt-clone \
+		"$pkgdir"/usr/bin/virt-convert \
+		"$subpkgdir"/usr/bin/
+}
+
+bashcomp() {
+	depends=""
+	pkgdesk="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+
+sha512sums="aa97af52b3552c087beab8701762c21e8e6d818c9787d5376ed4e1ae40a34d5e8870c4c00fda9cb17a2340d1dff5b17e853182df720cdd9ea4c91cf01502a33a  virt-manager-2.2.1.tar.gz"

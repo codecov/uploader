@@ -1,0 +1,58 @@
+# Contributor: Andy Postnikov <apostnikov@gmail.com>
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+
+pkgname=php7-pecl-xhprof
+_pkgreal=xhprof
+pkgver=2.2.0
+pkgrel=0
+pkgdesc="A Hierarchical Profiler for PHP"
+url="https://pecl.php.net/package/xhprof"
+arch="all"
+license="Apache-2.0"
+depends="php7-ctype"
+makedepends="php7-dev re2c"
+subpackages="$pkgname-assets::noarch"
+source="$pkgname-$pkgver.tar.gz::https://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+provides="php7-xhprof=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-xhprof" # for backward compatibility
+
+build() {
+	cd "$builddir"/extension
+	phpize7
+	./configure --with-php-config=php-config7
+	make
+}
+
+check() {
+	cd "$builddir"/extension
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+}
+
+package() {
+	cd "$builddir"/extension
+	make INSTALL_ROOT="$pkgdir"/ install
+	local confdir="$pkgdir/etc/php7/conf.d"
+	install -d "$confdir"
+	cat > "$confdir"/$_pkgreal.ini <<-EOF
+		extension=$_pkgreal.so
+		xhprof.output_dir=/tmp
+	EOF
+	local installdir="$pkgdir"/usr/share/php7/xhprof
+	install -d "$installdir"
+	cp -R "$builddir"/xhprof_lib "$installdir"
+}
+
+assets() {
+	pkgdesc="A Hierarchical Profiler for PHP (UI assets)"
+	depends="$pkgname graphviz ghostscript-fonts"
+	provides="php7-xhprof-assets=$pkgver-r$pkgrel" # for backward compatibility
+	replaces="php7-xhprof-assets" # for backward compatibility
+
+	local installdir="$subpkgdir"/usr/share/php7/xhprof
+	install -d "$installdir"
+	cp -R "$builddir"/xhprof_html "$installdir"
+	cp -R "$builddir"/examples "$installdir"
+}
+
+sha512sums="628fe010f1043843d56b6b5b04702fea90973303605f36d8ba7fbc4d910acf8d5c965eab86ce31c1b497fb8b795d18c82a0b17df26849f2f1ec990262d481bab  php7-pecl-xhprof-2.2.0.tar.gz"

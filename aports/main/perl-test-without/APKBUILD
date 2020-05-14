@@ -1,0 +1,31 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-test-without
+_pkgreal="Test-Without"
+pkgver=0.10
+pkgrel=1
+pkgdesc="Test::Without perl module"
+url="https://metacpan.org/pod/Test::Without"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/R/RJ/RJRAY/Test-Without-$pkgver.tar.gz"
+
+builddir="$srcdir"/$_pkgreal-$pkgver
+
+build() {
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="ce38a625bb8c4d6d9d5bcab7077ca80141e406d45a700743eb1ee006bc7397b4833af3dcd860ac6d8069fd0e4306c6abd9f210e42f6a1cd5301bec22434cbbf3  Test-Without-0.10.tar.gz"

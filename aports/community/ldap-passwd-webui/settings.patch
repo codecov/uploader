@@ -1,0 +1,11 @@
+--- a/settings.ini.example
++++ b/settings.ini.example
+@@ -19,8 +19,3 @@
+ #host = localhost
+ #base = ou=People,dc=example,dc=org
+ #search_filter = uid={uid}
+-
+-[server]
+-server = auto
+-host = localhost
+-port = 8080

@@ -1,0 +1,32 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=libgdiplus
+pkgver=6.0.4
+pkgrel=0
+pkgdesc="An Open Source Implementation of the GDI+ API"
+url="https://www.mono-project.com/"
+arch="all"
+license="MIT"
+depends_dev="tiff-dev cairo-dev libexif-dev glib-dev"
+makedepends="$depends_dev"
+subpackages="$pkgname-dev"
+source="https://download.mono-project.com/sources/libgdiplus/libgdiplus-$pkgver.tar.gz"
+
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="91784b2a9e1480c5fd70b1918b10ad03a41246c91d89f0a10fbbce67cd72595b7fb8543457cdfd500014b3f9e39347bed1ab68d7e4f9628a3a413caafef30bdc  libgdiplus-6.0.4.tar.gz"

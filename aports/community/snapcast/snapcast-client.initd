@@ -1,0 +1,13 @@
+#!/sbin/openrc-run
+
+supervisor=supervise-daemon
+
+name=snapclient
+command="/usr/bin/snapclient"
+command_args="$snapclient_opts"
+command_user="snapcast"
+
+depend() {
+	need net
+	after firewall
+}

@@ -1,0 +1,32 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libquotient
+pkgver=0.5.3.2_git20200814
+pkgrel=0
+_commit="58dfe74390ebdd8ec6611d3b8fecfe7d051ff955"
+pkgdesc="Qt5 library for cross-platform clients for Matrix"
+url="https://github.com/quotient-im/libQuotient"
+arch="all !armhf" # blocked by qt5-qtmultimedia
+license="LGPL-2.1-or-later"
+depends_dev="qt5-qtbase-dev qt5-qtmultimedia-dev libqtolm-dev"
+makedepends="$depends_dev cmake"
+subpackages="$pkgname-dev"
+source="https://github.com/quotient-im/libQuotient/archive/$_commit/libQuotient-$_commit.tar.gz"
+options="!check" # No testsuite
+builddir="$srcdir/libQuotient-$_commit"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DQuotient_ENABLE_E2EE=True
+	make -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="f812a230f969113f14b95df534002a1ce3957b90045197ed7789679bd92fd583b700436f8063f7bbc596bd962ff70e2b72a7f8ded7096f78e4ebc6e9559af10c  libQuotient-58dfe74390ebdd8ec6611d3b8fecfe7d051ff955.tar.gz"

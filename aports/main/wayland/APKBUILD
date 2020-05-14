@@ -1,0 +1,61 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@alpinelinux.org>
+# Maintainer: Valery Kartel <valery.kartel@gmail.com>
+pkgname=wayland
+pkgver=1.18.0
+pkgrel=4
+pkgdesc="A computer display server protocol"
+url="https://wayland.freedesktop.org"
+arch="all"
+license="MIT"
+depends="$pkgname-libs-client $pkgname-libs-cursor $pkgname-libs-egl $pkgname-libs-server"
+depends_dev="libffi-dev expat-dev"
+makedepends="$depends_dev doxygen xmlto graphviz grep libxml2-dev bash"
+subpackages="$pkgname-dev $pkgname-libs-client:_libs $pkgname-libs-egl:_libs
+	$pkgname-libs-cursor:_libs $pkgname-libs-server:_libs"
+source="https://wayland.freedesktop.org/releases/wayland-$pkgver.tar.xz
+	tests-ignore-debugger.patch
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-documentation \
+		--disable-static
+	make
+}
+
+check() {
+	make check WAYLAND_TEST_IGNORE_DEBUGGER=1
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+dev() {
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/bin "$pkgdir"/usr/share \
+		"$subpkgdir"/usr
+	default_dev
+}
+
+_libs() {
+	depends=
+	local name=${subpkgname#$pkgname-libs-}
+	pkgdesc="$pkgdesc ($name library)"
+	case "$name" in
+		egl) replaces="mesa-libwayland-egl";;
+	esac
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*-$name.so.* "$subpkgdir"/usr/lib
+}
+
+sha512sums="e30199e30c2bbd361ee695b4f3f7a4e264f10ed8f46f2c90762b5739fc578ae757dc39aa0258d8fbf0ed418553470bccd4b2730ed9705481cfccdab5de96a8fc  wayland-1.18.0.tar.xz
+0f65a55265e9134ab08cabf67f9d1919c85c4cb6b69129e78bc6c50057cafcaf143007716a0fa73b2eb43d6b605944c320a12a36dbb5f15fcd2f5e770248c480  tests-ignore-debugger.patch"

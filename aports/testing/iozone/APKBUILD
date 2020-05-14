@@ -1,0 +1,45 @@
+# Contributor: Oleg Titov <oleg.titov@gmail.com>
+# Maintainer: Oleg Titov <oleg.titov@gmail.com>
+pkgname=iozone
+pkgver=3.488
+_pkgver=${pkgver//./_}
+pkgrel=0
+pkgdesc="IOzone filesystem benchmark."
+url="http://iozone.org"
+arch="all !mips !mips64"
+license="custom"
+options="!check" # No test suite from upstream
+subpackages="$pkgname-doc"
+source="http://iozone.org/src/current/iozone$_pkgver.tar"
+builddir="$srcdir/${pkgname}$_pkgver/"
+
+build() {
+	local target=
+	case "$CARCH" in
+		x86_64) target="linux-AMD64" ;;
+		x86) target="linux" ;;
+		aarch64) target="linux-arm" ;;
+		armv7) target="linux-arm" ;;
+		armhf) target="linux-arm" ;;
+		s390x) target="linux-S390X" ;;
+		ppc64le) target="linux-powerpc64" ;;
+		*) msg "Unable to determine architecture from (CARCH=$CARCH)" ; return 1 ;;
+	esac
+
+	cd "$builddir"/src/current/
+	make $target CFLAGS='-DHAVE_PREADV -DHAVE_PWRITEV'
+}
+
+package() {
+	install -m755 -D src/current/iozone \
+		"$pkgdir"/usr/bin/iozone
+
+	install -dm755 "$pkgdir"/usr/share/licenses/$pkgname/
+	sed -n '1,49p' "$builddir"/src/current/iozone.c > \
+		"$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+
+	install -Dm644 "$builddir"/docs/iozone.1 \
+		"$pkgdir"/usr/share/man/man1/iozone.1
+}
+
+sha512sums="033f9e6e7395fe84ae6f4ae8737544e399ac0f16e82ba95eed2a2d0df52b7efcbe0c9282abc68d3c5b53d859073c74bff2e8c34bc35e1e1cc887ed36ad5d840b  iozone3_488.tar"

@@ -1,0 +1,26 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer:
+pkgname=hyperfine
+pkgver=1.9.0
+pkgrel=0
+pkgdesc="Command-line benchmarking tool"
+url="https://github.com/sharkdp/hyperfine"
+arch="x86_64 armv7 armhf aarch64 x86 ppc64le" # Limited by cargo
+license="Apache-2.0 AND MIT"
+makedepends="cargo"
+source="$pkgname-$pkgver.tar.gz::https://github.com/sharkdp/hyperfine/archive/v$pkgver.tar.gz"
+
+build() {
+	cargo build --release --verbose
+}
+
+check() {
+	cargo test all --release --verbose
+}
+
+package() {
+	cargo install --path . --root="$pkgdir"/usr
+	rm "$pkgdir"/usr/.crates.toml
+}
+
+sha512sums="f444315f052fc7d279a09637f2fb6b781abe1518b3bc54cea13320c826a36515974990635ad57d6d4761dd1b34fcf894453a793e3dae22b4f8033bee60c5a056  hyperfine-1.9.0.tar.gz"

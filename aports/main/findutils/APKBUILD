@@ -1,0 +1,38 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Contributor: Michael Mason <ms13sp@gmail.com>
+# Maintainer: Michael Mason <ms13sp@gmail.com>
+pkgname=findutils
+pkgver=4.7.0
+pkgrel=0
+pkgdesc="GNU utilities for finding files"
+url="https://www.gnu.org/software/findutils/"
+arch="all"
+license="GPL-3.0-or-later"
+checkdepends="coreutils diffutils dejagnu"
+subpackages="$pkgname-doc"
+source="https://ftp.gnu.org/pub/gnu/findutils/findutils-$pkgver.tar.xz
+	test-parse-datetime.patch"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	rm -rf "$pkgdir"/usr/lib
+}
+
+sha512sums="650a24507f8f4ebff83ad28dd27daa4785b4038dcaadc4fe00823b976e848527074cce3f9ec34065b7f037436d2aa6e9ec099bc05d7472c29864ac2c69de7f2e  findutils-4.7.0.tar.xz
+79571dc889afa5e6f01c9e1d4134df5e4112a410f24eb3e315645f6886a901780745abe49597d07c6409a3e3ecd3380b1721d86a684b7705c35767111c93bbf5  test-parse-datetime.patch"

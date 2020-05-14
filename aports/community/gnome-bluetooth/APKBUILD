@@ -1,0 +1,44 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-bluetooth
+pkgver=3.34.1
+pkgrel=0
+pkgdesc="The GNOME Bluetooth Subsystem"
+url="https://wiki.gnome.org/Projects/GnomeBluetooth"
+arch="all"
+license="GPL-2.0-or-later AND LGPL-2.1-or-later"
+depends="hicolor-icon-theme bluez>=5"
+makedepends="dconf-dev gobject-introspection-dev libnotify-dev libxi-dev
+	dbus-glib-dev gtk+3.0-dev eudev-dev libcanberra-dev meson"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang $pkgname-libs"
+source="https://download.gnome.org/sources/gnome-bluetooth/${pkgver%.*}/gnome-bluetooth-$pkgver.tar.xz
+	61-gnome-bluetooth-rfkill.rules"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		--sysconfdir=/etc \
+		output .
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+	install -m644 -D "$srcdir/61-gnome-bluetooth-rfkill.rules" \
+		"$pkgdir/lib/udev/rules.d/61-gnome-bluetooth-rfkill.rules"
+}
+
+libs() {
+	default_libs
+	replaces="gnome-bluetooth"
+	mkdir -p "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/icons "$subpkgdir"/usr/share/
+}
+
+sha512sums="3e0080bbeeddc144fdcf6b4f0d59b0885fd5881aee670d2e5dffd4ede9b0f988358ad0e815ba86add8b7fd5e93e1f8fc7bfacd10b8d69606aa569fd67356be08  gnome-bluetooth-3.34.1.tar.xz
+80b7fd0bc3e0f82c8d2d609ffed634200e63f61d9a134445df8e8511756b7fb423d338a1d12e42b91c57243097beaa3d4662856ec0507fb19a29b6de7ee9e4de  61-gnome-bluetooth-rfkill.rules"

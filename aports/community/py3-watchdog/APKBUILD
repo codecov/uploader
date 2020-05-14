@@ -1,0 +1,26 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=py3-watchdog
+_pkgname=watchdog
+pkgver=0.10.2
+pkgrel=0
+pkgdesc="Filesystem events monitoring"
+url="https://github.com/gorakhargosh/watchdog"
+arch="noarch"
+license="Apache-2.0"
+replaces="py-watchdog" # for backwards compatibility
+provides="py-watchdog=$pkgver-r$pkgrel" # for backwards compatibility
+depends="py3-pathtools py3-yaml py3-argh"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="0c811a1c6afdad10c4f0d5613a61807660ce401d504209c1a69bc613c4ba6aed7525a2e2134e69e63a9681d99d69a7b532de582e01b5513e491b7c4478fd8e5f  watchdog-0.10.2.tar.gz"

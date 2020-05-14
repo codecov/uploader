@@ -1,0 +1,26 @@
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Maintainer:
+pkgname=jinja2-cli
+pkgver=0.7.0
+pkgrel=2
+pkgdesc="CLI for Jinja2"
+url=https://github.com/mattrobenolt/jinja2-cli
+arch=noarch
+license="BSD-2-Clause"
+depends="python3 py3-jinja2"
+makedepends=py3-setuptools
+source=https://files.pythonhosted.org/packages/source/j/$pkgname/$pkgname-$pkgver.tar.gz
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --root "$pkgdir"
+}
+
+sha512sums="b1697560936c3cca9298ca6695087b0aca2177d42e5026cae5651a443df17eef45c4002c70e9a3be3a899ed47e2f451cc2d0b6978b1b30b808b863bba0d2d604  jinja2-cli-0.7.0.tar.gz"

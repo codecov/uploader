@@ -1,0 +1,107 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-pip
+_pkgname=pip
+pkgver=20.1
+pkgrel=0
+pkgdesc="Tool for installing and managing Python packages"
+options="!check" # Requires https://github.com/pypa/scripttest
+url="http://www.pip-installer.org"
+arch="noarch"
+license="MIT"
+depends="
+	python3
+	py3-appdirs
+	py3-cachecontrol
+	py3-colorama
+	py3-distlib
+	py3-distro
+	py3-html5lib
+	py3-msgpack
+	py3-packaging
+	py3-pep517
+	py3-progress
+	py3-parsing
+	py3-toml
+	py3-requests
+	py3-retrying
+	py3-setuptools
+	py3-six
+	py3-webencodings
+	py3-contextlib2
+	"
+makedepends="
+	py3-sphinx
+	"
+checkdepends="
+	py3-pytest
+	"
+subpackages="
+	$pkgname-doc
+	$pkgname-zsh-completion:zshcomp:noarch
+	$pkgname-bash-completion:bashcomp:noarch
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/pypa/pip/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+provides="py-pip=$pkgver-r$pkgrel" # Backwards compatibility
+replaces="py-pip" # Backwards compatibility
+
+prepare() {
+	default_prepare
+
+	# Remove certifi usage
+	sed -i 's|from pip._vendor.certifi import where|where = lambda: "/etc/ssl/certs/ca-certificates.crt"|' src/pip/_internal/commands/debug.py
+
+	for f in src/pip/_vendor/*; do
+		if [ "${f##*/}" = __init__.py ]; then
+			continue
+		fi
+		rm -rf "$f"
+	done
+	sed -i -e 's/DEBUNDLED = False/DEBUNDLED = True/' src/pip/_vendor/__init__.py
+}
+
+build() {
+	python3 setup.py build
+
+	# Build manpage
+	cd docs/
+	PYTHONPATH="$builddir/src/" sphinx-build -W -b man -d build/doctrees/man man build/man -c html
+}
+
+check() {
+	PYTHONPATH="./build/lib" python3 -m pytest
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	install -Dm644 docs/build/man/* -t "$pkgdir"/usr/share/man/man1
+
+	PYTHONPATH="$pkgdir"/usr/lib/python3.8/site-packages "$pkgdir"/usr/bin/pip \
+		completion --bash | \
+		install -Dm644 /dev/stdin "$pkgdir"/usr/share/bash-completion/completions/pip
+
+	PYTHONPATH="$pkgdir"/usr/lib/python3.8/site-packages "$pkgdir"/usr/bin/pip \
+		completion --zsh | \
+		install -Dm644 /dev/stdin "$pkgdir"/usr/share/zsh/site-functions/_pip
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	amove usr/share/zsh/site-functions
+}
+
+sha512sums="19cc1172540bec4b0c6facf55fa9c463bf8f4391dd1a643ac208c8e0b787950b2d72a6ec8f0772c7e6582c6b6a4a103f31ad58ffa2119fb574c174e5ec77b0c1  py3-pip-20.1.tar.gz"

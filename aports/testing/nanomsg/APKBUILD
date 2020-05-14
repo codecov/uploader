@@ -1,0 +1,31 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=nanomsg
+pkgver=1.1.5
+pkgrel=1
+pkgdesc="Socket library that provides several common communication patterns"
+url="https://nanomsg.org"
+arch="all !armhf !armv7"  # armhf: segfaults in 2 tests
+license="MIT"
+makedepends="asciidoctor xmlto cmake"
+options="libtool"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/nanomsg/nanomsg/archive/$pkgver.tar.gz"
+
+
+build() {
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib .
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="773b8e169a7accac21414c63972423a249164f5b843c6c65c1b03a2eb90d21da788a98debdeb396dab795e52d30605696bc2cf65e5e05687bf115438d5b22717  nanomsg-1.1.5.tar.gz"

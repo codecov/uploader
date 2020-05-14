@@ -1,0 +1,35 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=perl-par-packer
+pkgver=1.050
+_realname=PAR-Packer-$pkgver
+pkgrel=0
+pkgdesc="App::Packer::Backend interface, for generating stand-alone executables, perl scripts and PAR files"
+url="https://metacpan.org/release/Par-Packer/"
+arch="all"
+license="Artistic-1.0-Perl GPL-1.0-or-later"
+depends="perl-archive-zip perl-par perl-module-scandeps"
+makedepends="perl-dev perl-getopt-argvfile"
+checkdepends="perl-test-pod perl-ipc-run3"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/R/RS/RSCHUPP/$_realname.tar.gz"
+builddir="$srcdir/$_realname"
+
+build() {
+	mkdir blib
+	cp -rf lib script blib/ # fix parallel install issue on build server
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+check() {
+	export PERL_TEST_POD=1
+	make test
+}
+
+sha512sums="21a1d601aaf5d7c0e964e5999cc2fa7c7a9cd9dff282ad547fca0edc8d7fe6d6f72e7dbe42ba6ce057e6723b1cb783cdee0cabb283010e5f5720ba1cdd48da04  PAR-Packer-1.050.tar.gz"

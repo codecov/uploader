@@ -1,0 +1,27 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Justin Berthault <justin.berthault@zaclys.net>
+pkgname=py3-django-crispy-forms
+pkgver=1.9.0
+pkgrel=0
+pkgdesc="Dry Django forms"
+options="!check" # No testsuite
+url="https://github.com/django-crispy-forms/django-crispy-forms"
+arch="noarch"
+license="MIT"
+depends="py3-django"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://files.pythonhosted.org/packages/source/d/django-crispy-forms/django-crispy-forms-$pkgver.tar.gz"
+builddir="$srcdir"/django-crispy-forms-$pkgver
+
+replaces="py-django-crispy-forms" # Backwards compatibility
+provides="py-django-crispy-forms=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py --quiet build
+}
+
+package() {
+	python3 setup.py --quiet install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="4849933f109e57bc3d5565f17bc075603100c93b489d6b2fc35e3281dd4bb35c16216da4084e76e6bbeffa0fa303ec0f7c1e2f1f2bee19c220b6e1d2fa4b5dea  py3-django-crispy-forms-1.9.0.tar.gz"

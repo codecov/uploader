@@ -1,0 +1,12 @@
+diff --git a/src/unionfs.c b/src/unionfs.c
+index 5aed5ce..9236c57 100644
+--- a/src/unionfs.c
++++ b/src/unionfs.c
+@@ -33,6 +33,7 @@
+ #include <sys/time.h>
+ #include <inttypes.h>
+ #include <sys/ioctl.h>
++#include <asm/ioctl.h>
+ 
+ #ifdef linux
+ 	#include <sys/vfs.h>

@@ -1,0 +1,28 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-logilab-common
+_pkgname=logilab-common
+pkgver=1.5.2
+pkgrel=0
+pkgdesc="A collection of Python3 packages and modules used by Logilab projects"
+options="!check" # Tests depend on python2 only libs
+url="https://www.logilab.org/project/logilab-common"
+arch="noarch"
+license="LGPL-2.0-or-later"
+depends="python3 py3-six py3-setuptools"
+checkdepends="py3-pytest"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-logilab-common" # Backwards compatibility
+provides="py-logilab-common=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="311caede51f8486fb0ead3fe9ed53d01211e284f706d10a78e8dbe1611faa209ebef649a8be95eabf2873b57b10703e9d66bf5efc5cd4096c63885d6a58b5506  logilab-common-1.5.2.tar.gz"

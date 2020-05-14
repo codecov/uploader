@@ -1,0 +1,38 @@
+# Contributor: Andy Postnikov <apostnikov@gmail.com>
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=php7-pecl-event
+_pkgname=event
+pkgver=2.5.5
+pkgrel=0
+pkgdesc="PHP extension that provides interface to libevent library - PECL"
+url="https://pecl.php.net/package/event"
+arch="all"
+license="PHP-3.01"
+depends="php7-sockets"
+makedepends="php7-dev autoconf libevent-dev openssl-dev pkgconf re2c"
+source="$pkgname-$pkgver.tgz::https://pecl.php.net/get/$_pkgname-$pkgver.tgz"
+builddir="$srcdir/$_pkgname-$pkgver"
+provides="php7-event=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-event" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	# Tests require sockets extension which is not bundled
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 SKIP_ONLINE_TESTS=1 test PHP_TEST_SHARED_EXTENSIONS=" \
+		-d extension=/usr/lib/php7/modules/sockets.so \
+		-d extension=modules/$_pkgname.so"
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_pkgname.so" > "$pkgdir"/etc/php7/conf.d/$_pkgname.ini
+}
+
+sha512sums="71febb1b39e426a82c7546b3234f30ef8201489a600a5e76df0d94a6ca2266d9c4ccb995b9a91e8d11dff568492bff474ee772ce3d59cbea0c86ec86df1193c8  php7-pecl-event-2.5.5.tgz"

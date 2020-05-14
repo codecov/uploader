@@ -1,0 +1,23 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=btrbk
+pkgver=0.29.1
+pkgrel=0
+pkgdesc="Backup tool for btrfs subvolumes with atomic snapshots & incremental transfers"
+url="https://digint.ch/btrbk"
+arch="noarch"
+license="GPL-3.0-or-later"
+depends="perl perl-date-calc btrfs-progs"
+makedepends="asciidoctor"
+subpackages="$pkgname-doc"
+options="!check" # no test suite available
+source="https://digint.ch/download/btrbk/releases/btrbk-$pkgver.tar.xz"
+
+package() {
+	make DESTDIR="$pkgdir" BINDIR="/usr/bin" install
+	mkdir -p "$pkgdir"-doc/usr/share/btrbk
+	cp -rf "$srcdir"/$pkgname-$pkgver/contrib "$pkgdir"-doc/usr/share/btrbk
+	rm -rf "$pkgdir"/usr/lib "$pkgdir"-doc/usr/share/btrbk/contrib/systemd # systemd scripts
+}
+
+sha512sums="78bb24fff3606bcf5cb3f4b7e31c5423ca01208cf667efa6a67978696b06ffd4f368aed372d57372ef268ea9329d51f8abd7e2e9dc59dfb0d3133c992d1d788e  btrbk-0.29.1.tar.xz"

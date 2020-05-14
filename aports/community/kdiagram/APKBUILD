@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kdiagram
+pkgver=2.7.0
+pkgrel=0
+pkgdesc="Powerful libraries (KChart, KGantt) for creating business diagrams"
+arch="all !armhf"
+url="https://kontact.kde.org/"
+license="GPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev qt5-qtsvg-dev qt5-qttools-dev"
+makedepends="$depends_dev extra-cmake-modules doxygen"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/kdiagram/$pkgver/kdiagram-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	make -C build
+}
+
+check() {
+	cd build
+	# TestDrawIntoPainter times out
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "TestDrawIntoPainter"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="d5004b409bbb79ca858755a02a3673a16a54ffa7c1ed530b9526b8d928bdf0a2ba9730f47fb67203a09ef49d48c0af9b3d933f8f934ca19290376bdb3eefde1d  kdiagram-2.7.0.tar.xz"

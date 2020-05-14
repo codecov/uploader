@@ -1,0 +1,21 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=uidmapshift
+pkgver=0.1.0
+pkgrel=0
+pkgdesc="Shift UIDs/GIDs of directory entries recursively by some offset"
+url="https://github.com/jirutka/uidmapshift"
+arch="noarch"
+license="MIT"
+depends="lua lua-lunix lua-optarg"
+makedepends=""
+source="$pkgname-$pkgver.tar.gz::https://github.com/jirutka/uidmapshift/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+package() {
+	cd "$builddir"
+
+	install -D -m 755 uidmapshift.lua "$pkgdir"/usr/bin/uidmapshift
+}
+
+sha512sums="eee50c5952b59ec33160904821afb24401edae30e71f3df097fe8272967e5cc1b9ebe8438d20895681ebd434b884c04b2f684a119c0ee3b06c042fd2709de905  uidmapshift-0.1.0.tar.gz"

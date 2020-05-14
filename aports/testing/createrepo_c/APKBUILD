@@ -1,0 +1,94 @@
+# Contributor:
+# Maintainer: Paul Morgan <jumanjiman@gmail.com>
+pkgname=createrepo_c
+pkgver=0.15.7
+pkgrel=0
+pkgdesc="C implementation of createrepo"
+url="https://github.com/rpm-software-management/createrepo_c/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="
+	bash-completion
+	bzip2-dev
+	cmake
+	curl-dev
+	expat-dev
+	file-dev
+	glib-dev
+	openssl-dev
+	libxml2-dev
+	python3-dev
+	rpm-dev
+	scanelf
+	sqlite-dev
+	xz-dev
+	zlib-dev
+	"
+checkdepends="
+	check-dev
+	py3-nose
+	xz
+	"
+subpackages="
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-libs
+	py3-${pkgname}:py3
+	"
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/rpm-software-management/createrepo_c/archive/$pkgver.tar.gz
+	"
+
+build() {
+	mkdir "$builddir"/build
+	cd "$builddir"/build
+
+	# Pass cmake variables so
+	# end user does not need to set LD_LIBRARY_PATH.
+	# https://cmake.org/Wiki/CMake_RPATH_handling#Always_full_RPATH
+	cmake .. \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DCMAKE_SKIP_BUILD_RPATH=true \
+		-DCMAKE_BUILD_WITH_INSTALL_RPATH=false \
+		-DCMAKE_INSTALL_RPATH=/usr/lib \
+		-DCMAKE_INSTALL_RPATH_USE_LINK_PATH=true \
+		-DPYTHON_DESIRED=3 \
+		-DWITH_ZCHUNK=OFF \
+		-DWITH_LIBMODULEMD=OFF \
+		-DENABLE_DRPM=OFF
+	make
+}
+
+check() {
+	cd "$builddir"/build
+	make tests
+	tests/run_gtester.sh
+}
+
+package() {
+	cd "$builddir"/build
+	make install/strip DESTDIR=$pkgdir
+}
+
+py3() {
+	pkgdesc="Python3 bindings for createrepo_c"
+	depends="python3 $pkgname-libs"
+
+	# This is architecture-specific and provides a *.so file.
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/python* "$subpkgdir"/usr/lib/
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="${pkgname}=$pkgver-r${pkgrel} bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/bash-completion "$subpkgdir"/usr/share/
+}
+
+sha512sums="8a20bda92338db87f8ac27a6c3e191f6ac63a6be0e77bdc3227143acc2eb5b4fe06f6fdbb13b2031f69555c7f8a053d6155e4515620724515b173bd546648f1f  createrepo_c-0.15.7.tar.gz"

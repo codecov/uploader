@@ -1,0 +1,43 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libetonyek
+pkgver=0.1.9
+pkgrel=3
+pkgdesc="Import filter and tools for Apple Keynote presentations"
+url="https://wiki.documentfoundation.org/DLP/Libraries/libetonyek"
+arch="all"
+license="MPL-2.0"
+depends_dev="glm-dev boost-dev librevenge-dev libxml2-dev zlib-dev liblangtag-dev"
+makedepends="$depends_dev gperf doxygen mdds-dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-tools"
+source="https://dev-www.libreoffice.org/src/libetonyek/$pkgname-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-werror \
+		--with-mdds=1.5 \
+		--disable-static
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+tools() {
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr
+}
+
+sha512sums="3f439b369d450bb1a4bdb3fe92023bda234b323cf676570f1738318c56867a97910f536280b9b164c3fdaa423a3ee669c935df75a5c700bc1530ea5b9a00391e  libetonyek-0.1.9.tar.xz"

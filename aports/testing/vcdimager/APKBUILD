@@ -1,0 +1,32 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=vcdimager
+pkgver=2.0.1
+pkgrel=1
+pkgdesc="Mastering suite for authoring disassembling and analyzing Video CD's and Super Video CD's"
+url="http://www.vcdimager.org"
+arch="all"
+license="GPL"
+options="!check"
+makedepends="libxml2-dev libcdio-dev popt-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://ftp.gnu.org/gnu/vcdimager/${pkgname}-${pkgver}.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	./configure --prefix=/usr
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="55a9d235149a35fe26576703c623a2c9a3f7deedd2e42e01271fdf1e1fdf14c51ee040ee3b5d15fe1b5860fbd4cbeb437362b1a1f40187c8d4d691b6b89a2230  vcdimager-2.0.1.tar.gz"

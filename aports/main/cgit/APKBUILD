@@ -1,0 +1,51 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=cgit
+pkgver=1.2.3
+pkgrel=0
+_gitver=2.25.1
+pkgdesc="A fast webinterface for git"
+url="https://git.zx2c4.com/cgit/"
+arch="all"
+license="GPL-2.0-only"
+makedepends="openssl-dev zlib-dev lua5.3-dev asciidoc"
+subpackages="$pkgname-doc"
+source="http://git.zx2c4.com/cgit/snapshot/cgit-$pkgver.tar.xz
+	https://www.kernel.org/pub/software/scm/git/git-$_gitver.tar.gz
+	"
+
+_makeopts="NO_ICONV=YesPlease
+	NO_GETTEXT=YesPlease
+	NO_TCLTK=YesPlease
+	NO_SVN_TESTS=YesPlease
+	NO_REGEX=NeedsStartEnd
+	LUA_PKGCONFIG=lua5.3
+	prefix=/usr"
+
+prepare() {
+	# check that upstream git ver corresponds with our
+	local _ver=$(awk -F'[ \t]*=[ \t]*' '/^GIT_VER/ { print $2 }' Makefile)
+	if [ "$_ver" != "$_gitver" ]; then
+		error "Please set _gitver in APKBUILD to $_ver"
+		return 1
+	fi
+
+	rm -rf git
+	mv ../git-$_gitver git
+
+	default_prepare
+}
+
+build() {
+	make $_makeopts all doc-man
+}
+
+package() {
+	make $_makeopts DESTDIR="$pkgdir" \
+		CGIT_SCRIPT_PATH=/usr/share/webapps/cgit \
+		install install-man
+	ln -s cgit.cgi "$pkgdir"/usr/share/webapps/cgit/cgit
+}
+
+sha512sums="58f9bb644b07be49dc51f3ef30a3d0e53699cede3c06b1d6920f3874fe846c83dd2589632aa84357b70ea2d60272448409aa1b892f405d14dd6745f5559b4504  cgit-1.2.3.tar.xz
+1c955f25da190c78750542a2fc81710aed3cd1fa4933b8734c81b00c07bfbf5b1379b555001340d55cdb2b996dd79b116bbfcfc0106940f06676f017907a599c  git-2.25.1.tar.gz"

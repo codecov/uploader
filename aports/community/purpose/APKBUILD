@@ -1,0 +1,36 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=purpose
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Framework for providing abstractions to get the developer's purposes fulfilled"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-or-later"
+depends_dev="qt5-qtbase-dev qt5-qtdeclarative-dev kcoreaddons-dev ki18n-dev kconfig-dev kio-dev
+	kirigami2-dev"
+makedepends="$depends_dev extra-cmake-modules"
+checkdepends="xvfb-run"
+options="!check" # fails on builders
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/purpose-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_TESTING=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	# This is 1 of 2 tests
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E 'menutest'
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="932fc3a56c47a3a031f4acc32ae5ea04733c99f953ce3248e60bc47b836d26929e71bb10633c3859d642c8667e4b1dbb60f03f450da8b0c2bda703142cf80916  purpose-5.70.0.tar.xz"

@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=libgnome-games-support
+pkgver=1.6.1
+pkgrel=0
+arch="all"
+url="https://gitlab.gnome.org/GNOME/libgnome-games-support"
+pkgdesc="Code shared between GNOME games"
+license="LGPL-3.0-or-later"
+makedepends="meson ninja vala libgee-dev gtk+3.0-dev"
+source="https://download.gnome.org/sources/libgnome-games-support/${pkgver%.*}/libgnome-games-support-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/sys \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="a2f0c6faea4e10fcc06487a37147a3bbee9d41daeff2a323cf078bef45664166184f63e11fdba4afe6d2d1f8f2c0dba59274707d978c84b17b70305cb206b3a8  libgnome-games-support-1.6.1.tar.xz"

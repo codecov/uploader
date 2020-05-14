@@ -1,0 +1,54 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=firejail
+pkgver=0.9.62
+pkgrel=1
+pkgdesc="Linux namespaces and seccomp-bpf sandbox"
+url="https://firejail.wordpress.com/"
+arch="all"
+license="GPL-2.0"
+depends="bash"
+makedepends="linux-headers"
+checkdepends="expect"
+options="suid"
+subpackages="$pkgname-doc $pkgname-bash-completion:bashcomp:noarch"
+source="firejail-$pkgver$_extraver.tar.gz::https://github.com/netblue30/firejail/archive/$pkgver$_extraver.tar.gz"
+
+prepare() {
+	default_prepare
+
+	find "$builddir" -name Makefile.in -exec sed -i -r \
+		-e '/CFLAGS/s: (-O2|-ggdb) : :g' \
+		-e '1iCC=@CC@' {} +
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-busybox-workaround
+	make
+}
+
+bashcomp() {
+	pkgdesc="Bash completions for $pkgname"
+	depends="bash"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/share "$subpkgdir"/usr/
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="dfdbfbffdcb9a239e071983035d57350440eb58d79bb4375bc1fe585471a260c8b090bea59ac939739ac3daddf296c041ab4cc47ebbf718b0c9deae47f16af9f  firejail-0.9.62.tar.gz"

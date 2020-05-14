@@ -1,0 +1,67 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libtirpc
+pkgver=1.2.6
+pkgrel=0
+pkgdesc="Transport Independent RPC library (SunRPC replacement)"
+url="https://sourceforge.net/projects/libtirpc"
+arch="all"
+license="BSD-3-Clause"
+options="!check"
+depends="$pkgname-conf"
+depends_dev="krb5-dev bsd-compat-headers"
+makedepends="$depends_dev autoconf automake libtool linux-headers"
+subpackages="
+	$pkgname-static
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-dbg
+	$pkgname-conf::noarch
+	$pkgname-nokrb
+	"
+source="https://sourceforge.net/projects/libtirpc/files/libtirpc/$pkgver/libtirpc-$pkgver.tar.bz2
+	soname-suffix.patch
+	"
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+
+	cp -r "$builddir" "$builddir-nokrb"
+}
+
+build() {
+	_build SONAME_SUFFIX=''
+
+	cd "$builddir-nokrb"
+	_build --disable-gssapi SONAME_SUFFIX='-nokrb'
+}
+
+_build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconf=/etc \
+		"$@"
+	make
+}
+
+package() {
+	make -C "$builddir-nokrb" install DESTDIR="$pkgdir"
+	make install DESTDIR="$pkgdir"
+}
+
+conf() {
+	pkgdesc="Configuration files for TI-RPC"
+
+	amove etc/*
+}
+
+nokrb() {
+	pkgdesc="$pkgdesc - without GSS-API/Kerberos"
+
+	amove usr/lib/libtirpc-nokrb.*
+}
+
+sha512sums="bcb6b5c062c1301aa1246ec93ae0a5c1d221b8421126d020863517cb814b43ed038fb6c0c2faf4e68ff133b69abefe4f4d42bfc870671da6c27ca941a30b155a  libtirpc-1.2.6.tar.bz2
+ccb6352c3c3b896765581595b9a0e45a527c34cbc16495d3890f996a2bc077a02ceae0ddd63505b3420a8414b93a267c82a11bc75997de8f9ca0a22e4c4daa5c  soname-suffix.patch"

@@ -1,0 +1,28 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=py3-padaos
+pkgver=0.1.10
+pkgrel=0
+pkgdesc="A rigid, lightweight, dead-simple intent parser"
+url="github.com/MatthewScholefield/padaos"
+arch="noarch"
+license="MIT"
+depends="python3"
+makedepends="py3-setuptools"
+source="https://pypi.python.org/packages/source/p/padaos/padaos-$pkgver.tar.gz"
+options="!check" # No tests
+builddir="$srcdir/padaos-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="8458dd829b40015650ae903bba8b2863470af58503ed2dd73e573551c7a796a0f88a9544e0555d08d794217e4c0dad94288aad39ef65723cb7a1161f2f9fd199  padaos-0.1.10.tar.gz"

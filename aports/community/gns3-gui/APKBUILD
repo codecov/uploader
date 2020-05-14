@@ -1,0 +1,30 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=gns3-gui
+pkgver=2.2.8
+pkgrel=0
+pkgdesc="GNS3 network simulator. Graphical user interface package."
+url="https://github.com/GNS3/gns3-gui"
+arch="noarch !armhf" # armhf blocked by py3-qt5 -> qt5-qtdeclarative
+license="GPL-3.0-or-later"
+depends="python3 py3-psutil-gns3 py3-jsonschema-gns3 py3-raven
+	py3-qt5 qt5-qtsvg py3-sip"
+makedepends="python3-dev py3-setuptools"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/GNS3/gns3-gui/archive/v$pkgver.tar.gz"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --root="$pkgdir" --optimize=1
+	install -Dm644 "$builddir"/resources/images/gns3_icon_256x256.png "$pkgdir"/usr/share/pixmaps/gns3.png
+	install -Dm644 "$builddir"/LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
+
+sha512sums="28b9f6f16506f206f64831160d95687525b6709d9d0d84623763e46c3c9b2e138e3f12844619bbad00491677818a7e28da4f4ea9358d063c3427db16e62775ca  gns3-gui-2.2.8.tar.gz"

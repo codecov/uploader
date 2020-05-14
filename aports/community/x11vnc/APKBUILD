@@ -1,0 +1,40 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Tuan M. Hoang <tmhoang@flatglobe.org>
+pkgname=x11vnc
+pkgver=0.9.16
+pkgrel=0
+pkgdesc="VNC server for real X displays"
+url="http://www.karlrunge.com/x11vnc/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="openssl-dev libjpeg-turbo-dev avahi-dev libvncserver-dev
+	automake autoconf"
+subpackages="$pkgname-doc"
+source="x11vnc-$pkgver.tar.gz::https://github.com/LibVNC/x11vnc/archive/$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	autoreconf -v --install
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+}
+
+check() {
+	make check
+}
+
+sha512sums="69f65ee312f8dede6051b401304987502a213c6c28c7f41e855734f11de1fae14d5d493dc9c28b2e4b7c0be55f8dbd3b35dd2610aae910183772c3e626736fec  x11vnc-0.9.16.tar.gz"

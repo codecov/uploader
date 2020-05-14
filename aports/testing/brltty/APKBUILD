@@ -1,0 +1,47 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=brltty
+pkgver=6.1
+pkgrel=1
+pkgdesc="Refreshable braille display driver daemon"
+url="http://brltty.app"
+arch="all !ppc64le"
+license="LGPL-2.1-or-later"
+makedepends="
+	autoconf
+	automake
+	gpm-dev
+	icu-dev
+	liblouis-dev
+	linux-headers
+	tcl
+	"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="http://brltty.app/archive/brltty-$pkgver.tar.xz"
+options="!check" # no upstream test suite
+
+prepare() {
+	cp /usr/share/abuild/config.guess acdir/
+	cp /usr/share/abuild/config.sub acdir/
+	./autogen
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--with-tables-directory=/usr/share/brltty \
+		--enable-gpm
+	make -j1
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+	install -m644 -D Documents/$pkgname.conf \
+		"$pkgdir"/etc/$pkgname.conf
+}
+
+sha512sums="030ef60ef7a9a60dc2fba2a64ea0a0868395eee6f2f86876b4e4111e804a05b44f798a154a69a8f5e0f6358130993c360a550f7decac0535450f9cf939231eaf  brltty-6.1.tar.xz"

@@ -1,0 +1,38 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gucharmap
+pkgver=13.0.2
+pkgrel=0
+pkgdesc="GNOME Unicode Charmap"
+url="https://wiki.gnome.org/Apps/Gucharmap"
+arch="all"
+license="GPL-3.0-or-later GFDL-1.3-only"
+makedepends="gtk+3.0-dev itstool glib-dev unzip desktop-file-utils
+	gobject-introspection-dev unicode-character-database>=${pkgver/.*/}.0.0
+	meson vala perl"
+subpackages="$pkgname-dev $pkgname-lang"
+source="https://gitlab.gnome.org/GNOME/gucharmap/-/archive/$pkgver/gucharmap-$pkgver.tar.gz"
+
+build() {
+	# Disable docs due to https://github.com/mesonbuild/meson/issues/5843
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Ducd_path=/usr/share/unicode \
+		-Ddocs=false \
+		output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="66918666607190f6a364b4709fbd51a08ada29986b549ae779452ec98eb4944d0969ad593296ac84cac8dc4791d718dd522add6cf475116765426505647971a9  gucharmap-13.0.2.tar.gz"

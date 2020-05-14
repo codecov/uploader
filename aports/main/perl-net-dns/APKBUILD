@@ -1,0 +1,38 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-net-dns
+_pkgname=Net-DNS
+pkgver=1.23
+pkgrel=0
+pkgdesc="Perl interface to the DNS resolver"
+url="https://www.net-dns.org/"
+arch="noarch"
+license="GPL-1.0-or-later or Artistic-1.0-Perl"
+depends="perl"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+checkdepends="perl-digest-hmac perl-net-libidn perl-test-pod"
+source="https://www.net-dns.org/download/Net-DNS-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+prepare() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+}
+
+build() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	# creates file collision among perl modules
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+check() {
+	make test
+}
+
+sha512sums="23c9df9e12340687d3399cbe7fb5f94dfa4ceae94be77227c42f0f707470ef90194ef64aa953ee36da5c2ba6a28d2bb4b59de04a9722ae3b0db6162916bde2b1  Net-DNS-1.23.tar.gz"

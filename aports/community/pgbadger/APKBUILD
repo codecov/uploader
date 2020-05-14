@@ -1,0 +1,32 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=pgbadger
+pkgver=11.2
+pkgrel=0
+pkgdesc="A fast PostgreSQL Log Analyzer"
+url="https://github.com/darold/pgbadger"
+arch="noarch"
+license="Custom"
+makedepends="perl-dev perl-json-xs coreutils gzip"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/darold/pgbadger/archive/v$pkgver.tar.gz"
+
+prepare() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+}
+
+build() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="0895f9135b5df430af920f1a84be5f451e2585c930a383df54167a92b13980f940eaaa635302a1a5545bac3df38d92505e2025ce1cf73ddc72a771624c9afc26  pgbadger-11.2.tar.gz"

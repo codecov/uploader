@@ -1,0 +1,46 @@
+# Contributor: V.Krishn <vkrishn4@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libwebsockets
+pkgver=3.2.2
+pkgrel=0
+pkgdesc="C library for lightweight websocket clients and servers"
+url="https://libwebsockets.org"
+arch="all"
+license="LGPL-2.0-or-later"
+options="!check"
+makedepends="cmake zlib-dev openssl-dev"
+subpackages="$pkgname-doc $pkgname-dev $pkgname-test:_test"
+source="libwebsockets-$pkgver.tar.gz::https://github.com/warmcat/libwebsockets/archive/v$pkgver.tar.gz"
+
+build() {
+	mkdir -p "$builddir"/build
+	cd "$builddir"/build
+
+	cmake .. \
+		-DCMAKE_BUILD_TYPE=MinSizeRel \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_VERBOSE_MAKEFILE=TRUE \
+		-DLWS_WITH_STATIC=OFF \
+		-DLWS_LINK_TESTAPPS_DYNAMIC=ON
+	make
+}
+
+# TODO: Use test subpkg to validate
+check() {
+	make check
+}
+
+package() {
+	install -Dm644 LICENSE \
+		"$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+	make -C build DESTDIR="$pkgdir" install
+}
+
+_test() {
+	pkgdesc="$pkgdesc (test server)"
+
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/share "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}
+
+sha512sums="be6cd57ae1d15de059c277ce56e9ccc87f7918811b40a427c96978397f2b1d446e1b5ed6ae62a6aa82c6d775871d6a15885d283d74d7887e98205ab61d206fc0  libwebsockets-3.2.2.tar.gz"

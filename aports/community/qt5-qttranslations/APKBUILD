@@ -1,0 +1,34 @@
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qttranslations
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="Qt5 - QtTranslations module"
+url="https://www.qt.io/developers/"
+arch="noarch"
+license="GPL-3.0-only AND Qt-GPL-exception-1.0"
+makedepends="qt5-qttools-dev"
+builddir="$srcdir/qttranslations-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qttranslations-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="38cedf19a1d7b920b7dcfcc014d3986c4067dafd7192efe43c3b8f282e0637391f9ec0b8cc7f5506cc76629d005298becba1421506b48c6baf3366ec2f378544  qttranslations-everywhere-src-5.14.2.tar.xz"

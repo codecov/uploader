@@ -1,0 +1,53 @@
+# Contributor: Christian Kampka <christian@kampka.net>
+# Maintainer: Gennady Feldman <gena01@gmail.com>
+pkgname=vault
+pkgver=1.4.1
+pkgrel=1
+pkgdesc="Vault is a tool for securely accessing secrets"
+url="https://www.vaultproject.io/"
+arch="all !s390x"
+license="MPL-2.0"
+makedepends="libcap bash make go python3 go-bindata-assetfs"
+install="$pkgname.pre-install"
+pkgusers="vault"
+pkggroups="vault"
+subpackages="$pkgname-openrc"
+options="!check"
+source="$pkgname-$pkgver.tar.gz::https://github.com/hashicorp/vault/archive/v$pkgver.tar.gz
+	static-assets.patch
+	vault.confd
+	vault.hcl
+	vault.initd
+	"
+
+build() {
+	CGO_ENABLED=0 make prep
+	CGO_ENABLED=0 go build -v -o bin/$pkgname \
+		-ldflags "-X github.com/hashicorp/vault/version.GitDescribe='$pkgver'"
+}
+
+package() {
+	install -m755 -D "$srcdir/$pkgname.initd" \
+		"$pkgdir/etc/init.d/$pkgname"
+
+	install -m644 -D "$srcdir/$pkgname.confd" \
+		"$pkgdir/etc/conf.d/$pkgname"
+
+	install -m750 -o root -g vault -D bin/$pkgname \
+		"$pkgdir/usr/sbin/$pkgname"
+
+	# Allow vault to use mlock as "vault" user.
+	setcap cap_ipc_lock=+ep \
+		"$pkgdir/usr/sbin/$pkgname"
+
+	install -m750 -o root -g vault -D "$srcdir/$pkgname.hcl" \
+		"$pkgdir/etc/$pkgname.hcl"
+
+	install -m750 -o vault -g vault -d "$pkgdir/var/lib/$pkgname"
+}
+
+sha512sums="25df993d08ebbb8f9829113cd808b5d332808a0f24ebff8acf17caaab6932ad46bfb5e551593cefa50228701daa9b32dfda4405d3d35fb106e2fd0ea1bd8b903  vault-1.4.1.tar.gz
+e551aa366287ca86436b14c72c254d739c2492dec7a877da135ba81bf2170bbe694f2ac98798d5855004a0aca406a27c1bdf0c791844f1bd330ea3a1160c6327  static-assets.patch
+6f3f30e5c9d9dd5117f18fce0e669f0cd752a6be4910405d6b394f15273372731ee887a5ba4c700293e5b8bc2bf40fd69d4337156f77b03549d2dc2c0a666bec  vault.confd
+8c064aa5dcca84822c1fa85e9d0ff520df46f794b2e9c689a9b4f81f74279387b3aebc08b3ca26cf786c2fcf1a330e765bf5a511074c24f87e5346672346ba1c  vault.hcl
+9a1846a10eff015cf7d4c8c2c20540c125213302925e54bdfae1c1ec9c43bf0e97b3433c041615c9fdc7d5e9468a0f606321991c597af3be92025bd5042c08df  vault.initd"

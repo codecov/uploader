@@ -1,0 +1,17 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: David Demelier <markand@malikania.fr>
+pkgname=libretro-core-info
+pkgver=1.8.6
+pkgrel=0
+arch="noarch"
+url="https://www.libretro.com/"
+pkgdesc="Libretro core info files"
+license="MIT"
+source="$pkgname-$pkgver.tar.gz::https://github.com/libretro/libretro-core-info/archive/v$pkgver.tar.gz"
+options="!check" # No code to test
+
+package() {
+	DESTDIR="$pkgdir" make install
+}
+
+sha512sums="fcb8b84dcc9bc158808d025d87459d35b01418c63c00ecbba66930d7e5dbc190f40300ea63aa61361a7af4b9319a6dfe391142643ec5d750e71a795a9081003f  libretro-core-info-1.8.6.tar.gz"

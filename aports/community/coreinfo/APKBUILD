@@ -1,0 +1,24 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=coreinfo
+pkgver=2.8.0
+pkgrel=0
+pkgdesc="A file information tool from the CoreApps family."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtsvg"
+makedepends="qt5-qtbase-dev libcprime-dev libmediainfo-dev libzen-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/coreinfo/-/archive/v$pkgver/coreinfo-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+sha512sums="7c8db28492cb4b9d682216dc0ef5f10b0d47fd4ad2b6352eb619ebc386c340dfe388f8a67211637983f4bd40449a1890083781f2d74997470ef29198e5ccbf10  coreinfo-2.8.0.tar.gz"

@@ -1,0 +1,38 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Christian Franke <nobody@nowhere.ws>
+pkgname=libyang
+pkgver=1.0.130
+pkgrel=0
+pkgdesc="YANG data modelling language parser and toolkit"
+url="https://github.com/CESNET/libyang"
+arch="all"
+license="BSD-3-Clause-Clear"
+makedepends="bison cmake cmocka-dev flex pcre-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/CESNET/libyang/archive/v$pkgver.tar.gz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DENABLE_BUILD_TESTS=ON \
+		-DENABLE_LYD_PRIV=ON \
+		"$CMAKE_CROSSOPTS"
+	make -C build
+}
+
+check() {
+	make -C build test
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="208c5a0ba5400664c6bbdcb5e374b6a6b23cd30be51726783a4553b4e4beaa7dfe21e8abbf5f1277c6dcff506cb1253046944468a22a2ecdb68708ab8944a9b7  libyang-1.0.130.tar.gz"

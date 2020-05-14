@@ -1,0 +1,46 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer:
+pkgname=py3-fonttools
+_pkgname=fonttools
+pkgver=4.9.0
+pkgrel=0
+pkgdesc="Converts OpenType and TrueType fonts to and from XML"
+options="!check" # Require unpackaged 'brotli'
+url="https://github.com/fonttools/fonttools"
+arch="all"
+license="MIT AND OFL-1.1"
+depends="py3-setuptools py3-lxml py3-fs cython python3-dev"
+checkdepends="py3-pytest"
+subpackages="$pkgname-doc"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/fonttools/fonttools/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-fonttools" # Backwards compatibility
+provides="py-fonttools=$pkgver-r$pkgrel" # Backwards compatibility
+
+prepare() {
+	default_prepare
+	# remove interpreter line
+	sed -i '1d' Lib/fontTools/mtiLib/__init__.py
+}
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	PYTHONPATH="$PWD/build/lib" py.test-3
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+doc() {
+	replaces="py-$_pkgname-doc" # Backwards compatibility
+	provides="py-$_pkgname-doc=$pkgver-r$pkgrel" # Backwards compatibility
+	default_doc
+}
+
+sha512sums="b26da75c44aab6fdc7aaf31d5addd9383bb244fc59c4644f87cca859b1a6bf5f7e4705abf1109ab475d0eb744d862c259e8f7e56b8590a4fd113aae2e92a716d  fonttools-4.9.0.tar.gz"

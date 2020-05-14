@@ -1,0 +1,38 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-initial-setup
+pkgver=3.36.2
+pkgrel=0
+pkgdesc="A simple, easy,and safe way to prepare a new system"
+url="https://wiki.gnome.org/Design/OS/InitialSetup"
+arch="all !armhf !s390x !ppc64le !mips !mips64" # limited by gnome-shell&mutter
+license="GPL-2.0-or-later"
+depends="gsettings-desktop-schemas iso-codes dbus:org.freedesktop.Secrets"
+makedepends="meson cheese-dev ibus-dev networkmanager-dev polkit-dev
+	accountsservice-dev gnome-desktop-dev fontconfig-dev libgweather-dev
+	gtk+3.0-dev gnome-online-accounts-dev gdm-dev geocode-glib-dev
+	geoclue-dev rest-dev libpwquality-dev webkit2gtk-dev libsecret-dev
+	libnma-dev krb5-dev"
+options="!check" # no tests
+subpackages="$pkgname-lang"
+source="https://download.gnome.org/sources/gnome-initial-setup/${pkgver%.*}/gnome-initial-setup-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dregion-page=false \
+		-Dsoftware-sources=disabled \
+		-Dsystemd=false \
+		. output
+	ninja -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="0eb9393a0741ae94d7dadc9957493796f7663fb0213a393fa0f9eaea6fae9d5fb6882142e0406790baf26b5dee5501cbb6f6d36151d88d54821d31ed18e4b2cd  gnome-initial-setup-3.36.2.tar.xz"

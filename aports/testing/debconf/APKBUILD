@@ -1,0 +1,53 @@
+# Contributor: TBK <alpine@jjtc.eu>
+# Maintainer: TBK <alpine@jjtc.eu>
+pkgname=debconf
+pkgver=1.5.73
+pkgrel=0
+pkgdesc="A configuration management system for Debian packages."
+url="https://packages.debian.org/debconf"
+arch="noarch"
+license="BSD-2-Clause"
+options="!check" # Test suite is broken. CopyDBTestSetup is missing new method
+depends="perl"
+makedepends="coreutils diffutils findutils po4a"
+checkdepends="perl-freezethaw perl-ldap perl-test-unit"
+subpackages="$pkgname-doc $pkgname-lang $pkgname-utils $pkgname-bash-completion:bashcomp:noarch"
+source="https://deb.debian.org/debian/pool/main/d/debconf/debconf_$pkgver.tar.xz
+	fix-makefile_destdir.patch
+	"
+builddir="$srcdir/work"
+
+build() {
+	make
+}
+
+check() {
+	./test_debconf.pl --all
+}
+
+package() {
+	make PREFIX="/usr" DESTDIR="$pkgdir" install-i18n install-doc install-rest
+}
+
+utils() {
+	depends="$pkgname"
+	pkgdesc="Small utilities for debconf developers."
+
+	cd "$builddir"
+	make PREFIX="/usr" DESTDIR="$subpkgdir" install-utils
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions
+	install -m 644 "$builddir"/bash_completion \
+		"$subpkgdir"/usr/share/bash-completion/completions/debconf
+	cd "$subpkgdir"/usr/share/bash-completion/completions
+	ln -s debconf debconf-show
+}
+
+sha512sums="fa2e240842f4f020df031ef37803c22a680372b996302372dfd3377bf21723f2e949167f9ea13ebad5c1c516052c26adcd627d152a62110ccddd3a9e2b892bdc  debconf_1.5.73.tar.xz
+17094b77ccf7922daf28dbf2eba84a322ac8ca265a41403b963d97ea4c1c16d8e530bcb3414f9b1bca88cbc5f726d2401376ee20674547d7b528c52d8f496f8c  fix-makefile_destdir.patch"

@@ -1,0 +1,36 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=evolution-ews
+pkgver=3.36.2
+pkgrel=0
+pkgdesc="MS Exchange integration through Exchange Web Services"
+url="https://wiki.gnome.org/Apps/Evolution/EWS"
+arch="all !s390x !mips64" # missing evolution on s390x and mips64
+license="LGPL-2.1-or-later"
+depends="evolution"
+makedepends="cmake gtk-doc intltool glib-dev gettext-dev evolution-data-server-dev
+	evolution-dev libmspack-dev uhttpmock-dev"
+options="!check" # fail in docker due to port restrictions
+subpackages="$pkgname-lang"
+source="https://download.gnome.org/sources/evolution-ews/${pkgver%.*}/evolution-ews-$pkgver.tar.xz"
+
+build() {
+	mkdir -p "$builddir"/build
+	cd "$builddir"/build
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=None \
+		-DENABLE_TESTS=TRUE \
+		..
+	make
+}
+
+check() {
+	make -C build test
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="662828afa7eefec720016ec2d7c70fddd376c4a3ae974287516f7ce063c293665172fdbffa8a25333a0564b74632d8409140cac60f35cd3f169d063cecc337c8  evolution-ews-3.36.2.tar.xz"

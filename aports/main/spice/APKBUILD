@@ -1,0 +1,75 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=spice
+pkgver=0.14.3
+pkgrel=0
+pkgdesc="Implements the SPICE protocol"
+url="http://www.spice-space.org/"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="
+	meson
+	spice-protocol
+	glib-dev
+	gdk-pixbuf-dev
+	pixman-dev
+	openssl-dev
+	libjpeg-turbo-dev
+	zlib-dev
+	opus-dev
+	gstreamer-dev
+	gst-plugins-base-dev
+	orc-dev
+	lz4-dev
+	cyrus-sasl-dev
+	py3-six
+	py3-parsing
+	"
+subpackages="$pkgname-static $pkgname-dev $pkgname-server"
+source="https://www.spice-space.org/download/releases/spice-server/spice-$pkgver.tar.bz2
+	failing-tests.patch
+	"
+
+# secfixes:
+#   0.14.1-r4:
+#     - CVE-2019-3813
+#   0.14.1-r0:
+#     - CVE-2018-10873
+#   0.12.8-r4:
+#     - CVE-2017-7506
+#   0.12.8-r3:
+#     - CVE-2016-9577
+#     - CVE-2016-9578
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dgstreamer=1.0 \
+		-Dlz4=true \
+		-Dsasl=true \
+		-Dopus=enabled \
+		-Dsmartcard=disabled \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+server() {
+	pkgdesc="Server library for SPICE"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*server.so.* "$subpkgdir"/usr/lib/
+}
+
+sha512sums="9ecdc455ff25c71ac1fe6c576654b51efbfb860110bd6828065d23f7462d5c5cac772074d1a40f033386258d970b77275b2007bcfdffb23fdff2137154ea46e4  spice-0.14.3.tar.bz2
+10104feb05ce9d70074cad58efb9772cc8521666ea1c694bedf5c3ecfaa15a755324ac989b94d3be61e69be4286ab8369b900452fe98864596dcbc45d4a896b5  failing-tests.patch"

@@ -1,0 +1,26 @@
+# Contributor: ScrumpyJack <scrumpyjack@st.ilet.to>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libiptcdata
+pkgver=1.0.5
+_relver=1_0_5
+pkgrel=0
+pkgdesc="libiptcdata is a C library for manipulating IPTC metadata within multimedia"
+url="https://github.com/ianw/libiptcdata"
+arch="all"
+license="LGPL-2.0-or-later"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/ianw/libiptcdata/releases/download/release_$_relver/libiptcdata-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir/" install
+}
+
+sha512sums="64ef44b1e639890004f31d5d42844ba25ed558f0a118f1dad9bc3f4dcad2457e51b825a13df849659b0e15afc78f528f330b03be94cdf156bd95b62dc419494a  libiptcdata-1.0.5.tar.gz"

@@ -1,0 +1,40 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libdaemon
+pkgver=0.14
+pkgrel=2
+pkgdesc="A lightweight C library which eases the writing of UNIX daemons"
+url="http://0pointer.de/lennart/projects/libdaemon/"
+arch="all"
+license="LGPL"
+options="!check"  # No test suite.
+depends=""
+makedepends=""
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://dev.alpinelinux.org/archive/libdaemon/libdaemon-$pkgver.tar.gz
+	fix-includes.patch
+	"
+
+prepare() {
+	cd "$builddir"
+	update_config_sub
+	default_prepare
+}
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--localstatedir=/var \
+		--disable-lynx
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="a96b25c09bd63cc192c1c5f8b5bf34cc6ad0c32d42ac14b520add611423b6ad3d64091a47e0c7ab9a94476a5e645529abccea3ed6b23596567163fba88131ff2  libdaemon-0.14.tar.gz
+2351e87a645d997d4f549807b809376ab7be78f833f6ba44100509b7ffdd9f526ec95c3a265d059eb35531fa489e814e21bc6ab85540c539c67677124d2f7924  fix-includes.patch"

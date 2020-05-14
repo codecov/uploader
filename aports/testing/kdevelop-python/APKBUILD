@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kdevelop-python
+pkgver=5.5.1
+pkgrel=0
+pkgdesc="Python language and documentation plugin for KDevelop"
+url="https://www.kdevelop.org/"
+arch="all !armhf !ppc64le !s390x !mips !mips64" # Blocked by kdevelop -> qt5-qtwebengine
+license="LGPL-2.0-or-later"
+depends="python3"
+makedepends="extra-cmake-modules qt5-qtbase-dev ki18n-dev threadweaver-dev ktexteditor-dev kdevelop-dev python3-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/kdevelop/$pkgver/src/kdev-python-$pkgver.tar.xz"
+options="!check" # Tests hang
+builddir="$srcdir/kdev-python-$pkgver"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="e690e6f0ff681e65a1ffad2b376b48baf3e17b003e368afcda54e19a19b6e72ec58c9d77c2e1e7976d84e2a9d9cfdf3406537444502a25eea752ccedba6a1e8a  kdev-python-5.5.1.tar.xz"

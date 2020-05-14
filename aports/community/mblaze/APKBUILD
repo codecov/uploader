@@ -1,0 +1,42 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=mblaze
+pkgver=0.6
+pkgrel=0
+pkgdesc="Unix utilities to deal with Maildir"
+url="https://github.com/chneukirchen/mblaze"
+arch="all"
+license="CC0-1.0"
+checkdepends="perl-utils"
+subpackages="$pkgname-doc $pkgname-crypto::noarch"
+options="!check" # currently fail on the builder
+source="$pkgname-$pkgver.tar.gz::https://github.com/chneukirchen/mblaze/archive/v$pkgver.tar.gz"
+
+build() {
+	make CFLAGS="$CFLAGS" -C "$builddir"
+}
+
+check() {
+	make -C "$builddir" check
+}
+
+package() {
+	make PREFIX="/usr" DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/share/doc/$pkgname/examples/
+	install -m644 *.example "$pkgdir"/usr/share/doc/$pkgname/examples/
+	install -m644 NEWS.md VIOLATIONS.md README \
+		"$pkgdir"/usr/share/doc/$pkgname/
+}
+
+crypto() {
+	depends="openssl gnupg"
+	pkgdesc="Scripts for using S/MIME and PGP"
+
+	cd "$builddir/contrib"
+	mkdir -p "$subpkgdir"/usr/bin
+	install -m755 mverify msign mencrypt mgpg \
+		"$subpkgdir"/usr/bin
+}
+
+sha512sums="3d3c50d6ea82271f2c1c4139111826df5457fed671ea22d36f168857cfb41861278af6aba687704f4bd5f7ff997abaf7b809c5d6c6767e39954aab0bfff0564d  mblaze-0.6.tar.gz"

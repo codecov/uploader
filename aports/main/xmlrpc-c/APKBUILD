@@ -1,0 +1,69 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=xmlrpc-c
+pkgver=1.51.06
+pkgrel=0
+pkgdesc="This library provides a modular implementation of XML-RPC for C and C++"
+url="http://xmlrpc-c.sourceforge.net/"
+arch="all"
+license="BSD-3-Clause AND MIT"
+depends_dev="libxml2-dev"
+makedepends="libtool curl-dev libxml2-dev zlib-dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-client
+	$pkgname-client++:clientxx xmlrpc-c++:cxx $pkgname-abyss"
+source="$pkgname-$pkgver.tar::https://sourceforge.net/projects/xmlrpc-c/files/Xmlrpc-c%20Super%20Stable/$pkgver/xmlrpc-c-$pkgver.tgz/download"
+
+prepare() {
+	default_prepare
+	update_config_sub
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--mandir=/usr/share/man \
+		--disable-libxml2-backend \
+		--disable-cgi-server \
+		--disable-libwww-client \
+		--disable-wininet-client
+	make -j1 AR=ar RANLIB=ranlib
+}
+
+package() {
+	make AR=ar RANLIB=ranlib DESTDIR="$pkgdir" install
+	install -m 644 -D doc/COPYING "$pkgdir"/usr/share/licenses/$pkgname/COPYING
+}
+
+client() {
+	pkgdesc="C client libraries for xmlrpc-c"
+	replaces="$pkgname"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libxmlrpc_client.so.* "$subpkgdir"/usr/lib/
+}
+
+clientxx() {
+	replaces="libxml-c++"
+	pkgdesc="C++ client libraries for xmlrpc-c"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libxmlrpc_client++.so.* "$subpkgdir"/usr/lib/
+}
+
+cxx() {
+	pkgdesc="This library provides a modular implementation of XML-RPC for C++"
+	replaces="$pkgname"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*++* \
+		"$pkgdir"/usr/lib/libxmlrpc_packetsocket.so.* \
+		"$pkgdir"/usr/lib/libxmlrpc_cpp.so.* \
+		"$subpkgdir"/usr/lib/
+}
+
+abyss() {
+	pkgdesc="Abyss server libraries for C++"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*abyss* \
+		"$subpkgdir"/usr/lib/
+}
+
+sha512sums="2927fc8c01d42b6f838d8b0c839f09a7dd0d1ddc5a3d7b36c9d479f1c7bf7fdf14923f640883f98ba66067eda0f5379737bf3a5bc9d4b9abe1a7eff7d7def066  xmlrpc-c-1.51.06.tar"

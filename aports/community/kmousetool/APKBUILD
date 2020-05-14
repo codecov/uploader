@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kmousetool
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://kde.org/applications/utilities/org.kde.kmousetool"
+pkgdesc="A program that clicks the mouse for you"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kdbusaddons-dev kdoctools-dev ki18n-dev kiconthemes-dev knotifications-dev kxmlgui-dev phonon-dev libxt-dev libxtst-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kmousetool-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="20b66b9c182a289503905734b94cbc71f565389d5c1c1234255e1880bf19442317513c65ee3b1999b76f05abeacf38f53f2af3061968eb750276545d38fadea2  kmousetool-20.04.0.tar.xz"

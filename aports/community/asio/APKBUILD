@@ -1,0 +1,31 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=asio
+pkgver=1.16.1
+pkgrel=0
+pkgdesc="Cross-platform C++ library for network programming"
+url="https://think-async.com/Asio/"
+arch="all"
+license="BSL-1.0"
+depends_dev="boost-dev openssl-dev"
+makedepends="$depends_dev"
+subpackages="$pkgname-dev"
+source="https://downloads.sourceforge.net/sourceforge/asio/asio-$pkgver.tar.bz2"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--mandir=/usr/share/man
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="e8cab449887e3e362f9d3c2aa1b1bbb2f81954aeaf2cd12cefe7f848cdc30e1a576130b49f551efd49611b9d4941e724baea42739c043e158626f3c982b75311  asio-1.16.1.tar.bz2"

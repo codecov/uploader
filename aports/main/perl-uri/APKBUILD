@@ -1,0 +1,35 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=perl-uri
+_pkgreal=URI
+pkgver=1.76
+pkgrel=0
+pkgdesc="Uniform Resource Identifiers (absolute and relative)"
+url="https://metacpan.org/release/URI/"
+arch="noarch"
+license="GPL-1.0-or-later Artistic-1.0-Perl"
+depends="perl"
+cpancheckdepends="perl-test-needs"
+makedepends="perl-dev"
+checkdepends="$cpancheckdepends"
+replaces="perl-uri-escape"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/O/OA/OALDERS/URI-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+
+build() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl -I. Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="1fcb02692bdf5f223c2878569615d153b3c4c5adc04c33aee23f3f015e08b4895b03536ef3a8c7cb7a334c2faa056e5e46c805d56d810704cba63d96136e0a83  URI-1.76.tar.gz"

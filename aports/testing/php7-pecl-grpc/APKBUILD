@@ -1,0 +1,32 @@
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=php7-pecl-grpc
+_pkgreal=grpc
+pkgver=1.28.0
+pkgrel=0
+pkgdesc="PHP extension provide a concrete implementation of the gRPC protocol, layered over HTTP/2."
+url="https://pecl.php.net/package/grpc"
+arch="all !s390x !ppc64le"
+license="Apache-2.0"
+depends="php7-common"
+makedepends="php7-dev autoconf re2c openssl-dev zlib-dev linux-headers"
+source="https://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
+builddir="$srcdir"/$_pkgreal-$pkgver
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	# Test suite is not a part of pecl release.
+	php7 -d extension="$builddir"/modules/$_pkgreal.so --ri $_pkgreal
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir"/ install
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_pkgreal.so" > "$pkgdir"/etc/php7/conf.d/50_$_pkgreal.ini
+}
+
+sha512sums="7ad90bea73c217ec0058a764645e08c4ca303f5e1f3dfd276876a218dc7aa9333a4d4764d5a4b1eae79d1f1df07df6eab329b5bc4ce3d7a4b6aa89ad5371df5c  grpc-1.28.0.tgz"

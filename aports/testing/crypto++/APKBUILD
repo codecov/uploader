@@ -1,0 +1,29 @@
+# Contributor: August Klein <amatcoder@gmail.com>
+# Maintainer: August Klein <amatcoder@gmail.com>
+pkgname=crypto++
+_pkgname=cryptopp
+pkgver=8.2.0
+_pkgver=${pkgver//./}
+pkgrel=0
+pkgdesc="A free C++ class library of cryptographic schemes"
+url="https://www.cryptopp.com/"
+arch="all"
+license="BSL-1.0"
+depends_dev="$pkgname"
+subpackages="$pkgname-static $pkgname-dev"
+source="https://www.cryptopp.com/${_pkgname}${_pkgver}.zip"
+builddir="$srcdir"
+
+build() {
+	make CXXFLAGS="${CXXFLAGS} -DNDEBUG -fPIC" -f GNUmakefile dynamic libcryptopp.pc
+}
+
+check() {
+	make -f GNUmakefile check
+}
+
+package() {
+	make DESTDIR="$pkgdir" PREFIX="/usr" install-lib
+}
+
+sha512sums="753513a4ec8dd0fff2f551853ce6bd265d82219c28b033565b565b5e567fbee17adb419f4cde58a97e62b7d6533f4099aa4996cd0ba4775c6a2e7ae63a879da5  cryptopp820.zip"

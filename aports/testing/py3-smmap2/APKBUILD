@@ -1,0 +1,28 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer:
+pkgname=py3-smmap2
+pkgver=3.0.1
+pkgrel=0
+pkgdesc="pure Python3 implementation of a sliding window memory map manager"
+url="https://github.com/gitpython-developers/smmap"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3"
+makedepends="py3-setuptools"
+checkdepends="py3-nose py3-nosexcover py3-coverage"
+source="$pkgname-$pkgver.tar.gz::https://github.com/gitpython-developers/smmap/archive/v$pkgver.tar.gz"
+builddir="$srcdir/smmap-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="c626629f3e4760bde862ed98808a073a53febe3325da70956b14491ad3699d7d60a68492e6ebd42f7f53d99bff1e7fef2d9bcc9c58118041a7e7fdee012a086e  py3-smmap2-3.0.1.tar.gz"

@@ -1,0 +1,68 @@
+# Contributor: Mika Havela <mika.havela@gmail.com>
+# Maintainer: Mika Havela <mika.havela@gmail.com>
+_luaversions="5.1 5.2 5.3"
+pkgname=lua-socket
+_name=luasocket
+pkgver=3.0_rc1_git20160306
+pkgrel=2
+_ver=${pkgver%_git*}
+_ver=${_ver/_rc/-rc}
+pkgdesc="Networking library for Lua"
+url="http://luaforge.net/projects/luasocket/"
+arch="all"
+license="MIT"
+for _i in $_luaversions; do
+	makedepends="$makedepends lua$_i-dev"
+	subpackages="$subpackages lua$_i-socket:split_${_i/./_}"
+done
+source="luasocket-$_ver.tar.gz::https://github.com/diegonehab/luasocket/archive/v$_ver.tar.gz
+	git.patch
+	lua-cflags.patch
+	0001-Create-socket-on-first-sendto-if-family-agnostic-udp.patch
+	"
+
+# default_prepare assumes $_builddir
+builddir="$srcdir/$_name-$_ver"
+
+prepare() {
+	default_prepare
+	for _i in $_luaversions; do
+		cp -r "$builddir" "$srcdir"/build-$_i
+	done
+}
+
+build() {
+	for _i in $_luaversions; do
+		make -C "$srcdir"/build-$_i/src  LUAV=$_i \
+			all-unix
+	done
+}
+
+package() {
+	for _i in $_luaversions; do
+		cd "$srcdir"/build-$_i
+		make prefix=/usr DESTDIR="$pkgdir" LUAV=$_i \
+			install-unix
+	done
+}
+
+_split() {
+	local d= _ver=$1
+	pkgdesc="Networking library for Lua $_ver"
+	install_if="lua$_ver $pkgname=$pkgver-r$pkgrel"
+	for d in usr/lib/lua usr/share/lua; do
+		if [ -d "$pkgdir"/$d/$_ver ]; then
+			mkdir -p "$subpkgdir"/$d
+			mv "$pkgdir"/$d/$_ver "$subpkgdir"/$d/
+		fi
+	done
+}
+
+for _i in $_luaversions; do
+	eval "split_${_i/./_}() { _split $_i; }"
+done
+
+sha512sums="f6efce259aaacaa11472911471f8a13b118fe009b8953a82c6aa18b9ec829cd1293180904e56935cb130d36d267e3f27c91db2d78e03f7488f3e100571ed0540  luasocket-3.0-rc1.tar.gz
+45c80e488fedc879f0217bc8a654d80da003039f5d1ff21b0dea0eb769151787dbe793e44a3dfd72cb07ff2697eceaf4fc7b55b4634cd170fa71281f19f025a5  git.patch
+fb482ad22b5caa2054b25c86edc01d1a666035930f6b55e7d12704dd78b9c31343c39eab5f13958941180d819aa37470c75fe27f1b206a4b431fb589663e2685  lua-cflags.patch
+c45a12e17771a1b3b71154b5415421f524cd10b7969b4649a5f37b652cdc826721e117edb8fe64758d3520e59946e2f755b814f72cbb39ff42bf59bbcf9a64e9  0001-Create-socket-on-first-sendto-if-family-agnostic-udp.patch"

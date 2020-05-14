@@ -1,0 +1,30 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=gvm-tools
+pkgver=2.0.0
+pkgrel=1
+pkgdesc="Collection of tools for remote controlling a OpenVAS / Greenbone"
+url="https://github.com/greenbone/gvm-tools"
+arch="noarch"
+license="GPL"
+depends="python3 py3-dialog py3-defusedxml py3-paramiko py3-lxml"
+makedepends="python3-dev py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/greenbone/$pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	python3 setup.py build
+}
+
+check() {
+	cd "$builddir"
+	python3 setup.py check
+}
+
+package() {
+	cd "$builddir"
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="0adf7e06b1208c91fbc02dab42593280c95f6572e27d96d6f8777d710747a9e427c79678d9aef785b7ecd6d4fd30e79a1c063fe4256025ac0616c1d242f45025  gvm-tools-2.0.0.tar.gz"

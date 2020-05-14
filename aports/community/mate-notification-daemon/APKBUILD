@@ -1,0 +1,34 @@
+# Contributor: Alan Lacerda <alacerda@alpinelinux.org>
+# Maintainer: Alan Lacerda <alacerda@alpinelinux.org>
+pkgname=mate-notification-daemon
+pkgver=1.24.0
+pkgrel=0
+pkgdesc="Small, passive popup dialogs that notify the user of particular events"
+url="https://github.com/mate-desktop/mate-notification-daemon"
+arch="all"
+license="GPL-2.0-or-later"
+depends="mate-common"
+makedepends="libwnck3-dev libnotify-dev libtool intltool dbus-glib-dev
+	libcanberra-dev gtk+3.0-dev"
+subpackages="$pkgname-doc $pkgname-lang"
+source="https://pub.mate-desktop.org/releases/${pkgver%.*}/mate-notification-daemon-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--sysconfdir=/etc \
+		--enable-static=no \
+		--prefix=/usr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="0fd2da98001c60672d4833e974ac74dd561f54ca6f3fd74f8d6620e3b28768add46dd891d7446b01426b6aed09d4966d902cbde45aac3498fdcbb837e531a147  mate-notification-daemon-1.24.0.tar.xz"

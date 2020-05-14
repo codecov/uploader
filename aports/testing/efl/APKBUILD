@@ -1,0 +1,82 @@
+# Contributor: Boris Faure <boris@fau.re>
+# Maintainer: Boris Faure <boris@fau.re>
+pkgname=efl
+pkgver=1.24.0
+pkgrel=0
+pkgdesc="Enlightenment Foundation Libraries"
+url="https://www.enlightenment.org"
+arch="all !s390x !mips !mips64" # Missing librsvg
+license="LGPL-2.1-only"
+makedepends="
+	meson
+	ninja
+	dbus-dev
+	fontconfig-dev
+	freetype-dev
+	fribidi-dev
+	giflib-dev
+	gstreamer-dev
+	gst-plugins-base-dev
+	harfbuzz-dev
+	libjpeg-turbo-dev
+	openjpeg-dev
+	libpng-dev
+	librsvg-dev
+	libsndfile-dev
+	libx11-dev
+	libxkbcommon-dev
+	libxcomposite-dev
+	libxcursor-dev
+	libxdamage-dev
+	libxinerama-dev
+	libxrandr-dev
+	libxtst-dev
+	libxscrnsaver-dev
+	luajit-dev
+	mesa-dev
+	openssl-dev
+	wayland-dev
+	wayland-protocols
+	xorgproto"
+options="!check" # Test suite issues
+subpackages="$pkgname-dev"
+source="https://download.enlightenment.org/rel/libs/efl/efl-${pkgver/_/-}.tar.xz"
+#builddir="$srcdir/$pkgname-${pkgver/_alpha1/}"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--libdir /usr/lib \
+		--default-library=shared \
+		 -Ddebug=false \
+		 -Doptimization=s \
+		 -Dnls=false \
+		 -Dopengl=es-egl \
+		 -Dxinput22=true \
+		 -Dbuffer=false \
+		 -Dfb=false \
+		 -Ddrm=false \
+		 -Dtslib=false \
+		 -Dharfbuzz=true \
+		 -Dwl=true \
+		 -Dnetwork-backend=connman \
+		 -Devas-loaders-disabler=pdf,ps,raw,tiff,json,webp \
+		 -Dphysics=false \
+		 -Dsystemd=false \
+		 -Dpulseaudio=false \
+		 -Davahi=false \
+		 -Deeze=false \
+		 -Dbindings= \
+		 -Dbuild-examples=false \
+		 -Dbuild-tests=false \
+		 -Decore-imf-loaders-disabler=ibus,scim \
+		 . build
+
+	 ninja -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+}
+
+sha512sums="a3415e79eb0d13c1393f80728527d2b663b35e1b9ec815fadd0b43d754320ee8461aeade781b0264853e7935e920df7a5cc0b438c6b8a15a5744380a32f55080  efl-1.24.0.tar.xz"

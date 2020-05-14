@@ -1,0 +1,80 @@
+# Contributor: kpcyrd <git@rxv.cc>
+# Maintainer: kpcyrd <git@rxv.cc>
+pkgname=sn0int
+pkgver=0.18.2
+pkgrel=0
+pkgdesc="Semi-automatic OSINT framework and package manager"
+url="https://github.com/kpcyrd/sn0int"
+arch="x86_64 armhf armv7" # limited by cargo
+license="GPL-3.0-or-later"
+makedepends="
+	cargo
+	sqlite-dev
+	libseccomp-dev
+	libsodium-dev
+	py3-sphinx
+	libcap
+	"
+subpackages="$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	$pkgname-fish-completion:fishcomp:noarch
+	"
+options="net"
+source="$pkgname-$pkgver.tar.gz::https://github.com/kpcyrd/sn0int/archive/v$pkgver.tar.gz"
+
+build() {
+	cargo build --release --locked
+
+	mkdir -p completions
+	"target/release/sn0int" completions bash > completions/sn0int.bash
+	"target/release/sn0int" completions zsh > completions/_sn0int
+	"target/release/sn0int" completions fish > completions/sn0int.fish
+
+	make -C docs man
+}
+
+check() {
+	cargo test --release --locked
+}
+
+package() {
+	install -Dm755 "$builddir/target/release/sn0int" "$pkgdir/usr/bin/sn0int"
+	setcap cap_sys_chroot=ep \
+		"$pkgdir/usr/bin/sn0int"
+
+	install -Dm 644 "$builddir/docs/_build/man/sn0int.1" \
+		"$pkgdir/usr/share/man/man1/sn0int.1"
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions/
+	install -Dm644 "$builddir/completions/sn0int.bash" \
+		"$subpkgdir/usr/share/bash-completion/completions/sn0int"
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	mkdir -p "$subpkgdir"/usr/share/zsh/site-functions/
+	install -Dm644 "$builddir/completions/_sn0int" \
+	    "$subpkgdir/usr/share/zsh/site-functions/_sn0int"
+}
+
+fishcomp() {
+	depends=""
+	pkgdesc="Fish completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel fish"
+
+	mkdir -p "$subpkgdir"/usr/share/fish/completions/
+	install -Dm644 "$builddir/completions/sn0int.fish" \
+		"$subpkgdir/usr/share/fish/completions/sn0int.fish"
+}
+
+sha512sums="417d0cf861136942411c645151750a547a3a88f00ec00896411264e2c264db622429b8ce0e00c947fb03810a6fa2c7f39c439ac747ceeed21fdab8c9d512c6de  sn0int-0.18.2.tar.gz"

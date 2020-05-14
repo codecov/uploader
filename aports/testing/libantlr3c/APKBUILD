@@ -1,0 +1,36 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=libantlr3c
+pkgver=3.4
+pkgrel=1
+pkgdesc="C runtime for the ANTLR parsing library"
+url="https://www.antlr.org/"
+arch="all"
+license="BSD-3-Clause"
+subpackages="$pkgname-dev"
+source="http://www.antlr3.org/download/C/libantlr3c-$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	update_config_sub
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-abiflags \
+		--disable-static
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="8edb243d745ff5bf3b15940f124d1255a9ca965cb656a73a558aed7fa07effcd7620f23dc692e5d5169a03200254836dd57af3ce444ba225281a5b721497e211  libantlr3c-3.4.tar.gz"

@@ -1,0 +1,50 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=py3-gobject3
+pkgver=3.36.1
+pkgrel=0
+pkgdesc="Python bindings for the GObject library"
+url="https://wiki.gnome.org/Projects/PyGObject/"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="python3-dev py3-cairo-dev gobject-introspection-dev
+	libffi-dev glib-dev meson"
+checkdepends="py3-pytest gtk+3.0-dev xvfb-run ibus"
+subpackages="$pkgname-dev:_dev"
+options="!check" # https://gitlab.gnome.org/GNOME/pygobject/issues/391
+source="https://download.gnome.org/sources/pygobject/${pkgver%.*}/pygobject-$pkgver.tar.xz"
+builddir="$srcdir"/pygobject-$pkgver
+
+replaces="py-gobject3" # Backwards compatibility
+provides="py-gobject3=$pkgver-r$pkgrel" # Backwards compatibility
+
+build()	{
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dpython=python3 \
+		. output
+
+	ninja -C output
+}
+
+check() {
+	PYGI_TEST_VERBOSE="1" xvfb-run ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C "$builddir"/output install
+}
+
+_dev() {
+	replaces="py-gobject3-dev" # Backwards compatibility
+	provides="py-gobject3-dev=$pkgver-r$pkgrel" # Backwards compatibility
+
+	default_dev
+}
+
+sha512sums="5e00dcd03dfe4f92acbf827c13c164b6b9740b2a8cef3b2dce70f96a2156fee2411c84dc669f12b910f4a93daa03ba845282832e2b09d8c887102d43764a345f  pygobject-3.36.1.tar.xz"

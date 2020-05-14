@@ -1,0 +1,36 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=perl-file-copy-recursive
+pkgver=0.45
+_realname=File-Copy-Recursive-$pkgver
+pkgrel=1
+pkgdesc="Perl extension for recursively copying files and directories"
+url="https://metacpan.org/release/File-Copy-Recursive"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+makedepends="perl-dev"
+checkdepends="perl-test-deep perl-test-exception"
+options="!check" # requires several new pkgs which will ! begin in main
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/D/DM/DMUEY/$_realname.tar.gz"
+
+builddir="$srcdir/$_realname"
+
+build() {
+	cd "$builddir"
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="6d8a6c55bc54bfe5ce3834527776c6b1466d5672f5f8901c27053188bbc78e87dd62bed8d330c04079b02d0967be0a8d0cd779e67973cf79a2c6ff87d5921c60  File-Copy-Recursive-0.45.tar.gz"

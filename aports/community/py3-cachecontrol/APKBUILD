@@ -1,0 +1,25 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer:
+pkgname=py3-cachecontrol
+_realname=CacheControl
+pkgver=0.12.6
+pkgrel=0
+pkgdesc="httplib2 caching for requests"
+options="!check" # Later
+url="https://github.com/ionrock/cachecontrol"
+arch="noarch"
+license="Apache-2.0"
+depends="python3 py3-requests py3-msgpack py3-lockfile"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/${_realname:0:1}/$_realname/$_realname-$pkgver.tar.gz"
+builddir="$srcdir/$_realname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="5269624dd523c4f94b258ba4d35d2fce65779377c601c1ade01b1058a6616319725fde10b188fbc7015ac263537fb11085272fbbb9b595e87c187521066a567a  CacheControl-0.12.6.tar.gz"

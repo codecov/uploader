@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=filelight
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/utilities/filelight"
+pkgdesc="An application to visualize the disk usage on your computer"
+license="(GPL-2.0-only OR GPL-3.0-only) AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kxmlgui-dev kio-dev ki18n-dev kdoctools-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/filelight-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="6242d9ab98c2cc12df16dd970ff19ecf53377662d752a0eee52789680cf22c64977ebdd24aeb2d28154c20544fcc125172380254df04800ed70ed8b5f08b27d5  filelight-20.04.0.tar.xz"

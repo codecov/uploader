@@ -1,0 +1,37 @@
+# Contributor: Jonny Tyers <jtyers@gmail.com>
+# Maintainer: Jonny Tyers <jtyers@gmail.com>
+pkgname=iprange
+pkgver=1.0.4
+pkgrel=0
+pkgdesc="manages IP ranges (part of FireHOL)"
+url="https://github.com/firehol/iprange"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="autoconf automake libtool help2man"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/firehol/iprange/archive/v$pkgver.tar.gz"
+options="!check"
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc/ssh \
+		--datadir=/usr/share/openssh \
+		--libexecdir=/usr/lib/ssh \
+		--mandir=/usr/share/man \
+		--enable-maintainer-mode
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="c72bdc71a2bf24e4c17bb2267220e11d09afd5c728b0e929c718e8103ed4d96a9620c559fe6d955e3d688f3c7a989510897c444d3ad9a5369aa93150e68177f3  iprange-1.0.4.tar.gz"

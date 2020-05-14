@@ -1,0 +1,35 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=gnuchess
+pkgver=6.2.6
+pkgrel=0
+pkgdesc="The GNU chess program"
+url="https://www.gnu.org/software/chess/"
+arch="all"
+makedepends="automake autoconf gettext-dev"
+license="GPL-3.0-or-later"
+subpackages="$pkgname-doc"
+source="https://ftp.gnu.org/gnu/chess/gnuchess-$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="32bb36c54b73659752657ee43c7f9723e74ae974980e016c56d564c7870d1bc98ee40e407e0687df968fc2d4dc778a972282e3aea1ddca31dee1cce7e96da7e2  gnuchess-6.2.6.tar.gz"

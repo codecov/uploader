@@ -1,0 +1,24 @@
+# Contributor: David Demelier <markand@malikania.fr>
+# Maintainer: David Demelier <markand@malikania.fr>
+pkgname=nsnake
+pkgver=3.0.1
+pkgrel=0
+pkgdesc="snake game for your terminal"
+options="!check suid" # suid is required for saving scores.
+url="https://github.com/alexdantas/nSnake"
+arch="all"
+license="ISC"
+makedepends="ncurses-dev"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/alexdantas/nSnake/archive/v$pkgver.tar.gz"
+builddir="$srcdir/nSnake-$pkgver"
+
+build() {
+	make PREFIX=/usr VARDIR=/var
+}
+
+package() {
+	make PREFIX=/usr VARDIR=/var DESTDIR="$pkgdir" install
+}
+
+sha512sums="94930849ce0ff3137c2033f4148858d55dbfdeb66f42109669891462914e434eeb0a442bca9804d8760f63ccb490264263602af11749f489f99c3c1c69e68139  nsnake-3.0.1.tar.gz"

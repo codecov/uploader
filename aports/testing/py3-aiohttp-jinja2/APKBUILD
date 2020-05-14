@@ -1,0 +1,25 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-aiohttp-jinja2
+_pkgname=aiohttp_jinja2
+pkgver=1.2.0
+pkgrel=1
+pkgdesc="Jinja2 template renderer for aiohttp"
+options="!check" # Requires unpackaged pytest-aiohttp
+url="https://github.com/aio-libs/aiohttp-jinja2"
+arch="noarch"
+license="Apache-2.0"
+depends="py3-aiohttp py3-jinja2"
+makedepends="py3-setuptools"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/aio-libs/aiohttp-jinja2/archive/v$pkgver.tar.gz"
+builddir="$srcdir"/aiohttp-jinja2-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="f2f2ef3f8ec0424fd978877f27e243dcd57b741456a321c3917e824d4b6d7e6102fb4c4960cb4d037e2eb5b71874f505e3e54ea30db2c2750556309a344cf5af  aiohttp_jinja2-1.2.0.tar.gz"

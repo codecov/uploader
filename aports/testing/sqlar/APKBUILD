@@ -1,0 +1,31 @@
+# Contributor: wener <wenermail@gmail.com>
+# Maintainer: wener <wenermail@gmail.com>
+pkgname="sqlar"
+pkgver=0_git20180107
+_commit=4824e7389653a46f
+pkgrel=0
+pkgdesc="SQLite Archiver"
+url="https://sqlite.org/sqlar"
+arch="all"
+license="BSD-2-Clause"
+makedepends="zlib-dev sqlite-dev fuse-dev"
+options="!check" # does not have a test suite
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://www.sqlite.org/sqlar/tarball/sqlar.tar.gz?c=$_commit"
+builddir="$srcdir/$pkgname"
+
+build() {
+	gcc sqlarfs.c -o sqlarfs -D_FILE_OFFSET_BITS=64 $CFLAGS \
+		-lsqlite3 -lfuse -lz $LDFLAGS
+	gcc sqlar.c -o sqlar -D_FILE_OFFSET_BITS=64 $CFLAGS \
+		-lsqlite3 -lz $LDFLAGS
+}
+
+package() {
+	install -Dm755 sqlar "$pkgdir"/usr/bin/sqlar
+	install -Dm755 sqlarfs "$pkgdir"/usr/bin/sqlarfs
+	install -Dm644 README.md \
+		"$pkgdir"/usr/share/doc/$pkgname/README.md
+}
+
+sha512sums="b8c9c047b40b8b8065338f32801d0f2c46e14420735c3667ecbe3c75c0c9e5d87f6007c1022fea0c74ad93b653cc6845fabd66dcf637e8a85470a007fd50dd83  sqlar-0_git20180107.tar.gz"

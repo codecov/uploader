@@ -1,0 +1,34 @@
+# Contributor: Alan Lacerda <alacerda@alpinelinux.org>
+# Maintainer: Alan Lacerda <alacerda@alpinelinux.org>
+pkgname=mate-terminal
+pkgver=1.24.0
+pkgrel=0
+pkgdesc="MATE terminal emulator"
+url="https://github.com/mate-desktop/mate-terminal"
+arch="all !s390x !mips !mips64" # mate-desktop
+license="GPL-2.0-or-later"
+depends="mate-common yelp-tools mate-desktop"
+makedepends="libtool intltool dconf-dev libsm-dev itstool vte3-dev
+	mate-desktop-dev libxml2-utils gtk+3.0-dev"
+subpackages="$pkgname-doc $pkgname-lang"
+source="https://pub.mate-desktop.org/releases/${pkgver%.*}/mate-terminal-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--sysconfdir=/etc \
+		--enable-static=no \
+		--prefix=/usr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="2ad25411a8e720d3ef43964dc9f80732e215b1b5154e904069d25e73910c0c8f0e1b100d21f85b9a1eec06f6b17f891791445f7830bb52fc44b67fa3f8cebf76  mate-terminal-1.24.0.tar.xz"

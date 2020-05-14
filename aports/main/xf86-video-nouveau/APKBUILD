@@ -1,0 +1,41 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=xf86-video-nouveau
+pkgver=1.0.16
+pkgrel=0
+pkgdesc="Open-source X.org drivers for nVidia video cards"
+url="https://nouveau.freedesktop.org/"
+arch="all"
+license="MIT"
+depends="mesa-dri-nouveau"
+depends_dev=
+makedepends="libdrm-dev xorg-server-dev util-macros eudev-dev xorgproto"
+install=""
+subpackages="$pkgname-doc"
+source="https://www.x.org/archive/individual/driver/$pkgname-$pkgver.tar.bz2"
+
+builddir="$srcdir"/$pkgname-$pkgver
+build() {
+	cd "$builddir"
+	export LDFLAGS="$LDFLAGS -Wl,-z,lazy"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="41b7839c37372660968ab7da2bc3d9feef3cab4e994d05d4ba6e59071f0d1b1f8d7dcdbcb15a42a375a556d28dc067f9ffe45d73c1d121ad307d199107ade3e0  xf86-video-nouveau-1.0.16.tar.bz2"

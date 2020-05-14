@@ -1,0 +1,29 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kaccounts-integration
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://kde.org/applications/internet/"
+pkgdesc="Small system to administer web accounts for the sites and services across the KDE desktop"
+license="GPL-2.0-or-later AND LGPL-2.1-or-later"
+depends="accounts-qml-module"
+depends_dev="qt5-qtbase-dev kcmutils-dev ki18n-dev kcoreaddons-dev kdbusaddons-dev kdeclarative-dev libaccounts-qt-dev signond-dev"
+makedepends="$depends_dev extra-cmake-modules"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kaccounts-integration-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+options="!check" # No tests available
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="64b36e738cf814c87eec7a0f9ac7c1d5b9e8463f2697c81116fb4420aa1cc93b92d30f1d37fae9caadb47ca4eacf1722dafe6c9cf55298257e6e035458173f02  kaccounts-integration-20.04.0.tar.xz"

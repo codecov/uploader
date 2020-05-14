@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=klettres
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="http://edu.kde.org/klettres"
+pkgdesc="Learn the Alphabet"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev kcompletion-dev kcrash-dev kdoctools-dev ki18n-dev knewstuff-dev kwidgetsaddons-dev kconfigwidgets-dev kcoreaddons-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/klettres-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="279083f57960f46d99701e0c65b6559b35d22d18aa3472503adc994f4647efc64459a8fc2f96f4ef1cd2ecacb990f04f9b09d4dfc6d6d33b1504104aae694300  klettres-20.04.0.tar.xz"

@@ -1,0 +1,69 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Contributor: blattersturm <peachypies@protonmail.ch>
+# Maintainer:
+pkgname=mono
+pkgver=5.20.1.19
+pkgrel=1
+pkgdesc="Free implementation of the .NET platform including runtime and compiler"
+url="https://www.mono-project.com/"
+arch="x86_64 x86 armv7"
+license="MIT"
+depends="python3"
+depends_dev="libgdiplus-dev zlib-dev"
+makedepends="$depends_dev autoconf automake cmake libtool linux-headers paxmark"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://download.mono-project.com/sources/mono/mono-${pkgver/_/~}.tar.bz2
+	python3.patch
+	"
+
+prepare() {
+	default_prepare
+	# Remove hardcoded lib directory from the config.
+	sed -i 's|$mono_libdir/||g' data/config.in
+
+	# We need to do this so it don't get killed in the build proces when
+	# MPROTECT and RANDMMAP is enable.
+	sed -i '/exec "/ i\paxmark mr "$(readlink -f "$MONO_EXECUTABLE")"' \
+		runtime/mono-wrapper.in
+}
+
+build() {
+	# Based on Fedora and SUSE package.
+	export CFLAGS="$CFLAGS -fno-strict-aliasing"
+
+	# Set the minimum arch for x86 to prevent atomic linker errors.
+	[ "$CARCH" = "x86" ] && export CFLAGS="$CFLAGS -march=i586 -mtune=generic"
+
+	# Run autogen to fix supplied configure linker issues with make install.
+	./autogen.sh \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-rpath \
+		--disable-boehm \
+		--enable-parallel-mark \
+		--with-mcs-docs=no \
+		--without-sigaltstack
+	make
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+	paxmark mr "$pkgdir"/usr/bin/mono-sgen
+
+	cd "$pkgdir"
+
+	# Remove .la files.
+	rm ./usr/lib/*.la
+
+	# Remove Windows-only stuff.
+	rm -r ./usr/lib/mono/*/Mono.Security.Win32*
+	rm ./usr/lib/libMonoSupportW.*
+}
+
+sha512sums="498fffc70c524cf21477196b6fdc3c5d03a719098c0a0ca40c29e239588675ddc0538659e4119171316f8f35555fcd42390d474dff0b795bf67188bc34a35ae0  mono-5.20.1.19.tar.bz2
+6d16a04f350f406d631626c43e783dda9bf1ee87fd97f376b089b547f4d1851f5724f4fe2ad4c6adb1e2a8a3fe5dce6a4dd2da4abbe9f865bf0101831ec63632  python3.patch"

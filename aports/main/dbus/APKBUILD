@@ -1,0 +1,89 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=dbus
+pkgver=1.12.16
+pkgrel=4
+pkgdesc="Freedesktop.org message bus system"
+options="!check" # Introduces circular dependency with xorg-server (xvfb-run -> xvfb)
+url="https://www.freedesktop.org/Software/dbus"
+pkggroups="messagebus"
+arch="all"
+license="AFL-2.1 OR GPL-2.0-or-later"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-libs $pkgname-x11 $pkgname-openrc"
+triggers="$pkgname.trigger=/etc/dbus-1/system.d"
+depends_dev="util-linux-dev"
+makedepends="$depends_dev
+	autoconf automake libtool autoconf-archive
+	expat-dev
+	glib-dev
+	libsm-dev
+	libx11-dev
+	xmlto
+	"
+checkdepends="xvfb-run"
+install="$pkgname.pre-install $pkgname.post-install"
+source="https://dbus.freedesktop.org/releases/dbus/dbus-$pkgver.tar.gz
+	0001-_dbus_generate_random_bytes-use-getrandom-2.patch
+	$pkgname.initd
+	"
+
+# secfixes:
+#   1.12.16-r0:
+#     - CVE-2019-12749
+
+prepare() {
+	default_prepare
+	autoreconf -vif
+}
+
+build() {
+	cd "$srcdir"/$pkgname-$pkgver
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--with-xml=expat \
+		--with-dbus-user=messagebus \
+		--with-system-pid-file=/var/run/dbus.pid \
+		--disable-verbose-mode \
+		--disable-static \
+		--enable-inotify \
+		--disable-dnotify \
+		--enable-modular-tests=yes \
+		--disable-asserts \
+		--enable-user-session \
+		--enable-xml-docs \
+		--with-session-socket-dir=/tmp \
+		--with-x
+	make
+}
+
+check() {
+	xvfb-run make check
+}
+
+package() {
+	cd "$srcdir"/$pkgname-$pkgver
+	make -j1 DESTDIR="$pkgdir" install
+	install -Dm755 "$srcdir"/dbus.initd "$pkgdir"/etc/init.d/dbus
+	rm -rf "$pkgdir"/usr/lib/systemd
+}
+
+libs() {
+	pkgdesc="D-BUS access libraries"
+	replaces="dbus"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/lib*.so.* "$subpkgdir"/usr/lib/
+}
+
+x11() {
+	pkgdesc="X11 add-ons for D-BUS"
+	depends="dbus=$pkgver-r$pkgrel"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/dbus-launch "$subpkgdir"/usr/bin/
+}
+
+sha512sums="27ae805170e9515a8bb0fba5f29d414edc70e3b6b28b7b65bbea47035b8eafa9ac4820cdc92645be6035f6748f8aa45679e1ffc84ba74a64859a3056d318b9bb  dbus-1.12.16.tar.gz
+3db35499361e84d8e2469b88b033f49813b179188ac25f1841a989988c352af398a56dfd94383813626c6dfd032194f7a9fcdba001ccc3e005e7cd22dae7a7ed  0001-_dbus_generate_random_bytes-use-getrandom-2.patch
+4c6beba2382416e60a3adfa85ef843d90d93ca5f38c23f573e058ffca6d4fc3850d11d40938c74383bba61599569b7fdfb1fcf3b9d2f1463e6b2e2cc81097c84  dbus.initd"

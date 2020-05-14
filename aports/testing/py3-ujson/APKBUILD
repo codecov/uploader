@@ -1,0 +1,27 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-ujson
+pkgver=2.0.3
+pkgrel=0
+pkgdesc="Fast Python JSON encoder and decoder"
+url="https://github.com/ultrajson/ultrajson"
+arch="all"
+license="BSD-3-Clause"
+makedepends="py3-setuptools python3-dev"
+checkdepends="py3-tz py3-six py3-pytest"
+source="https://pypi.io/packages/source/u/ujson/ujson-$pkgver.tar.gz"
+builddir="$srcdir"/ujson-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	PYTHONPATH="$(echo $PWD/build/lib.*)" python3 tests/test_ujson.py
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="2c1879c372745966a00e064559dbf615f282ef192cbdbb29243c48169fc5f6e9344eba29988a1de3b5b0d1fe7699fcd88373d6dbb2e3fb59b1e8ef12b8a0375d  ujson-2.0.3.tar.gz"

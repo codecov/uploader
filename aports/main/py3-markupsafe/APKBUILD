@@ -1,0 +1,32 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-markupsafe
+_pkgname=MarkupSafe
+pkgver=1.1.1
+pkgrel=3
+pkgdesc="Implements a XML/HTML/XHTML Markup safe string"
+url="https://github.com/mitsuhiko/markupsafe"
+arch="all"
+license="BSD-3-Clause"
+depends="python3"
+makedepends="python3-dev py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-markupsafe" # Backwards compatibility
+provides="py-markupsafe=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+	find "$pkgdir" -name "*.c" -delete
+}
+
+sha512sums="f3014e6131a3ab866914c5635b5397ef71906bffb1b6f8c5f2ed2acf167429ff7914236d38943e872683a57a9be9669f4c5aace6274f3307ab21ef25373db0b6  MarkupSafe-1.1.1.tar.gz"

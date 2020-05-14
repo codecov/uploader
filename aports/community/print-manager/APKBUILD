@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=print-manager
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://www.kde.org/applications/utilities/"
+pkgdesc="A tool for managing print jobs and printers"
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtdeclarative-dev cups-dev kconfig-dev kconfigwidgets-dev kcoreaddons-dev kdbusaddons-dev kiconthemes-dev ki18n-dev kcmutils-dev kio-dev knotifications-dev plasma-framework-dev kwidgetsaddons-dev kwindowsystem-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/print-manager-$pkgver.tar.xz"
+subpackages="$pkgname-lang"
+options="!check" # No tests available
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="19829cafc10dd129ad2522be6843f9bf80017a7e289a51ae319371790bdcb076ea5a2e9479828a27b5f506a2c62282c71678faf5b64f42493158ec5ca40dcd61  print-manager-20.04.0.tar.xz"

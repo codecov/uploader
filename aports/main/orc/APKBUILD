@@ -1,0 +1,51 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=orc
+pkgver=0.4.31
+pkgrel=2
+pkgdesc="The Oil Run-time Compiler"
+url="https://gstreamer.freedesktop.org/modules/orc.html"
+arch="all"
+license="BSD-2-Clause"
+makedepends="linux-headers meson"
+subpackages="$pkgname-dev $pkgname-compiler"
+source="https://gstreamer.freedesktop.org/src/orc/orc-$pkgver.tar.xz
+	"
+
+case "$CARCH" in
+	# FIXME: Test exec_opcodes_sys fails on armhf.
+	# FIXME: MIPS DSP Module Rev2 is required for tests on mips*.
+	arm*|mips*) options="!check";;
+esac
+
+build() {
+	cd "$builddir"
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dorc-test=disabled \
+		. output
+	ninja -C output
+}
+
+check() {
+	cd "$builddir"
+	ninja -C output test
+}
+
+package() {
+	cd "$builddir"
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+compiler() {
+	pkgdesc="Orc compiler"
+	mkdir -p "$subpkgdir"/usr/
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}
+
+sha512sums="4e97597e70982dbfc239d1ef9a8913b0155e5aaac15d91162d7f73a1095bd944e27fbe6d6194b9f74af07b985a44b1d9dddbe917425e1ad9e8da17ce86495696  orc-0.4.31.tar.xz"

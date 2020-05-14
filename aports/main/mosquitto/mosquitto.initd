@@ -1,0 +1,17 @@
+#!/sbin/openrc-run
+
+supervisor=supervise-daemon
+
+name="Mosquitto message broker"
+description="MQTT v3.1.1 Message Broker"
+
+command="/usr/sbin/mosquitto"
+command_args="$mosquitto_args"
+
+config=/etc/mosquitto/${RC_SVCNAME#mosquitto.}.conf
+
+start_pre() {
+	if [ -f $config ]; then
+		command_args="-c $config $command_args"
+	fi
+}

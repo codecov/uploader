@@ -1,0 +1,29 @@
+# Contributor: Raphael Cohn <raphael.cohn@stormmq.com>
+# Maintainer: Raphael Cohn <raphael.cohn@stormmq.com>
+pkgname=hitch
+pkgver=1.5.2
+pkgrel=0
+pkgdesc="hitch is a TLS / SSL endpoint like stunnel"
+url="https://hitch-tls.org/"
+arch="all"
+license="BSD-2-Clause"
+makedepends="libev-dev openssl-dev py3-docutils bison flex"
+subpackages="$pkgname-doc"
+source="https://hitch-tls.org/source/hitch-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-tcp-fastopen
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="ca4cd62664dfdef3026b1230ddc350f8c3245b13c36e1b6d8ade74cc04e9857f5e060b070ea7201ca27aabcbb9b9f0d0890f9359449ba2c8d8a530cd69b093c2  hitch-1.5.2.tar.gz"

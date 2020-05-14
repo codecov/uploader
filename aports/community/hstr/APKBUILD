@@ -1,0 +1,53 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=hstr
+pkgver=2.2
+pkgrel=0
+pkgdesc="Bash and ZSH shell history suggest box"
+url="https://github.com/dvorka/hstr"
+arch="all"
+license="Apache-2.0"
+makedepends="autoconf automake libtool ncurses-dev readline-dev"
+options="!check"  # no *automated* tests to run
+subpackages="
+	$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/dvorka/hstr/archive/$pkgver/hstr-$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+
+	sed -i "s|<ncursesw/curses.h>|<curses.h>|" \
+		src/include/hstr_curses.h src/include/hstr.h
+
+	cd build/tarball
+	./tarball-automake.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man
+	make
+}
+
+package() {
+	make install DESTDIR="$pkgdir"
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions
+	mv "$pkgdir"/usr/share/bash-completion/completions/hstr \
+		"$subpkgdir"/usr/share/bash-completion/completions
+	rmdir -p "$pkgdir"/usr/share/bash-completion/completions || :
+}
+
+sha512sums="c133edaa63a2be76356c08e52303d4133b11803e3ac6f915566a8d1b4651991b14d43974618061b2fc98c49e21b650ff6b9ac8168512e76566e327f90a550e4a  hstr-2.2.tar.gz"

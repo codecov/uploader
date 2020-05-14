@@ -1,0 +1,27 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kteatime
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/utilities/org.kde.kteatime"
+pkgdesc="A handy timer for steeping tea"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kconfig-dev kcrash-dev kdoctools-dev ki18n-dev kiconthemes-dev knotifyconfig-dev knotifications-dev ktextwidgets-dev kxmlgui-dev kconfig-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kteatime-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="c2a588795a5c20ad10cffa1a23e8bf6d07bb9b81defe19d56cc3f4845635f8e8839b865db1088ba0fad75a64478dc3d532ce72510bd6fb20971fde29963507dc  kteatime-20.04.0.tar.xz"

@@ -1,0 +1,34 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=libgcab
+pkgver=1.4
+pkgrel=1
+pkgdesc="A GObject library to create cabinet files"
+url=" https://wiki.gnome.org/msitools"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="meson gobject-introspection-dev glib-dev vala gtk-doc"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://download.gnome.org/sources/gcab/$pkgver/gcab-$pkgver.tar.xz"
+builddir="$srcdir"/gcab-$pkgver
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="66a2e0d0a5888c555153356ce808f602053e71b76af19794db7e3bbf9516fe791805068838b4e208698cd645ada7a08610ac95f846fa81e00a9b955016306299  gcab-1.4.tar.xz"

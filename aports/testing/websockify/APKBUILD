@@ -1,0 +1,21 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Valery Kartel <valery.kartel@gmail.com>
+pkgname=websockify
+pkgver=0.9.0
+pkgrel=1
+pkgdesc="WebSockets support for any application/server"
+url="https://github.com/kanaka/websockify"
+arch="noarch !mips !mips64" # blocked by py3-numpy
+license="LGPL-3.0-or-later"
+depends="python3 py3-numpy py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/kanaka/websockify/archive/v$pkgver.tar.gz"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="d2251f653a40dc6dca0e5541845565d968c60be96a20a9b70b0305c4b7578f7fe205d4b98a94bb77d7c9383a396833af90fe92a6ade7e1a6f2d9bf8513d372c8  websockify-0.9.0.tar.gz"

@@ -1,0 +1,80 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=procps
+pkgver=3.3.16
+pkgrel=0
+pkgdesc="Utilities for monitoring your system and processes on your system"
+url="https://gitlab.com/procps-ng/procps"
+arch="all"
+license="GPL-2.0 LGPL-2.1+"
+makedepends="ncurses-dev gettext-dev autoconf automake libtool"
+checkdepends="dejagnu"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang libproc"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/procps-ng/procps/repository/archive.tar.gz?ref=v$pkgver"
+builddir="$srcdir/$pkgname-v$pkgver"
+
+prepare() {
+	# NOTE: Name of the tarball's top-level directory contains SHA1.
+	ln -fs $srcdir/$pkgname-v$pkgver-* "$builddir"
+
+	default_prepare
+
+	# force misc/git-version-gen use the correct version (instead of UNKNOWN);
+	# however only do it if the upstream tarball really misses it.
+	if test ! -f .tarball_version ; then
+		rm -f .version
+		echo "$pkgver" > .tarball-version
+	fi
+	./autogen.sh
+}
+
+build() {
+	export LIBS="$LIBS -lintl"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/ \
+		--bindir=/bin \
+		--sbindir=/sbin \
+		--libdir=/lib \
+		--mandir=/usr/share/man \
+		--sysconfdir=/etc \
+		--docdir=/usr/share/doc \
+		--datarootdir=/usr/share \
+		--disable-static \
+		--disable-w-from \
+		--disable-kill \
+		--disable-rpath \
+		--with-ncurses
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" ldconfig=true install="install -D" \
+		install
+
+	# These binaries are identical.
+	ln -sf pgrep "$pkgdir"/bin/pkill
+
+	# Override BusyBox symlinks
+	mkdir -p "$pkgdir"/usr/bin
+	for i in free pgrep pkill pmap pwdx top uptime; do
+		mv "$pkgdir"/bin/$i "$pkgdir"/usr/bin/$i
+	done
+
+	install -d "$pkgdir"/usr/lib
+	mv "$pkgdir"/include "$pkgdir"/usr/ \
+		&& mv "$pkgdir"/lib/pkgconfig "$pkgdir"/usr/lib/
+}
+
+libproc() {
+	pkgdesc="Library for monitoring system and processes"
+
+	install -d "$subpkgdir"/
+	mv "$pkgdir"/lib "$subpkgdir"/
+}
+
+sha512sums="d7a1da31a24832400cbf1d9e072dac21de7bf72c5680f7368a6054c5f12271ebbc1d4bcb3215622c5b6a70602413642e3ceebbf2b2d8e1b7310cfa8051bd0e3c  procps-3.3.16.tar.gz"

@@ -1,0 +1,29 @@
+# Maintainer: Simon Rupf <simon@rupf.net>
+pkgname=dar
+pkgver=2.6.9
+pkgrel=0
+pkgdesc="Disk ARchive"
+url="http://dar.linux.free.fr/"
+arch="all"
+license="GPL-2.0-or-later"
+options="!check" # the provided "make check" requires root permissions
+makedepends="zlib-dev bzip2-dev lzo-dev xz-dev libgcrypt-dev gpgme-dev
+	e2fsprogs-dev librsync-dev curl-dev gettext-dev automake
+	autoconf libtool libthreadar-dev"
+subpackages="$pkgname-doc $pkgname-lang $pkgname-libs $pkgname-dev"
+source="https://downloads.sourceforge.net/dar/dar-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--disable-dar-static \
+		--disable-static \
+		--disable-upx
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="9ee4624fa1cfa0e523653e3dca032a8b7ac200b3318ba21869c19a9102dd11a923c979e5186591011161a2ed07f3c7668b572620b3be197d4bfaea903c259151  dar-2.6.9.tar.gz"

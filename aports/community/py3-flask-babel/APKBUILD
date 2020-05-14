@@ -1,0 +1,29 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-flask-babel
+_pkgname=Flask-Babel
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="Flask i18n/l10n support"
+options="!check" # No testsuite on PYPI tarball, GitHub tarball are outdated
+url="https://github.com/python-babel/flask-babel"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3 py3-flask py3-jinja2 py3-babel"
+makedepends="py3-setuptools"
+checkdepends="py3-tz"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-flask-babel" # Backwards compatibility
+provides="py-flask-babel=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="3624b2e4877821551267e2719d76b714bda0a1da24e5a3c36d045273039823c4f3bbdf28cad5d8e0d4f0c896578248bfc40aebee720b543e500edf6de607ad8d  Flask-Babel-1.0.0.tar.gz"

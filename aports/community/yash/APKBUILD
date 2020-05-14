@@ -1,0 +1,84 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=yash
+pkgver=2.49
+pkgrel=1
+pkgdesc="Yet another shell"
+url="http://yash.osdn.jp"
+arch="all"
+license="GPL-2.0-or-later"
+depends="$pkgname-completion"
+makedepends="ncurses-dev"
+install="$pkgname.post-install $pkgname.pre-deinstall"
+subpackages="$pkgname-doc"
+source="https://github.com/magicant/yash/releases/download/$pkgver/yash-$pkgver.tar.xz"
+
+_compdir="usr/share/yash/completion"
+
+# Move some bigger completion files to separate subpackages.
+_comps="git:git:git[gkx]:git-*
+	openssh-client:ssh:ssh-*
+	subversion:svn
+	valgrind:valgrind
+	"
+for _i in $_comps; do
+	subpackages="$subpackages ${_i%%:*}-yash-completion:_completion:noarch"
+done
+subpackages="$subpackages $pkgname-completion::noarch"
+
+prepare() {
+	default_prepare
+
+	# XXX: Disable hanging tests.
+	sed -i -e 's/\bkill[24]-p.tst\b//g' \
+		-e 's/\bsignal[12]-y.tst\b//g' \
+		tests/Makefile.in
+
+	# Remove completions for programs that are not available on Alpine
+	# (just to decrease size of the package).
+	cd share/completion
+	rm carthage dnf pgawk useradd who
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--mandir=/usr/share/man \
+		--disable-nls
+	make
+}
+
+check() {
+	# FIXME: Fix broken tests.
+	make tests LANG=en_US.UTF-8 || true
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	rm -Rf "$pkgdir"/usr/share/man/ja
+}
+
+_completion() {
+	local name="${subpkgname%-yash-completion}"
+	pkgdesc="Yash completions for $name"
+	depends="$pkgname-completion"
+	install_if="$pkgname-completion=$pkgver-r$pkgrel $name"
+
+	local files=$(printf '%s\n' $_comps \
+		| sed -En "s|^$name:(.*)|\1|p" \
+		| tr : ' ')
+	[ "$files" ] || die "$name not found in \$_comps"
+
+	local f; for f in $files; do
+		amove usr/share/yash/completion/$f
+	done
+}
+
+completion() {
+	pkgdesc="$pkgdesc (command-line completion)"
+	depends=""
+
+	amove usr/share/yash/completion
+}
+
+sha512sums="99d98cfbe09aa746f2707217ecb506d8d5998df4a603ac276a8a67782fdcb3a7bd41fb34744f3834e319b0fdb0b1fd480cf9e2a4b835fec3e758280e13036db5  yash-2.49.tar.xz"

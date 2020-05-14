@@ -1,0 +1,31 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=py3-josepy
+_pkgname=josepy
+pkgver=1.3.0
+pkgrel=0
+pkgdesc="JOSE protocol implementation in Python"
+url="https://github.com/jezdez/josepy"
+arch="noarch"
+license="Apache-2.0"
+depends="py3-cryptography py3-openssl py3-setuptools py3-six"
+makedepends="libffi-dev python3-dev"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/certbot/josepy/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces=py-josepy # Backwards compatibility
+provides=py-josepy=$pkgver-r$pkgrel # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="93d8ca09243ed273c532e1c5c413f356dca3e85db45614b88d82665a947088950d3c4d6304fec51bdc502a25722955a9fac47b7bc608a69cc1226a512f69c229  josepy-1.3.0.tar.gz"

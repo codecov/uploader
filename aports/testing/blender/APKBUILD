@@ -1,0 +1,118 @@
+# Contributor: Mark Riedesel <mark@klowner.com>
+# Maintainer: Mark Riedesel <mark@klowner.com>
+pkgname=blender
+pkgver=2.81a
+_pkgver=${pkgver/[a-z]}
+pkgrel=1
+pkgdesc="3D Creation/Animation/Publishing System"
+url="https://www.blender.org/"
+#arch="x86_64"
+license="GPL-2.0-or-later"
+depends="blender-shared=$pkgver-r$pkgrel"
+makedepends="cmake libx11-dev libjpeg-turbo-dev zlib-dev libpng-dev freetype-dev python3-dev
+	openimageio-dev opencolorio-dev glew-dev openal-soft-dev ffmpeg-dev
+	fftw-dev tiff-dev mesa-dev libxi-dev libsndfile-dev libxmu-dev boost-dev
+	openexr-dev py3-numpy-dev opensubdiv-dev lzo-dev libxrender-dev openjpeg-dev"
+subpackages="$pkgname-doc $pkgname-shared::noarch $pkgname-headless $pkgname-player py3-$pkgname:python"
+source="https://download.blender.org/source/blender-$_pkgver.tar.xz
+	musl-fixes.patch
+	python-3.8.patch
+	openimageio-lib.patch
+	"
+
+builddir="$srcdir"/$pkgname-$_pkgver
+
+build() {
+	# Headless
+	cd "$builddir"
+	mkdir -p "$builddir"/build-headless
+	cd "$builddir"/build-headless
+	_build -C../build_files/cmake/config/blender_headless.cmake
+
+	# Full
+	cd "$builddir"
+	mkdir -p "$builddir"/build-full
+	cd "$builddir"/build-full
+	_build -C../build_files/cmake/config/blender_full.cmake
+
+	# Python module
+	cd "$builddir"
+	mkdir -p "$builddir"/build-py
+	cd "$builddir"/build-py
+	_build -C../build_files/cmake/config/bpy_module.cmake
+
+}
+
+_build() {
+	local PY_VERSION=$(python3 -c 'import sys; print("%i.%i" % (sys.version_info.major, sys.version_info.minor))')
+
+	cmake .. $@ \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=None \
+		-DWITH_PYTHON_INSTALL:BOOL=OFF \
+		-DWITH_INSTALL_PORTABLE:BOOL=OFF \
+		-DWITH_OPENCOLORIO:BOOL=ON \
+		-DWITH_IMAGE_OPENEXR=ON \
+		-DWITH_IMAGE_OPENJPEG=ON \
+		-DWITH_TBB:BOOL=OFF \
+		-DWITH_SYSTEM_LZO=ON \
+		-DPYTHON_VERSION=$PY_VERSION \
+		-DNO_EXECINFO:BOOL=ON
+	make
+}
+
+
+package() {
+	# Install headless files
+	cd "$builddir"/build-headless
+	make DESTDIR="$pkgdir"/headless install
+
+	# Rename the headless blender to blender-headless
+	mkdir -p "$pkgdir"/usr/bin
+	mv "$pkgdir"/headless/usr/bin/blender "$pkgdir"/usr/bin/blender-headless
+	rm -rf "$pkgdir"/headless
+
+	# Install python module
+	cd "$builddir"/build-py
+	make DESTDIR="$pkgdir" install
+
+	# Install the full package
+	cd "$builddir"/build-full
+	make DESTDIR="$pkgdir" install
+}
+
+shared() {
+	pkgdesc="Blender shared runtime data and add-on scripts"
+	mkdir -p "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/blender "$subpkgdir"/usr/share/
+}
+
+headless() {
+	pkgdesc="$pkgdesc (headless build)"
+	depends="blender-shared=$pkgver-r$pkgrel"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/blender-headless "$subpkgdir"/usr/bin/
+}
+
+player() {
+	pkgdesc="Blender player runtime"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/blenderplayer "$subpkgdir"/usr/bin/
+}
+
+python() {
+	local PY_VERSION=$(python3 -c 'import sys; print("%i.%i" % (sys.version_info.major, sys.version_info.minor))')
+
+	pkgdesc="Blender modules for Python 3"
+	mkdir -p "$subpkgdir"/usr/lib/python${PY_VERSION}/site-packages
+	mv "$pkgdir"/usr/lib/python${PY_VERSION}/site-packages/bpy.so "$subpkgdir"/usr/lib/python${PY_VERSION}/site-packages/
+	rm -rf "$pkgdir"/usr/lib
+
+	# Symlink to the blender-shared files
+	ln -s /usr/share/blender/${_pkgver} "$subpkgdir"/usr/lib/python${PY_VERSION}/site-packages/${_pkgver}
+}
+
+sha512sums="b7eed47afc4bdb87e9e8a579565935ae8489459197fb9b5978285cfe255ea4fc4151a1178526857921f3b2d54cf63b68dda66586565340f7bfd4274b82e7e9ff  blender-2.81.tar.xz
+f931712c27d5012f1fb01b97107eba9e3bc195c0aafb0a1e782030b5eedf8beb4d15153b46464492098974e17e0b0a1659a078e811423b5a27cdd350209d90c3  musl-fixes.patch
+d95456d26bcf0b28776d4b36a20a210235b11b2ee32b6f051c88d08199792484811573b55f1850f3c1cda816d491ef332de1fe81421b761a7b4be515df726b4e  python-3.8.patch
+42ed74bfae38721b7e8301dfe00a97cba0b25886cb39017620d442f9403386b5ca68daa0907d003e210ae01321986772c9721ea3de512701e6565d60a19f0c8e  openimageio-lib.patch"

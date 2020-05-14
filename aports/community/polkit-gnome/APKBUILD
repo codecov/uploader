@@ -1,0 +1,36 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=polkit-gnome
+pkgver=0.105
+pkgrel=1
+pkgdesc="PolicyKit integration for the GNOME desktop"
+url="http://www.freedesktop.org/wiki/Software/PolicyKit"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="$depends_dev gtk+3.0-dev polkit-dev intltool"
+subpackages="$pkgname-lang"
+source="https://download.gnome.org/sources/polkit-gnome/$pkgver/polkit-gnome-$pkgver.tar.xz
+	polkit-gnome-authentication-agent-1.desktop"
+
+prepare() {
+	default_prepare
+	update_config_guess
+}
+
+build() {
+	./configure --prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--libexecdir=/usr/lib/polkit-gnome
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm644 "$srcdir/polkit-gnome-authentication-agent-1.desktop" \
+		"$pkgdir/etc/xdg/autostart/polkit-gnome-authentication-agent-1.desktop"
+}
+
+sha512sums="eae2504959bca6f2b53dbad1b743fc0414b82897e62623af80ee74c4080a10d6b07a4c90151ee1264891f27373321b8697ac8a747cba5254c765b4cd9161bd42  polkit-gnome-0.105.tar.xz
+6cf30dcbdb71425603edc804aca9a1bfaf28120614be567db81bdd5b64392445baad8094986f086922795be36b7130f13dd906c56ea576ac85987111d918b0bd  polkit-gnome-authentication-agent-1.desktop"

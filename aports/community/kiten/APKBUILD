@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kiten
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://edu.kde.org/kiten/"
+pkgdesc="Japanese Reference/Study Tool"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev karchive-dev kcompletion-dev kconfig-dev kconfigwidgets-dev kcoreaddons-dev kcrash-dev kdoctools-dev ki18n-dev khtml-dev knotifications-dev kxmlgui-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kiten-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang $pkgname-dev"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="33e9fd0f181e2fb9bf77fd6d29328a4cb827af09a5722a35853575ec9a1e06c7e2f384e9684b7c53818d88a05a3361ec3126980e44669c330aaa61b5651651aa  kiten-20.04.0.tar.xz"

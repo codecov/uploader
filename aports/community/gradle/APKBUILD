@@ -1,0 +1,37 @@
+# Contributor: Roberto Oliveira <robertoguimaraes8@gmail.com>
+# Maintainer: Roberto Oliveira <robertoguimaraes8@gmail.com>
+pkgname=gradle
+pkgver=5.6.4
+pkgrel=0
+pkgdesc="Build tool with a focus on build automation and support for multi-language development"
+url="https://gradle.org/"
+arch="noarch !mips !mips64"
+options="!check"
+license="Apache-2.0"
+depends="openjdk8"
+source="https://services.gradle.org/distributions/gradle-$pkgver-bin.zip"
+
+package() {
+	local gradlehome="/usr/share/java/$pkgname"
+	local destdir="$pkgdir/$gradlehome"
+
+	install -dm755 "$destdir"/bin
+	rm bin/*.bat
+	install -m755 bin/* "$destdir"/bin
+
+	install -dm755 "$pkgdir"/usr/bin
+	ln -sf $gradlehome/bin/gradle "$pkgdir"/usr/bin/gradle
+
+	install -dm755 "$destdir"/lib
+	install -m644 lib/*.jar "$destdir"/lib
+
+	install -dm755 "$destdir"/lib/plugins
+	install -m644 lib/plugins/*.jar "$destdir"/lib/plugins
+
+	# NOTICE file should be redistributed for derivative works
+	local file; for file in LICENSE NOTICE; do
+		install -m644 -D $file "$pkgdir"/usr/share/licenses/$pkgname/$file
+	done
+}
+
+sha512sums="090d1075655ec51ca3abfc28a375d0f975d2c9cb4ef8144c7cb035689795303fa08fad7088130bfa142b4d29c8723a94374618efd17aaf7a5ef9ae2534fef453  gradle-5.6.4-bin.zip"

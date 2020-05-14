@@ -1,0 +1,29 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=xwininfo
+pkgver=1.1.5
+pkgrel=0
+pkgdesc="Window information utility for X"
+url="https://cgit.freedesktop.org/xorg/app/xwininfo"
+arch="all"
+license="MIT"
+options="!check"  # No test suite.
+makedepends="libx11-dev libxext-dev util-macros"
+subpackages="$pkgname-doc"
+source="https://www.x.org/releases/individual/app/xwininfo-$pkgver.tar.bz2"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="a3268bbeeeeafac94e589fdd47554a965910d40df7cc3d9c36c7c24fa4f5dd49615484d5916ccb41efca9cd4cf9d8981a4c60953b921220b3f4f57f9cce0e1a6  xwininfo-1.1.5.tar.bz2"

@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libkipi
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="KDE Image Plugin Interface library"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://www.digikam.org/"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev kconfig-dev kxmlgui-dev kservice-dev"
+makedepends="$depends_dev extra-cmake-modules"
+source="https://download.kde.org/stable/release-service/$pkgver/src/libkipi-$pkgver.tar.xz"
+subpackages="$pkgname-dev"
+options="!check" # Test suite fails to compile
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_TESTING=OFF
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="cd63c748528aff4fb289d4ad796b5ada3e30036f1564d6423122447530bd4ce524c807155494dbffe90c29859429372dc8b51965a5a06da7bafeba6bab1ebd47  libkipi-20.04.0.tar.xz"

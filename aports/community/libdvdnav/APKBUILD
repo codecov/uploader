@@ -1,0 +1,32 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libdvdnav
+pkgver=6.1.0
+pkgrel=1
+pkgdesc="a library for sophisticated DVD navigation features"
+url="http://dvdnav.mplayerhq.hu/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="libdvdread-dev>=5.0.3"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://download.videolan.org/pub/videolan/libdvdnav/$pkgver/libdvdnav-$pkgver.tar.bz2"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--disable-static \
+		--enable-shared
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="40ea50d818067a3178b4b09e4b95b0cc67d5ff88dbff2cbeee943d086c5f59a71a7aecc425ba35d7dbe5285d8b1ea099a439c0c80c5dca280687ac0cbdc57c71  libdvdnav-6.1.0.tar.bz2"

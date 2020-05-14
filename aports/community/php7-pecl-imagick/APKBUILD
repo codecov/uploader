@@ -1,0 +1,50 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Valery Kartel <valery.kartel@gmail.com>
+pkgname=php7-pecl-imagick
+_pkgreal=imagick
+pkgver=3.4.4
+pkgrel=3
+pkgdesc="PHP extension provides a wrapper to the ImageMagick library - PECL"
+url="https://pecl.php.net/package/imagick"
+arch="all"
+license="PHP-3.01"
+depends="php7-common"
+checkdepends="ghostscript-fonts"
+makedepends="php7-dev autoconf libtool imagemagick-dev pcre2-dev re2c"
+subpackages="$pkgname-dev"
+source="https://pecl.php.net/get/$_pkgreal-$pkgver.tgz
+	fix-affineTransformImage-test.patch
+	"
+builddir="$srcdir/$_pkgreal-$pkgver"
+provides="php7-imagick=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-imagick" # for backward compatibility
+
+# secfixes:
+#   3.4.4-r0:
+#     - CVE-2019-11037
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	rm tests/150_Imagick_setregistry.phpt # no exception thrown
+	rm tests/229_Tutorial_fxAnalyzeImage_case1.phpt # time out
+	rm tests/236_Imagick_identify_basic.phpt # coredump https://bugs.php.net/bug.php?id=59444
+
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+}
+
+package() {
+	local confdir="$pkgdir/etc/php7/conf.d"
+
+	make INSTALL_ROOT="$pkgdir" install
+
+	mkdir -p "$confdir"
+	echo "extension=$_pkgreal.so" > "$confdir"/$_pkgreal.ini
+}
+
+sha512sums="73145a1f095849c32760db2dfc4acc13c57d99a037d65eca9b0ddf8f8e81cf6d28a50f2614e44bae1d90b4f881a2e9a64926e0e3b9403e491fd903ffeb30c4b7  imagick-3.4.4.tgz
+f7c5507c349d1048b57d0316f5c7e83e539537e03d1573ee03d40590a2ae828b0c55ae136dcc5e2983ecaa75990e6d38fb2c01d95eef9d9c19da938acbd4f9b2  fix-affineTransformImage-test.patch"

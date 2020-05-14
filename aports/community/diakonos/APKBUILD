@@ -1,0 +1,24 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=diakonos
+replaces="diakonos-git"
+pkgver=0.9.7
+pkgrel=1
+pkgdesc="A Linux editor for the masses"
+url="http://diakonos.pist0s.ca/download/"
+arch="noarch"
+license="MIT"
+depends="ruby"
+options="!check" #no test provided
+subpackages="$pkgname-doc"
+source="diakonos-$pkgver.tar.gz::https://github.com/Pistos/diakonos/archive/v$pkgver.tar.gz"
+
+package() {
+	ruby install.rb --dest-dir $pkgdir \
+		--prefix /usr \
+		--lib-dir /usr/lib \
+		--conf-dir /etc
+}
+
+sha512sums="ec23d93ed6871d18b6a91e02bc6916ac667ca773be5f093a68fffa5c9cbe89b123e80b18762c8649620eda23b1b9ba582a5236eb9eaefc0e22a411390cd30c73  diakonos-0.9.7.tar.gz"

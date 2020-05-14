@@ -1,0 +1,47 @@
+# Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
+pkgname=coturn
+pkgver=4.5.1.2
+pkgrel=0
+pkgdesc="Free open source implementation of TURN and STUN Server"
+url="https://github.com/coturn/coturn"
+arch="all"
+license="BSD-3-Clause"
+makedepends="openssl-dev libevent-dev linux-headers sqlite-dev"
+pkgusers="$pkgname"
+pkggroups="$pkgname"
+install="$pkgname.pre-install"
+subpackages="$pkgname-openrc $pkgname-static $pkgname-dev $pkgname-doc"
+# https://github.com/coturn/coturn/issues/193
+source="coturn-$pkgver.tar.gz::https://github.com/coturn/coturn/archive/$pkgver.tar.gz
+	remove-check_oauth-test.patch
+	turnserver.initd
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share \
+		--localstatedir=/var \
+		--disable-rpath \
+		--sysconfdir=/etc/$pkgname \
+		--turndbdir=/var/lib/$pkgname
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm755 "$srcdir"/turnserver.initd \
+		"$pkgdir"/etc/init.d/turnserver
+}
+
+sha512sums="6dd223fee866d97a3e55d87250fcb5d6ecc56f14b30029685406237aedd3d3cd6c09b685ef13ed2d1ebed3a4a3a80a88151c6498f312e53e3f5848d4af489478  coturn-4.5.1.2.tar.gz
+3ad78467a509ed5c3eeac8585e13b11d276700cf45a8829e398a39c2056690aa9a66c3d40b73e2ce5815ce3199177220fb24224430919f49a70031f12e7d8c95  remove-check_oauth-test.patch
+e686dc752618b2da2f6127ab11c49767bfcf228edf458cefe2853093baa845adb2b3159e850db1721e7474c4938fb237dd12bdfd7fd4db2ee73fbd0cb19af17d  turnserver.initd"

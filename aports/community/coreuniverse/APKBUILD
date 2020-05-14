@@ -1,0 +1,25 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=coreuniverse
+pkgver=2.8.0
+pkgrel=0
+pkgdesc="Shows information about apps from the CoreApps family."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtsvg"
+makedepends="qt5-qtbase-dev libcprime-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/coreuniverse/-/archive/v$pkgver/coreuniverse-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+
+sha512sums="2f808752243481d2928326fab9410fc98e871c6b058c080afa44d20b588bf00b4c2b009460389b81cb039c8936fc0b9acda003ac13a7bc086941f73f3e7b7b9a  coreuniverse-2.8.0.tar.gz"

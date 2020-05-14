@@ -1,0 +1,27 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: sin <sin@2f30.org>
+# Maintainer: sin <sin@2f30.org>
+pkgname=noice
+pkgver=0.8
+pkgrel=0
+pkgdesc="A simple file browser"
+url="https://git.2f30.org/noice"
+arch="all"
+license="BSD-2-Clause"
+options="!check"
+makedepends="ncurses-dev"
+subpackages="$pkgname-doc"
+source="https://dl.2f30.org/releases/$pkgname-$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+package() {
+	make \
+		PREFIX=/usr \
+		MANPREFIX=/usr/share/man \
+		DESTDIR="$pkgdir" install
+}
+
+sha512sums="96e7115eb97e7ea82490d92498e495bb96d2a458f7043904abdadf1d44dd7577dc52ecc420f450c5c2bfbfab9c0340b5814410e4eb26c0e62ef94298f7f86eeb  noice-0.8.tar.gz"

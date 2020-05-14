@@ -1,0 +1,65 @@
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+pkgname=dmvpn
+pkgver=1.3.0
+pkgrel=1
+pkgdesc="Dynamic Multipoint VPN"
+url="https://git.alpinelinux.org/cgit/dmvpn-tools/"
+arch="noarch"
+license="MIT"
+depends="augeas bind-tools lua5.2 lua5.2-cqueues lua5.2-lyaml lua5.2-ossl
+         lua5.2-posix lua5.2-struct lua-dmvpn quagga strongswan tunnel"
+subpackages="dmvpn-ca dmvpn-crl-dp lua-dmvpn"
+options="!check"
+source="$url/snapshot/dmvpn-tools-$pkgver.tar.bz2
+        dmvpn-ca.insync"
+builddir="$srcdir/dmvpn-tools-$pkgver"
+
+build() {
+	:
+}
+
+package() {
+	cd "$builddir"
+
+	install -D -m 644 dmvpn.awall "$pkgdir"/usr/share/awall/optional/dmvpn.json
+	install -D -m 644 dmvpn-hub.awall "$pkgdir"/usr/share/awall/optional/dmvpn-hub.json
+	install -D dmvpn-pfx-decode "$pkgdir"/usr/libexec/dmvpn-pfx-decode
+	install -D -m 644 dmvpn.charon "$pkgdir"/etc/strongswan.d/dmvpn.conf
+	install -D -m 644 dmvpn.swanctl "$pkgdir"/etc/swanctl/conf.d/dmvpn.conf
+	install -D nhrp-events "$pkgdir"/usr/sbin/nhrp-events
+	install -D nhrp-events.initd "$pkgdir"/etc/init.d/nhrp-events
+	install -D setup-dmvpn "$pkgdir"/usr/sbin/setup-dmvpn
+}
+
+ca() {
+	depends="lua5.2 lua5.2-lyaml lua5.2-ossl lua5.2-posix lua5.2-sql-sqlite3
+	         lua5.2-stringy lua-asn1 lua-dmvpn"
+
+	cd "$builddir"
+
+	install -D dmvpn-ca "$subpkgdir"/usr/bin/dmvpn-ca
+	install -D -m 644 dmvpn-ca.conf "$subpkgdir"/etc/dmvpn-ca.conf
+	install -D -m 644 "$srcdir"/dmvpn-ca.insync "$subpkgdir"/etc/in-sync.d/dmvpn-ca
+}
+
+dp() {
+	depends=lighttpd
+
+	local bin=/usr/bin/dmvpn-crl-update
+	install -D "$builddir"/dmvpn-crl-update "$subpkgdir$bin"
+
+	local dir=$subpkgdir/etc/periodic/15min
+	mkdir -p "$dir"
+	ln -s $bin "$dir"
+}
+
+dmvpn() {
+	depends=lua-asn1
+
+	cd "$builddir"
+	install -D -m 644 dmvpn.lua "$subpkgdir"/usr/share/lua/5.2/dmvpn.lua
+}
+
+sha512sums="100838ab69b5475bd3885a229bcb31fc054248bfd56b026e8aa978d9907795a152ec00bad1f85597ba5b70e84c14123b35f81a955d2335073be9de181e2a862a  dmvpn-tools-1.3.0.tar.bz2
+a2160b97ead95c0269005e6973b25315ec7f1eada9da70cda42a13e34c800eea836b8ef7723553ff0e751796ec0ae27efadbac6b9c66e7db944984d9ff387072  dmvpn-ca.insync"

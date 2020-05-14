@@ -1,0 +1,38 @@
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+_gemname=bundler
+pkgname=ruby-$_gemname
+pkgver=2.1.4
+pkgrel=1
+pkgdesc="Manage an application's gem dependencies"
+url="https://bundler.io/"
+arch="noarch"
+license="MIT"
+depends="ruby ruby-etc ruby-io-console"
+subpackages="$pkgname-doc"
+source="https://rubygems.org/downloads/$_gemname-$pkgver.gem"
+builddir="$srcdir/$_gemname-$pkgver"
+
+package() {
+	local gemdir="$pkgdir/$(ruby -e 'puts Gem.default_dir')"
+
+	gem install --local \
+		--install-dir "$gemdir" \
+		--bindir "$pkgdir/usr/bin" \
+		--ignore-dependencies \
+		--no-document \
+		--verbose \
+		"$srcdir"/$_gemname-$pkgver.gem
+
+	local n; for n in 1 5; do
+		mkdir -p "$pkgdir"/usr/share/man/man$n
+		mv "$gemdir"/gems/$_gemname-$pkgver/man/*.$n "$pkgdir"/usr/share/man/man$n/
+	done
+
+	rm -rf "$gemdir"/cache \
+		"$gemdir"/build_info \
+		"$gemdir"/doc \
+		"$gemdir"/gems/$_gemname-$pkgver/man \
+		"$gemdir"/gems/$_gemname-$pkgver/*.md
+}
+
+sha512sums="6c870061a78e17d97a9219433c7ef8fbf1112de17d0e0f3d8b6db1a518318528e3803184278412aabe65008e93f451ffa59465062856918ef488f9438399eff6  bundler-2.1.4.gem"

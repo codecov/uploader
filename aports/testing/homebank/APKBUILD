@@ -1,0 +1,24 @@
+# Contributor: 7heo <7heo@mail.com>
+# Maintainer: 7heo <7heo@mail.com>
+pkgname=homebank
+pkgver=5.2.8
+pkgrel=0
+pkgdesc="Free personal finance software, money management"
+url="http://homebank.free.fr"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="bash gtk+3.0-dev libsoup-dev libofx-dev intltool"
+options="!check" # no test suite
+subpackages="$pkgname-lang"
+source="http://homebank.free.fr/public/homebank-$pkgver.tar.gz"
+
+build() {
+	./configure --prefix=/usr
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="e1cb0595f1a5cedad83d1b51223d15ea7f37ced9d14edad1f1af8ad8e0eed2938518ed936981558879b5a1bd8aa80d88f4303e69fff0d6e503a8abe61bf872be  homebank-5.2.8.tar.gz"

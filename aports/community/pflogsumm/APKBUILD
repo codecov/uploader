@@ -1,0 +1,19 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=pflogsumm
+pkgver=1.1.5
+pkgrel=1
+pkgdesc="Pflogsumm is a log analyzer for Postfix logs"
+url="http://jimsun.linxnet.com/postfix_contrib.html"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="perl perl-date-calc"
+subpackages="$pkgname-doc"
+options="!check" # no test suite
+source="http://jimsun.linxnet.com/downloads/pflogsumm-$pkgver.tar.gz"
+
+package() {
+	install -D -m644 pflogsumm.1 "$pkgdir"/usr/share/man/man1/pflogsumm.1
+	install -D -m755 pflogsumm.pl "$pkgdir"/usr/bin/pflogsumm
+}
+
+sha512sums="994d660692dfea38a1dd9866d15f15035657e85131c1f5a2cd82baa5bd4ad987a00939cb5233f316d2090014c52ae68ef20db0c893f8634969484e0e74678f4d  pflogsumm-1.1.5.tar.gz"

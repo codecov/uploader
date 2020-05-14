@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=dolphin-plugins
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://www.kde.org/applications/system/dolphin/"
+pkgdesc="Extra Dolphin plugins"
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev kxmlgui-dev ki18n-dev kio-dev ktextwidgets-dev ktexteditor-dev dolphin-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/dolphin-plugins-$pkgver.tar.xz"
+subpackages="$pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="fecd7647661bfc157a41b280a8c32460676597b52e376d7e419c9d74d47a9cc16a6bd621677137f06c201f31c792b61280f1b08fe5b1f8d94bfb36a9b6a2c5cc  dolphin-plugins-20.04.0.tar.xz"

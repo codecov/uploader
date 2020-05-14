@@ -1,0 +1,34 @@
+# Contributor: ScrumpyJack <scrumpyjack@st.ilet.to>
+# Maintainer: ScrumpyJack <scrumpyjack@st.ilet.to>
+pkgname=termrec
+pkgver=0.18
+pkgrel=0
+pkgdesc="termrec is a program for recording videos of terminal output"
+url="http://angband.pl/termrec.html"
+arch="all"
+license="LGPL-3.0-only"
+makedepends="zlib-dev bzip2-dev"
+checkdepends="xz-dev autoconf"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://prdownloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.xz
+	disable-fuzz-test.patch"
+options="libtool"
+
+build() {
+	cd "$builddir"
+	./configure --prefix=/usr --disable-static
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir/" install
+}
+
+sha512sums="148ef0c267a8010af27b0b9185e3b22985a770386bc96d919c0d5276834f0cc45bd9619a3d6dc7dc974c465d0551c1e434d3fd697b9f0afb45b31dc862507427  termrec-0.18.tar.xz
+d8759cef963c9ab4ed3de4414d16216fc40046b5b33dfcc032ea754482f610259e093e409c5c14fdda503fe397e8758bfb99be46ff80958d63769938946ee182  disable-fuzz-test.patch"

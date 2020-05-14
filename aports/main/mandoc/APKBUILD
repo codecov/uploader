@@ -1,0 +1,73 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=mandoc
+pkgver=1.14.5
+pkgrel=4
+pkgdesc="mandoc (formerly mdocml) UNIX manpage compiler toolset"
+url="https://mandoc.bsd.lv/"
+arch="all"
+license="ISC and BSD-2-Clause and BSD-3-Clause"
+makedepends="zlib-dev"
+checkdepends="perl"
+install="$pkgname.post-deinstall"
+triggers="$pkgname-apropos.trigger=/usr/share/man/*"
+replaces="mdocml"
+provides="mdocml=$pkgver-r$pkgrel"
+subpackages="$pkgname-doc $pkgname-dev $pkgname-apropos $pkgname-soelim"
+source="https://mandoc.bsd.lv/snapshots/mandoc-$pkgver.tar.gz
+	shared-libmandoc.patch
+	outdated-warn-disable.patch
+	fix-tbl-null-pointer.patch
+	mandoc_configure.patch
+	"
+
+prepare() {
+	default_prepare
+
+	cat >configure.local<<-__EOF__
+	PREFIX=/usr
+	MANDIR=/usr/share/man
+	LIBDIR=/usr/lib
+	CFLAGS="$CFLAGS"
+	UTF8_LOCALE="en_US.UTF-8"
+	MANPATH_DEFAULT="/usr/share/man:/usr/local/man"
+	LN="ln -sf"
+__EOF__
+}
+
+build() {
+	HAVE_LESS_T=0 MANPATH_BASE="/usr/share/man" ./configure
+	make
+}
+
+check() {
+	LD_LIBRARY_PATH="$builddir" make regress
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" base-install lib-install
+}
+
+apropos() {
+	pkgdesc="makewhatis/whatis and apropos tools and index"
+	mkdir -p "$subpkgdir"/usr/sbin "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/apropos \
+		"$pkgdir"/usr/bin/whatis \
+		"$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/sbin/makewhatis \
+		"$subpkgdir"/usr/sbin/
+}
+
+soelim() {
+	pkgdesc="so elimination tool"
+	depends=""
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/soelim \
+		"$subpkgdir"/usr/bin/
+}
+
+sha512sums="848f290847f3095757f25647e6d73eb7044018b145bf6f9dc8b5db164b1421911efdc5b3b9022ec3a2c5af9687a84d5acedee810f2bd2f7caaa9242dadb2cc52  mandoc-1.14.5.tar.gz
+b1bd2c197584948cc8bab2310e759b8942b9f9479254ffb5a8223cfa6ba03c9e1a4d402c5440b8d9f962be9a020287d3dd8556592c17f2b46f15f405d9d373cb  shared-libmandoc.patch
+ced05e8b57fb9705c6d8d8570cd6b06ad187511a4c243ac2dbc34064aa164ca49e0c877160134161dcb98ebd5e61a5c23d5741f03ef95903ff56193dd07f36a1  outdated-warn-disable.patch
+bb46bc3a0f07881e5362b32d478632fb209f9740017c467f2258e9b7ddbece6175bba598287d8c24626c9ee7217eb92ae60e0a30aeafdfc4b0154f4d312cbcca  fix-tbl-null-pointer.patch
+a44d86fb012acbc05eb233122e7ca3170e5e01c7c49115c2fe83f49891d442ba94601a039018cfa01cc1ef3cd02d5aff4d1e01abd4230b8bc2091e649ad991db  mandoc_configure.patch"

@@ -1,0 +1,171 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=xorg-server
+pkgver=1.20.8
+pkgrel=2
+pkgdesc="X.Org X servers"
+url="https://www.x.org/wiki"
+arch="all"
+license="MIT"
+options="suid"
+subpackages="$pkgname-dbg $pkgname-dev $pkgname-doc xvfb $pkgname-xephyr
+	$pkgname-xnest $pkgname-xwayland"
+# the modesetting driver is now shipped with xorg server
+replaces="xf86-video-modesetting"
+depends="
+	font-misc-misc
+	font-cursor-misc
+	xkeyboard-config
+	xkbcomp
+	xinit
+	"
+depends_dev="
+	libepoxy-dev
+	libxfont2-dev
+	mesa-dev
+	libpciaccess-dev
+	"
+makedepends="
+	$depends_dev
+	meson
+	xorgproto
+	xtrans
+	libxshmfence-dev
+	pixman-dev
+	xkbcomp-dev
+	libxkbfile-dev
+	nettle-dev
+	wayland-dev
+	wayland-protocols
+	libdrm-dev
+	libxext-dev
+	libx11-dev
+	libxau-dev
+	eudev-dev
+	libxcb-dev
+	xcb-util-dev
+	xcb-util-image-dev
+	xcb-util-keysyms-dev
+	xcb-util-renderutil-dev
+	xcb-util-wm-dev
+	libxdmcp-dev
+	"
+source="https://www.x.org/releases/individual/xserver/xorg-server-$pkgver.tar.bz2
+	xwayland-glx.patch
+	link-libshadow.patch
+	"
+
+# secfixes:
+#   1.20.3-r0:
+#     - CVE-2018-14665
+#   1.19.5-r0:
+#     - CVE-2017-12176
+#     - CVE-2017-12177
+#     - CVE-2017-12178
+#     - CVE-2017-12179
+#     - CVE-2017-12180
+#     - CVE-2017-12181
+#     - CVE-2017-12182
+#     - CVE-2017-12183
+#     - CVE-2017-12184
+#     - CVE-2017-12185
+#     - CVE-2017-12186
+#     - CVE-2017-12187
+#     - CVE-2017-13721
+#     - CVE-2017-13723
+
+prepare() {
+	default_prepare
+	sed -i -e 's/termio.h/termios.h/' hw/xfree86/os-support/xf86_OSlib.h
+}
+
+build() {
+	# xorg modules does not work with the -z now and it seems like we
+	# cannot pass over the linker flag to .so files. so we tweak the
+	# gcc specs.
+	export CFLAGS="$CFLAGS -D_GNU_SOURCE -D__gid_t=gid_t -D__uid_t=uid_t"
+	export LDFLAGS="$LDFLAGS -Wl,-z,lazy"
+	_fontroot="/usr/share/fonts"
+
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc/X11 \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dxorg=true \
+		-Dxephyr=true \
+		-Dxwayland=true \
+		-Dglamor=true \
+		-Dxwayland_eglstream=false \
+		-Dxnest=true \
+		-Ddmx=false \
+		-Dxvfb=true \
+		-Dxwin=false \
+		-Ddefault_font_path=$_fontroot/misc,$_fontroot/100dpi:unscaled,$_fontroot/75dpi:unscaled,$_fontroot/TTF,$_fontroot/Type1 \
+		-Dglx=true \
+		-Dxdmcp=true \
+		-Dxdm-auth-1=true \
+		-Dxcsecurity=true \
+		-Dsecure-rpc=false \
+		-Dipv6=true \
+		-Dxkb_dir=/usr/share/X11/xkb \
+		-Dxkb_output_dir=/var/lib/xkb \
+		-Dos_vendor="${DISTRO_NAME:-Alpine Linux}" \
+		-Dlisten_tcp=false \
+		-Dlisten_unix=true \
+		-Dlisten_local=true \
+		-Dsuid_wrapper=true \
+		-Dpciaccess=true \
+		-Dudev=true \
+		-Dhal=false \
+		-Dsystemd_logind=false \
+		-Ddpms=true \
+		-Ddri1=true \
+		-Ddri2=true \
+		-Ddri3=true \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+
+	chmod u+s "$pkgdir"/usr/bin/Xorg
+	ln -s /usr/bin/Xorg "$pkgdir"/usr/bin/X
+
+	# Don't conflict with xf86-input-evdev
+	rm -f "$pkgdir"/usr/share/X11/xorg.conf.d/10-evdev.conf
+
+	install -m755 -d "$pkgdir"/var/lib/xkb
+}
+
+xvfb() {
+	pkgdesc="Virtual Framebuffer 'fake' X server"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/Xvfb "$subpkgdir"/usr/bin/
+}
+
+xephyr() {
+	pkgdesc="kdrive based X Server which targets a window on a host X Server as its framebuffer"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/Xephyr "$subpkgdir"/usr/bin/
+}
+
+xnest() {
+	pkgdesc="A nested Xorg server"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/Xnest "$subpkgdir"/usr/bin/
+}
+
+xwayland() {
+	pkgdesc="run X clients under wayland"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/Xwayland "$subpkgdir"/usr/bin/
+}
+sha512sums="ab0ec0fcbf490c61558b9297f61b58fd2dedb676c78bef6431dc9166054743b43a0091b88a8b3f4e81d1f539909440ee7e188a298cefabe13ea89159639cd805  xorg-server-1.20.8.tar.bz2
+004c9a7d920af8825a311d32433bf64190d45583d57bb20b3c5ef39d8011ced7bf17b73296e56078ca791e6cd923594dacfe3fbf7af7c98934627e34559c85d8  xwayland-glx.patch
+d0f723e6033a77faec118adc64e9d4749270724cbb2b86ca5ff796e1fbaef2d01ebcbb2904d48132b58f3ecf0781b2583744b671b17b7d51a1748f4b461932b0  link-libshadow.patch"

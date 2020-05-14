@@ -1,0 +1,93 @@
+# Contributor: Pedro Filipe <xpecex@outlook.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=mosquitto
+pkgver=1.6.9
+pkgrel=0
+pkgdesc="An Open Source MQTT v3.1 Message Broker"
+url="https://mosquitto.org/"
+arch="all"
+license="EPL-1.0"
+replaces="mosquitto-utils"
+install="$pkgname.pre-install"
+options="!check" # FIXME: some of the tests are flaky
+makedepends="openssl-dev c-ares-dev util-linux-dev libwebsockets-dev libxslt"
+checkdepends="python3 cunit-dev"
+subpackages="$pkgname-dbg $pkgname-dev $pkgname-doc $pkgname-libs++:_pp $pkgname-openrc
+	$pkgname-libs $pkgname-clients"
+source="http://mosquitto.org/files/source/mosquitto-$pkgver.tar.gz
+	config.patch
+	disable-ci-tests.patch
+	mosquitto.initd"
+
+# secfixes:
+#   1.6.7-r0:
+#     - CVE-2019-11779
+#   1.5.6-r0:
+#     - CVE-2018-12546
+#     - CVE-2018-12550
+#     - CVE-2018-12551
+#   1.5.3-r0:
+#     - CVE-2018-12543
+#   1.4.15-r0:
+#     - CVE-2017-7652
+#     - CVE-2017-7651
+#   1.4.13-r0:
+#     - CVE-2017-9868
+#   1.4.12-r0:
+#     - CVE-2017-7650
+
+prepare() {
+	default_prepare
+
+	# dont strip
+	sed -i -e "s|(INSTALL) -s|(INSTALL)|g" \
+		-e 's|--strip-program=${CROSS_COMPILE}${STRIP}||' \
+		*/Makefile */*/Makefile
+}
+
+build() {
+	# PSK not supported by libressl
+	make \
+		WITH_MEMORY_TRACKING=no \
+		WITH_WEBSOCKETS=yes \
+		WITH_SRV=yes \
+		WITH_TLS_PSK=no \
+		WITH_ADNS=no \
+		prefix=/usr
+}
+
+check() {
+	make test
+}
+
+package() {
+	make prefix=/usr DESTDIR="$pkgdir" install
+
+	mv "$pkgdir"/etc/mosquitto/mosquitto.conf.example \
+		"$pkgdir"/etc/mosquitto/mosquitto.conf
+	sed -i -e 's/#log_dest stderr/log_dest syslog/' \
+		"$pkgdir"/etc/mosquitto/mosquitto.conf
+
+	install -Dm755 "$srcdir"/mosquitto.initd "$pkgdir"/etc/init.d/mosquitto
+}
+
+_pp() {
+	pkgdesc="C++ wrapper for libmosquitto"
+	replaces=""
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libmosquittopp.so.* "$subpkgdir"/usr/lib/
+}
+
+clients() {
+	pkgdesc="Mosquitto command line MQTT clients"
+	replaces="mosquitto-utils"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/mosquitto_[ps]ub "$subpkgdir"/usr/bin/
+}
+
+sha512sums="f78228a1e8305e4d89b34250981ed2c5fe5317636003636dc90f6fa2b1e3ca3c8fadb705ee7301f5252456cb093a6547bd46a255ca3d9fb5cdced697738d6eb7  mosquitto-1.6.9.tar.gz
+fb000f9fa1ef94cbf3811a23b5692c0c8f9e2df945959cef6005462715e99d6f75cf6b31bd496271ffc17634024aed986771a73962fef865c0d386f6c194fb33  config.patch
+21df2006a5eb9e1248cf261e555ded8e80e79f2a2d2a55b1f8a153af7c0feb867f3b3bd71efbe4d8569e3031c65f3e144794724f012e7539244a9bd97b6b6bb3  disable-ci-tests.patch
+d5406c258351133d85fc90056d78286a0ed1defde90e68d84fa9a1d65244d2baef76fd30fd04855e4bf6fc87532ef8ff274a6b70564f09f69fc6d14b5106fef0  mosquitto.initd"

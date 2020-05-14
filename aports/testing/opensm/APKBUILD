@@ -1,0 +1,38 @@
+# Contributor: Jann - Ove Risvik <jann.ove@usaklig.com>
+# Maintainer:
+pkgname=opensm
+pkgver=3.3.23
+pkgrel=0
+pkgdesc="OpenSM InfiniBand subnet manager"
+url="https://github.com/linux-rdma/opensm"
+arch="x86 x86_64 ppc64le"
+license="GPL-2.0-only OR BSD-2-Clause"
+depends_dev="libibumad-dev"
+makedepends="$depends_dev bison flex automake autoconf libtool linux-headers"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-openrc"
+source="https://github.com/linux-rdma/opensm/releases/download/$pkgver/opensm-$pkgver.tar.gz
+	0001-musl-fixes.patch"
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-static
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="249143fcf2cac0504923992d46dfbd6821aad3da55ecc12c92b273b4e59196f88d9d1802d9f58ae6f1ace49958e0222424aea9b48e5aba519e5a5736fc51c3fe  opensm-3.3.23.tar.gz
+c5f07423c9726bc4671327596d8585a669b25d75d9143db99e621ab6a08ed4aa0ee22e9725afe10bf4bf98ed503a06e9f52639f41a3cae61a34987b4ed643a32  0001-musl-fixes.patch"

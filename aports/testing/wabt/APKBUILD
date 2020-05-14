@@ -1,0 +1,39 @@
+# Contributor: Ian Douglas Scott <ian@iandouglasscott.com>
+# Maintainer: Ian Douglas Scott <ian@iandouglasscott.com>
+pkgname=wabt
+pkgver=1.0.15
+pkgrel=0
+pkgdesc="WebAssembly binary toolkit"
+arch="all"
+url="https://github.com/WebAssembly/wabt"
+license="Apache-2.0"
+makedepends="cmake"
+subpackages="$pkgname-doc"
+_wasm_c_api_commit="d9a80099d496b5cdba6f3fe8fc77586e0e505ddc"
+source="$pkgname-$pkgver.tar.gz::$url/archive/$pkgver.tar.gz
+	wasm-c-api-$_wasm_c_api_commit.tar.gz::https://github.com/WebAssembly/wasm-c-api/archive/$_wasm_c_api_commit.tar.gz
+	"
+# Tests require vendored dependencies (as git submodules). Should be modified
+# to use copies from repository.
+options="!check"
+
+build() {
+	# https://github.com/WebAssembly/wabt/issues/1315
+	rmdir third_party/wasm-c-api
+	ln -s ../../wasm-c-api-$_wasm_c_api_commit third_party/wasm-c-api
+
+	mkdir -p build
+	cd build
+	cmake -DCMAKE_INSTALL_PREFIX=/usr \
+	      -DCMAKE_BUILD_TYPE=None \
+	      -DBUILD_TESTS=OFF \
+	      ..
+	make
+}
+
+package() {
+	cd build
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="ef3579a1fb409c397b081374532c7bba12ab6a77ca8aaa09abf7767de4685035482015d679eab8ae3a6e098f407c3ddf208948d714399974892f0784545c5ecf  wabt-1.0.15.tar.gz
+b6ee7d2d83a3ca7b3cb3ee110282f7d32eada1d9020cadd3fdec58f40478879fd9ac9fada526021d8f6e8a26e1df7353df313d4149be2ffe4aea3a28f856fd89  wasm-c-api-d9a80099d496b5cdba6f3fe8fc77586e0e505ddc.tar.gz"

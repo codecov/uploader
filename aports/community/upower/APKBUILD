@@ -1,0 +1,44 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=upower
+pkgver=0.99.11
+_distver="UPOWER_${pkgver//./_}"
+pkgrel=0
+pkgdesc="Power Management Services"
+url="https://upower.freedesktop.org"
+arch="all"
+license="GPL-2.0-or-later"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+makedepends="linux-headers gtk+-dev libgudev-dev libusb-dev polkit-dev gtk-doc
+	dbus-glib-dev libxslt gobject-introspection-dev docbook-xsl autoconf automake"
+checkdepends="py3-dbus py3-gobject3"
+options="!check" # need unpackaged umockdev
+source="https://gitlab.freedesktop.org/upower/upower/-/archive/$_distver/upower-$_distver.tar.bz2"
+builddir="$srcdir/$pkgname-$_distver"
+
+prepare() {
+	default_prepare
+	NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+	DATADIRNAME=share ./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--libexecdir=/usr/lib/upower \
+		--disable-static \
+		--with-udevrulesdir=/lib/udev/rules.d
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="918fdba13df7ba85fd276daae68228554e71df95011b48dc42b006a059cf2996f906ce08e98f6d1da07c8f2a4235bc9622992fa42eaaf05a08f1a3650f4ae4b6  upower-UPOWER_0_99_11.tar.bz2"

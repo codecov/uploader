@@ -1,0 +1,39 @@
+# Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
+pkgname=py3-pdfminer
+_pyname=pdfminer.six
+pkgver=20200402
+pkgrel=0
+pkgdesc="Python PDF Parser"
+url="https://github.com/pdfminer/pdfminer.six"
+arch="noarch"
+license="MIT"
+depends="
+	python3
+	py3-chardet
+	py3-sortedcontainers
+	py3-six
+	py3-pycryptodome
+	"
+makedepends="
+	py3-setuptools
+	"
+checkdepends="
+	py3-nose
+	"
+# Only auto-generated github tarballs contain the testsuite
+source="$pkgname-$pkgver.tar.gz::https://github.com/pdfminer/pdfminer.six/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pyname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	nosetests
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="da64a9141ad1afde63c41e6678ac5f2a13abba7ee2d1447fb5cd986e90a2d02ba040f128bb1f73db4329929eed90488a3b0b8c96f6af0d1968d483820bf6d656  py3-pdfminer-20200402.tar.gz"

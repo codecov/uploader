@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kblackbox
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/games/org.kde.kblackbox"
+pkgdesc="A game of hide and seek played on a grid of boxes"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev karchive-dev kcoreaddons-dev kconfig-dev kcrash-dev kdoctools-dev ki18n-dev kdbusaddons-dev ktextwidgets-dev kxmlgui-dev libkdegames-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kblackbox-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="7abd1361b4c459ced32f29e661d7716260905f08fc6c3a296e5324f89c2dfc4ba3f41a8e3562326f18e7a1819499953b22797abed4ae909135f4ed2d901b3c7d  kblackbox-20.04.0.tar.xz"

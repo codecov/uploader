@@ -1,0 +1,82 @@
+# Contributor: Nathan Angelacos <nangel@alpinelinux.org>
+# Maintainer: Nathan Angelacos <nangel@alpinelinux.org>
+pkgname=gpsd
+pkgver=3.20
+pkgrel=1
+pkgdesc="A GPS daemon"
+arch=all
+url="http://catb.org/gpsd/"
+license="BSD-2-Clause"
+makedepends="scons python3-dev libcap-dev ncurses-dev"
+subpackages="$pkgname-dev $pkgname-doc py3-$pkgname:_py $pkgname-clients:_clients"
+source="https://download-mirror.savannah.gnu.org/releases/gpsd/gpsd-$pkgver.tar.gz
+	timepps.h
+	gpsd-use-local-timepps-header.patch
+	gpsd.initd
+	gpsd.confd"
+
+options="!check" # FIXME: tests fails
+
+prepare() {
+	# We copy timepps.h to the local build directory instead of
+	# creating a pps-tools-dev package for ppstime.h
+	# (See https://github.com/ago/pps-tools)
+	mkdir -p "$builddir"/sys
+	cp "$srcdir"/timepps.h "$builddir"/sys/
+
+	# Hack to get scons to respect python
+	ln -s /usr/bin/python3 python
+	export PATH="$PATH:."
+
+	default_prepare
+}
+
+build() {
+	CPPFLAGS="$CPPFLAGS -I. -DHAVE_SYS_TIMEPPS_H"
+	scons -j${JOBS:-1} \
+		prefix=/usr \
+		target_python=python3 \
+		dbus_export=no \
+		systemd=no
+}
+
+check() {
+	scons check
+}
+
+package() {
+	DESTDIR="$pkgdir" scons install
+	# fix python interpreter path
+	 sed -e "s,#!/usr/bin/\(python[23]\?\|env \+python[23]\?\),#!/usr/bin/python3},g" -i \
+	         gegps gpscat gpsfake xgps xgpsspeed gpsprof gps/*.py
+	install -m755 -D "$srcdir"/gpsd.initd "$pkgdir"/etc/init.d/gpsd
+	install -m644 -D "$srcdir"/gpsd.confd "$pkgdir"/etc/conf.d/gpsd
+}
+
+_py() {
+	local _py=${subpkgname##-*}
+	local _pyver=${_py%py}
+	pkgdesc="$pkgname library and clients for python $_pyver"
+	mkdir -p "$subpkgdir"/usr/lib
+	# As of 3.18.1, gpsd wants to put the python stuff in /usr/local
+	mv "$pkgdir"/usr/local/lib/python*  "$subpkgdir"/usr/lib/
+	rm -rf "$pkgdir"/usr/local
+
+	mkdir -p "$subpkgdir"/usr/bin
+	for n in gpscat gpsfake gpsprof; do
+		mv "$pkgdir"/usr/bin/$n "$subpkgdir"/usr/bin/
+	done
+
+}
+
+_clients() {
+	pkgdesc="$pkgname clients"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/* "$subpkgdir"/usr/bin
+}
+
+sha512sums="557ef5e5f3b511da4fc441f4bb2e0cd2e23c2981e8b3ce2999973767a04fde070d3ec6f14af60d0e471320078e9f4d1144e5796e7927975ecfbd55fc97f470a9  gpsd-3.20.tar.gz
+eb11fc19243d1789016d88eb7645bfe67c46304547781489bf36eb1dd4c252d523681ff835a6488fa0ef62b6b9e2f781c672279f4439f5d5640a3f214a113048  timepps.h
+b692c9fc77a9db3fc621693d3b9e3ef9bc2efbbc7b01651168d7b928d29d48a489b8859930bad01b6021e211372e069a726b78dd5938385ed4ae0153b38f4170  gpsd-use-local-timepps-header.patch
+51319247eb78c3021d3eb897cb5d6026cc09d46a532a245a835459ed525947ffb6239f08126dd7e344de52e3b0387226bce060191ec3f14f99fc9f255d96f8ea  gpsd.initd
+75dbfe39eb900cc9587dd70794ee77ae2230765bbede47760ca227145aa3f2290b6995335ffcfeae6cd86f56b01ca87367548f4fbcf810aff1bc012b7416deef  gpsd.confd"

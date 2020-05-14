@@ -1,0 +1,49 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=ccache
+pkgver=3.7.9
+_pkgver=$pkgver
+pkgrel=0
+pkgdesc="A fast C/C++ compiler cache"
+url="https://ccache.dev/"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="zlib-dev"
+checkdepends="bash perl"
+subpackages="$pkgname-doc"
+source="https://github.com/ccache/ccache/releases/download/v$pkgver/ccache-$pkgver.tar.xz"
+
+prepare() {
+	default_prepare
+	update_config_sub
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	install -Dm 755 ccache "$pkgdir"/usr/bin/ccache
+	install -Dm 644 doc/ccache.1 "$pkgdir"/usr/share/man/man1/ccache.1
+
+	local link=
+	mkdir -p "$pkgdir"/usr/lib/ccache/bin
+
+	for link in cc gcc g++ cpp c++ $CHOST-cc $CHOST-gcc \
+			$CHOST-g++ $CHOST-cpp $CHOST-c++; do
+		ln -sf /usr/bin/ccache "$pkgdir"/usr/lib/ccache/bin/$link
+	done
+}
+
+sha512sums="5d39baeb66265451b0e9cef250f6d9c5f6869cd87e27c108c9a50bef80050122ed4280ff662a81bba8d1d1311f2004bcaf9ada6b783a42eedc67ca01ebc48bb4  ccache-3.7.9.tar.xz"

@@ -1,0 +1,147 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Eivind Uggedal <eu@eju.no>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=go
+# go binaries are statically linked, security updates require rebuilds
+pkgver=1.13.10
+pkgrel=0
+pkgdesc="Go programming language compiler"
+url="https://golang.org/"
+arch="all"
+license="BSD-3-Clause"
+depends="binutils gcc musl-dev"
+makedepends="bash"
+checkdepends="binutils-gold"
+subpackages="$pkgname-doc"
+source="https://golang.org/dl/go${pkgver/_/}.src.tar.gz
+	disable-flaky-sync-test.patch
+	0001-Fix-FTBFS-on-HOME-managed-with-git.patch
+	"
+options="!check" # 1.14 has working tests, 1.13 does not
+
+case "$CARCH" in
+	arm*|aarch64) depends="binutils-gold";;
+	x86) options="!check" ;; # FIXME
+esac
+
+# secfixes:
+#   1.13.7-r0:
+#     - CVE-2020-7919
+#   1.13.2-r0:
+#     - CVE-2019-17596
+#   1.13.1-r0:
+#     - CVE-2019-16276
+#   1.12.8-r0:
+#     - CVE-2019-9512
+#     - CVE-2019-9514
+#     - CVE-2019-14809
+#   1.11.5-r0:
+#     - CVE-2019-6486
+#   1.9.4-r0:
+#     - CVE-2018-6574
+
+if [ "$CBUILD" = "$CTARGET" ]; then
+	makedepends="go-bootstrap $makedepends"
+	provides="go-bootstrap=$pkgver-r$pkgrel"
+	subpackages="$subpackages"
+else
+	pkgname="go-bootstrap"
+	makedepends="go $makedepends"
+	# Go expect host linker instead of the cross-compiler
+	export CC_FOR_TARGET="$CC"
+	export CC="${HOSTLD:-gcc}"
+	export CXX="${HOSTLD:-g++}"
+	export LD="${HOSTLD:-ld}"
+fi
+
+case "$CTARGET_ARCH" in
+aarch64)export GOARCH="arm64" ;;
+armel)  export GOARCH="arm" GOARM=5 ;;
+armhf)  export GOARCH="arm" GOARM=6 ;;
+armv7)  export GOARCH="arm" GOARM=7 ;;
+s390x)  export GOARCH="s390x" ;;
+x86)    export GOARCH="386" GO386=387 ;;
+x86_64) export GOARCH="amd64" ;;
+ppc64le) export GOARCH="ppc64le" ;;
+mips)   export GOARCH="mips" GOMIPS=softfloat ;;
+mips64) export GOARCH="mips64" GOMIPS64=softfloat ;;
+mips64el) export GOARCH="mips64le" GOMIPS64=softfloat ;;
+mipsel) export GOARCH="mipsle" GOMIPS=softfloat ;;
+*)      export GOARCH="unsupported";;
+esac
+
+# compile go itself as a PIE on supported arches.
+case "$CARCH" in
+x86_64|s390x|aarch64) export GO_LDFLAGS=-buildmode=pie ;;
+esac
+
+builddir="$srcdir"/go
+build() {
+	cd "$builddir/src"
+
+	export GOOS="linux"
+	export GOPATH="$srcdir"
+	export GOROOT="$builddir"
+	export GOBIN="$GOROOT"/bin
+	export GOROOT_FINAL=/usr/lib/go
+	local p; for p in /usr/lib/go-bootstrap /usr/lib/go-linux-$GOARCH-bootstrap /usr/lib/go; do
+		if [ -d "$p" ]; then
+			export GOROOT_BOOTSTRAP="$p"
+			break
+		fi
+	done
+
+	./make.bash -v
+
+	# copied from bootstrap.bash to fixup cross-built bootstrap go
+	if [ "$CBUILD" != "$CTARGET" ]; then
+		local gohostos="$(../bin/go env GOHOSTOS)"
+		local gohostarch="$(../bin/go env GOHOSTARCH)"
+		mv ../bin/*_*/* ../bin
+		rmdir ../bin/*_*
+		rm -rf "../pkg/${gohostos}_$gohostarch"* "../pkg/tool/${gohostos}_$gohostarch"*
+		rm -rf ../pkg/bootstrap ../pkg/obj
+	fi
+}
+
+check() {
+	cd "$builddir/src"
+	# TODO: `../misc/cgo/test` hangs for some reason, investigate.
+	PATH="$builddir/bin:$PATH" ./run.bash -no-rebuild -run='!(^cgo_test$)'
+}
+
+package() {
+	mkdir -p "$pkgdir"/usr/bin "$pkgdir"/usr/lib/go/bin "$pkgdir"/usr/share/doc/go
+
+	for binary in go gofmt; do
+		install -Dm755 bin/"$binary" "$pkgdir"/usr/lib/go/bin/"$binary"
+		ln -s /usr/lib/go/bin/"$binary" "$pkgdir"/usr/bin/
+	done
+
+	cp -a pkg lib "$pkgdir"/usr/lib/go
+	cp -r doc misc "$pkgdir"/usr/share/doc/go
+	rm -rf "$pkgdir"/usr/lib/go/pkg/obj
+	rm -rf "$pkgdir"/usr/lib/go/pkg/bootstrap
+	rm -f  "$pkgdir"/usr/lib/go/pkg/tool/*/api
+
+	mkdir -p "$pkgdir"/usr/lib/go/
+	cp -a "$builddir"/src "$pkgdir"/usr/lib/go
+
+	# Remove tests from /usr/lib/go/src to reduce package size,
+	# these should not be needed at run-time by any program.
+	find "$pkgdir"/usr/lib/go/src \( -type f -a -name "*_test.go" \) \
+		-exec rm -rf \{\} \+
+	find "$pkgdir"/usr/lib/go/src \( -type d -a -name "testdata" \) \
+		-exec rm -rf \{\} \+
+
+	# Remove rc (plan 9) and bat scripts (windows) to reduce package
+	# size further. The bash scripts are actually needed at run-time.
+	#
+	# See: https://gitlab.alpinelinux.org/alpine/aports/issues/11091
+	find "$pkgdir"/usr/lib/go/src -type f -a \( -name "*.rc" -o -name "*.bat" \) \
+		-exec rm -rf \{\} \+
+}
+
+sha512sums="9e020dd89ab6201c4cbb893caecc0b077d5fbb2e10381e1b76a29ddc18c141d8db67a1b0f607ed915b0e9c40c4fb2c65b0319472535892534a31ad962e72fe05  go1.13.10.src.tar.gz
+6ce14ca43fd35520e667530af91cfcad8902d635e6dd8c04d19428299b9e29ba049120f5eebbb00717a895f052d1cc40d3f522c090786625cce726715a8218ec  disable-flaky-sync-test.patch
+dc255153a3c09766c10e613fa5ec90e870382dc24129c96c69e0adbeb46383b7dafc72b68376dcb7250fc34f44da26bfbb329d255d744f2f6ab09f5fdb278d40  0001-Fix-FTBFS-on-HOME-managed-with-git.patch"

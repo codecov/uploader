@@ -1,0 +1,29 @@
+# Contributor: Roberto Oliveira <robertoguimaraes8@gmail.com>
+# Maintainer: Roberto Oliveira <robertoguimaraes8@gmail.com>
+pkgname=zutils
+pkgver=1.8
+pkgrel=1
+pkgdesc="A collection of utilities able to process any combination of compressed and uncompressed files transparently"
+url="https://www.nongnu.org/zutils/zutils.html"
+arch="all"
+license="GPL-2.0-or-later"
+subpackages="$pkgname-doc"
+checkdepends="bzip2 gzip"
+source="https://download.savannah.gnu.org/releases/zutils/zutils-$pkgver.tar.lz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="e066a1675a02405ff5ae2dab1b66aab8deeb8665f35af6606ebd6e70992988caf8092714568ac3f3982b9c45db346131fd9fc5fa59acbb50ca83246eea8c9ec9  zutils-1.8.tar.lz"

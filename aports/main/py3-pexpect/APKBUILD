@@ -1,0 +1,30 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=py3-pexpect
+_pkgname=pexpect
+pkgver=4.8.0
+pkgrel=0
+pkgdesc="Make Python a better tool for controlling and automating other programs"
+url="http://pexpect.readthedocs.org/en/stable"
+arch="noarch"
+license="ISC"
+depends="python3 py3-ptyprocess"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/pexpect/$_pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-pexpect" # Backwards compatibility
+provides="py-pexpect=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+sha512sums="f141e1368ceea15209b04555a524443cd9cf36d4a3677b63f7a2b079d41aae3fb8656612772732f4097b803c55a05f9bb7e3b427d11ae5357666406669ae6867  py3-pexpect-4.8.0.tar.gz"

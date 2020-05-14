@@ -1,0 +1,23 @@
+# Contributor: Ted Trask <ttrask01@yahoo.com>
+# Maintainer: Ted Trask <ttrask01@yahoo.com>
+pkgname=acf-dansguardian
+pkgver=0.8.0
+pkgrel=2
+pkgdesc="A web-based system administration interface for dansguardian"
+url="https://git.alpinelinux.org/cgit/acf/acf-dansguardian"
+arch="noarch"
+license="GPL-2.0"
+depends="acf-core dansguardian"
+makedepends=""
+install=
+subpackages=""
+source="https://dev.alpinelinux.org/archive/$pkgname/$pkgname-$pkgver.tar.xz"
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	make DESTDIR="$pkgdir" install
+
+}
+
+sha512sums="e6334e165ff224958ec4d9a80a8eb253e6b9e82d5faf7e68da0b12557ebfab41eef359f8679550afeea0e1bf18404bebffba99595a014c4899ad51d5ae0a99ec  acf-dansguardian-0.8.0.tar.xz"

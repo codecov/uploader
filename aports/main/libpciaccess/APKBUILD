@@ -1,0 +1,31 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libpciaccess
+pkgver=0.16
+pkgrel=0
+pkgdesc="X11 PCI access library"
+url="http://xorg.freedesktop.org/"
+arch="all"
+license="X11"
+options="!check"  # No test suite.
+makedepends="util-macros"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="https://www.x.org/releases/individual/lib/$pkgname-$pkgver.tar.bz2
+	limits_h.patch"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	install -Dm644 COPYING "$pkgdir"/usr/share/licenses/$pkgname/COPYING
+}
+
+sha512sums="2f250048a270dfc0823d4bdd613aa272c58a80eaafd922850f56c4b6f7a45a263ed4cf521b52b49f04484ea44ebefb7407d079aa058318a5751ffb181e38fed1  libpciaccess-0.16.tar.bz2
+331a498059d8b2bfd0a7da0ced3616266ebc129b785090ef1dc19cd645b013428c60d5678fc080bd15ecaf7598ec8b1084509d6bea5d563101169a449b6fe75b  limits_h.patch"

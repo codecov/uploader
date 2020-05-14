@@ -1,0 +1,34 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-test-needs
+_pkgreal="Test-Needs"
+pkgver=0.002006
+pkgrel=0
+pkgdesc="Test::Needs perl module"
+url="https://metacpan.org/release/Test-Needs"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/H/HA/HAARG/Test-Needs-$pkgver.tar.gz"
+
+builddir="$srcdir"/$_pkgreal-$pkgver
+
+build() {
+	cd "$builddir"
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="d0c1c527f486250a5c1e4b6e34e4ddcb1e7ab9233f9535b877cc36c8577592be28bf5f78567f45ec0388b276333742d1d15d7841827b64a8d170f475bd4488b7  Test-Needs-0.002006.tar.gz"

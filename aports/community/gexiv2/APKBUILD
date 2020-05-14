@@ -1,0 +1,39 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gexiv2
+pkgver=0.12.0
+pkgrel=4
+pkgdesc="a GObject-based wrapper around the Exiv2 library"
+url="https://wiki.gnome.org/Projects/gexiv2"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="exiv2-dev meson py3-gobject3 glib-dev gtk-doc
+	gobject-introspection-dev vala"
+subpackages="$pkgname-dev"
+source="https://download.gnome.org/sources/gexiv2/${pkgver%.*}/gexiv2-$pkgver.tar.xz"
+replaces="libgexiv2"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dgtk_doc=true \
+		-Dintrospection=true \
+		-Dvapi=true \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="c89e7d307359c718dff1f3991acb4ece66bce985a3d8bee1c8fccf4ce39187af62684c87eaae9b0425a6fdbf147b7330902041d9588e52a4bad1da4255d245e9  gexiv2-0.12.0.tar.xz"

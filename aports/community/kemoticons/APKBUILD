@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kemoticons
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Support for emoticons and emoticons themes"
+arch="all !armhf"
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-or-later AND (LGPL-2.1-only OR LGPL-3.0-only)"
+depends_dev="karchive-dev kconfig-dev kservice-dev kcoreaddons-dev"
+makedepends="$depends_dev extra-cmake-modules doxygen qt5-qttools-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kemoticons-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="78d638bbe758506e2b1c66bb716a539b616350d1813383321ddd15fd02c557304a9bb406a94eccfd9f850209bdeb8098518e3b43e65d4b88fa803e23d6c3ee3b  kemoticons-5.70.0.tar.xz"

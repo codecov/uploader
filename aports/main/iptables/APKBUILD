@@ -1,0 +1,86 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+
+pkgname=iptables
+pkgver=1.8.4
+pkgrel=1
+pkgdesc="Linux kernel firewall, NAT and packet mangling tools"
+url="https://www.netfilter.org/projects/iptables/index.html"
+arch="all"
+license="GPL-2.0-or-later"
+depends_dev="linux-headers"
+makedepends="$depends_dev libnftnl-dev bison flex autoconf automake"
+subpackages="ip6tables $pkgname-doc $pkgname-dev $pkgname-openrc ip6tables-openrc:ip6tables_openrc"
+provides="ebtables" # for backards compat
+replaces="ebtables"
+source="https://www.netfilter.org/projects/iptables/files/iptables-$pkgver.tar.bz2
+	iptables.initd
+	iptables.confd
+	ip6tables.confd
+	ebtables.initd
+	ebtables.confd
+	"
+
+build() {
+	export CFLAGS="$CFLAGS -D_GNU_SOURCE"
+	./configure \
+		--build="$CBUILD" \
+		--host="$CHOST" \
+		--prefix=/usr \
+		--mandir=/usr/share/man \
+		--sbindir=/sbin \
+		--sysconfdir=/etc \
+		--without-kernel \
+		--enable-devel \
+		--enable-libipq \
+		--enable-shared
+
+	# do not use rpath
+	sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+	sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
+	make
+}
+
+package() {
+	make -j1 install DESTDIR="$pkgdir"
+
+	mkdir -p "$pkgdir"/usr/include/libiptc \
+		"$pkgdir"/usr/lib \
+		"$pkgdir"/var/lib/iptables \
+		"$pkgdir"/etc/iptables
+
+	install -m644 include/iptables.h include/ip6tables.h \
+		"$pkgdir"/usr/include/
+	install include/libiptc/*.h "$pkgdir"/usr/include/libiptc/
+
+	install -D -m755 "$srcdir"/iptables.initd "$pkgdir"/etc/init.d/iptables
+	install -D -m644 "$srcdir"/iptables.confd "$pkgdir"/etc/conf.d/iptables
+	install -D -m755 "$srcdir"/ebtables.initd "$pkgdir"/etc/init.d/ebtables
+	install -D -m644 "$srcdir"/ebtables.confd "$pkgdir"/etc/conf.d/ebtables
+}
+
+ip6tables() {
+	mkdir -p "$subpkgdir"
+	cd "$subpkgdir"
+
+	mkdir -p sbin \
+		var/lib/ip6tables \
+		usr/lib/xtables
+
+	mv "$pkgdir"/sbin/ip6* sbin/
+	mv "$pkgdir"/usr/lib/xtables/libip6* usr/lib/xtables/
+}
+
+ip6tables_openrc() {
+	default_openrc
+
+	install -D -m755 "$srcdir"/iptables.initd "$subpkgdir"/etc/init.d/ip6tables
+	install -D -m644 "$srcdir"/ip6tables.confd "$subpkgdir"/etc/conf.d/ip6tables
+}
+
+sha512sums="a7faaab58608ffaa51e26e8056551c0e91a49187439d30fcf5cce2800274cc3c0515db6cfba0f4c85613fb80779cf96089b8915db0e89161e9980a6384faebdb  iptables-1.8.4.tar.bz2
+059b3bd8dd7dec60060ec5eb1e639fe8203207629f3a7dd4fdbe5ebca3f7e9b80df5592ebb27542e31830fd15a53cffac5772567053c104dfccf9b78613a31a1  iptables.initd
+cb7fecd5cab2c78bd3f215a41f39ec11c37eb360efbe83982378a0e647e0aa9dc0b7ec915a5b5081aa2f7747464787e69404aa15ba15a063c32cb8fb7dd13d1e  iptables.confd
+0897a7a22f8b700f7f1f5c355ad6cbf39740e44d6c962af99e479978d8a2d556ca7fe4e31f238829046b4a871ce0b5fd52e2544f1361d15dd1ea3e33992646c4  ip6tables.confd
+c8fccc96610ddc24a3a0c7c2c9f2460b87e582424e338beeb20d77726b27324f89906ef853680e62912ed3544c967469870d78aa6e39de11efda072dd8a4a836  ebtables.initd
+b24afd1f5c2f200a1eec6ed7fd63500237dc168bfb9cc1297ffc288d12d30224a1ee84a7f61663daf408c42457dd7deac7594a23e448218806798294e9a1018d  ebtables.confd"

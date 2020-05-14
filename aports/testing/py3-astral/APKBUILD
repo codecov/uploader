@@ -1,0 +1,33 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-astral
+_pkgname=astral
+pkgver=2.1
+pkgrel=0
+pkgdesc="Calculations for the position of the sun and moon"
+url="https://pypi.python.org/pypi/astral"
+arch="noarch"
+license="Apache-2.0"
+depends="py3-requests py3-tz python3"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest py3-freezegun"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/sffjunkie/astral/archive/$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces=py-astral # Backwards compatibility
+provides=py-astral=$pkgver-r$pkgrel # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	# skip the webtest since we lack an API key
+	PYTHONPATH="$PWD/build/lib" py.test-3 -v -m "not webtest"
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="149eb10dadefc42c01e95603ae0af0f57a848299177b0296661661dc2e3bdd3adb1f691b3c90f3b09be627971ec87872015a3fbdeb9c1b553f6b36228d7f8d67  astral-2.1.tar.gz"

@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=calls
+pkgver=0.1.4
+pkgrel=0
+pkgdesc="A phone dialer and call handler"
+arch="all !s390x !mips !mips64" # Blocked by libhandy
+url="https://gitlab.gnome.org/Community/Purism/calls"
+license="GPL-3.0-or-later"
+depends="modemmanager"
+makedepends="meson ninja vala gettext-dev gobject-introspection-dev gtk+3.0-dev libhandy-dev gsound-dev libpeas-dev modemmanager-dev gom-dev evolution-data-server-dev folks-dev"
+source="https://source.puri.sm/Librem5/calls/-/archive/v$pkgver/calls-v$pkgver.tar.gz"
+options="!check" # Requires running Wayland compositor
+builddir="$srcdir/$pkgname-v$pkgver"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+sha512sums="0b95ca681300b7e0fffff49e5547e5c660b75b363466b6ab02f4f41e40f04ef78aa2dfa08e13b30dd6e036e700e3bb7b9a86574b3c5b115bd20cd40ed4ad75c4  calls-v0.1.4.tar.gz"

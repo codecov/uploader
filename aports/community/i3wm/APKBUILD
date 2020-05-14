@@ -1,0 +1,60 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=i3wm
+pkgver=4.18.1
+pkgrel=0
+pkgdesc="Improved dynamic tiling window manager"
+url="https://i3wm.org"
+arch="all"
+license="BSD-3-Clause"
+makedepends="
+	bison
+	cairo-dev
+	flex
+	libev-dev
+	libxcb-dev
+	libxkbcommon-dev
+	pango-dev
+	pcre-dev
+	perl
+	startup-notification-dev
+	xcb-util-cursor-dev
+	xcb-util-keysyms-dev
+	xcb-util-wm-dev
+	xcb-util-xrm-dev
+	yajl-dev
+	"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-save_tree:savetree:noarch
+	"
+source="
+	https://i3wm.org/downloads/i3-$pkgver.tar.bz2
+	"
+builddir="$srcdir/i3-$pkgver"
+options="!check" # missing perl bindings for libxcb
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--disable-builddir \
+		--sysconfdir=/etc
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir/" install
+
+	install -d "$pkgdir/usr/share/man/man1"
+	install -m644 man/*.1 "$pkgdir"/usr/share/man/man1/
+}
+
+savetree() {
+	pkgdesc="Session export tool for $pkgname"
+	depends="$pkgname=$pkgver-r$pkgrel perl-anyevent-i3"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/i3-save-tree "$subpkgdir"/usr/bin/
+}
+
+sha512sums="b001f539b1daf78be6dd9335a7c0474d30f8d969f79d131391ebd9ca310a058a1cc1234e4a9e60552efd520fc4983571f3c0b8cbd7be978e45957daaf86b3e90  i3-4.18.1.tar.bz2"

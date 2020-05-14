@@ -1,0 +1,79 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ruby-nokogiri
+_gemname=${pkgname#ruby-}
+pkgver=1.10.9
+pkgrel=3
+pkgdesc="An HTML, XML, SAX, and Reader parser"
+url="https://nokogiri.org/"
+arch="all !s390x"
+license="MIT"
+depends="ruby ruby-mini_portile2"
+makedepends="ruby-dev libxml2-dev libxslt-dev"
+checkdepends="ruby-minitest ruby-test-unit"
+source="https://github.com/sparklemotion/$_gemname/archive/v$pkgver/$_gemname-$pkgver.tar.gz
+	https://rubygems.org/downloads/$_gemname-$pkgver.gem
+	remove-simplecov.patch
+	skip-tests-broken-on-musl.patch
+	"
+builddir="$srcdir/$_gemname-$pkgver"
+
+# secfixes:
+#   1.10.4-r0:
+#     - CVE-2019-5477
+
+prepare() {
+	default_prepare
+
+	# Generate gemspec (there's no gemspec in the source).
+	gem specification -l --ruby "$srcdir"/$_gemname-$pkgver.gem \
+		> "$builddir"/$_gemname.gemspec
+
+	# Remove bundled external libraries etc.
+	sed -i \
+		-e 's|, "ports/archives/[^"][^"]*"||g' \
+		-e 's|, "ports/patches/[^"][^"]*"||g' \
+		-e '\@mini_portile@d' \
+		$_gemname.gemspec
+}
+
+build() {
+	gem build $_gemname.gemspec
+	gem install \
+		--local \
+		--install-dir dist \
+		--ignore-dependencies \
+		--no-document \
+		--verbose \
+		$_gemname-$pkgver.gem -- \
+			--use-system-libraries
+
+	# Remove unnecessary files and rubbish...
+	find dist/extensions/ -name mkmf.log -delete
+	cd dist/gems/$_gemname-$pkgver/
+	rm -rf ext/ patches/ lib/nokogiri/*.so *.md *.yml
+}
+
+check() {
+	local extpath=$(dirname dist/extensions/*/*/$_gemname-$pkgver/gem_make.out)
+
+	# Note: This is copied from Fedora package.
+	export LANG=ja_JP.UTF-8
+	ruby -I.:test:dist/gems/$_gemname-$pkgver/lib:$extpath \
+		-e 'require "test/helper"' \
+		-e 'Dir.glob("test/**/test_*.rb") {|f| require f }'
+}
+
+package() {
+	local gemdir="$pkgdir/$(ruby -e 'puts Gem.default_dir')"
+
+	cd "$builddir"/dist
+
+	mkdir -p "$gemdir"
+	cp -r bin extensions gems specifications "$gemdir"/
+}
+
+sha512sums="dd5e44d07638a12a4d7b8db55c97a450f8dc3a40721f52bf4a2cc44c755ee735bcd5e5067e81e860e05684c2f6ef462772b268980a2922cc793aa51e08161b91  nokogiri-1.10.9.tar.gz
+2833efb389399001c75a63bfd71afa85edd6ced07bde8b8be899f0c39016c813a4d04ff358e467d594e609db51d151ecab4561aaa20f293c58608ba3d2f7206b  nokogiri-1.10.9.gem
+b3346647e55ded3c20775458f35f85c81222a7147c8e4040db0e09f1161e999d824570e29f4fc5bd34b9808ea047b9d2308ea32718b46143cceb777ffa2e63a6  remove-simplecov.patch
+5f92d4cf87751c404a33dfbdc035dd5b54163eccdc46b4f515e6d6367a9573cf3fc4ef3c12c5b9e099b20f6c563d5a573acb1c2716890e492bfb26aa91f2cb5d  skip-tests-broken-on-musl.patch"

@@ -1,0 +1,40 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-yaml
+_pkgname=PyYAML
+pkgver=5.3.1
+pkgrel=0
+pkgdesc="Python3 bindings for YAML"
+url="http://pyyaml.org"
+arch="all"
+license="MIT"
+makedepends="python3-dev yaml-dev cython"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/yaml/pyyaml/archive/$pkgver.tar.gz"
+builddir="$srcdir/pyyaml-$pkgver"
+
+replaces="py-yaml" # Backwards compatibility
+provides="py-yaml=$pkgver-r$pkgrel" # Backwards compatibility
+
+# secfixes:
+#   5.3.1-r0:
+#     - CVE-2020-1747
+
+prepare() {
+	default_prepare
+	rm -f ext/_yaml.c
+}
+
+build() {
+	python3 setup.py --with-libyaml build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="27d97e8493c7660c7c0c471e20a8aa46c85431e4559a98bcbdafc2bd89a67fd04c6f2090e54ff6b206c868b33635ef8be68070a4c25d17a25c97fd5ad3549556  PyYAML-5.3.1.tar.gz"

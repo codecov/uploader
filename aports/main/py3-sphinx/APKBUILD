@@ -1,0 +1,61 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-sphinx
+pkgver=2.4.4
+pkgrel=0
+pkgdesc="Python	Documentation Generator"
+# checkdepends require 'imagemagick' and 'py3-html5lib' which
+# are in community/, 'imagemagick' itself also needs 'librsvg'
+# and 'libheif', which bring in 'rust', 'x265' and others, this
+# is too much of a burden to put on main/
+options="!check"
+url="http://sphinx.pocoo.org/"
+arch="noarch"
+license="BSD-2-Clause"
+depends="
+	py3-babel
+	py3-docutils
+	py3-imagesize
+	py3-jinja2
+	py3-pygments
+	py3-requests
+	py3-setuptools
+	py3-snowballstemmer
+	py3-alabaster
+	py3-sphinxcontrib-applehelp
+	py3-sphinxcontrib-devhelp
+	py3-sphinxcontrib-htmlhelp
+	py3-sphinxcontrib-jsmath
+	py3-sphinxcontrib-serializinghtml
+	py3-sphinxcontrib-qthelp
+	"
+# imagemagick is for tests/test_ext_imgconverter.py::test_ext_imgconverter
+# which calls the 'convert' binary
+checkdepends="py3-pytest py3-funcsigs py3-pluggy imagemagick py3-html5lib"
+source="$pkgname-$pkgver.tar.gz::https://github.com/sphinx-doc/sphinx/archive/v$pkgver.tar.gz"
+builddir="$srcdir/sphinx-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	make PYTHON=python3 test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	# TODO: The binaries with the -3 postfix should be
+	# considered deprecated and removed in a future release.
+	local path; for path in "$pkgdir"/usr/bin/*; do
+		mv "$path" "$path"-3
+	done
+
+	cd "$pkgdir"/usr/bin
+	local name; for name in *-3; do
+		ln -s -- $name "$pkgdir"/usr/bin/${name%-3}
+	done
+}
+
+sha512sums="51f038122d0313c8ad69bbcbb7e67d8485b3d7b312c7dbbcea6db444f21897bf9eeb452192388402341d7e0cd641df136b2e9fc24f482475afc4689ca4d864d1  py3-sphinx-2.4.4.tar.gz"

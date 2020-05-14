@@ -1,0 +1,25 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer:
+pkgname=py3-zope-schema
+_pkgname=zope.schema
+pkgver=5.0.1
+pkgrel=0
+pkgdesc="zope.interface extension for defining data schemas"
+options="!check" # Tests require 'zope.testing', 'zope.testruner' and 'zope.i18nmessageid'
+url="https://github.com/zopefoundation/zope.schema"
+arch="noarch"
+license="ZPL-2.1"
+depends="py3-setuptools py3-zope-interface py3-zope-event"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+	rm -rf "$pkgdir"/usr/lib/python3*/site-packages/zope/schema/tests
+}
+
+sha512sums="f3fe1b2e881f4a39bdce07f37e22491880dfbc827041a90c6dd5b2384a6c4daabe6c965810372adb98f9a32fd3bd11717cf3d9762365ccc449483833b5095dae  zope.schema-5.0.1.tar.gz"

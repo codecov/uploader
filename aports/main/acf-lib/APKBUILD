@@ -1,0 +1,40 @@
+# Contributor: Ted Trask <ttrask01@yahoo.com>
+# Maintainer: Ted Trask <ttrask01@yahoo.com>
+_luaversions="5.1 5.2"
+pkgname=acf-lib
+pkgver=0.11.0
+pkgrel=0
+pkgdesc="Lua libraries for ACF"
+url="https://git.alpinelinux.org/cgit/acf/acf-lib"
+arch="noarch"
+license="GPL-2.0"
+depends="lua-subprocess"
+subpackages=""
+for _i in $_luaversions; do
+	subpackages="$subpackages acf-lib-lua$_i:split_${_i/./_}"
+done
+source="https://dev.alpinelinux.org/archive/$pkgname/$pkgname-$pkgver.tar.xz"
+
+package() {
+	mkdir -p "$pkgdir"
+	echo "package with pkgdir=$pkgdir"
+	cd "$srcdir/$pkgname-$pkgver"
+	for _i in $_luaversions; do
+		sed "s~luadir=.*~luadir=\${prefix}/share/lua/$_i/acf~" -i config.mk
+		make DESTDIR="$pkgdir-lua$_i" install
+	done
+}
+
+_split() {
+	local d= _ver=$1
+	pkgdesc="Lua $_ver libraries for ACF"
+	install_if="lua$_ver $pkgname=$pkgver-r$pkgrel"
+	replaces="$pkgname"
+	depends=
+}
+
+for _i in $_luaversions; do
+	eval "split_${_i/./_}() { _split $_i; }"
+done
+
+sha512sums="0818e1b0e7f2076982bd402d9916b059d7b18e479d5b09b01d2c755ce44701bbf549a38dc139834c83230b6cd6bc9da9d12fc87314196405a67ecac52cb45705  acf-lib-0.11.0.tar.xz"

@@ -1,0 +1,30 @@
+# Maintainer: Luca Weiss <luca@z3ntu.xyz>
+pkgname=py3-dbusmock
+_pyname=python-dbusmock
+pkgver=0.19
+pkgrel=0
+pkgdesc="Mock D-Bus objects for tests"
+url="https://github.com/martinpitt/python-dbusmock"
+arch="noarch"
+license="LGPL-3.0-or-later"
+depends="py3-dbus py3-gobject3"
+makedepends="python3-dev py3-setuptools"
+checkdepends="dbus py3-nose"
+_pypiprefix="${_pyname%${_pyname#?}}"
+source="https://files.pythonhosted.org/packages/source/$_pypiprefix/$_pyname/$_pyname-$pkgver.tar.gz"
+builddir="$srcdir/$_pyname-$pkgver"
+options="!check" # See https://github.com/martinpitt/python-dbusmock/issues/46
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="9f49cb1818c0de8b774d4ccd0eed35de3b0a95de669e70539699237b5cdfee993da7747dc28375c8f1c26fac83d948b7ce25107d866e28b833b556c6f654706c  python-dbusmock-0.19.tar.gz"

@@ -1,0 +1,37 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer:
+pkgname=neomutt
+pkgver=20180716
+pkgrel=3
+pkgdesc="Mutt with miscellaneous fixes and feature patches"
+url="https://neomutt.org/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="cyrus-sasl-dev gdbm-dev gettext-dev gpgme-dev libidn-dev
+	ncurses-dev openssl-dev notmuch-dev bsd-compat-headers libxslt tcl
+	docbook-xsl perl w3m"
+subpackages="$pkgname-doc $pkgname-lang"
+source="$pkgname-$pkgver.tar.gz::https://github.com/$pkgname/$pkgname/archive/$pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgname-$pkgver"
+
+build() {
+	./configure \
+		--notmuch \
+		--gpgme \
+		--gdbm \
+		--ssl \
+		--sasl
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm644 contrib/gpg.rc \
+		"$pkgdir"/usr/share/doc/$pkgname/examples/Muttrc.gpg
+}
+
+sha512sums="ee4093217cc1409262b96ab33ed78a38f5c6a72f62fcd7b25027f9373687ce67af8a4e1793b1d7d843bee5b4a7e0c69b30b3badf88a4e1a8fadd8b21441faaae  neomutt-20180716.tar.gz"

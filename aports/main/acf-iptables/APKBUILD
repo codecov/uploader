@@ -1,0 +1,23 @@
+# Contributor: Ted Trask <ttrask01@yahoo.com>
+# Maintainer: Ted Trask <ttrask01@yahoo.com>
+pkgname=acf-iptables
+pkgver=0.7.1
+pkgrel=2
+pkgdesc="A web-based system administration interface for iptables"
+url="https://git.alpinelinux.org/cgit/acf/acf-iptables"
+arch="noarch"
+license="GPL-2.0"
+depends="acf-core iptables"
+makedepends=""
+install=
+subpackages=""
+source="https://dev.alpinelinux.org/archive/$pkgname/$pkgname-$pkgver.tar.xz"
+
+package() {
+	cd "$srcdir/$pkgname-$pkgver"
+
+	make DESTDIR="$pkgdir" install
+
+}
+
+sha512sums="1def7240cbbceb06e810ac00463b8b7693e6fe7c7f70be91c0ee8b4fe3a25869bf583425f6b9f16057d41909f819b1875ed48cc9f3837a265e42986eb303f303  acf-iptables-0.7.1.tar.xz"

@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=ksmtp
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Job-based library to send email through an SMTP server"
+arch="all !armhf"
+url="https://kontact.kde.org"
+license="LGPL-2.1-or-later"
+depends_dev="qt5-qtbase-dev kcoreaddons-dev ki18n-dev kio-dev cyrus-sasl-dev"
+makedepends="$depends_dev extra-cmake-modules"
+source="https://download.kde.org/stable/release-service/$pkgver/src/ksmtp-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+options="!check" # Broken
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="abc1e32233bf85d0fd93508139a841f958bf6486736ec913d43ec70238ddd9b36e23b66be3a09c9171963146dc02b2b26ab54d9fb3e3661c0cada644972e9279  ksmtp-20.04.0.tar.xz"

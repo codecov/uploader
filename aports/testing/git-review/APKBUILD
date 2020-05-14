@@ -1,0 +1,31 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=git-review
+pkgver=1.28.0
+pkgrel=2
+pkgdesc="A git command for submitting branches to Gerrit"
+url="https://github.com/openstack-infra/git-review"
+arch="noarch"
+license="Apache-2.0"
+depends="git python3 py3-requests py3-idna py3-urllib3 py3-chardet py3-certifi py3-setuptools"
+makedepends="python3-dev"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/openstack-infra/$pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	python3 setup.py build
+}
+
+check() {
+	cd "$builddir"
+	python3 setup.py check
+}
+
+package() {
+	cd "$builddir"
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="21a71172b474ca0446f58d567e2c1b37059af3b680a3e441bcf94607d05f1fefa932ecef95328e1d77f0b71928477fd2878806ea26d2c4da030f281de15a210d  git-review-1.28.0.tar.gz"

@@ -1,0 +1,31 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-power-manager
+pkgver=3.32.0
+pkgrel=2
+pkgdesc="GNOME power manager"
+url="https://gitlab.gnome.org/GNOME/gnome-power-manager"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="intltool gobject-introspection-dev upower-dev gtk+3.0-dev meson"
+subpackages="$pkgname-lang"
+source="https://download.gnome.org/sources/${pkgname}/${pkgver%.*}/${pkgname}-${pkgver}.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		--sysconfdir=/etc \
+		output .
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="0ea11085dd015e30c1bdc6913000b63eabf7df76720f2d51d63b075f3b7bd2a610aaa484c53a4092d78d3c484ed8c4e81ec66603bdc6c132b0316113ec6a24a0  gnome-power-manager-3.32.0.tar.xz"

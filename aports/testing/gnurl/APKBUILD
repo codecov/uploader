@@ -1,0 +1,86 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer:
+pkgname=gnurl
+pkgver=7.69.1
+pkgrel=0
+pkgdesc="A micro fork of libcurl"
+url="https://gnunet.org/en/gnurl.html"
+arch="all"
+license="MIT"
+depends="ca-certificates"
+depends_dev="gnutls-dev libidn2-dev zlib-dev"
+checkdepends="python3"
+makedepends="$depends_dev perl"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="https://mirror.kumi.systems/gnu/gnunet/gnurl-$pkgver.tar.gz"
+
+# secfixes:
+#   7.66.0-r0:
+#     - CVE-2019-5482
+#     - CVE-2019-5481
+#   7.65.0-r0:
+#     - CVE-2019-5436
+
+build() {
+	# Note: The second group of options is based on
+	# http://cvsweb.netbsd.org/bsdweb.cgi/pkgsrc/www/gnurl/Makefile?rev=1.9&content-type=text/x-cvsweb-markup.
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--enable-ipv6 \
+		--enable-static \
+		--enable-unix-sockets \
+		--with-ca-path=/etc/ssl/certs \
+		--with-ca-bundle=/etc/ssl/certs/ca-certificates.crt \
+		--with-pic \
+		\
+		--without-libssh2 \
+		--without-libmetalink \
+		--without-winidn \
+		--without-librtmp \
+		--without-nghttp2 \
+		--without-nss \
+		--without-cyassl \
+		--without-ssl \
+		--without-winssl \
+		--without-darwinssl \
+		--disable-sspi \
+		--disable-ldap \
+		--without-libpsl \
+		--disable-rtsp \
+		--disable-dict \
+		--disable-telnet \
+		--disable-tftp \
+		--disable-pop3 \
+		--disable-imap \
+		--disable-smtp \
+		--disable-gopher \
+		--disable-file \
+		--disable-ftp \
+		--disable-smb \
+		--disable-ntlm-wb \
+		--with-gnutls \
+		--with-libidn2 \
+		--with-libz \
+		--without-ca-fallback \
+		--without-gssapi \
+		--disable-valgrind \
+		--without-ngtcp2 \
+		--without-nghttp2 \
+		--without-nghttp3 \
+		--without-quiche
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="aaef41159bcaee5c462658174d952b0ca4612775d8c57f1c8f328e7fad2a6332d6c9fc66461fc487c85309d2328f0bf880cb341975c3734a2323aed3d0d68130  gnurl-7.69.1.tar.gz"

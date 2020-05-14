@@ -1,0 +1,43 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libcdio-paranoia
+pkgver=2.0.0
+_pkgver="10.2+${pkgver/_p/+}"
+pkgrel=2
+pkgdesc="CD paranoia on top of libcdio"
+url="https://www.gnu.org/software/libcdio/"
+arch="all"
+license="GPL-2.0-or-later and LGPL-2.0-or-later"
+makedepends="libcdio-dev autoconf automake libtool"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://ftp.gnu.org/gnu/libcdio/libcdio-paranoia-$_pkgver.tar.bz2"
+builddir="$srcdir/$pkgname-$_pkgver"
+
+prepare() {
+	default_prepare
+
+	sed -i 's/AM_CONFIG_HEADER/AC_CONFIG_HEADER/;s/$1+$2/$2/' configure.ac
+	autoreconf -i
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-static
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="0398617f9af63632d74c5a93c4efae1bc69d339fb7ab2e36dbfa6d19c0940f3bf27ea3ed482698d2842838d2034df3e40304774f1648db8c274d441130ef40a2  libcdio-paranoia-10.2+2.0.0.tar.bz2"

@@ -1,0 +1,132 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gtk+3.0
+pkgver=3.24.20
+pkgrel=0
+pkgdesc="The GTK+ Toolkit (v3)"
+url="https://www.gtk.org/"
+install="$pkgname.post-install $pkgname.post-upgrade $pkgname.post-deinstall"
+arch="all"
+license="LGPL-2.1-or-later"
+options="!check" # Most glade tests fail :c
+subpackages="$pkgname-demo $pkgname-dev $pkgname-doc $pkgname-lang $pkgname-dbg"
+depends="shared-mime-info gtk-update-icon-cache"
+
+replaces="gtk+"
+
+depends_dev="
+	atk-dev
+	gdk-pixbuf-dev
+	glib-dev
+	libepoxy-dev
+	libxext-dev
+	libxi-dev
+	libxinerama-dev
+	wayland-protocols
+	wayland-libs-client
+	wayland-libs-cursor
+	libxkbcommon-dev
+	"
+makedepends="
+	$depends_dev
+	cups-dev
+	expat-dev
+	gettext-dev
+	gnutls-dev
+	gobject-introspection-dev
+	libice-dev
+	tiff-dev
+	zlib-dev
+	at-spi2-atk-dev
+	cairo-dev
+	fontconfig-dev
+	pango-dev
+	wayland-dev
+	libx11-dev
+	libxcomposite-dev
+	libxcursor-dev
+	libxdamage-dev
+	libxfixes-dev
+	libxrandr-dev
+	meson
+	gtk-doc
+	iso-codes-dev
+	"
+checkdepends="
+	xvfb-run
+	ibus
+	librsvg
+	gdk-pixbuf
+	"
+source="https://download.gnome.org/sources/gtk+/${pkgver%.*}/gtk+-$pkgver.tar.xz
+	10-Revert-gdkseatdefault-Grab-touch-events-where-applic.patch
+	check-version.py
+	"
+
+builddir="$srcdir/gtk+-$pkgver"
+
+prepare() {
+	default_prepare
+
+	# Upstream forgot to include this in the tarball
+	# https://gitlab.gnome.org/GNOME/gtk/-/merge_requests/1776
+	mv "$srcdir"/check-version.py .
+}
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dman=true \
+		-Dgtk_doc=true \
+		-Dbroadway_backend=true \
+		output
+	ninja -C output
+}
+
+check() {
+	xvfb-run ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+
+	# use gtk-update-icon-cache from gtk+2.0 for now
+	rm -f "$pkgdir"/usr/bin/gtk-update-icon-cache
+	rm -f "$pkgdir"/usr/share/man/man1/gtk-update-icon-cache.1
+}
+
+demo() {
+	pkgdesc="$pkgdesc (demonstration application)"
+	install -Dm755 "$pkgdir"/usr/bin/gtk3-demo \
+				   "$pkgdir"/usr/bin/gtk3-widget-factory \
+				   "$pkgdir"/usr/bin/gtk3-demo-application \
+				   -t "$subpkgdir"/usr/bin
+	install -Dm644 "$pkgdir"/usr/share/gtk-3.0/gtkbuilder.rng \
+				   -t "$subpkgdir"/usr/share/gtk-3.0
+	install -Dm644 "$pkgdir"/usr/share/glib-2.0/schemas/org.gtk.Demo.gschema.xml \
+				   -t "$subpkgdir"/usr/share/glib-2.0/schemas
+	install -Dm644 "$pkgdir"/usr/share/applications/gtk3-widget-factory.desktop \
+				   "$pkgdir"/usr/share/applications/gtk3-demo.desktop \
+				   -t "$subpkgdir"/usr/share/applications
+	mkdir -p "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/icons "$subpkgdir"/usr/share
+}
+
+dev() {
+	replaces="gtk+-dev"
+	default_dev
+}
+
+doc() {
+	replaces="gtk+-doc"
+	default_doc
+}
+
+sha512sums="bda8eeacf721afcff4565756fe45857cbf8b053494d1d747ca9b97c899e9fe21fddef6871ecd5ec9a7a0f87b0a3ede2f9d6b5e5712de10a845100d82464a4556  gtk+-3.24.20.tar.xz
+e4ea76484b70bd9beb65b2964bbcff3b3f78f5f6fe70b12309a7721ca134e3735e8aaac09803f93b393a6130a703f8f346c0df89ad45d18c580dac1e0e922276  10-Revert-gdkseatdefault-Grab-touch-events-where-applic.patch
+b97ccd8fb78d7c32fe91607befd6a7c0dd969fbfc9c242948fc88085133e3461583a0b18ade199b73f9659cae5f5525b940e66535a6ced4b916af9a88b3cc578  check-version.py"

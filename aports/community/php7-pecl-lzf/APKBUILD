@@ -1,0 +1,35 @@
+# Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
+# Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
+pkgname=php7-pecl-lzf
+_pkgreal=LZF
+_pkgextname=lzf
+pkgver=1.6.8
+pkgrel=0
+pkgdesc="PHP extension handles LZF de/compression - PECL"
+url="https://pecl.php.net/package/LZF"
+arch="all"
+license="PHP-3.01"
+depends="php7-common"
+makedepends="php7-dev autoconf re2c"
+source="https://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
+builddir="$srcdir"/$_pkgreal-$pkgver
+provides="php7-lzf=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-lzf" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir"/ install
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_pkgextname.so" > "$pkgdir"/etc/php7/conf.d/50_$_pkgreal.ini
+}
+
+sha512sums="c35543a40b2b44da4bd60e3142ba6ecf33e3460a8ea9f4f7fe6cdc4d728048593b33c423195d58707355975d655f614249642aff2d9b810af0e6a34d42fa1c43  LZF-1.6.8.tgz"

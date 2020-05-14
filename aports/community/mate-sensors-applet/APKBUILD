@@ -1,0 +1,34 @@
+# Contributor: Alan Lacerda <alacerda@alpinelinux.org>
+# Maintainer: Alan Lacerda <alacerda@alpinelinux.org>
+pkgname=mate-sensors-applet
+pkgver=1.24.0
+pkgrel=1
+pkgdesc="Applet for the MATE Panel to display readings from hardware sensors"
+url="https://github.com/mate-desktop/mate-sensors-applet"
+arch="all !s390x !mips !mips64" # Limited by mate-panel
+license="GPL-2.0-or-later"
+depends="perl-xml-parser"
+makedepends="intltool glib-dev gtk+3.0-dev mate-panel-dev libxslt-dev
+	itstool libxml2-utils mandoc-dev libnotify-dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://pub.mate-desktop.org/releases/${pkgver%.*}/mate-sensors-applet-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--sysconfdir=/etc \
+		--enable-static=no \
+		--prefix=/usr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="039834b7cfe641e670e372e311da3d737254ab3cf13b27e71c6555888ac1165766fe2d940bcea44a5ceed5f0ddcd3390d01331d927121137c21a6647c68875c2  mate-sensors-applet-1.24.0.tar.xz"

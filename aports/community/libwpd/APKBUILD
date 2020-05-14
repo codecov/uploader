@@ -1,0 +1,45 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libwpd
+pkgver=0.10.3
+pkgrel=0
+pkgdesc="Import filter and tools for WordPerfect Documents"
+url="https://sourceforge.net/p/libwpd/"
+arch="all"
+options="!check"  # No test suite.
+license="MPL-2.0 LGPL-2.1-or-later"
+depends=""
+makedepends="librevenge-dev doxygen"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-tools"
+source="https://downloads.sourceforge.net/project/libwpd/libwpd/libwpd-$pkgver/libwpd-$pkgver.tar.bz2"
+
+builddir="$srcdir"/libwpd-$pkgver
+prepare() {
+	update_config_sub
+	default_prepare
+}
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+tools() {
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr
+}
+
+sha512sums="cf3db714d424c32ecf5740b17d9f1721f228d3a7edbd1cc7a0f4b30f7ac9b1024cf45c0727b9f916b7672321e05f0d791c7f7f5ad5d47fedcea9ad9e886eb459  libwpd-0.10.3.tar.bz2"

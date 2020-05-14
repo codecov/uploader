@@ -1,0 +1,48 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=qt-creator
+_pkgname=qt-creator-opensource-src
+pkgver=4.12.0
+pkgrel=0
+pkgdesc="Lightweight and cross-platform IDE for Qt"
+url="https://qt-project.org/wiki/Category:Tools::QtCreator"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+license="GPL-3.0-only WITH Qt-GPL-exception-1.0"
+depends="
+	qt5-qtbase-sqlite
+	qt5-qtquickcontrols
+	qt5-qtquickcontrols2
+	qt5-qtbase-dev
+	qt5-qttools-dev
+	"
+makedepends="
+	cmake
+	botan-dev
+	qt5-qtdeclarative-dev
+	qt5-qtscript-dev
+	qt5-qtquickcontrols2-dev
+	"
+ldpath="/usr/lib/qtcreator:/usr/lib/qtcreator/plugins"
+source="https://download.qt.io/official_releases/qtcreator/${pkgver%.*}/$pkgver/$_pkgname-$pkgver.tar.xz
+	fix-execinfo.patch
+	"
+
+builddir="$srcdir"/$_pkgname-$pkgver
+prepare() {
+	default_prepare
+	sed -i qtcreator.pri -e'/CONFIG += c++14/aCONFIG += use_system_botan'
+}
+
+build() {
+	qmake-qt5
+	make CXX="${CXX:-g++}"
+}
+
+package() {
+	make install INSTALL_ROOT="$pkgdir"/usr
+	# install -Dm 644 "$srcdir"/qtcreator.desktop \
+	# 	"$pkgdir"/usr/share/applications/qtcreator.desktop
+}
+
+sha512sums="9c35ebf095c2874b89af54b06fd190976a27f7e753a23e47db3b26947bdba64e4fe7774ae8b252867cf7f6f0c86b35d773a4012cae6d4aaa9101d7a31973f215  qt-creator-opensource-src-4.12.0.tar.xz
+416bf589487aa0a86df01cb07088d1bf316bb7b765753b870634be8f697c17a47a93c2240258e8f1707fe8e0137b8cbc1a7b85250986ede3bffb87c6c5f75311  fix-execinfo.patch"

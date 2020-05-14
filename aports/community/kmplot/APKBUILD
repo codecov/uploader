@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kmplot
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="http://edu.kde.org/kmplot"
+pkgdesc="Mathematical Function Plotter"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev kcrash-dev kguiaddons-dev ki18n-dev kparts-dev kwidgetsaddons-dev kdoctools-dev kdbusaddons-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kmplot-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="188c6ccfc0b002f4cbae4e63b4971152dca5a7e23a6288604ab6d33175aed0989753a90bd75c01015070fe52e3f1c5e25408d573e317f107868b7f64167938da  kmplot-20.04.0.tar.xz"

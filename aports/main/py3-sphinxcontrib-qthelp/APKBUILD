@@ -1,0 +1,23 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=py3-sphinxcontrib-qthelp
+_pyname=sphinxcontrib-qthelp
+pkgver=1.0.3
+pkgrel=0
+pkgdesc="Sphinx qthelp extension"
+url="https://pypi.python.org/pypi/sphinxcontrib-qthelp"
+arch="noarch"
+license="BSD-2-Clause"
+depends="python3"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/${_pyname%${_pyname#?}}/$_pyname/$_pyname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pyname-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="29f77e4b3f1a4868c2a34dbd853415e5d813f482cd23b982aeed42d53acba09b896d77ba930c34cce8af043bb7d64a19acff610430e942038d95a410b6e0b5fa  sphinxcontrib-qthelp-1.0.3.tar.gz"

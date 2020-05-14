@@ -1,0 +1,14 @@
+#!/sbin/openrc-run
+supervisor=supervise-daemon
+
+name="cgroups manager"
+description="Daemon to manage cgroups"
+
+command=/usr/sbin/cgmanager
+command_args="$OPTIONS -m name=system"
+retry=TERM/45
+
+depend() {
+	need cgroups
+	before cgproxy
+}

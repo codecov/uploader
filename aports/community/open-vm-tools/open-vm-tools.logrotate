@@ -1,0 +1,5 @@
+/var/log/vmware/*.log {
+	copytruncate
+	delaycompress
+	missingok
+}

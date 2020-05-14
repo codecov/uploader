@@ -1,0 +1,54 @@
+# Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
+# Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
+pkgname=rabbitmq-c
+pkgver=0.10.0
+pkgrel=1
+pkgdesc="RabbitMQ C client"
+url="https://github.com/alanxz/rabbitmq-c"
+arch="all"
+license="MIT"
+depends_dev="popt-dev"
+makedepends="$depends_dev openssl-dev cmake xmlto doxygen"
+subpackages="$pkgname-utils $pkgname-doc::noarch $pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/alanxz/rabbitmq-c/archive/v$pkgver.tar.gz"
+
+build() {
+	cmake -B build . \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DBUILD_STATIC_LIBS=ON \
+		-DBUILD_SHARED_LIBS=ON \
+		-DENABLE_SSL_SUPPORT=ON \
+		-DBUILD_TESTS=ON \
+		-DBUILD_TOOLS=ON
+	make -C build
+}
+
+check() {
+	cd build
+	ctest -E basic
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+
+utils() {
+	pkgdesc="$pkgdesc (command line utilities)"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}
+
+doc() {
+	pkgdesc="$pkgdesc (documentation and examples)"
+
+	mkdir -p "$subpkgdir"/usr/share/"$pkgname"
+	cp -a "$builddir"/build/docs "$builddir"/examples \
+		"$subpkgdir"/usr/share/"$pkgname"/
+}
+
+sha512sums="52a1194fab2dc8698ed065d63898e32aa004a4d68080d4aaf5cb7148cc28ad967283f7a99910d7f054cbba92b487b3a67b839b6f0bd88486ef9be043c9517d4c  rabbitmq-c-0.10.0.tar.gz"

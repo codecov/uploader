@@ -1,0 +1,47 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-lwp-mediatypes
+_pkgname=LWP-MediaTypes
+pkgver=6.04
+pkgrel=0
+pkgdesc="Perl module - guess media type for a file or a URL"
+url="http://search.cpan.org/~gaas"
+arch="noarch"
+license="GPL PerlArtistic"
+depends="perl"
+makedepends="perl-dev"
+checkdepends="perl-test-fatal"
+install=
+replaces="perl-libwww"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/O/OA/OALDERS/LWP-MediaTypes-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+
+	cd "$builddir"
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+}
+
+
+build() {
+	cd "$builddir"
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make
+}
+
+check() {
+	cd $builddir
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make test
+}
+
+package() {
+	cd $builddir
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="0610627ef3efdfde3c89bad273931c9cbde5c6da0bd782d59ce26dc4445cd538be9041d722f08206d96d69d5e3643b15150ef29b9e92e3968833f2ae1b6dc53f  LWP-MediaTypes-6.04.tar.gz"

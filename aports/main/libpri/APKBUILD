@@ -1,0 +1,33 @@
+# Contributor: Timo Teras <timo.teras@iki.fi>
+# Maintainer: Timo Teras <timo.teras@iki.fi>
+pkgname=libpri
+pkgver=1.6.0
+pkgrel=1
+pkgdesc="Primary Rate ISDN (PRI) library"
+options="!check" # No testsuite
+url="https://github.com/asterisk/libpri"
+arch="all"
+license="GPL-2.0-only"
+makedepends="dahdi-linux-dev dahdi-tools-dev"
+subpackages="$pkgname-dev"
+source="http://downloads.digium.com/pub/telephony/libpri/releases/$pkgname-$pkgver.tar.gz"
+
+prepare() {
+	cd "$builddir"
+	default_prepare
+	sed -i -e 's,^#include <sys/signal.h>$,#include <signal.h>,g' \
+		pritest.c testprilib.c
+}
+
+build() {
+	cd "$builddir"
+	make LDCONFIG="echo"
+}
+
+package() {
+	cd "$builddir"
+	make LDCONFIG="echo" INSTALL_PREFIX="$pkgdir" install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+
+sha512sums="3eb876477cdd27c88f274e4a2e35a67f660b8d8eed140e56c40769982a58f1cdd4e5be352f8f220dc100eedf1ad09286c578430a52d9abe326440c8cbf517fa5  libpri-1.6.0.tar.gz"

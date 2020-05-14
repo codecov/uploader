@@ -1,0 +1,41 @@
+# Contributor: Ian Bashford <ianbashford@gmail.com>
+# Maintainer: Ian Bashford <ianbashford@gmail.com>
+pkgname=termite
+pkgver=15
+pkgrel=1
+_util_commit=409b8449ab51fccf51057621168c9c15c54d4807
+pkgdesc="A simple VTE-based terminal"
+url="https://github.com/thestinger/termite"
+arch="all"
+options="!check"  # No test suite.
+license="LGPL-2.1-or-later AND MIT"
+depends="$pkgname-terminfo"
+makedepends="gtk+3.0-dev vte3-dev pcre2-dev ncurses"
+subpackages="$pkgname-doc $pkgname-terminfo::noarch"
+source="$pkgname-$pkgver.tar.gz::https://github.com/thestinger/termite/archive/v$pkgver.tar.gz
+	util-$_util_commit.tar.gz::https://github.com/thestinger/util/archive/$_util_commit.tar.gz
+	"
+
+unpack() {
+	default_unpack
+	cd "$builddir"
+	rmdir util
+	mv "$srcdir"/util-${_util_commit} util
+}
+
+build() {
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" PREFIX=/usr install
+}
+
+terminfo() {
+	pkgdesc="$pkgdesc (terminfo data)"
+	install -d "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/terminfo "$subpkgdir"/usr/share/terminfo
+}
+
+sha512sums="1c224af85c35c4b755a150c0c701ddfd5414b382bd78853fb89730a6806ed1c54820987285541ecba0865a35f3b24e9ced88fcc888c43435e60c5d7296b2b0f6  termite-15.tar.gz
+10e13271a0661b0f25e5c198bd40c3e79bb425cc6ea0f4a73d4c90152ee09490b01d737bb1d2633d6574888c46ac0b1396742f444606f081ede4c289f8151c00  util-409b8449ab51fccf51057621168c9c15c54d4807.tar.gz"

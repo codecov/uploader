@@ -1,0 +1,39 @@
+# Contributor: prspkt <prspkt@protonmail.com>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=gnuplot
+pkgver=5.2.8
+pkgrel=0
+pkgdesc="Utility for plotting graphs"
+url="http://www.gnuplot.info/"
+arch="all"
+license="MIT"
+makedepends="cairo-dev pango-dev gd-dev lua5.3-dev readline-dev
+	libpng-dev libjpeg-turbo-dev"
+subpackages="$pkgname-doc"
+source="https://downloads.sourceforge.net/project/gnuplot/gnuplot/$pkgver/gnuplot-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-stats \
+		--disable-wxwidgets \
+		--disable-qt
+	make
+}
+
+check() {
+	make GNUTERM=dumb check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/share/doc/$pkgname/
+	install -m644 BUGS ChangeLog NEWS PGPKEYS README* \
+		"$pkgdir"/usr/share/doc/$pkgname/
+}
+
+sha512sums="513dff15236dcb58c3c5471cdaa0713242787dbf30ef860c3f69152cb87c6392e4973caff5eb178707bbb84c78548e806b2920864a37686bce49425fbfdc4e8c  gnuplot-5.2.8.tar.gz"

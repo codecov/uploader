@@ -1,0 +1,45 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Ariadne Conill <ariadne@dereferenced.org>
+pkgname=audacious
+pkgver=4.0.2
+pkgrel=0
+pkgdesc="A playlist-oriented media player with multiple interfaces"
+url="https://audacious-media-player.org/"
+arch="all !s390x"
+license="BSD-2-Clause AND ISC"
+depends_dev="dbus-glib-dev qt5-qtbase-dev"
+makedepends="$depends_dev libxml2-dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang $pkgname-dbg"
+source="http://distfiles.audacious-media-player.org/$pkgname-$pkgver.tar.bz2"
+
+case "$CARCH" in
+mips*)	options="!check";;
+esac
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--enable-chardet \
+		--disable-valgrind \
+		--enable-dbus \
+		--disable-gtk \
+		--enable-qt
+	make
+}
+
+check() {
+	cd "$builddir"/src/libaudcore/tests
+	make test
+	./test
+}
+
+package() {
+	DESTDIR="$pkgdir" make install
+}
+
+sha512sums="3f541000c874f2d026f2a4c23f1f98486aae9450c6dc8d7597f742b21d701883b31bbc5620bf23408ce0da397fdf414dffe37a778eb70df5a553a854f2435b99  audacious-4.0.2.tar.bz2"

@@ -1,0 +1,32 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-getting-started-docs
+pkgver=3.36.2
+pkgrel=0
+pkgdesc="Getting Started documentation for GNOME"
+url="https://gitlab.gnome.org/GNOME/gnome-getting-started-docs"
+arch="noarch"
+license="CC-BY-SA-3.0"
+makedepends="itstool libxml2-utils gettext-dev"
+source="https://download.gnome.org/sources/gnome-getting-started-docs/${pkgver%.*}/gnome-getting-started-docs-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="d555d491335a5bf7807ffd9f25d658a6507d86b3db26016623cf8b105f73c1258ad9b83dbadd6d91c782457993d51e69fcf114833c573f14e705ef0581484441  gnome-getting-started-docs-3.36.2.tar.xz"

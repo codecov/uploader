@@ -1,0 +1,24 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=coregarage
+pkgver=2.8.0
+pkgrel=1
+pkgdesc="A settings manager for the CoreApps family."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtsvg"
+makedepends="qt5-qtbase-dev libcprime-dev libcsys-dev libarchive-qt-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/coregarage/-/archive/v$pkgver/coregarage-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+sha512sums="d671cde2d325d6211a286c60f96b6a55947a50127e44949f60bd68bb4234572136811df4a2b62a2861596541e127526daebab8b8396175e0c6a1c7be2f7da54f  coregarage-2.8.0.tar.gz"

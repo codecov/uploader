@@ -1,0 +1,29 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-flask-paginate
+pkgver=0.6.0
+pkgrel=0
+pkgdesc="Simple paginate support for Flask"
+url="https://pypi.python.org/pypi/Flask-paginate"
+arch="noarch"
+license="BSD"
+depends="
+	python3
+	py3-flask
+	"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/lixxu/flask-paginate/archive/$pkgver.tar.gz"
+builddir="$srcdir"/flask-paginate-$pkgver
+
+replaces="py-flask-paginate" # Backwards compatibility
+provides="py-flask-paginate=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="e3055998bf1706b2474c4e3b1d7075dbbb672d6ac05f5006002ba73766ec01ac35ec910bb91e1ac0f005ee81d9eeb88e1f086f46690a1e36a255a54cc8a6ec18  py3-flask-paginate-0.6.0.tar.gz"

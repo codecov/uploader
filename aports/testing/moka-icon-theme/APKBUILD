@@ -1,0 +1,26 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Carlo Landmeter <clandmeter@gmail.com>
+pkgname=moka-icon-theme
+pkgver=5.4.0
+pkgrel=1
+pkgdesc="Moka Icon Theme"
+url="https://snwh.org/moka"
+arch="noarch"
+license="CC-BY-SA-4.0 OR GPL-3.0-or-later"
+makedepends="meson"
+options="!strip"
+source="moka-icon-theme-$pkgver.tar.gz::https://github.com/snwh/moka-icon-theme/archive/v$pkgver.tar.gz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		output
+	ninja -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="3cb6889eae3ddfcad68a05fd6cdf5e92b5d78b965b22df1c289f1e274491be8cb967965cbdf430fe218337994b19592546f3cadf8c39ff5e573d6d7e76648238  moka-icon-theme-5.4.0.tar.gz"

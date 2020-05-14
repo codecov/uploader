@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kdewebkit
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Integration of the HTML rendering engine WebKit"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+arch="$arch !mips !mips64" # mips blocked by qt5-qtwebkit
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-or-later"
+depends_dev="qt5-qtbase-dev qt5-qtwebkit-dev kconfig-dev kcoreaddons-dev kio-dev kjobwidgets-dev kparts-dev kservice-dev kwallet-dev qt5-qttools-dev"
+makedepends="$depends_dev extra-cmake-modules"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/portingAids/kdewebkit-$pkgver.tar.xz"
+subpackages="$pkgname-dev"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="79b57693fafd2a788d22963aa809358238bcbabf7da88b63224314c683165dc11d35a3383252a8ae79874f7a0c14d1a7efd07abe879f53f46cb3a3c21d902a17  kdewebkit-5.70.0.tar.xz"

@@ -1,0 +1,35 @@
+#!/sbin/openrc-run
+
+: ${command_user:="postgres:postgres"}
+: ${config_file:="/etc/pgpool/pgpool.conf"}
+: ${hba_file:="/etc/pgpool/pool_hba.conf"}
+: ${key_file:="/etc/pgpool/pool_key"}
+: ${pcp_file:="/etc/pgpool/pcp.conf"}
+: ${logfile="/var/log/pgpool/pgpool.log"}
+
+name="pgpool-II"
+command="/usr/bin/pgpool"
+command_args="
+	--dont-detach
+	--config-file $config_file
+	--hba-file $hba_file
+	--key-file $key_file
+	--pcp-file $pcp_file
+	$command_args
+	"
+command_background="yes"
+pidfile="/run/$RC_SVCNAME.pid"
+start_stop_daemon_args="--wait 2 ${logfile:+"--stderr $logfile"}"
+
+required_files="$config_file"
+
+depend() {
+	need net
+	after firewall
+	use postgresql
+}
+
+start_pre() {
+	# pgpool creates /run/pgpool/pgpool.pid file even with --dont-detach. >_<
+	checkpath -d -m 0750 -o "$command_user" /run/pgpool
+}

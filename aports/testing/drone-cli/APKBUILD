@@ -1,0 +1,38 @@
+# Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=drone-cli
+pkgver=1.2.1
+pkgrel=1
+pkgdesc="Drone CLI"
+url="https://github.com/drone/drone-cli"
+arch="all"
+license="Apache-2.0"
+makedepends="go"
+source="drone-cli-$pkgver.tar.gz::https://github.com/drone/drone-cli/archive/v$pkgver.tar.gz"
+builddir="$srcdir/src/github.com/drone/$pkgname"
+
+prepare() {
+	mkdir -p ${builddir%/*}
+	mv "$srcdir"/$pkgname-$pkgver "$builddir"/
+	default_prepare
+}
+
+build() {
+	export GOPATH="$srcdir"
+	go build -ldflags "-X main.version=$pkgver" -o bin/drone ./drone
+}
+
+check() {
+	go test ./...
+}
+
+package() {
+	install -Dm755 "$builddir"/bin/drone "$pkgdir"/usr/bin/drone
+}
+
+cleanup_srcdir() {
+	go clean -modcache
+	default_cleanup_srcdir
+}
+
+sha512sums="b61a9c48ff9751c60a3ec3dc6cab2d7d00603d0e126bd2d2d57800bc9472766881d66d70d5b968da4df187fd4d4c42d0b82e1c1a730b63ca7e36bfb469738648  drone-cli-1.2.1.tar.gz"

@@ -1,0 +1,37 @@
+# Contributor: Andy Postnikov <apostnikov@gmail.com>
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=php7-tideways_xhprof
+_pkgext=tideways_xhprof
+_pkgreal=php-xhprof-extension
+pkgver=5.0.2
+_pkgver=${pkgver/_/-}
+pkgrel=0
+pkgdesc="Modern XHProf compatible Profiler for PHP 7"
+url="http://tideways.io"
+arch="all !s390x" # fails to build https://github.com/tideways/php-xhprof-extension/issues/72
+license="Apache-2.0"
+depends="php7"
+makedepends="php7-dev autoconf"
+source="$pkgname-$pkgver.tar.gz::https://github.com/tideways/php-xhprof-extension/archive/v$_pkgver.tar.gz
+	"
+builddir="$srcdir/$_pkgreal-$_pkgver"
+
+build() {
+	phpize7
+	./configure --prefix=/usr \
+		--with-php-config=/usr/bin/php-config7
+	make
+}
+
+check() {
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir/" install
+
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_pkgext.so" > "$pkgdir"/etc/php7/conf.d/$_pkgext.ini
+}
+
+sha512sums="a328fe3a13adaf5400a1c4d802f33b01c3b039d472a1de137950545ebc6b9c595d2056129e153c593c77a69844d5806e91ad06d897da5417ae2aadc68d74c242  php7-tideways_xhprof-5.0.2.tar.gz"

@@ -1,0 +1,24 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=ttf-font-awesome
+_pkgname=Font-Awesome
+pkgver=5.13.0
+pkgrel=0
+pkgdesc="Iconic font designed for Bootstrap TTF file only"
+url="https://fortawesome.github.io/Font-Awesome/"
+arch="noarch"
+license="CC"
+options="!check"
+depends="fontconfig mkfontdir mkfontscale"
+makedepends="font-util-dev"
+install="$pkgname.post-install"
+source="$pkgname-$pkgver.tar.gz::https://github.com/FortAwesome/$_pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+package() {
+	install -d "$pkgdir/usr/share/fonts/TTF"
+	install -d "$pkgdir/usr/share/fonts/X11/OTF"
+	install -m644 otfs/*.otf "$pkgdir/usr/share/fonts/X11/OTF/"
+	install -m644 webfonts/*.ttf "$pkgdir/usr/share/fonts/TTF/"
+}
+sha512sums="9fd3e1115acef6ac84667cf546374b204b947e229e4c645ab33f51026e993689a8295e7c0b02c88d735c4399efcd454f4252dcde7008eefb85c13846bf7c5bc4  ttf-font-awesome-5.13.0.tar.gz"

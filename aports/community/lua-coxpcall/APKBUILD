@@ -1,0 +1,42 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=lua-coxpcall
+_pkgname=coxpcall
+pkgver=1.17.0
+_pkgver=${pkgver//./_}
+pkgrel=0
+pkgdesc="Coroutine safe xpcall and pcall for Lua"
+url="http://keplerproject.github.io/coxpcall/"
+arch="noarch"
+license="MIT"
+depends=""
+makedepends=""
+subpackages=""
+source="$pkgname-$pkgver.tar.gz::https://github.com/keplerproject/$_pkgname/archive/v$_pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$_pkgver"
+
+_luaversions="5.1 5.2 5.3"
+for _v in $_luaversions; do
+	makedepends="$makedepends lua$_v-dev"
+	subpackages="$subpackages lua$_v-$_pkgname:_package"
+done
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+_package() {
+	local lver="${subpkgname:3:3}"
+	pkgdesc="$pkgdesc $lver"
+	depends="lua$lver"
+	install_if="lua$lver $pkgname=$pkgver-r$pkgrel"
+	local rockdir="$subpkgdir/usr/lib/luarocks/rocks-$lver/$_pkgname/$pkgver-1"
+
+	cd "$builddir"
+	make DESTDIR="$subpkgdir" LUA_DIR="/usr/share/lua/$lver" install
+
+	mkdir -p "$rockdir"
+	echo 'rock_manifest = {}' > "$rockdir"/rock_manifest
+}
+
+sha512sums="03ea81dcd930fd1774031c107d3d5e7d6ccc61345ac3bcfbdaa11d8c2e2a587efdbb546783f8960ccb83bb35495a9a34699a9c6e359951fe321b032f97a9e4c9  lua-coxpcall-1.17.0.tar.gz"

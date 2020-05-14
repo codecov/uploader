@@ -1,0 +1,30 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: André Klitzing <aklitzing@gmail.com>
+pkgname=pngquant
+pkgver=2.12.6
+pkgrel=0
+pkgdesc="Lossy PNG compressor"
+url="https://pngquant.org"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="libpng-dev lcms2-dev libimagequant-dev"
+checkdepends="bash"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/kornelski/pngquant/archive/$pkgver/pngquant-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--with-openmp
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="8ffff346df67edf1000c71b6d26371826bc4d236b3f57ef1ec73b3b61668cff9c3ca7d541417c39bc6c89e00176c91eb28867b7a91945ac84292ca0ac54984e9  pngquant-2.12.6.tar.gz"

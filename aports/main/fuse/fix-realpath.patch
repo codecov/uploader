@@ -1,0 +1,28 @@
+--- a/util/fusermount.c
++++ B/util/fusermount.c
+@@ -1322,19 +1322,16 @@
+ 
+ 	origmnt = argv[optind];
+ 
+-	drop_privs();
+ 	mnt = fuse_mnt_resolve_path(progname, origmnt);
+-	if (mnt != NULL) {
+-		res = chdir("/");
+-		if (res == -1) {
+-			fprintf(stderr, "%s: failed to chdir to '/'\n", progname);
+-			exit(1);
+-		}
+-	}
+-	restore_privs();
+ 	if (mnt == NULL)
+ 		exit(1);
+ 
++	res = chdir("/");
++	if (res == -1) {
++		fprintf(stderr, "%s: failed to chdir to '/'\n", progname);
++		exit(1);
++	}
++
+ 	umask(033);
+ 	if (unmount)
+ 		goto do_unmount;

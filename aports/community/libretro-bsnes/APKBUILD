@@ -1,0 +1,27 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libretro-bsnes
+pkgver=0_git20191009
+pkgrel=0
+_commit="feb8c10c672094e689ed057a278c2b354e113f32"
+arch="all"
+url="https://github.com/libretro/bsnes-libretro"
+pkgdesc="Super Nintendo Entertainment System (Famicon) core"
+license="GPL-3.0-only"
+source="$pkgname-$_commit.tar.gz::https://github.com/libretro/bsnes-libretro/archive/$_commit.tar.gz"
+builddir="$srcdir/bsnes-libretro-$_commit"
+options="!check" # No tests
+
+build() {
+	for p in accuracy balanced performance; do
+		make profile=$p
+	done
+}
+
+package() {
+	for p in accuracy balanced performance; do
+		install -Dm644 out/bsnes2014_${p}_libretro.so "$pkgdir"/usr/lib/libretro/bsnes2014_${p}_libretro.so
+	done
+}
+
+sha512sums="fe318ea28cf37385dd30806cce79aef318fe9a2f6169da1e8051ccb898cfa0b0ef4d8e19e2098713b85de6277cab02f5bd515222257dddb76e0eb9da39a239d4  libretro-bsnes-feb8c10c672094e689ed057a278c2b354e113f32.tar.gz"

@@ -1,0 +1,30 @@
+# Contributor: <iilluzion@gmail.com>
+# Maintainer: Iilluzion <iilluzion@gmail.com>
+pkgname=iproute2-qos
+pkgver=0.5
+pkgrel=1
+pkgdesc="Scripts to set up quality of service with iproute2"
+url="https://git.alpinelinux.org/cgit/aports"
+arch="noarch"
+license="GPL-2.0"
+depends="iproute2"
+makedepends=""
+source="qos.initd qos.eth0.sample qos.ifb0.sample setup-qos"
+
+build() {
+	return 0
+}
+
+package() {
+	install -m755 -D "$srcdir"/setup-qos "$pkgdir"/usr/sbin/setup-qos
+	install -m755 -D "$srcdir"/qos.initd "$pkgdir"/etc/init.d/qos
+	install -m644 -D "$srcdir"/qos.eth0.sample \
+		"$pkgdir"/etc/conf.d/qos.eth0.sample
+	install -m644 -D "$srcdir"/qos.ifb0.sample \
+		"$pkgdir"/etc/conf.d/qos.ifb0.sample
+}
+
+sha512sums="ac329c26b44e0e7ff6a1469626fbd166351d05135b9e688fcda7d96649e81a65ab927d04f98b80e6b0b9010ecf46fff17b27d67d673f8fa23cab7dd8fd454959  qos.initd
+9c4ca37a6416dc6bc4e0b3fbce0568cbd9c31f3c0fde1d3c8b713bf8b185859c948121ddc4182e2b133b29fab63f4d928aca27205568fc656f2787829beef243  qos.eth0.sample
+720396a86552de052faad47c22a5b295d00de01ac81fad109c5c6a7bad1b05ac9282a5edc175149361228480aad2d246b2def7fc1fa3d7acdcbe12ea9ef9a2ac  qos.ifb0.sample
+112a9fd7789751d2feeef9e007accc0138134818f3e13ddb62250e6d77b82a3ba34edcf7b475cf15f89b6c71ea50b943037f61c44ca54e5d1ea304bdc04ff0ae  setup-qos"

@@ -1,0 +1,39 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=konsole
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://kde.org/applications/system/konsole"
+pkgdesc="KDE's terminal emulator"
+license="GPL-2.0-only AND LGPL-2.1-or-later AND Unicode-DFS-2016"
+depends="ncurses-terminfo-base"
+makedepends="extra-cmake-modules qt5-qtbase-dev kbookmarks-dev kcompletion-dev
+	kconfig-dev kconfigwidgets-dev kcoreaddons-dev kcrash-dev kguiaddons-dev
+	kdbusaddons-dev ki18n-dev kiconthemes-dev kinit-dev kio-dev knewstuff-dev
+	knotifications-dev knotifyconfig-dev kparts-dev kpty-dev kservice-dev
+	ktextwidgets-dev kwidgetsaddons-dev kwindowsystem-dev kxmlgui-dev
+	kglobalaccel-dev kdoctools-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/konsole-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	# DBusTest requires running DBus
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "DBusTest"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="eb260752cf62c418349a8a2ee91e5a9a8f0450190f6d8ffe3c6ac4d7131e858e84f0f520c447588f60143564eaac9b5f340d90562fe507ec27846a82d0bc73f4  konsole-20.04.0.tar.xz"

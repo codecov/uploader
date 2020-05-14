@@ -1,0 +1,42 @@
+# Contributor: Roger Newman <roger.newman@riseup.net>
+# Maintainer: Roger Newman <roger.newman@riseup.net>
+pkgname=libecap
+pkgver=1.0.1
+pkgrel=0
+pkgdesc="API for implementing ICAP content analysis and adaptation"
+options="!check" # No testsuite
+url="http://www.e-cap.org/"
+arch="all"
+license="BSD-2-Clause"
+subpackages="$pkgname-static $pkgname-dev"
+source="http://www.measurement-factory.com/tmp/ecap/$pkgname-$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	update_config_sub
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--libdir=/lib
+	make
+}
+
+package() {
+	make install-strip \
+		libdir=/usr/lib \
+		pkgconfigdir="/usr/lib/pkgconfig" \
+		DESTDIR="$pkgdir"
+}
+
+static() {
+	depends=""
+	pkgdesc="$pkgdesc (static library)"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*.a "$subpkgdir"/usr/lib
+}
+
+sha512sums="0054ad11b3f558d7c623060a69207a1b8e679803cabdf1a2bce4b04335d71c016eec770fc9d2cbf3d0a93502c255cb528305f9f8e6df4e095fcb980667045919  libecap-1.0.1.tar.gz"

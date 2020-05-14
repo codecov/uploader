@@ -1,0 +1,25 @@
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+pkgname=py3-django-contact-form
+pkgver=1.8.1
+pkgrel=0
+pkgdesc="Generic contact-form application for Django"
+url=https://bitbucket.org/ubernostrum/django-contact-form/
+arch=noarch
+license=BSD
+depends=py3-django
+makedepends=py3-setuptools
+replaces=py-django-contact-form
+source="https://files.pythonhosted.org/packages/source/d/django-contact-form/django-contact-form-$pkgver.tar.gz"
+
+builddir=$srcdir/django-contact-form-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --root "$pkgdir"
+}
+
+sha512sums="e88394b694cf27075de89c5e017729e98eb7e65ce46a11b5324bf656db1322bd0b6c8070f3a1daf969b9e0a1e384bccd5f6f6bf7a48861686583eba099aa67a8  django-contact-form-1.8.1.tar.gz"

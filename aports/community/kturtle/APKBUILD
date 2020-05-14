@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kturtle
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="http://edu.kde.org/kturtle"
+pkgdesc="Educational Programming Environment"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev kcrash-dev kio-dev knewstuff-dev kdoctools-dev ktextwidgets-dev ki18n-dev kcoreaddons-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kturtle-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="f13b5e1821ed2187d89cbd0a471bfc6f5a6d74b4d292f97ffb0f70f0f56fe445a8cdbc65e84890dcc02c204bf30d850814ff5083a84a78fb1bdc3daaff56ea42  kturtle-20.04.0.tar.xz"

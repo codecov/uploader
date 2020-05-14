@@ -1,0 +1,37 @@
+# Contributor: Isaac Dunham <ibid.ag@gmail.com>
+# Maintainer:
+pkgname=libctl
+pkgver=4.5.0
+pkgrel=0
+pkgdesc="Guile-based library implementing flexible control files for scientific simulations"
+url="http://ab-initio.mit.edu/wiki/index.php/Libctl"
+arch="all"
+license="GPL-2.0-or-later AND LGPL-2.1-or-later"
+depends_dev="guile-dev gmp-dev"
+makedepends="$depends_dev gc-dev gfortran autoconf automake libtool"
+subpackages="$pkgname-dev $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/stevengj/libctl/archive/v$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--enable-shared --disable-static
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="afa25e8dbc4b4652e45e7235937a8fe93f75e5e8f812afcca047c165f08ee4077e3cb215579c2f8b0716556ba4216f23ed2f2c69ad954083dde02c1261e02771  libctl-4.5.0.tar.gz"

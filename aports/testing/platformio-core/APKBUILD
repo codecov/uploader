@@ -1,0 +1,26 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer:
+pkgname=platformio-core
+pkgver=4.0.0
+pkgrel=2
+pkgdesc="An open source ecosystem for IoT development"
+url="https://platformio.org"
+arch="noarch"
+license="Apache-2.0"
+depends="py3-bottle py3-click py3-colorama py3-lockfile py3-requests
+	py3-semantic-version py3-serial"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/platformio/platformio-core/archive/v$pkgver.tar.gz"
+
+build() {
+	python3 setup.py build
+	cd "$builddir"/scripts
+	2to3 -w *.py
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+}
+
+sha512sums="e483850e7e1bd73522931da17b934116f44e730868ff424faa7bbb3b7853d0435ebb3fa3e6f8eab2bd57ada1d05140302b827b4724fe7981025cdc7660baff4c  platformio-core-4.0.0.tar.gz"

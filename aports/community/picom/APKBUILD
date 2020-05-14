@@ -1,0 +1,34 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=picom
+pkgver=8
+pkgrel=0
+pkgdesc="X Compositor (a fork of compton)"
+url="https://github.com/yshui/picom"
+arch="all"
+license="MIT MPL-2.0"
+makedepends="libx11-dev libxcomposite-dev libxinerama-dev libxdamage-dev
+	libconfig-dev pcre-dev libxrandr-dev dbus-dev libdrm-dev mesa-dev meson
+	libev-dev libxdg-basedir-dev pixman-dev xcb-util-renderutil-dev
+	xcb-util-image-dev asciidoc uthash-dev"
+subpackages="$pkgname-doc"
+source="picom-$pkgver.tar.gz::https://github.com/yshui/picom/archive/v$pkgver.tar.gz"
+options="!check" # No tests defined in tests/ directory
+
+replaces="compton" # Backwards compatibility
+provides="compton=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	meson --prefix=/usr --buildtype=plain -Dbuild_docs=true build
+	ninja -v -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+
+	mkdir -p "$pkgdir/usr/share/doc/picom"
+	install -m644 README* "$pkgdir/usr/share/doc/picom/"
+	install -D -m644 "picom.sample.conf" "$pkgdir/etc/xdg/picom.conf.example"
+}
+
+sha512sums="154dd42dea16aca463e7d7f9913a8f10740df892bfdda2fee210a94b13c8eaf6201b35e505daf45075fdb1980bb9b85adf170b649702c1b1e2fcdc1d88406b4a  picom-8.tar.gz"

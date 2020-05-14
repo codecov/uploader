@@ -1,0 +1,33 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=texinfo
+pkgver=6.7
+pkgrel=0
+pkgdesc="Utilities to work with and produce manuals, ASCII text, and on-line documentation from a single source file"
+url="https://www.gnu.org/software/texinfo/"
+arch="all"
+options="!check" # Test dependencies are not packaged
+license="GPL-3.0-or-later"
+depends="perl"
+makedepends="ncurses-dev perl-dev"
+subpackages="$pkgname-doc"
+source="https://ftp.gnu.org/gnu/texinfo/texinfo-$pkgver.tar.xz
+	fix-build-without-NLS.patch"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--disable-nls
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir"/ install
+
+	rm -f "$pkgdir"/usr/share/info/dir
+	gzip "$pkgdir"/usr/share/info/*
+}
+
+sha512sums="da55a0d0a760914386393c5e8e864540265d8550dc576f784781a6d72501918e8afce716ff343e5c2a0ce09cf921bfaf0a48ecb49f6182a7d10e920ae3ea17e7  texinfo-6.7.tar.xz
+1c33d8c8bf24ec139fa2a283e12d42a260027d354061d348b66f1d2ef4636573cb88442299595af946366c9e9cc5511450a32d1a1fb827bee30f38a7558b3edb  fix-build-without-NLS.patch"

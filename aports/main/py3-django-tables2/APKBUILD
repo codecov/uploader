@@ -1,0 +1,25 @@
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+pkgname=py3-django-tables2
+pkgver=1.21.2
+pkgrel=3
+pkgdesc="Table/data-grid framework for Django"
+url="https://github.com/bradleyayers/django-tables2/"
+arch="noarch"
+license="BSD-2-Clause"
+depends="python3 py3-django py3-six"
+makedepends="py3-setuptools"
+options="!check" #no testsuite
+source="https://files.pythonhosted.org/packages/source/d/django-tables2/django-tables2-$pkgver.tar.gz"
+builddir="$srcdir"/django-tables2-$pkgver
+
+build() {
+	python3 setup.py --quiet build
+}
+
+package() {
+	python3 setup.py --quiet install --prefix=/usr --root="$pkgdir"
+}
+
+
+sha512sums="9af04144e2928cd0246bc7406064ec959b7eddb1d29f013ca53cd6244df07b07a2abe0e4a79b05c572bc164ceb475c954e3f84eea6b53c631c5f958f25aece62  django-tables2-1.21.2.tar.gz"

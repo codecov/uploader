@@ -1,0 +1,43 @@
+# Contributor: Curt Tilmes <Curt.Tilmes@nasa.gov>
+# Maintainer: Curt Tilmes <Curt.Tilmes@nasa.gov>
+pkgname=moarvm
+pkgver=2020.05
+pkgrel=0
+pkgdesc="A VM with adaptive optimization and JIT compilation, built for Rakudo"
+url="http://moarvm.org/"
+arch="all"
+license="Artistic-2.0"
+makedepends="perl libffi-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="http://moarvm.org/releases/MoarVM-$pkgver.tar.gz"
+builddir="$srcdir"/MoarVM-"$pkgver"
+options="!check" # No tests
+
+build() {
+	unset CPPFLAGS CFLAGS
+	perl Configure.pl --prefix=/usr --has-libffi
+	make
+}
+
+package() {
+	install -Dm755 moar "$pkgdir"/usr/bin/moar
+	install -Dm755 libmoar.so "$pkgdir"/usr/lib/libmoar.so
+}
+
+dev() {
+	cd "$builddir"
+	make DESTDIR="$builddir"/install install
+	mkdir -p "$subpkgdir"/usr/share
+	cp -r install/usr/include "$subpkgdir"/usr
+	cp -r install/usr/share/nqp "$subpkgdir"/usr/share
+	install -Dm644 install/usr/share/pkgconfig/moar.pc "$subpkgdir"/usr/lib/pkgconfig/moar.pc
+}
+doc() {
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr/share/doc/"$pkgname"
+	for file in Artistic2.txt CREDITS LICENSE MANIFEST README.markdown VERSION docs; do
+		cp -r $file "$subpkgdir"/usr/share/doc/"$pkgname"
+	done
+}
+
+sha512sums="10dd2bb8c629ac4d7804a8e64f8883617545930520c61ff34b62b29b81f827c425004bb07c8978df9620da446fa204ccb3b5c8889651e243a1fe4da28350ab66  MoarVM-2020.05.tar.gz"

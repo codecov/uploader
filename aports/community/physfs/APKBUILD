@@ -1,0 +1,35 @@
+# Contributor: Mikhail Ivko <ivko.mv@gmail.com>
+# Maintainer:
+pkgname=physfs
+pkgver=3.0.2
+pkgrel=2
+pkgdesc="Library providing access to various archives, for use in video games"
+url="https://icculus.org/physfs/"
+arch="all"
+license="Zlib"
+makedepends="cmake"
+subpackages="$pkgname-static $pkgname-dev"
+source="https://icculus.org/physfs/downloads/physfs-$pkgver.tar.bz2"
+options="!check" # no tests
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DPHYSFS_BUILD_TEST=OFF \
+		$CMAKE_CROSSOPTS
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="4024b6c3348e0b6fc1036aac330192112dfe17de3e3d14773be9f06e9a062df5a1006869f21162b4e0b584989f463788a35e64186b1913225c073fea62754472  physfs-3.0.2.tar.bz2"

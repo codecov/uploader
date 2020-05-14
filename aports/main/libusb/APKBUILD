@@ -1,0 +1,37 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libusb
+pkgver=1.0.23
+_ver=${pkgver/_/-}
+pkgrel=0
+pkgdesc="Library that enables userspace access to USB devices"
+url="https://libusb.info/"
+arch="all"
+license="LGPL-2.0-or-later"
+subpackages="$pkgname-dev"
+replaces="libusbx"
+makedepends="linux-headers"
+source="https://github.com/libusb/libusb/releases/download/v$pkgver/libusb-$pkgver.tar.bz2
+	"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--disable-udev \
+		--disable-static
+	make -j1
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="73430ad31dd405e76a9c6c55086961003989c44964e2735b5076f9ca849e3f6fe71d10a66b74b111f0c34a0d2cb744b9ca105863c552123fce4ec0bbdd2ec15b  libusb-1.0.23.tar.bz2"

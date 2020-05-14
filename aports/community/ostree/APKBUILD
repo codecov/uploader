@@ -1,0 +1,58 @@
+# Contributor: André Klitzing <aklitzing@gmail.com>
+# Maintainer: André Klitzing <aklitzing@gmail.com>
+pkgname=ostree
+pkgver=2020.3
+pkgrel=0
+pkgdesc="Operating system and container binary deployment and upgrades"
+url="https://github.com/ostreedev/ostree"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="bison glib-dev xz-dev libarchive-dev e2fsprogs-dev
+	libsoup-dev gpgme-dev fuse-dev linux-headers gtk-doc libxslt
+	automake autoconf libtool"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-dbg
+	$pkgname-bash-completion:bashcomp:noarch
+	"
+source="https://github.com/ostreedev/ostree/releases/download/v$pkgver/libostree-$pkgver.tar.xz
+	musl-fixes.patch
+	"
+options="!check"
+builddir="$srcdir/lib$pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+	NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--sbindir=/usr/bin \
+		--libexecdir=/usr/lib \
+		--enable-gtk-doc \
+		--disable-static \
+		--disable-glibtest
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion
+}
+
+sha512sums="cedda45ced76d469f124bc71217aea8db705299a49bf380a9e48f0c40bc4d50679901d245deb0cac1b2abbc541621d4c555ac043ff4b760f9ee34a0ca694645e  libostree-2020.3.tar.xz
+affde3a0a1c27066c2fcc30212343274de9b3856e913adc340afa4fbfb6398732c4c39dee52837459a77273015aec4e98ea61c2b5e3e884b795462485657933c  musl-fixes.patch"

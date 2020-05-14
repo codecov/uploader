@@ -1,0 +1,27 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=apg
+pkgver=2.2.3
+pkgrel=5
+pkgdesc="Automated Password Generator."
+url="https://linux.die.net/man/1/apg" # Original homepage is dead
+arch="all"
+license="BSD-3-Clause"
+# no check provided by upstream
+options="!check"
+source="https://launchpad.net/ubuntu/+archive/primary/+files/${pkgname}_${pkgver}.orig.tar.gz"
+
+build() {
+	cd "$builddir"
+	sed -i 's:^#\(CS_LIBS = -lnsl\)$:\1:' Makefile
+	make
+}
+
+package() {
+	cd "$builddir"
+	for i in apg apgbfm; do
+		install -D -m755 $i "$pkgdir"/usr/bin/$i
+		install -D -m644 doc/man/$i.1 "$pkgdir"/usr/man/man1/$i.1
+	done
+}
+
+sha512sums="d2479dc2cb5d571ddea23d98e9d4ddbdfff874013ff27c00073a3231c4c1d0ee9b75d3983331f3513755b57527766cc5a35e6829cdca15d2e9293dfbc4c2788a  apg_2.2.3.orig.tar.gz"

@@ -1,0 +1,22 @@
+# Contributor: Cág <ca6c@bitmessage.ch>
+# Maintainer
+pkgname=cwm
+pkgver=6.6
+pkgrel=0
+pkgdesc="A lightweight and efficient window manager for X11"
+url="https://github.com/chneukirchen/cwm"
+arch="all"
+license="ISC"
+makedepends="libx11-dev libxft-dev libxrandr-dev byacc bsd-compat-headers"
+subpackages="$pkgname-doc"
+source="cwm-$pkgver.tar.gz::https://github.com/chneukirchen/cwm/archive/v$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir/" PREFIX=/usr install
+}
+
+sha512sums="ff94fd1b7d263f9de538e5b338db58a08e1bec3e4233b84ab0a3ac94c47a45e10b2c772f93b897e70baf9a3c04e1a6fa04604ac71655acb7ebd1d10edb381042  cwm-6.6.tar.gz"

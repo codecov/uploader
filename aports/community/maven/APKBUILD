@@ -1,0 +1,44 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=maven
+pkgver=3.6.3
+_pkgname="$pkgname-${pkgver%%.*}"
+pkgrel=0
+pkgdesc="A Java project management and project comprehension tool."
+url="http://maven.apache.org"
+arch="noarch !mips !mips64"
+license="Apache-2.0"
+options="!check" # repackaged release without a test suite
+depends="openjdk8-jre"
+source="http://mirror.hosting90.cz/apache/maven/$_pkgname/$pkgver/binaries/apache-maven-$pkgver-bin.tar.gz"
+builddir="$srcdir/apache-$pkgname-$pkgver"
+
+package() {
+	local m2_home="/usr/share/java/$_pkgname"
+	local destdir="${pkgdir}$m2_home"
+
+	local dir; for dir in bin boot lib; do
+		mkdir -p -m755 "$destdir/$dir"
+	done
+
+	install -m644 -Dt "$destdir"/bin ./bin/*.conf
+	install -m644 -Dt "$destdir"/boot ./boot/*.jar
+	install -m644 -Dt "$destdir"/lib ./lib/*.jar
+	cp -Rp ./conf "$destdir"/
+
+	mkdir -p "$pkgdir"/usr/bin
+
+	local file; for file in mvn mvnDebug mvnyjp; do
+		install -m755 -Dt "$destdir"/bin ./bin/$file
+		ln -sf "$m2_home"/bin/$file "$pkgdir"/usr/bin/$file
+	done
+
+	mkdir "$pkgdir"/etc
+	cat > "$pkgdir"/etc/mavenrc <<-EOF
+		M2_HOME="$m2_home"
+		MAVEN_OPTS="\$MAVEN_OPTS -Xmx512m"
+	EOF
+}
+
+sha512sums="c35a1803a6e70a126e80b2b3ae33eed961f83ed74d18fcd16909b2d44d7dada3203f1ffe726c17ef8dcca2dcaa9fca676987befeadc9b9f759967a8cb77181c0  apache-maven-3.6.3-bin.tar.gz"

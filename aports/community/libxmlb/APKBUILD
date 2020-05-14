@@ -1,0 +1,43 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=libxmlb
+pkgver=0.1.15
+pkgrel=0
+pkgdesc="Library to help create and query binary XML blobs"
+url="https://github.com/hughsie/libxmlb"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="meson glib-dev gobject-introspection-dev"
+checkdepends="shared-mime-info"
+subpackages="$pkgname-dev:_dev $pkgname-dbg"
+source="$pkgname-$pkgver.tar.gz::https://github.com/hughsie/libxmlb/archive/$pkgver.tar.gz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		-Dgtkdoc=false \
+		-Dtests=true \
+		-Dstemmer=false \
+		-Dintrospection=true \
+		build
+	ninja -C build
+}
+
+check() {
+	ninja -C build test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+	rm -rf "$pkgdir"/usr/share/installed-tests
+	rm -rf "$pkgdir"/usr/libexec/installed-tests
+}
+
+_dev() {
+	default_dev
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/libexec "$subpkgdir"/usr
+}
+
+sha512sums="58268b3a690af36c0923afdee3ae58e88bf778eebbc6a439be1bc85ed985efdc20cd7006c976586f7be87310dc091d67dddd370f4bbec58379fc4e7349bfa3d8  libxmlb-0.1.15.tar.gz"

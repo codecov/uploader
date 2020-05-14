@@ -1,0 +1,28 @@
+# Contributor: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+# Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+pkgname=py3-django-appconf
+_pkgname=django-appconf
+pkgver=1.0.4
+pkgrel=0
+pkgdesc="Packaged application configuation helper for Django"
+url="http://django-appconf.readthedocs.org/"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3 py3-django py3-six"
+makedepends="py3-setuptools"
+options="!check"  # No test suite available
+source="https://files.pythonhosted.org/packages/source/d/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-django-appconf" # Backwards compatibility
+provides="py-django-appconf=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --root "$pkgdir"
+}
+
+sha512sums="0d0a206d43d4c6d7f3dbe5fb6423f5f012dae42bae7459f3ee06501f9c126e73f69a30da5c34c84014e582a7b42f253ebd37ece8b8477963cb5d2357ca095639  django-appconf-1.0.4.tar.gz"

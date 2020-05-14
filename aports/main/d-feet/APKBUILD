@@ -1,0 +1,45 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=d-feet
+pkgver=0.3.15
+_v=${pkgver%.*}
+pkgrel=2
+pkgdesc="A powerful D-Bus Debugger"
+options="!check" # Testsuite loops infinitely
+url="https://wiki.gnome.org/action/show/Apps/DFeet"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="python3 py3-gobject3"
+makedepends="
+	meson
+	itstool
+	glib-dev
+	gtk+3.0-dev
+	gobject-introspection-dev
+	"
+source="https://download.gnome.org/sources/d-feet/$_v/d-feet-$pkgver.tar.xz"
+
+build() {
+	cd "$builddir"
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		-Dtests=false \
+		output
+	ninja -C output
+}
+
+check() {
+	cd "$builddir"
+	ninja -C output test
+}
+
+package() {
+	cd "$builddir"
+	DESTDIR="$pkgdir" ninja -C output install
+
+	# Fix on musl
+	sed -i 's|locale.textdomain("d-feet")||' "$pkgdir"/usr/bin/d-feet
+}
+
+sha512sums="c8ac20b91dfa5fea2282099a772c3668ebe75b0e4977b08adc3ee9591e00e391398835af5486b32d8d65e558c58f55cc26523b0e4a3ff1745b722ee90000de87  d-feet-0.3.15.tar.xz"

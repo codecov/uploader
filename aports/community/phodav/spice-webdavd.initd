@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+supervisor=supervise-daemon
+
+description="Spice guest utility for file sharing via WebDAV"
+
+command=/usr/sbin/spice-webdavd
+command_args="--port 9843"
+
+depend() {
+	need dbus 
+	use avahi
+}

@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kdepim-runtime
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Extends the functionality of kdepim"
+url="https://kontact.kde.org/"
+# armhf blocked by extra-cmake-modules
+# mips, ppc64le and s390x blocked by libkgapi -> qt5-qtwebengine
+arch="all !armhf !ppc64le !s390x !mips !mips64"
+license="LGPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtspeech-dev qt5-qtxmlpatterns-dev qt5-qtnetworkauth-dev qca-dev kconfig-dev kconfigwidgets-dev knotifyconfig-dev kio-dev kitemmodels-dev kcodecs-dev kwindowsystem-dev ktextwidgets-dev knotifications-dev kdoctools-dev kholidays-dev akonadi-dev kmime-dev akonadi-mime-dev kmailtransport-dev kidentitymanagement-dev akonadi-contacts-dev kcontacts-dev kcalendarcore-dev kcalutils-dev kmbox-dev kimap-dev akonadi-notes-dev akonadi-calendar-dev pimcommon-dev libkgapi-dev kdav-dev libxslt-dev shared-mime-info"
+subpackages="$pkgname-doc $pkgname-lang"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kdepim-runtime-$pkgver.tar.xz"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="879813715eff3bd9b28fb43747e6e85e1c95c27fe3f3da73998b2f11331f1f9f47006968dce977da4b021137f8422c498a5bb6224be84ea7f5a50ccf4d1f6f62  kdepim-runtime-20.04.0.tar.xz"

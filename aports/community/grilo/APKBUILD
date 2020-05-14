@@ -1,0 +1,34 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=grilo
+pkgver=0.3.12
+pkgrel=1
+pkgdesc="GNOME media discovery framework"
+url="https://wiki.gnome.org/Projects/Grilo"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="gnome-desktop-dev liboauth-dev gmime-dev libsoup-dev libxml2-dev
+	totem-pl-parser-dev gobject-introspection-dev itstool libxslt libxml2-utils
+	docbook-xml docbook-xsl meson vala gtk-doc"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang $pkgname-libs"
+source="https://download.gnome.org/sources/grilo/${pkgver%.*}/grilo-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		-Denable-introspection=true \
+		-Denable-vala=true \
+		build
+	ninja -C build
+}
+
+check() {
+	ninja -C build test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+}
+
+sha512sums="c0badc4b3f96efa04e6f3b5f32b2322855d9a660f748ce68012d266a6f5936f850bd63e559c782ae02ee24ba282c3b3882c6b8fae99019b913d74ff927a31017  grilo-0.3.12.tar.xz"

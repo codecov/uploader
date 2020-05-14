@@ -1,0 +1,36 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-zeroconf
+pkgver=0.26.1
+pkgrel=0
+pkgdesc="A Python implementation of multicast DNS service discovery"
+url="https://github.com/jstasiak/python-zeroconf"
+arch="noarch"
+license="LGPL-2.0-or-later"
+# Tests require netlink support which is no present in AL
+replaces="py-zeroconf" # for backwards compatibility
+provides="py-zeroconf=$pkgver-r$pkgrel" # for backwards compatibility
+options="!check"
+depends="
+	py3-ifaddr
+	py3-netifaces
+	py3-six
+	python3
+	"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/z/zeroconf/zeroconf-$pkgver.tar.gz"
+builddir="$srcdir"/zeroconf-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="d8a9f03cb065c86aaef3c7d4e5d943eefb5e5d726d9581c5a0d89c3942d80048a97a95349a161b59d345bdf235fd2339348530dab84aacaf4dded13617cc010a  zeroconf-0.26.1.tar.gz"

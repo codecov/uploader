@@ -1,0 +1,30 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Justin Berthault <justin.berthault@zaclys.net>
+pkgname=py3-django-filter
+pkgver=2.2.0
+pkgrel=0
+pkgdesc="Generic system for filtering Django QuerySets based on user selections"
+url="https://github.com/carltongibson/django-filter"
+arch="noarch"
+license="BSD-3-Clause"
+depends="py3-django"
+makedepends="py3-setuptools"
+checkdepends="py3-markdown py3-core-api py3-coverage py3-tz
+	py3-django-crispy-forms py3-django-rest-framework py3-mock"
+source="https://files.pythonhosted.org/packages/source/d/django-filter/django-filter-$pkgver.tar.gz"
+builddir="$srcdir"/django-filter-$pkgver
+
+build() {
+	python3 setup.py --quiet build
+}
+
+check() {
+	python3 runtests.py
+}
+
+package() {
+	python3 setup.py install --skip-build --prefix=/usr --root="$pkgdir"
+}
+
+
+sha512sums="16a4336d1558cabfe497dd9736a2f652c9f9d141a72c856cf13f3ca56db4da85b5926b05c772aef5fa43a75e085025244b8deaf7facbc5bfa68907bd99f4f95d  django-filter-2.2.0.tar.gz"

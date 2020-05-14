@@ -1,0 +1,24 @@
+# Contributor: Timo Teras <timo.teras@iki.fi>
+# Maintainer: Timo Teras <timo.teras@iki.fi>
+pkgname=dahdi-linux
+pkgver=3.1.0
+pkgrel=0
+pkgdesc="Firmware for Digium Asterisk Hardware Device Interface drivers"
+url="https://www.asterisk.org"
+arch="noarch"
+license="GPL-2.0-only"
+makedepends="wget tar"
+subpackages="$pkgname-dev"
+source="https://downloads.digium.com/pub/telephony/dahdi-linux/releases/dahdi-linux-$pkgver.tar.gz"
+
+# We online install the firmwares in this package since those are common for all
+# kernel flavors. We also install the headers for the -dev package.
+#
+# The kernel drivers themselves are built from separate build recipe.
+
+package() {
+	make -j1 DESTDIR="$pkgdir" HOTPLUG_FIRMWARE=yes \
+		install-include install-firmware
+}
+
+sha512sums="440f5e44c933c609f2b3cfcf013c84bcd0c37929a43d69aac0276b11484cb890cd5939c5ac5950cad54d934d27ee6ff0b18f2bdd58477ed9be8055de107727b4  dahdi-linux-3.1.0.tar.gz"

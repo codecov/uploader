@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kfloppy
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/utilities/org.kde.kfloppy"
+pkgdesc="A utility that provides a straightforward graphical means to format 3.5\" and 5.25\" floppy disks"
+license="GPL-2.0-or-later"
+depends="dosfstools e2fsprogs coreutils"
+makedepends="extra-cmake-modules qt5-qtbase-dev ki18n-dev kcoreaddons-dev kcompletion-dev kdoctools-dev kxmlgui-dev kcrash-dev kconfig-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kfloppy-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="992a5605d22376e0c7015186785333abd724667d20e024fc65b7d61ba45f0e514812db1813b8905992d6099f9a46ff4403a29ec3c5c18804f08d6441b2bcd4ae  kfloppy-20.04.0.tar.xz"

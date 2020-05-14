@@ -1,0 +1,42 @@
+# Contributor: Michael Zhou <zhoumichaely@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=jbig2dec
+pkgver=0.18
+_gsver="gs952"
+pkgrel=0
+pkgdesc="JBIG2 image compression format decoder"
+options="!check" # Tests require python2
+url="https://jbig2dec.com/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="autoconf automake libtool"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/$_gsver/jbig2dec-$pkgver.tar.gz"
+
+# secfixes:
+#   0.18-r0:
+#     - CVE-2020-12268
+
+prepare() {
+	default_prepare
+	autoreconf -vif
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--without-libpng
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="9d9da97a54562b092b30c67ec959d1c48f737316ebf3e6a9fbc5a2fcdf635b0703027c90a904e45dedb1d9400281cae9dd424ae78aa47979862791ccceb7077d  jbig2dec-0.18.tar.gz"

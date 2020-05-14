@@ -1,0 +1,24 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=py3-txsni
+pkgver=0.2.0
+pkgrel=0
+pkgdesc="Simple support for running a TLS server with Twisted"
+options="!check" # No testsuite
+url="https://github.com/glyph/txsni"
+arch="noarch"
+license="MIT"
+depends="python3 py3-openssl py3-twisted"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/T/TxSNI/TxSNI-$pkgver.tar.gz"
+builddir="$srcdir/TxSNI-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="3fe725b4c24c3d12e533b29dcc547288033be5b641988eb37b53a7cce9bce055689dd320d41ea7390888710805a754e236755936c64648dc271d97c28e0a2a44  TxSNI-0.2.0.tar.gz"

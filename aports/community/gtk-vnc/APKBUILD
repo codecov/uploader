@@ -1,0 +1,51 @@
+# Contributor: Sergei Lukin <sergej.lukin@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=gtk-vnc
+pkgver=1.0.0
+pkgrel=3
+pkgdesc="A VNC viewer widget for GTK"
+url="https://wiki.gnome.org/Projects/gtk-vnc"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="gtk+3.0-dev gnutls-dev glib-dev expat-dev
+	libgcrypt-dev libgpg-error-dev cyrus-sasl-dev perl-text-csv
+	gobject-introspection-dev vala meson"
+source="https://download.gnome.org/sources/gtk-vnc/${pkgver%.*}/gtk-vnc-$pkgver.tar.xz"
+subpackages="$pkgname-dev gvncviewer $pkgname-lang $pkgname-doc"
+
+# secfixes:
+#   0.7.0-r0:
+#     - CVE-2017-5884
+#     - CVE-2017-5885
+
+build() {
+	# https://gitlab.gnome.org/GNOME/gtk-vnc/issues/11
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dwith-vala=true \
+		-Dwith-coroutine=gthread \
+		. output
+
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+gvncviewer() {
+	pkgdesc="Demo application for gtk-vnc"
+	cd $builddir
+	mkdir -p "$subpkgdir"/usr/bin
+	mv output/examples/gvncviewer "$subpkgdir"/usr/bin
+}
+
+sha512sums="63a40b9b284c4e46a92d5375ab3660b324ff27bfc572559d3b34d29fe4f7d24e976396b6688b8f3e3109d49dc5527075d128c43bb997507e68ddc0880b0ad148  gtk-vnc-1.0.0.tar.xz"

@@ -1,0 +1,77 @@
+# Contributor: Bartłomiej Piotrowski <bpiotrowski@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=lldb
+# Note: Update together with llvm.
+pkgver=10.0.0
+pkgrel=0
+_vermajor=${pkgver%%.*}
+pkgdesc="Next generation, high-performance debugger"
+arch="aarch64 armv7 s390x x86_64"
+url="https://llvm.org/"
+license="Apache-2.0"
+makedepends="
+	clang-dev>=$_vermajor
+	clang-static>=$_vermajor
+	cmake
+	doxygen
+	libedit-dev
+	libffi-dev
+	libxml2-dev
+	linux-headers
+	llvm-dev>=$_vermajor
+	llvm-static>=$_vermajor
+	ncurses-dev
+	ninja
+	python3-dev
+	swig
+	"
+subpackages="$pkgname-dev py3-$pkgname:py3"
+source="https://github.com/llvm/llvm-project/releases/download/llvmorg-$pkgver/lldb-$pkgver.src.tar.xz
+	fix-embedded_interpreter.patch
+	"
+builddir="$srcdir/$pkgname-$pkgver.src"
+
+build() {
+	mkdir -p "$builddir"/build
+	cd "$builddir"/build
+
+	CC=clang CXX=clang++ cmake .. -G Ninja -Wno-dev \
+		-DCMAKE_BUILD_TYPE=MinSizeRel \
+		-DCMAKE_C_FLAGS_MINSIZEREL_INIT="$CFLAGS" \
+		-DCMAKE_CXX_FLAGS_MINSIZEREL_INIT="$CXXFLAGS" \
+		-DCMAKE_EXE_LINKER_FLAGS_MINSIZEREL_INIT="$LDFLAGS" \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DLLVM_LINK_LLVM_DYLIB=ON \
+		-DLLDB_DISABLE_LIBEDIT=ON \
+		-DLLDB_TEST_C_COMPILER=clang \
+		-DLLDB_TEST_CXX_COMPILER=clang++ \
+		-DPYTHON_EXECUTABLE=/usr/bin/python3
+	ninja
+}
+
+package() {
+	cd "$builddir"/build
+
+	DESTDIR="$pkgdir" ninja install
+}
+
+py3() {
+	pkgdesc="Python3 module for LLDB"
+	depends="$pkgname python3 py3-six"
+	replaces="py-lldb"
+
+	local sitedir=$(python3 -c "import site; print(site.getsitepackages()[0])")
+
+	mkdir -p "$subpkgdir"/$sitedir
+
+	mv "$pkgdir"/"$sitedir"/* "$subpkgdir"/"$sitedir"
+	rm -rf "$pkgdir"/"$sitedir"
+
+	# Remove bundled module.
+	rm "$subpkgdir"/"$sitedir"/six.py
+
+	python3 -m compileall -fq "$subpkgdir"/"$sitedir"
+}
+
+sha512sums="f6a73cc05b26dfda8076cab082e90a6818b496189a8bafd6c771ea7c2dfe948e139e168bdcb82ccfad9e7ba110ad68beef453e280cca98031fa69923c27933f4  lldb-10.0.0.src.tar.xz
+3c611fa5d45b6cb3f2925a31deeb8a34c295277aedcd55c22851d373897acd376fa92f4ef953c96a25c8dae4c93b6a88de0918550672141d324a3813d8283d48  fix-embedded_interpreter.patch"

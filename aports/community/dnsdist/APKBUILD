@@ -1,0 +1,118 @@
+# Contributor: Vince Mele <vmele@inoc.com>
+# Maintainer:
+pkgname=dnsdist
+pkgver=1.4.0
+pkgrel=1
+pkgdesc="dnsdist is a highly DNS-, DoS-, and abuse-aware loadbalancer."
+url="https://dnsdist.org"
+arch="all !s390x" # limited by h2o
+license="GPL-2.0-only"
+_lua_version="5.1"
+depends="$pkgname-common !$pkgname-luajit"
+checkdepends="findutils"
+makedepends="boost-dev fstrm-dev libedit-dev libsodium-dev lua$_lua_version-dev
+	net-snmp-dev protobuf-dev re2-dev luajit-dev h2o-dev wslay-dev"
+pkgusers="dnsdist"
+pkggroups="dnsdist"
+install="$pkgname-common.pre-install"
+subpackages="$pkgname-common::noarch $pkgname-doc $pkgname-luajit"
+source="https://downloads.powerdns.com/releases/dnsdist-$pkgver.tar.bz2"
+
+case "$CARCH" in
+	ppc64le) options="$options !check" ;;
+esac
+
+prepare() {
+	default_prepare
+	cp -a "$builddir" "$builddir-jit"
+}
+
+_configure() {
+	local _arg="$1"
+	local _luajit
+	local _unit_tests
+
+	[ "$_arg" = '-jit' ] || _arg='' _luajit="lua$_lua_version"
+
+	cd "$builddir$_arg"
+
+	# builds are timing out on armhf
+	_unit_tests='--enable-unit-tests'
+	case "$DRONE_REPO_OWNER-$DRONE_RUNNER_PLATFORM-$CARCH" in
+		alpinelinux-linux/arm-armhf) _unit_tests="${_unit_tests}=no" ;;
+	esac
+
+	# LIBH2OEVLOOP_LIBS env variable is because of a pkgconfig bug as per
+	# https://bugs.launchpad.net/ubuntu/+source/h2o/+bug/1826152 and can be
+	# removed when fixed upstream.
+	LIBH2OEVLOOP_LIBS="-lh2o-evloop -lwslay" ./configure \
+		--build="$CBUILD" \
+		--host="$CHOST" \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--enable-dnscrypt \
+		--enable-dns-over-tls \
+		--enable-dns-over-https \
+		--enable-re2 \
+		${_unit_tests} \
+		--with-protobuf \
+		--with-boost=/usr/include \
+		--with-net-snmp \
+		--with-lua${_luajit:+=$_luajit}
+}
+
+build() {
+	_configure
+	make
+
+	[ -d "$builddir-jit" ] || return 0
+
+	_configure -jit
+	make
+}
+
+_cat_found_file() {
+	local _rc="$?"
+	find -name "$1" -type f -ls -printf '%P {{{\n' -exec cat -v -n '{}' ';' -printf '}}} %P\n'
+	return "$_rc"
+}
+
+check() {
+	make check || _cat_found_file 'test-suite.log'
+	./dnsdist --version
+
+	cd "$builddir-jit"
+	make check || _cat_found_file 'test-suite.log'
+	./dnsdist --version
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+
+	mv "$pkgdir/usr/bin/$pkgname" "$pkgdir/usr/bin/$pkgname-lua"
+
+	if cd "$builddir-jit"; then
+		make -j1 DESTDIR="$pkgdir" install-exec
+		mv "$pkgdir/usr/bin/$pkgname" "$pkgdir/usr/bin/$pkgname-luajit"
+	fi
+
+	mv "$pkgdir/usr/bin/$pkgname-lua" "$pkgdir/usr/bin/$pkgname"
+}
+
+common() {
+	pkgdesc="$pkgname common files"
+	depends=""
+
+	mkdir -p "$subpkgdir"
+}
+
+luajit() {
+	pkgdesc="$pkgname with luajit bindings"
+	depends="$pkgname-common !$pkgname"
+
+	mkdir -p "$subpkgdir/usr/bin"
+	mv "$pkgdir/usr/bin/$pkgname-luajit" "$subpkgdir/usr/bin/$pkgname"
+}
+
+sha512sums="c9450e97325d8ad8c8c3a395412c46ea8053cbe1ebe73329a1618212ba29bdf2f8da908ae2b90c314b5aab613387f42363e3a5322b1a36f60190fb48e1c425c5  dnsdist-1.4.0.tar.bz2"

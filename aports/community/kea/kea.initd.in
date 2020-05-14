@@ -1,0 +1,37 @@
+#!/sbin/openrc-run
+
+: ${cfgfile:="/etc/kea/@@NAME@@.conf"}
+: ${logger_dest:="syslog"}
+: ${command_user:="kea"}
+: ${retry:="SIGTERM/5/SIGINT/1/SIGKILL/1"}
+: ${wait:=300}
+
+name="@@NAME@@"
+extra_commands="checkconfig"
+description_checkconfig="Checks configuration file for errors"
+
+command="/usr/sbin/@@NAME@@"
+command_args="-c $cfgfile"
+command_background="yes"
+pidfile="/run/$RC_SVCNAME.pid"
+start_stop_daemon_args="
+	--wait $wait
+	--env KEA_LOGGER_DESTINATION=$logger_dest
+	$start_stop_daemon_args"
+
+depend() {
+	need net
+	after firewall
+}
+
+start_pre() {
+	checkpath -d -m 0750 -o $command_user /run/kea /run/kea/lock
+
+	checkconfig
+}
+
+checkconfig() {
+	ebegin "Checking $name configuration"
+	$command -t "$cfgfile" >/dev/null
+	eend $?
+}

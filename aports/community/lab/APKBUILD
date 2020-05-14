@@ -1,0 +1,64 @@
+# Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
+pkgname=lab
+pkgver=0.17.2
+pkgrel=1
+pkgdesc="A Git Wrapper for GitLab"
+url="https://zaquestion.github.io/lab/"
+arch="all"
+license="CC0-1.0"
+depends="git"
+makedepends="go"
+checkdepends="bash"
+subpackages="
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+source="lab-$pkgver.tar.gz::https://github.com/zaquestion/lab/archive/v$pkgver.tar.gz"
+builddir="$srcdir/src/github.com/zaquestion/$pkgname"
+options="net !check" # Tests require configured GitLab account with SSH keys
+
+export GOPATH="$srcdir"
+export CGO_ENABLED=0
+
+prepare() {
+	mkdir -p ${builddir%/*}
+	mv "$srcdir"/$pkgname-$pkgver "$builddir"/
+	default_prepare
+}
+
+build() {
+	GO111MODULE=on go build -ldflags "-X main.version=$pkgver" -o bin/$pkgname
+	./bin/lab completion bash > lab.bash
+	./bin/lab completion zsh > _lab.zsh
+}
+
+package() {
+	install -Dm755 "$builddir"/bin/$pkgname \
+		"$pkgdir"/usr/bin/$pkgname
+}
+
+cleanup_srcdir() {
+	go clean -modcache
+	default_cleanup_srcdir
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	install -Dm644 "$builddir"/lab.bash \
+		"$subpkgdir"/usr/share/bash-completion/completions/$pkgname
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	install -Dm644 "$builddir"/_lab.zsh \
+		"$subpkgdir"/usr/share/zsh/site-functions/_$pkgname
+}
+
+sha512sums="a35dc286b3eca61f2bed8bdea485181a428d50e6584f209a74d92267956e104cb8d37844cb43d5c2422845630db2fea6d37cb99884a705bdfeba88b29ecb195e  lab-0.17.2.tar.gz"

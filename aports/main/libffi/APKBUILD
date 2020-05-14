@@ -1,0 +1,38 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libffi
+pkgver=3.3
+pkgrel=2
+pkgdesc="A portable, high level programming interface to various calling conventions."
+url="https://sourceware.org/libffi"
+arch="all"
+license="MIT"
+depends_dev="linux-headers"
+makedepends_build="texinfo"
+# on mips* ffitarget.h wants <asm/sgidefs.h>
+makedepends_host="linux-headers"
+checkdepends="dejagnu"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-dbg"
+options="!check" # failing test
+source="https://sourceware.org/pub/libffi/libffi-$pkgver.tar.gz
+	pax-dlmmap.patch
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--enable-pax_emutramp
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="61513801a156f11420f541d325de697131846487122d6bdcf5491b18b4da788589f5c0bb07e88e396495d3be5830d74e9135595e2b8ddbfe95c448d8597fbd6f  libffi-3.3.tar.gz
+72486b389db16055ae4d7d33ba0cb05840537e28fe7a86aa89e2cb922592125d99c18c26c5df7ffde6282742e79f2b9126353e58b58f091f0486589e14dd6474  pax-dlmmap.patch"

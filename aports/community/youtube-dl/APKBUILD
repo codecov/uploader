@@ -1,0 +1,67 @@
+# Contributor: Peter Bui <pnutzh4x0r@gmail.com>
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=youtube-dl
+pkgver=2020.05.08
+pkgrel=0
+pkgdesc="Command-line program to download videos from YouTube"
+url="https://youtube-dl.org/"
+arch="noarch"
+license="Unlicense"
+depends="python3 py3-setuptools"
+checkdepends="py3-flake8 py3-nose"
+subpackages="$pkgname-doc
+	$pkgname-zsh-completion:zshcomp
+	$pkgname-bash-completion:bashcomp
+	$pkgname-fish-completion:fishcomp"
+source="https://github.com/rg3/youtube-dl/releases/download/$pkgver/youtube-dl-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname"
+
+prepare() {
+	default_prepare
+	sed -i \
+		-e 's|etc/bash_completion.d|share/bash-completion/completions|' \
+		-e 's|etc/fish/completions|share/fish/completions|' \
+		"$builddir"/setup.py
+}
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	PYTHON=/usr/bin/python3 make offlinetest
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+zshcomp() {
+	pkgdesc="Zsh completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	install -Dm644 "$builddir"/$pkgname.zsh \
+		"$subpkgdir"/usr/share/zsh/site-functions/_$pkgname
+}
+
+bashcomp() {
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions/
+	mv "$pkgdir"/usr/share/bash-completion/completions/$pkgname.bash-completion \
+		"$subpkgdir"/usr/share/bash-completion/completions/$pkgname
+}
+
+fishcomp() {
+	pkgdesc="Fish completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel fish"
+
+	mkdir -p "$subpkgdir"/usr/share/fish/completions/
+	mv "$pkgdir"/usr/share/fish/completions/$pkgname.fish \
+		"$subpkgdir"/usr/share/fish/completions/
+}
+
+sha512sums="fbfd6bc42959547c6307b291478d7d86b79847a92d193b795d91f717471927d22c45356c0e2ba03ea1c5bc96d2fa5a949cb2283b0d7ec976bcf3a54d6c928ed1  youtube-dl-2020.05.08.tar.gz"

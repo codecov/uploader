@@ -1,0 +1,38 @@
+# Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
+# Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
+pkgname=php7-pecl-redis
+_pkgreal=redis
+pkgver=5.2.2
+pkgrel=0
+pkgdesc="PHP extension for interfacing with Redis - PECL"
+url="https://pecl.php.net/package/redis"
+arch="all"
+license="PHP-3.01"
+depends="php7-common php7-pecl-igbinary php7-session php7-json"
+makedepends="php7-dev autoconf re2c"
+source="$pkgname-$pkgver.tgz::https://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+provides="php7-redis=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-redis" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7 \
+		--enable-redis-igbinary
+	make
+}
+
+check() {
+	# Need running redis server
+	php7 -d extension="$builddir"/modules/$_pkgreal.so --ri $_pkgreal
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	local confdir="$pkgdir/etc/php7/conf.d"
+	mkdir -p "$confdir"
+	echo "extension=$_pkgreal.so" > "$confdir"/20_$_pkgreal.ini
+}
+
+sha512sums="0020c572bcd24cdb479046727fba2d30ca87c9a7111c51e5fe3be0b85459e3e7dfc8892b690650de0a7dc80c1a8921f9de45590f6e60257fbf0534729c6e6f4f  php7-pecl-redis-5.2.2.tgz"

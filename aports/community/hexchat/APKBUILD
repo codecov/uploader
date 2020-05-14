@@ -1,0 +1,43 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=hexchat
+pkgver=2.14.3
+pkgrel=2
+pkgdesc="Graphical IRC client based on XChat"
+url="https://hexchat.github.io"
+arch="all !armhf !armv7"
+license="GPL-2.0-or-later"
+makedepends="dbus-glib-dev gtk+2.0-dev iso-codes libnotify-dev libproxy-dev
+	openssl-dev libsexy-dev libxml2-dev lua5.3-dev meson python3-dev"
+subpackages="$pkgname-doc $pkgname-lang $pkgname-python:_python"
+source="https://dl.hexchat.net/hexchat/hexchat-$pkgver.tar.xz
+	force-meson-build-order.patch"
+
+build() {
+	meson --prefix=/usr \
+		--buildtype=plain \
+		-Dwith-perl=false \
+		-Dwith-lua=lua5.3 \
+		-Dwith-sysinfo=false \
+		-Dwith-libcanberra=false \
+		-Dwith-python=python3-embed \
+		build_dir/
+	ninja -C build_dir/
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build_dir/ install
+
+	# not worth a -dev pkg
+	rm -fr "$pkgdir"/usr/include
+	rm -fr "$pkgdir"/usr/lib/pkgconfig
+}
+
+_python() {
+	pkgdesc="Python plugin for hexchat"
+	mkdir -p "$subpkgdir"/usr/lib/hexchat/plugins
+	mv "$pkgdir"/usr/lib/hexchat/plugins/python.so \
+		"$subpkgdir"/usr/lib/hexchat/plugins
+}
+
+sha512sums="c265921f2cb02c5d273bcdbb20a44a5c9f38b0f8cbba4fd56b177b676fc5d1dfd05bf80fcfa3706c7981f712f2f6c9aaaf80bccf3be0f6d96068dd393f3a7cb5  hexchat-2.14.3.tar.xz
+f579622330391fbce798bf9b0e5c1d07975a188b79f7160ab8c921b7df92b2d31444f30d6f62b7b08f7543a4ef40975ecf53705903374b73069bb369967491c5  force-meson-build-order.patch"

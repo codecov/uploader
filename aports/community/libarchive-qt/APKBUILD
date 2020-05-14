@@ -1,0 +1,26 @@
+# Contributor:
+# Maintainer:
+pkgname=libarchive-qt
+pkgver=2.0.2
+pkgrel=0
+pkgdesc="Qt based archiving solution with libarchive backend"
+url="https://gitlab.com/marcusbritanicus/libarchive-qt"
+options="!check"
+arch="all"
+license="LGPL-3.0-or-later"
+depends_dev="qt5-qtbase-dev xz-dev libarchive-dev zlib-dev bzip2-dev"
+makedepends="$depends_dev lzip"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/marcusbritanicus/libarchive-qt/-/archive/v$pkgver/libarchive-qt-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+sha512sums="bf82884134265a825b49e3d313279d8826c422a54a5be65f170995c140ed2f4e6eca1cb939bf23bd1c04ef6bd60e47f9ae1cb5acaa505a114d2f1dfbb24c7c5c  libarchive-qt-2.0.2.tar.gz"

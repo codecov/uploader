@@ -1,0 +1,33 @@
+# Contributor: Danct12 <danct12@disroot.org>
+# Maintainer: Danct12 <danct12@disroot.org>
+pkgname=wf-config
+pkgver=0.4.0
+pkgrel=0
+pkgdesc="Library for managing configuration files written for Wayfire"
+url="https://wayfire.org"
+arch="all"
+license="MIT"
+makedepends="
+	meson
+	libevdev-dev
+	libxml2-dev
+	glm-dev
+	linux-headers
+	"
+options="!check" # no testsuite
+subpackages="$pkgname-dev"
+source="https://github.com/WayfireWM/wf-config/releases/download/$pkgver/wf-config-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="30358ada695012b9f4be835f2b2d032e0d8d52c3e9d49d39ae975c74bc0cac188341e507124a088d8cdb3d62c77645a7d435262d15a6cc604b4738861362a299  wf-config-0.4.0.tar.xz"

@@ -1,0 +1,34 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Valery Kartel <valery.kartel@gmail.com>
+pkgname=wayland-protocols
+pkgver=1.20
+pkgrel=0
+pkgdesc="Protocols and protocol extensions complementing the Wayland core protocol"
+url="https://wayland.freedesktop.org"
+arch="noarch"
+license="MIT"
+provides="$pkgname-dev"
+makedepends="wayland-dev"
+source="https://wayland.freedesktop.org/releases/wayland-protocols-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--with-noarch-pkgconfigdir=/usr/lib/pkgconfig
+	make
+}
+
+check() {
+	make -C "$builddir" check
+}
+
+package() {
+	make -C "$builddir" DESTDIR="$pkgdir" install
+}
+
+sha512sums="d13f65d03add2c39cc32bf6bda0e981e9f52504bf8505fceea045c8baeb73bea64fa4edb99cb837677fbab1b5b3023054adff36fac127e819690f366b81c4977  wayland-protocols-1.20.tar.xz"

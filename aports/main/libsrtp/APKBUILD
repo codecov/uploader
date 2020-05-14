@@ -1,0 +1,42 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libsrtp
+pkgver=2.3.0
+pkgrel=0
+pkgdesc="An implementation of the Secure Real-time Transport Protocol (SRTP)"
+url="http://srtp.sourceforge.net"
+arch="all"
+license="BSD-3-Clause"
+makedepends="automake autoconf libtool"
+subpackages="$pkgname-static $pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/cisco/libsrtp/archive/v$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make all shared_library
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+check() {
+	# Required for loading libsrtp2.so.1
+	LD_LIBRARY_PATH="$LD_LIBRARY_PATH:$builddir" make runtest
+}
+
+static() {
+	depends=""
+	pkgdesc="$pkgdesc (static library)"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*.a "$subpkgdir"/usr/lib
+}
+
+sha512sums="34b1a01cb9a75aed175be09aadd2827224203b9801becc3fbc5214667cce79c3b87b0f59e4315583863ab5a2cc4fc81d56ab604a5e4c984518b8a8a2a7b77461  libsrtp-2.3.0.tar.gz"

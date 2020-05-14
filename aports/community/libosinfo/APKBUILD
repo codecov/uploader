@@ -1,0 +1,51 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libosinfo
+pkgver=1.7.1
+pkgrel=1
+pkgdesc="A library for managing OS information for virtualization"
+url="https://libosinfo.org/"
+arch="all"
+license="LGPL-2.0-or-later"
+depends="hwids osinfo-db"
+makedepends="
+	meson
+	glib-dev
+	libsoup-dev
+	libxml2-dev
+	libxslt-dev
+	gobject-introspection-dev
+	vala
+	perl
+	"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://gitlab.com/libosinfo/libosinfo/-/archive/v$pkgver/libosinfo-v$pkgver.tar.gz"
+builddir="$srcdir/libosinfo-v$pkgver"
+
+# secfixes:
+#   1.5.0-r1:
+#     - CVE-2019-13313
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		-Denable-gtk-doc=false \
+		-Denable-introspection=enabled \
+		-Denable-tests=true \
+		-Denable-vala=enabled \
+		-Dwith-pci-ids-path=/usr/share/hwdata/pci.ids \
+		-Dwith-usb-ids-path=/usr/share/hwdata/usb.ids \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="15b39743a90b1da37ad3430a8939ffd4a806fa3b61063a50691c2480a312514f257d046d87f883614cfaf16767408370780416baaba145e078a918f5b8378a76  libosinfo-v1.7.1.tar.gz"

@@ -1,0 +1,32 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=http-parser
+pkgver=2.9.4
+pkgrel=0
+pkgdesc="HTTP request/response parser for C"
+url="https://github.com/nodejs/http-parser"
+arch="all"
+license="MIT"
+subpackages="$pkgname-dev"
+source="https://github.com/nodejs/http-parser/archive/v$pkgver/http-parser-$pkgver.tar.gz"
+
+case "$CARCH" in
+	armhf|armv7)
+		# Tests fail due to padding
+		options="$options !check"
+		;;
+esac
+
+build() {
+	make library
+}
+
+check() {
+	make test
+}
+
+package() {
+	make install DESTDIR="$pkgdir" PREFIX="/usr"
+}
+
+sha512sums="b45df7b94d1c51079d44687d0a7f901f44faae51df4e84c7e3fe38f130c2d809d0e7c2a146c57b3723e60732aededc246bf44eadb10a95b710963d641f9fe7cd  http-parser-2.9.4.tar.gz"

@@ -1,0 +1,36 @@
+# Contributor: Alan Lacerda <alacerda@alpinelinux.org>
+# Maintainer: Alan Lacerda <alacerda@alpinelinux.org>
+pkgname=eom
+pkgver=1.24.0
+pkgrel=0
+pkgdesc="A simple graphics viewer for the MATE"
+url="https://github.com/mate-desktop/eom"
+arch="all !s390x !mips !mips64" # librsvg
+license="GPL-2.0"
+depends="mate-icon-theme libxml2-utils"
+makedepends="glib-dev gtk+3.0-dev itstool mate-desktop-dev
+	libexif-dev lcms2-dev dconf-dev dbus-dev librsvg-dev
+	libxslt-dev libpeas-dev dbus-glib-dev intltool"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://pub.mate-desktop.org/releases/${pkgver%.*}/eom-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--sysconfdir=/etc \
+		--disable-static \
+		--disable-schemas-compile \
+		--prefix=/usr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="17d26a9341cde0a86f8d8b65008f554398111d80f5d131441654bd9e907df9c9d696038e678aca8d7f4bd2923ff593f626735a3cc30451118818cdbebceb87ab  eom-1.24.0.tar.xz"

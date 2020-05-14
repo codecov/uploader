@@ -1,0 +1,26 @@
+# Maintainer: Marian Buschsieweke <marian.buschsieweke@ovgu.de>
+pkgname=tinycbor
+pkgver=0.5.3
+pkgrel=0
+pkgdesc="Concise Binary Object Representation (CBOR) Library"
+url="https://github.com/intel/tinycbor"
+checkdepends="qt5-qtbase-dev"
+arch="x86_64" # only works on x86_64
+license="MIT"
+subpackages="$pkgname-dev lib$pkgname:libs"
+source="$pkgname-$pkgver.tar.gz::https://github.com/intel/tinycbor/archive/v$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" prefix=/usr/ install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+
+sha512sums="34d1fffa65555a53779402179facd70fc245a74e30103013f2072be69e3d7cc413be773d546147d0e44739fcb958f395fa623a659b78dc08e8055be15dae7e1a  tinycbor-0.5.3.tar.gz"

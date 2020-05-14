@@ -1,0 +1,38 @@
+#!/sbin/openrc-run
+# Copyright 1999-2016 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License, v2 or later
+
+supervisor=supervise-daemon
+
+name="System Message Bus"
+description="D-Bus System Message Bus"
+
+command="/usr/bin/dbus-daemon"
+command_args="--system"
+command_args_foreground="--nofork"
+
+extra_started_commands="reload"
+
+depend() {
+	need localmount
+	after bootmisc
+}
+
+start_pre() {
+	/usr/bin/dbus-uuidgen --ensure=/etc/machine-id
+
+	# We need to test if /var/run/dbus exists, since script will fail if it does not
+	[ -e /var/run/dbus ] || mkdir /var/run/dbus
+}
+
+stop_post() {
+	[ ! -S /var/run/dbus/system_bus_socket ] || rm -f /var/run/dbus/system_bus_socket
+}
+
+reload() {
+	ebegin "Reloading $name configuration"
+	/usr/bin/dbus-send --print-reply --system --type=method_call \
+			--dest=org.freedesktop.DBus \
+			/ org.freedesktop.DBus.ReloadConfig > /dev/null
+	eend $?
+}

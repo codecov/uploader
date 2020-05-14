@@ -1,0 +1,65 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=lua-filesystem
+_pkgname=luafilesystem
+pkgver=1.8.0
+_pkgver=${pkgver//./_}
+_rockver=${pkgver%.*}-${pkgver##*.}
+pkgrel=0
+pkgdesc="Filesystem functions for Lua"
+url="http://keplerproject.github.io/luafilesystem/"
+arch="all"
+license="MIT"
+checkdepends="luajit"
+source="$_pkgname-$pkgver.tar.gz::https://github.com/keplerproject/$_pkgname/archive/v$_pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$_pkgver"
+
+_luaversions="5.1 5.2 5.3"
+for _v in $_luaversions; do
+	makedepends="$makedepends lua$_v-dev"
+	subpackages="$subpackages lua$_v-${pkgname#lua-}:_subpackage"
+done
+
+prepare() {
+	default_prepare
+
+	local lver; for lver in $_luaversions; do
+		cp -r "$builddir" "$builddir-$lver"
+	done
+}
+
+build() {
+	local lver; for lver in $_luaversions; do
+		msg "Building for Lua $lver..."
+		make -C "$builddir-$lver" \
+			CFLAGS="$CFLAGS $(pkg-config lua$lver --cflags) -fPIC"
+	done
+}
+
+check() {
+	local lver; for lver in $_luaversions jit; do
+		msg "Testing on lua$lver"
+
+		cd "$builddir-${lver/jit/5.1}"
+		LUA_CPATH=./src/?.so lua$lver tests/test.lua
+	done
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+_subpackage() {
+	local lver="${subpkgname:3:3}"
+	pkgdesc="$pkgdesc $lver"
+	depends="lua$lver"
+	install_if="$pkgname=$pkgver-r$pkgrel lua$lver"
+	local install_cmod=$(pkg-config --variable=INSTALL_CMOD lua$lver)
+	local rockdir="$subpkgdir/usr/lib/luarocks/rocks-$lver/$_rockname/$_rockver"
+
+	make -C "$builddir-$lver" LUA_LIBDIR="$subpkgdir/$install_cmod" install
+
+	mkdir -p "$rockdir"
+	echo 'rock_manifest = {}' > "$rockdir"/rock_manifest
+}
+
+sha512sums="79d964f13ae43716281dc8521d2f128b22f2261234c443e242b857cfdf621e208bdf4512f8ba710baa113e9b3b71e2544609de65e2c483f569c243a5cf058247  luafilesystem-1.8.0.tar.gz"

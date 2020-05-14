@@ -1,0 +1,44 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libgsf
+pkgver=1.14.47
+pkgrel=0
+pkgdesc="Utility library for reading and writing structured file formats"
+url="https://www.gnome.org/"
+arch="all"
+license="LGPL-2.1-only"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+depends_dev="bzip2-dev"
+makedepends="libxml2-dev glib-dev bzip2-dev intltool python3 zlib-dev
+	gobject-introspection-dev"
+source="https://download.gnome.org/sources/libgsf/1.14/libgsf-$pkgver.tar.xz"
+
+# secfixes:
+#   1.14.41-r0:
+#     - CVE-2016-9888
+
+build() {
+	sed -i -e 's/gsf-gnome//' -e 's/thumbnailer//' Makefile.*
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--mandir=/usr/share/man \
+		--disable-static \
+		--without-gnome-vfs \
+		--without-bonobo \
+		--enable-introspection
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	rm -f "$pkgdir"/usr/share/man/man1/gsf-office-thumbnailer.1
+}
+
+sha512sums="143d48eb02be8202b9eb97e29e5909061a0e1a562b86e4bb4b2eac3fb0a42b139ead131ed1ffa4dfe304b65527089777823122223a74ebbc9df94c17d013f97b  libgsf-1.14.47.tar.xz"

@@ -1,0 +1,96 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=spice-gtk
+pkgver=0.38
+pkgrel=0
+pkgdesc="GTK+ widget for SPICE clients"
+url="https://www.spice-space.org/spice-gtk.html"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="
+	meson
+	gstreamer-dev
+	gst-plugins-base-dev
+	spice-protocol
+	json-glib-dev
+	gtk+3.0-dev
+	usbredir-dev
+	libusb-dev
+	asciidoc
+	lz4-dev
+	opus-dev
+	glib-dev
+	cyrus-sasl-dev
+	gobject-introspection-dev
+	vala
+	libjpeg-turbo-dev
+	cairo-dev
+	zlib-dev
+	pixman-dev
+	openssl-dev
+	libx11-dev
+	libepoxy-dev
+	libva-dev
+	py3-six
+	py3-parsing
+	perl
+	"
+options="suid"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang $pkgname-tools
+	spice-glib:glib"
+source="https://www.spice-space.org/download/gtk/spice-gtk-$pkgver.tar.xz
+	disable-test-relying-on-usb.patch
+	fix-pkgconfig-version.patch
+	"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--buildtype=plain \
+		-Dgtk=enabled \
+		-Dwebdav=disabled \
+		-Dpulse=disabled \
+		-Dbuiltin-mjpeg=false \
+		-Dusbredir=enabled \
+		-Dpolkit=disabled \
+		-Dpie=true \
+		-Dintrospection=enabled \
+		-Dvapi=enabled \
+		-Dlz4=enabled \
+		-Dsasl=enabled \
+		-Dcelt051=disabled \
+		-Dopus=enabled \
+		-Dsmartcard=disabled \
+		-Dgtk_doc=disabled \
+		-Dcoroutine=gthread \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+tools() {
+	pkgdesc="$pkgdesc (tooling)"
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}
+
+glib() {
+	pkgdesc="$pkgdesc (glib library)"
+	mkdir -p "$subpkgdir"/usr/lib \
+		"$subpkgdir"/usr/lib/girepository-1.0/
+	mv "$pkgdir"/usr/lib/*-glib-*.so* \
+		"$subpkgdir"/usr/lib/
+	mv "$pkgdir"/usr/lib/girepository-1.0/SpiceClientGLib-*.typelib \
+		"$subpkgdir"/usr/lib/girepository-1.0/
+}
+
+sha512sums="27b44ac9f0cee2737ce03bb3f47c62fc0ee2402c291c49fc56cffc4ccb63e2cab001a68ba865a6375d82cb38444408d59c68469783ee4279fa818d8682e902f3  spice-gtk-0.38.tar.xz
+49af336eb9c4a785b557b3e0e4e9781bccc9fbfd85d2d98bff6bd57c80d9e49f17b27915c720f49da8670f7ab197496f5a7e2a85cc478a9cb0051b0a11a2bf5f  disable-test-relying-on-usb.patch
+0126de8c1dad557d33c3e70c8c281d4515ef54df99ac282046a7b543cfd765fca7b94ed7f1b27ae48f3b62492936feb74e59e5c653f193515d07267497b740d7  fix-pkgconfig-version.patch"

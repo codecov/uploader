@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=mtxclient
+pkgver=0.3.0
+pkgrel=0
+pkgdesc="Client API library for Matrix, built on top of Boost.Asio"
+url="https://github.com/nheko-reborn/mtxclient"
+arch="all"
+license="MIT"
+depends_dev="nlohmann-json openssl-dev zlib-dev olm-dev libsodium-dev boost-dev"
+makedepends="$depends_dev cmake gtest-dev"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/nheko-reborn/mtxclient/archive/v$pkgver.tar.gz"
+options="!check" # Requires running Synapse instance
+
+build() {
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_LIB_EXAMPLES=OFF \
+		-DCMAKE_BUILD_TYPE=None
+	make
+}
+
+check() {
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make install
+}
+
+sha512sums="113eb2c1042e0aeea6607fae0b7fd0ff1655d6b902fa11a3492561c53240901e641f53d413810e932ac210e519026016c5fac38bda1592336c95b2d79781557e  mtxclient-0.3.0.tar.gz"

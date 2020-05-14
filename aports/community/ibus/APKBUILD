@@ -1,0 +1,76 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=ibus
+pkgver=1.5.22
+pkgrel=3
+pkgdesc="Next Generation Input Bus for Linux"
+url="https://github.com/ibus/ibus/wiki"
+arch="all"
+license="LGPL-2.1-or-later"
+depends="
+	dconf hicolor-icon-theme iso-codes dbus py3-gobject3
+"
+makedepends="
+	dconf-dev gtk+-dev gtk+3.0-dev libnotify-dev iso-codes-dev
+	gobject-introspection-dev vala intltool qt5-qtbase
+	automake autoconf gnome-common gtk-doc wayland-dev wayland-protocols
+	dbus-x11 unicode-character-database xz cldr-emoji-annotation
+"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-lang
+	$pkgname-emoji
+	$pkgname-bash-completion:bashcomp:noarch
+	"
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/ibus/ibus/archive/$pkgver.tar.gz
+	0001-Use-more-portable-call-to-mktemp.patch
+"
+install="$pkgname.post-install"
+
+prepare() {
+	default_prepare
+	NOCONFIGURE=1 ./autogen.sh
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--libexecdir=/usr/lib/ibus \
+		--sysconfdir=/etc \
+		--enable-dconf \
+		--enable-wayland \
+		--disable-memconf \
+		--enable-ui \
+		--disable-gtk-doc \
+		--enable-emoji-dict \
+		--with-ucd-dir=/usr/share/unicode/
+	make
+}
+
+check() {
+	./bus/ibus-daemon --version
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+emoji() {
+	pkgdesc="$pkgdesc (emojis)"
+	depends="$pkgname unicode-character-database cldr-emoji-annotation"
+
+	mkdir -p "$subpkgdir"/usr/share/ibus
+	mv "$pkgdir"/usr/share/ibus/dicts "$subpkgdir"/usr/share/ibus
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion
+}
+
+sha512sums="972da51eb5702692f13b4f4cff51b3765890e5a91f936b9fa6b6cafaf00f4d078dc39f14bd00f3883203d295d826647c509024dd197d726d4def8d13d45d71b4  ibus-1.5.22.tar.gz
+1e2e62ce52becf75d794c403e8f21bb72e8406aacbdbc5189f62a3b7c54166c40da0032d3f3865f5a23d9d2c782f974b7bcc9ba5ce437d9eb435dd3db3ff0b06  0001-Use-more-portable-call-to-mktemp.patch"

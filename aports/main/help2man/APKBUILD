@@ -1,0 +1,30 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=help2man
+pkgver=1.47.15
+pkgrel=0
+pkgdesc="Create simple man pages from --help output"
+url="https://www.gnu.org/software/help2man"
+arch="noarch"
+license="GPL-3.0-or-later"
+depends="perl"
+options="!check"  # No test suite
+subpackages="$pkgname-doc"
+source="https://ftp.gnu.org/gnu/help2man/help2man-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="2ab835610545f37eef2d77887371378decbac622196426a3444c5fb495596371d0151a92c79d3e3040e93acf3dbeefbc431dac1e76a370fdb5063b43192545ad  help2man-1.47.15.tar.xz"

@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kitemviews
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Widget addons for Qt Model/View"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="GPL-2.0-only AND LGPL-2.1-only"
+depends_dev="qt5-qtbase-dev"
+makedepends="extra-cmake-modules qt5-qttools-dev doxygen"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kitemviews-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="9954223216863e71e0d80344274e81e8ca0a7248f23ba0053f36d0cd544f986a19fa63468cd3b86ec880c13d69188991cae3acc9ee5a40521b8bc5c0f26e5dec  kitemviews-5.70.0.tar.xz"

@@ -1,0 +1,45 @@
+# Maintainer: Daniel Isaksen <d@duniel.no>
+pkgname=tmate
+pkgver=2.4.0
+pkgrel=0
+pkgdesc="Instant Terminal Sharing"
+url="https://tmate.io/"
+arch="all"
+license="ISC"
+depends="ncurses-terminfo"
+makedepends="ncurses-dev libevent-dev autoconf automake bsd-compat-headers
+	libtool zlib-dev libssh-dev msgpack-c-dev"
+subpackages="$pkgname-doc"
+source="tmate-$pkgver.tar.gz::https://github.com/tmate-io/tmate/archive/$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	install -Dm644 example_tmux.conf \
+		"$pkgdir"/usr/share/doc/$pkgname/examples/$pkgname.conf
+	for file in CHANGES FAQ README TODO; do
+		install -m644 "$file" "$pkgdir"/usr/share/doc/$pkgname/
+	done
+}
+
+sha512sums="92d2ca354b295678bfc2747ca83a45ebafeaec40ebac94bd94c4926af4f820b3f3a087f365147f41c80d1c8ad032f52c697a2421839c39315d84f98f7eccada6  tmate-2.4.0.tar.gz"

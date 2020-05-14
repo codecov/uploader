@@ -1,0 +1,87 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+_luaversions="5.1 5.2 5.3"
+_drivers="mysql postgres sqlite3 odbc"
+
+pkgname=lua-sql
+_pkgname=luasql
+pkgver=2.5.0
+pkgrel=1
+pkgdesc="Lua SQL drivers"
+url="https://keplerproject.github.io/luasql/"
+arch="all"
+license="MIT"
+makedepends="mariadb-connector-c-dev postgresql-dev sqlite-dev unixodbc-dev"
+for _v in $_luaversions; do
+	makedepends="$makedepends lua$_v-dev"
+	for _d in $_drivers; do
+		subpackages="$subpackages lua$_v-sql-$_d:_subpackage"
+	done
+done
+for _d in $_drivers; do
+	subpackages="$subpackages lua-sql-$_d:_meta_subpackage"
+done
+
+source="$_pkgname-$pkgver.tar.gz::https://github.com/keplerproject/$_pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+
+	local lver; for lver in $_luaversions; do
+		cp -r "$builddir" "$builddir-$lver"
+	done
+}
+
+build() {
+	local cflags lver
+
+	for lver in $_luaversions; do
+		cflags="$CFLAGS $(pkg-config lua$lver --cflags) -fPIC"
+
+		msg "Building for Lua $lver..."
+		cd "$builddir-$lver"
+
+		make CFLAGS="$cflags" DRIVER_LIBS="-lmysqlclient" \
+			mysql
+
+		make CFLAGS="$cflags" DRIVER_LIBS="$(pkg-config --libs libpq)" \
+			postgres
+
+		make CFLAGS="$cflags" DRIVER_LIBS="$(pkg-config --libs sqlite3)" \
+			sqlite3
+
+		make CFLAGS="$cflags -DUNIXODBC" DRIVER_LIBS="-lodbc" \
+			odbc
+	done
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+_meta_subpackage() {
+	local driver="${subpkgname##*-}"
+	pkgdesc="$pkgdesc for $driver"
+
+	mkdir -p "$subpkgdir"
+}
+
+_subpackage() {
+	local lver="${subpkgname:3:3}"
+	local driver="${subpkgname##*-}"
+	pkgdesc="Lua $lver SQL driver for $driver"
+	depends="lua$lver"
+	install_if="lua-sql-$driver=$pkgver-r$pkgrel lua$lver"
+	local rockdir="$subpkgdir/usr/lib/luarocks/rocks-$lver/$_pkgname/$pkgver-1"
+
+	cd "$builddir-$lver"
+	local install_cmod="$(pkg-config --variable INSTALL_CMOD lua$lver)"
+	install -D src/$driver.so \
+		"$subpkgdir"/$install_cmod/luasql/$driver.so
+
+	mkdir -p "$rockdir"
+	echo 'rock_manifest = {}' > "$rockdir"/rock_manifest
+}
+
+sha512sums="474363c9feb6bc095d0d067d220a3a2faf0524172e082f217407bbe632d24575083ad8838725e4fb6cd369276ea6cb6f8547b84d9d9f77b9d87076404e2bce9e  luasql-2.5.0.tar.gz"

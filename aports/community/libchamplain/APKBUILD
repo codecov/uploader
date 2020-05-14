@@ -1,0 +1,32 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=libchamplain
+pkgver=0.12.20
+pkgrel=2
+pkgdesc="libchamplain is a C library providing a ClutterActor to display maps"
+url="https://wiki.gnome.org/Projects/libchamplain"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="glib-dev gtk+3.0-dev clutter-dev cairo-dev sqlite-dev libsoup-dev
+	gobject-introspection-dev clutter-gtk-dev gtk-doc vala meson"
+options="!check" # no tests
+subpackages="$pkgname-dev"
+source="https://download.gnome.org/sources/libchamplain/${pkgver%.*}/libchamplain-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dvapi=true \
+		-Dintrospection=true \
+		-Dgtk_doc=true \
+		. output
+	ninja -C output
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="514e4bd2803ace0d87a95a318a03bc2f2ccc454129146d76590d1b1f5666c95a4fb7013e2ad0cfafc5844d7d8b732c81a44cd0e7d51c505adcfe55c55abb4f6f  libchamplain-0.12.20.tar.xz"

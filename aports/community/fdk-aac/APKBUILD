@@ -1,0 +1,27 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=fdk-aac
+pkgver=2.0.1
+pkgrel=0
+pkgdesc="Fraunhofer FDK AAC codec library"
+url="https://sourceforge.net/projects/opencore-amr"
+arch="all"
+license="custom"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://downloads.sourceforge.net/sourceforge/opencore-amr/fdk-aac-$pkgver.tar.gz"
+options="!check" # no upstream/available testsuite
+
+build() {
+	./configure \
+		--prefix="/usr" \
+		--disable-static
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm644 NOTICE \
+		"$pkgdir"/usr/share/licenses/libfdk-aac/NOTICE
+}
+
+sha512sums="08209bbd060edafe7b607c9e1394cd03df4f98df6f32b4be21d34d1ab491a7447ed592785546c040126767bd31980121ca6a31aba06eaf90558b14228e302d82  fdk-aac-2.0.1.tar.gz"

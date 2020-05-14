@@ -1,0 +1,25 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=corekeyboard
+pkgver=2.8.0
+pkgrel=0
+pkgdesc="A x11 based virtual keyboard from the CoreApps family."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtsvg"
+makedepends="qt5-qtbase-dev qt5-qtx11extras-dev libcprime-dev libxtst-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/corekeyboard/-/archive/v$pkgver/corekeyboard-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+sha512sums="ab7632bf05aa68b973c95d7d64e13674bd61a0916ea584dcc00cad2c9eeb4146494e2fc5c1a37c74fbe45910d4171443767044dd7bba327a7a7da76bba8d6d68  corekeyboard-2.8.0.tar.gz"

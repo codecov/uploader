@@ -1,0 +1,34 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=simple-scan
+pkgver=3.36.2.1
+pkgrel=0
+pkgdesc="Simple Scan allows you to get images from a scanner"
+url="https://gitlab.gnome.org/GNOME/simple-scan"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="sane-dev dconf-dev gtk+3.0-dev colord-dev libgusb-dev vala itstool
+	libxml2-utils meson libwebp-dev"
+subpackages="$pkgname-doc $pkgname-lang"
+source="https://download.gnome.org/sources/simple-scan/${pkgver%.*.*}/simple-scan-$pkgver.tar.xz"
+
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--buildtype=plain \
+		output .
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="b1a936fe54ddd3d973464745bd7a14c293125d9161ad2c76fe8bab9c34672dacf032d48aa802e5f3930ca96c76b5c90a522c6f9cae55f70b209e550a019b5cfc  simple-scan-3.36.2.1.tar.xz"

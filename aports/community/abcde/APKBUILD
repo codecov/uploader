@@ -1,0 +1,33 @@
+# Maintainer:
+pkgname=abcde
+pkgver=2.9.3
+pkgrel=0
+pkgdesc="A command line CD encoder that reads your CD, downloads the track information from a CDDB provider, and rips your CD"
+url="http://abcde.einval.com/"
+arch="noarch !armv7" # py3-eyed3 missing
+license="GPL-2.0-or-later"
+depends="bash cd-discid py3-eyed3"
+options="!check"  # No test suite.
+subpackages="$pkgname-doc"
+source="http://abcde.einval.com/download/abcde-${pkgver}.tar.gz
+	busybox-wget.patch"
+
+prepare() {
+	default_prepare
+	sed -e "s:normalize-audio:normalize:g" -i ${pkgname}
+}
+
+build() {
+	make
+}
+
+package() {
+	make DESTDIR="${pkgdir}" \
+		prefix=/usr \
+		sysconfdir=/etc \
+		docdir=/usr/share/doc/${pkgname} \
+		install
+}
+
+sha512sums="51a1dfa1f1d2dab6b8dad7d9f70d0139938151bc2dae0e9fc80da5385b4bba4d71c89a4d1b2dec5bd24787a542cb0caeacbef423cf32b8014cf6320c391b4236  abcde-2.9.3.tar.gz
+282eecc38064713e69705b2b5531822a44c74565fb2cea84f24c0210433d5cc4ec575f511d76b7f72d9af45c74e4722cd62e91c73145bfd06e1f5f0af2d44719  busybox-wget.patch"

@@ -1,0 +1,36 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kdepim-apps-libs
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="KDE PIM mail related libraries"
+arch="all !armhf"
+url="https://kontact.kde.org/"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev kconfig-dev kconfigwidgets-dev
+	kcoreaddons-dev ki18n-dev kiconthemes-dev kio-dev kservice-dev
+	kwidgetsaddons-dev akonadi-dev akonadi-contacts-dev kcontacts-dev
+	grantleetheme-dev pimcommon-dev libkleo-dev gpgme-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kdepim-apps-libs-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+
+	# kaddressbookgrantlee-printing-grantleeprinttest is broken
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "kaddressbookgrantlee-printing-grantleeprinttest"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="8856f1f3be170479b25ff80826270a8467e4ae16846934df7121b726f8bfc006fdbe025d2439778df6ff39185c4c012915bb5d2565d82047cc8df04c63a0715e  kdepim-apps-libs-20.04.0.tar.xz"

@@ -1,0 +1,69 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=icingaweb2
+pkgver=2.7.3
+pkgrel=1
+pkgdesc="Web Interface for Icinga2"
+url="http://www.icinga.org"
+arch="noarch !armhf !armv7 !s390x !mips !mips64"
+license="GPL"
+_php=php7
+depends="$_php ${_php}-gd ${_php}-ldap ${_php}-intl ${_php}-pgsql
+	${_php}-mysqlnd ${_php}-gettext ${_php}-ctype ${_php}-openssl ${_php}-sockets
+	${_php}-json ${_php}-dom ${_php}-pecl-imagick ${_php}-pdo_mysql
+	${_php}-pdo_pgsql ${_php}-session ${_php}-curl
+	${_php}-sqlite3 ${_php}-pdo_sqlite"
+pkggroups="icingaweb2"
+options="!check"
+install="$pkgname.pre-install $pkgname.post-install"
+subpackages="$pkgname-doc $pkgname-bash-completion:bashcomp:noarch"
+source="$pkgname-$pkgver.tar.gz::https://github.com/Icinga/${pkgname}/archive/v$pkgver.tar.gz"
+builddir="$srcdir"/$pkgname-$pkgver
+
+build() {
+	cd "$builddir"
+	return 0
+}
+
+package() {
+	cd "$builddir"
+	mkdir -p "$pkgdir/etc/$pkgname"
+	mkdir -p "$pkgdir/usr/bin"
+	mkdir -p "$pkgdir/usr/share/webapps/$pkgname"
+	mkdir -p "$pkgdir/var/log/$pkgname"
+	mkdir -p "$pkgdir/usr/share/doc/$pkgname"
+	cp -r application doc library modules public bin etc "$pkgdir"/usr/share/webapps/$pkgname
+	ln -s /usr/share/webapps/icingaweb2/bin/icingacli "$pkgdir"/usr/bin/icingacli
+	chmod 2770 "$pkgdir"/etc/$pkgname
+	chgrp -R $pkggroups "$pkgdir"/etc/$pkgname
+	chmod 750 "$pkgdir"/var/log/$pkgname
+	install -Dm644 COPYING "$pkgdir/usr/share/licenses/icingaweb2/LICENSE"
+
+	cat >"$pkgdir"/usr/share/doc/$pkgname/README.alpine <<EOF
+You need to add to $pkgroups group the owner of the user of your webserver
+
+For nginx, as example:
+    # adduser nginx $pkgusers
+or
+    #adduser nobody $pkgusers
+
+For Apache:
+    # adduser apache $pkgusers
+
+For lighttpd:
+    # adduser lighttpd $pkgusers
+
+Also, you may remove the user of your webserver from group 'icingacmd' if no other icinga web interface is installed.
+EOF
+}
+
+bashcomp() {
+	depends="bash"
+	pkgdesc="Bash completions for $pkgname"
+
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions
+	mv etc/bash_completion.d/icingacli "$subpkgdir"/usr/share/bash-completion/completions/icingacli
+}
+
+sha512sums="eee3f81bb3eb29eeaeffe2f890639a12d75f9acf3b7c6649faaff3ab817ab2a5b6cd93b31637794969817f2d42ef5a46704fdc09488642caf6380f57c90d97cb  icingaweb2-2.7.3.tar.gz"

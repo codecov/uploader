@@ -1,0 +1,35 @@
+# Contributor: Emmanuel Frecon <efrecon@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=tcl-tls
+pkgver=1.7.19
+pkgrel=0
+pkgdesc="OpenSSL extension to Tcl"
+url="https://core.tcl.tk/tcltls/"
+arch="all"
+license="TCL"
+makedepends="tcl-dev openssl-dev"
+source="https://core.tcl.tk/tcltls/uv/tcltls-$pkgver.tar.gz"
+
+builddir="$srcdir/tcltls-$pkgver"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--enable-shared \
+		--with-ssl-dir=/usr
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="d86621da806c133acc712e0985d7796fe09b5000ee9f86863b976bec5ffd468944a11a9406718589f6702fe4f3a9ee0694ac2be479004ac783ca087998e3fe39  tcltls-1.7.19.tar.gz"

@@ -1,0 +1,29 @@
+# Contributor: Dmitry Romanenko <dmitry@romanenko.in>
+# Maintainer: Dmitry Romanenko <dmitry@romanenko.in>
+pkgname=py3-python-gssapi
+_pkgname=gssapi
+pkgver=1.6.1
+pkgrel=1
+pkgdesc="A Python interface to RFC 2743/2744 (plus common extensions)"
+url="https://github.com/pythongssapi/python-gssapi"
+arch="all"
+license="ISC"
+depends="python3"
+#checkdepends="py-nose py-shouldbe py-k5test" # Tests are missing alpine packages
+makedepends="python3-dev krb5-dev py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/g/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+#check() {
+#	python3 setup.py test
+#}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="ca77053ceb9b8097501df45492c0806f0b6aae8ebd7fd02b86e9e120eb18cec7ead75ff9a25f61e3de49b68d370adfe2d607f261dcf44b9a27b66ba649ca8193  gssapi-1.6.1.tar.gz"

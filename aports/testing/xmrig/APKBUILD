@@ -1,0 +1,32 @@
+# Contributor: Oleg Titov <oleg.titov@gmail.com>
+# Maintainer: Oleg Titov <oleg.titov@gmail.com>
+pkgname=xmrig
+pkgver=5.11.1
+pkgrel=0
+pkgdesc="XMRig is a high performance Monero (XMR) miner"
+url="https://xmrig.com/"
+arch="all !s390x !ppc64le !aarch64 !mips !mips64" # gets stuck on aarch64 builder
+license="GPL-3.0-or-later"
+options="!check" # No test suite from upstream
+makedepends="cmake libmicrohttpd-dev libuv-dev openssl-dev hwloc-dev"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/xmrig/xmrig/archive/v$pkgver.tar.gz"
+
+case "$CARCH" in
+	aarch64*) CMAKE_CROSSOPTS="-DARM_TARGET=8"; makedepends="$makedepends linux-headers" ;;
+	armv7*)   CMAKE_CROSSOPTS="-DARM_TARGET=7"; makedepends="$makedepends linux-headers" ;;
+	armhf*)   CMAKE_CROSSOPTS="-DARM_TARGET=7"; makedepends="$makedepends linux-headers" ;;
+esac
+
+build() {
+	cmake -B build $CMAKE_CROSSOPTS -DCMAKE_BUILD_TYPE=None
+	make -C build
+}
+
+package() {
+	install -Dm 755 build/xmrig $pkgdir/usr/bin/xmrig
+
+	install -Dm 644 -t "$pkgdir"/usr/share/doc/$pkgname/ README.md
+}
+
+sha512sums="250715d3cb754ad43f00b60eaf6eb5672fb2bfc359e9e42933e426a95c17097eed1ea551faf7f6fe2bb938874174f29766d1d3e41143933a46e5e3de82e153b7  xmrig-5.11.1.tar.gz"

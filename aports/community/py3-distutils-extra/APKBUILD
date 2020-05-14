@@ -1,0 +1,29 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=py3-distutils-extra
+_pkgname=python-distutils-extra
+pkgver=2.44
+pkgrel=0
+pkgdesc="Enhanced distutils package for python"
+url="https://launchpad.net/python-distutils-extra"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="py3-setuptools"
+source="https://salsa.debian.org/python-team/modules/python-distutils-extra/-/archive/$pkgver/python-distutils-extra-$pkgver.tar.bz2"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-distutils-extra" # Backwards compatibility
+provides="py-distutils-extra=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="517222b4e34efba730db53ffeee8b8c8d96bd9d1b6044e6ca84c0f2c1d5c0e044240b899d460c50295615c94c513f7e57db3e34e5db6588a01ec92a73999f822  python-distutils-extra-2.44.tar.bz2"

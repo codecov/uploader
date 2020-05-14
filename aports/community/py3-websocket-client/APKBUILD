@@ -1,0 +1,31 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=py3-websocket-client
+_pkgname=websocket_client
+pkgver=0.57.0
+pkgrel=0
+pkgdesc="WebSocket client library for Python"
+url="https://github.com/liris/websocket-client"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3 py3-six"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/w/websocket-client/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-websocket-client" # Backwards compatibility
+provides="py-websocket-client=$pkgver-r$pkgrel" # Backwards compatibility
+
+check() {
+	python3 setup.py check
+}
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="8677b00abbdd995ef1c2254f73a01713eb0707ee2549031f410205af7bbbf57b4730b38a78d683a90605c1412863f57a3829d8be1c058f3e9bfb177bd49c4525  websocket_client-0.57.0.tar.gz"

@@ -1,0 +1,36 @@
+#!/sbin/openrc-run
+
+supervisor=supervise-daemon
+
+name="Kernel Device Manager"
+description="A netlink-listening device manager similar to mdev"
+
+extra_started_commands="reload"
+description_reload="Reload the configuration file"
+
+: ${cfgfile:="/etc/mdev.conf"}
+: ${logfile:="/var/log/$RC_SVCNAME.log"}
+
+required_files="$cfgfile"
+
+command="/bin/mdevd"
+command_args="-f $cfgfile ${command_args:-}"
+
+supervise_daemon_args="--stdout $logfile --stderr $logfile"
+
+depend() {
+	provide dev
+	need sysfs dev-mount
+	before checkfs fsck
+	keyword -containers -lxc -vserver
+}
+
+start_pre() {
+	mkdir -p /dev
+}
+
+reload() {
+	ebegin "Reloading $name configuration"
+	supervise-daemon --signal HUP
+	eend $?
+}

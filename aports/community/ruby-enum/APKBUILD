@@ -1,0 +1,41 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ruby-enum
+_gemname=$pkgname
+pkgver=0.8.0
+pkgrel=1
+pkgdesc="A handy way to define enums in Ruby"
+url="https://github.com/dblock/ruby-enum"
+arch="noarch"
+license="MIT"
+depends="ruby ruby-i18n"
+checkdepends="ruby-rspec"
+source="$pkgname-$pkgver.tar.gz::https://github.com/dblock/ruby-enum/archive/v$pkgver.tar.gz"
+
+build() {
+	gem build $_gemname.gemspec
+}
+
+check() {
+	rspec spec
+}
+
+package() {
+	local gemdir="$pkgdir/$(ruby -e 'puts Gem.default_dir')"
+	local geminstdir="$gemdir/gems/$_gemname-$pkgver"
+
+	gem install --local \
+		--install-dir "$gemdir" \
+		--ignore-dependencies \
+		--no-document \
+		--verbose \
+		$_gemname
+
+	rm -r "$gemdir"/cache \
+		"$gemdir"/build_info \
+		"$gemdir"/doc \
+		"$geminstdir"/spec \
+		"$geminstdir"/*.md
+}
+
+sha512sums="2857345534be3621680a1154a78fd4fcf13cd6e30715c83b2cdf9f62457f65a8b2f8fc3fd08e94eec46e85a6c7ac6e9942a8b00ef36db2effdffd879ff53b98d  ruby-enum-0.8.0.tar.gz"

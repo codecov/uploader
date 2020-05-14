@@ -1,0 +1,36 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gedit-plugins
+pkgver=3.36.2
+pkgrel=0
+pkgdesc="Plugins for gedit, the GNOME text editor"
+url="https://wiki.gnome.org/Apps/Gedit/PluginsLists"
+arch="all !s390x !mips !mips64" # Limited by gedit-dev and gtksourceview4-dev
+license="GPL-2.0-only"
+depends="python3 py3-gobject3 vte3 gucharmap py3-dbus libpeas-python3"
+makedepends="glib-dev gtk+3.0-dev gtksourceview4-dev libpeas-dev gedit-dev vala
+	libgit2-glib-dev itstool vte3-dev gucharmap-dev py3-dbus-dev meson"
+checkdepends="appstream-glib"
+subpackages="$pkgname-lang $pkgname-doc"
+source="https://download.gnome.org/sources/gedit-plugins/${pkgver%.*}/gedit-plugins-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="d46a5ec69f69838144333ca3e66abc7c64cdb3248877b38298f869027dd3bab16102957e723ad1b0d3c6af55745c2b7ce321949acb2575734c649a388bb0100b  gedit-plugins-3.36.2.tar.xz"

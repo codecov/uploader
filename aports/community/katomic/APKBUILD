@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=katomic
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://kde.org/applications/games/org.kde.katomic"
+pkgdesc="A fun and educational game built around molecular geometry"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kcoreaddons-dev kconfig-dev kcrash-dev kwidgetsaddons-dev ki18n-dev kxmlgui-dev knewstuff-dev kdoctools-dev kdbusaddons-dev libkdegames-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/katomic-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="e10cbcca023205c6ce0659f0e9961a1c8b1a3afedfd579320df467756c7238a7d49efe21a876b9b308e38a281535bd66f9453f903c363ccb6e7c0754d0c815db  katomic-20.04.0.tar.xz"

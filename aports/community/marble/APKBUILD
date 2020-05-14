@@ -1,0 +1,37 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=marble
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="A Virtual Globe and World Atlas that you can use to learn more about Earth"
+# mips, ppc64le and s390x blocked by qt5-qtwebengine
+# armhf blocked by qt5-qtdeclarative
+arch="all !ppc64le !s390x !armhf !mips !mips64"
+url='https://marble.kde.org'
+license="LGPL-2.1-or-later AND GPL-3.0-or-later"
+depends_dev="qt5-qtbase-dev qt5-qtsvg-dev qt5-qtdeclarative-dev qt5-qtwebengine-dev qt5-qttools-dev qt5-qtserialport-dev qt5-qtlocation-dev kdoctools-dev phonon-dev gpsd-dev kcrash-dev kcoreaddons-dev kwallet-dev knewstuff-dev kparts-dev plasma-framework-dev krunner-dev ki18n-dev kio-dev shared-mime-info"
+makedepends="$depends_dev extra-cmake-modules"
+source="https://download.kde.org/stable/release-service/$pkgver/src/marble-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+options="!check" # Requires itself to be installed
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DCMAKE_INSTALL_SYSCONFDIR=/etc \
+		-DMOBILE=ON \
+		-DBUILD_MARBLE_APPS=YES
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="8adff363067f45135ddeb6c41d2d5fa705f968b015bece926ebb38ede673e9e3892b1dba497be26c71f815d4881f9c5c1988815f1bed268c9effe1c9294ba793  marble-20.04.0.tar.xz"

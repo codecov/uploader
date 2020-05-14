@@ -1,0 +1,36 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Carlo Landmeter <clandmeter@gmail.com>
+pkgname=unpaper
+pkgver=6.1
+pkgrel=1
+pkgdesc="post-processing tool for scanned sheets of paper"
+url="https://github.com/Flameeyes/unpaper"
+arch="all"
+license="GPL-2.0-only"
+makedepends="ffmpeg-dev automake autoconf libtool libxslt"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/unpaper/unpaper/archive/unpaper-$pkgver.tar.gz"
+builddir="$srcdir/unpaper-unpaper-$pkgver"
+
+build() {
+	autoreconf -vif
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+check() {
+	"$builddir"/unpaper --help > /dev/null
+}
+
+sha512sums="3297cbade359f0ccb056619a41e6bc5fe675448ad65c6ff7a900084c01adc099457a9cb5a4fbd2ee95047f073dc3e557038bfcbb9169c535265b90df2e34db70  unpaper-6.1.tar.gz"

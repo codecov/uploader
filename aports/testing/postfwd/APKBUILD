@@ -1,0 +1,47 @@
+# Contributor: Simon Frankenberger <simon-alpine@fraho.eu>
+# Maintainer: Simon Frankenberger <simon-alpine@fraho.eu>
+pkgname=postfwd
+pkgver=2.02
+pkgrel=0
+pkgdesc="Combines complex postfix restrictions in a ruleset similar to those of the most firewalls"
+url="https://postfwd.org/"
+arch="noarch"
+license="BSD-3-Clause"
+depends="perl-net-server perl-net-dns perl-io-multiplex"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/$pkgname/$pkgname/archive/v$pkgver.tar.gz
+	$pkgname.initd
+	$pkgname.confd
+	"
+options="!check" # package has no tests
+pkgusers="postfwd"
+pkggroups="postfwd"
+install="$pkgname.pre-install"
+provides="postfwd2=$pkgver-r$pkgrel" # for backward compatibility
+replaces="postfwd2" # for backward compatibility
+
+build() {
+	# just print out version to check if all dependencies are met
+	sbin/postfwd -V
+}
+
+package() {
+	mkdir -p "$pkgdir"/usr/sbin \
+		"$pkgdir"/usr/share/doc/$pkgname \
+		"$pkgdir"/usr/share/man/man8 \
+		"$pkgdir"/etc/$pkgname \
+		"$pkgdir"/etc/init.d
+	install -m0755 sbin/postfwd3 "$pkgdir"/usr/sbin
+	ln -s postfwd3 "$pkgdir"/usr/sbin/postfwd
+	ln -s postfwd3 "$pkgdir"/usr/sbin/postfwd2
+	cp -r doc/* "$pkgdir"/usr/share/doc/$pkgname
+	install -m0644 man/man8/* "$pkgdir"/usr/share/man/man8
+	install -m0644 etc/postfwd.cf.sample "$pkgdir"/etc/$pkgname
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -Dm644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+	install -dm750 -o postfwd -g postfwd "$pkgdir"/var/lib/postfw
+}
+
+sha512sums="1092a3075c3893c39723ec7fe96942effcaa30c97192be8dd9adc6c771849a8a27bc9ea86e0a6ca2ef77812152c158be358c08a2a42cef8116fdacf317d56119  postfwd-2.02.tar.gz
+5c60f1741c174a6b19b00d19edc6f27449e3316844a6ab5c8a46b61f7d52dae0dbdeb495faacb71e2c92cae8c2d82edc89d0c1a79e082b207ee443b9ac976a93  postfwd.initd
+3fdd6558eb3d87b8ef05c4e650ea33fcfe5bde412590ab7cb745bc1fdbf62f4f4630da271de59e6300ddd1a77287e084f7f2766c312bc2f82eb98a5623dedac2  postfwd.confd"

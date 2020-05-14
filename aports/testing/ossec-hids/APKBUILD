@@ -1,0 +1,54 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=ossec-hids
+pkgver=3.6.0
+pkgrel=0
+pkgdesc="Open Source Host-based Intrusion Detection System - meta package"
+url="https://www.ossec.net/"
+arch="noarch"
+license="GPL-2.0-only WITH openssl-exception"
+depends="inotify-tools procps"
+makedepends="linux-headers bsd-compat-headers openssl-dev
+libevent-dev inotify-tools-dev findutils file zlib-dev pcre2-dev
+sqlite-dev lua5.3-dev"
+install="$pkgname.pre-install"
+subpackages="$pkgname-doc $pkgname-contrib::noarch $pkgname-openrc"
+pkgusers="ossec ossecm ossecr"
+pkggroups="ossec"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ossec/ossec-hids/archive/$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	export USER_NO_STOP=yes
+	export USER_DIR=/var/ossec
+	export USER_BINARYINSTALL=x
+	export PCRE2_SYSTEM=yes
+}
+
+build() {
+	return 0
+}
+
+package() {
+	install -Dm755 -D src/init/ossec-hids-alpine.init "$pkgdir"/etc/init.d/ossec-hids
+	install -Dm644 -D etc/ossec.conf "$pkgdir"/etc/ossec.conf
+}
+
+doc() {
+	cd "$builddir"
+	pkgdesc="Documentation for $pkgname"
+	mkdir -p "$subpkgdir"/usr/share/doc/$pkgname
+	cp -a doc/* \
+	  "$subpkgdir"/usr/share/doc/$pkgname
+}
+
+contrib() {
+	pkgdesc="Contrib files for $pkgname"
+	mkdir -p "$subpkgdir"/usr/share/$pkgname
+	cp -a "$builddir"/contrib/* "$subpkgdir"/usr/share/$pkgname
+	for r in selinux debian-packages specs; do
+		rm -rf "$subpkgdir"/usr/share/$pkgname/$r
+	done
+}
+
+sha512sums="1f5e897de757df264dfb56def74b7d8f886b6b9d772b5b3d0197c9cd00a32fd7fd8a7b53566851fea3cd74d433b5594cbd074e50b7dbe36305fb3c243e8ddcf5  ossec-hids-3.6.0.tar.gz"

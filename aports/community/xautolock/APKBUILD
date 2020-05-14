@@ -1,0 +1,27 @@
+# Contributor: Johannes Matheis <jomat+alpinebuild@jmt.gr>
+# Maintainer: Johannes Matheis <jomat+alpinebuild@jmt.gr>
+pkgname=xautolock
+pkgver=2.2
+pkgrel=4
+pkgdesc="An automatic X screen-locker/screen-saver"
+url="ftp://ibiblio.org/pub/Linux/X11/screensavers/"
+arch="all"
+license="GPL-2.0"
+depends_dev="imake xorg-server-dev libxscrnsaver-dev xorg-cf-files"
+makedepends="$depends_dev"
+subpackages="$pkgname-doc"
+source="https://www.ibiblio.org/pub/linux/X11/screensavers/xautolock-$pkgver.tgz
+	processwait.patch"
+
+build() {
+	xmkmf
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	make MANPATH=/usr/share/man DESTDIR="$pkgdir" install.man
+}
+
+sha512sums="5f9dcc25cda706610e77a74235c4b421ca3a833d154b1a269057f0774579e1c6ec36fe0e5be5fadd6942ce8c1640a760f891397586b162e6024b524635153d04  xautolock-2.2.tgz
+6dd8dc41ac78b71cd7b3dfe33cec3dfd7b57d0860da558cb230310a6d37f6b5075b11fe584d6f8d520da294f70688a04edb80e95d9fa0369230bab7292c05415  processwait.patch"

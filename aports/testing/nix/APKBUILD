@@ -1,0 +1,97 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=nix
+pkgver=2.3.4
+pkgrel=0
+pkgdesc="The purely functional package manager"
+url="https://nixos.org/nix/"
+arch="x86 x86_64 aarch64"  # supported platforms
+license="LGPL-2.1-or-later"
+depends="ca-certificates"
+depends_dev="boost-dev"
+makedepends="
+	$depends_dev
+	bash
+	brotli-dev
+	bzip2-dev
+	curl-dev
+	gc-dev
+	openssl-dev
+	libseccomp-dev
+	libsodium-dev
+	sqlite-dev
+	xz
+	xz-dev
+	editline-dev
+	"
+pkggroups="nix nixbld"
+install="$pkgname.pre-install"
+subpackages="$pkgname-dev $pkgname-openrc $pkgname-doc"
+source="https://nixos.org/releases/nix/nix-$pkgver/nix-$pkgver.tar.xz
+	nix-daemon.initd
+	nix-profile.sh
+	"
+
+build() {
+	# NOTE: /nix/var is recommended by upstream and we need /nix anyway.
+	bash ./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/nix/var \
+		--enable-gc
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	cd "$pkgdir"
+
+	# Remove trash.
+	rm -R etc/init
+	rm -R usr/lib/systemd
+	rm etc/profile.d/*
+
+	mkdir -p usr/sbin
+	rm -f usr/bin/nix-daemon
+	ln -s usr/bin/nix usr/sbin/nix-daemon
+
+	install -m 755 -D "$srcdir"/nix-profile.sh etc/profile.d/nix.sh
+	install -m 755 -D "$srcdir"/nix-daemon.initd etc/init.d/nix-daemon
+
+	# Setup build users.
+	# Note: max-jobs should equal number of created nixbld<n> users.
+	install -d -m 0555 etc/nix
+	cat > etc/nix/nix.conf <<-EOF
+		build-users-group = nixbld
+		max-jobs = 4
+	EOF
+
+	# This is based on https://github.com/NixOS/nix/blob/9617a04/scripts/install-multi-user.sh#L525
+	# NOTE: store dir must be /nix/store, otherwise pre-built binaries from
+	#   the standard Nixpkgs channels would not work.
+	install -d -m 1775 -g nixbld \
+		nix/store
+	install -d -m 0755 \
+		nix/var/log/nix/drvs \
+		nix/var/nix/db \
+		nix/var/nix/gcroots \
+		nix/var/nix/manifests \
+		nix/var/nix/profiles/default \
+		nix/var/nix/temproots \
+		nix/var/nix/userpool \
+		nix/var/nix/profile/per-user/root
+	install -d -m 1777 \
+		nix/var/nix/profiles/per-user \
+		nix/var/nix/gcroots/per-user
+	# Allow only users in the nix group to perform Nix operations.
+	install -d -m 0770 -g nix \
+		nix/var/nix/daemon-socket
+}
+
+sha512sums="9c5b7aa92648b3c86f7e313088a17a8ae0e3c3d35a2b16b4af543b190f7649b6958aa345ee7df625201f5eb9d77d1b016b980536de8f77b331dfdd32ecdd6d69  nix-2.3.4.tar.xz
+9e4568db987fbae5097f7bb086e8ad51742c2d229703104fb7e6f240ffb0ca72e57dc305fb238bcee4ec8002d780007af60f241b1f32b6aa413dd579d9c59e75  nix-daemon.initd
+0fb5b9ff2f593dca22251b342494ea0b61380d8f905d85855282d259c112aa2a918d9785aa08f847c693a939ebae9fbefcd4e417ad93283a142e066105cc87b5  nix-profile.sh"

@@ -1,0 +1,34 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=mir-core
+pkgver=1.1.2
+pkgrel=0
+pkgdesc="Base software building blocks and conventions"
+url="https://github.com/libmir/mir-core"
+arch="x86 x86_64 aarch64" # ldc
+license="BSL-1.0"
+makedepends="meson ldc ldc-runtime"
+subpackages="$pkgname-dev"
+source="https://github.com/libmir/mir-core/archive/v$pkgver/mir-core-$pkgver.tar.gz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dwith_test=true \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="b2c748d4239fd4a01ff1e537321530e2a6e354b4fb848006ae7e96213d3c64b15b9b99916c82406fd79fe37479105989a0d7310d2b184194c3db69b431be9954  mir-core-1.1.2.tar.gz"

@@ -1,0 +1,34 @@
+# Contributor: Jeremy Thomerson <jeremy@thomersonfamily.com>
+# Maintainer: Jeremy Thomerson <jeremy@thomersonfamily.com>
+pkgname=rdiff-backup
+pkgver=2.0.0
+pkgrel=0
+pkgdesc="Reverse differential backup tool"
+options="!check" # Requires unpacakged 'xattr'
+url="https://rdiff-backup.net/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="librsync-dev python3-dev py3-setuptools"
+subpackages="
+	$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	"
+source="https://github.com/rdiff-backup/rdiff-backup/releases/download/v$pkgver/rdiff-backup-$pkgver.tar.gz"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion
+}
+
+sha512sums="0bf06d4eefffd41e86224d798e6ac6852ca0fd356be73d651ffaf63c37aaa043a6d22f8025619ab4a86e54f6e98e61f445ab68a6f87f4f2f48e635507ea110ec  rdiff-backup-2.0.0.tar.gz"

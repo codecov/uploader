@@ -1,0 +1,71 @@
+# Contributor: Markus Juenemann <markus@juenemann.net>
+# Maintainer: Markus Juenemann <markus@juenemann.net>
+pkgname=mapnik
+pkgver=3.0.22
+pkgrel=7
+pkgdesc="An open source toolkit for developing mapping applications"
+url="https://mapnik.org/"
+# broken with boost 1.71
+#arch="x86_64"
+license="LPGL-2.0-or-later"
+makedepends="
+	boost-dev
+	cairo-dev
+	freetype-dev
+	gdal-dev
+	harfbuzz-dev
+	icu-dev
+	libpng-dev
+	libwebp-dev
+	libxml2-dev
+	postgresql-dev
+	proj-dev
+	python3
+	py3-setuptools
+	sqlite-dev
+	tiff-dev
+	zlib-dev
+	"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/mapnik/mapnik/releases/download/v$pkgver/mapnik-v$pkgver.tar.bz2"
+
+builddir="$srcdir/$pkgname-v$pkgver"
+build() {
+	python3 scons/scons.py configure \
+		CUSTOM_CXXFLAGS="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=ON" \
+		CUSTOM_CFLAGS="-DACCEPT_USE_OF_DEPRECATED_PROJ_API_H=ON" \
+		PREFIX=/usr \
+		DESTDIR="$pkgdir" \
+		--jobs=${JOBS:-2} \
+		--config=cache \
+		--implicit-cache \
+		--max-drift=1
+	python3 scons/scons.py \
+		--jobs=${JOBS:-2} \
+		--config=cache \
+		--implicit-cache \
+		--max-drift=1
+}
+
+package() {
+	python3 scons/scons.py install \
+		--jobs=${JOBS-2} \
+		--config=cache \
+		--implicit-cache \
+		--max-drift=1
+}
+
+dev() {
+	pkgdesc="Mapnik development files"
+	mkdir -p "$subpkgdir"/usr/include/mapnik
+	mv "$pkgdir"/usr/include/mapnik "$subpkgdir"/usr/include/mapnik
+}
+
+doc() {
+	pkgdesc="Mapnik documentation"
+	mkdir -p "$subpkgdir"/usr/share/docs/$pkgname/docs/
+	install -Dm644 $builddir/*.md "$subpkgdir"/usr/share/docs/$pkgname/
+	install -Dm644 $builddir/docs/* "$subpkgdir"/usr/share/docs/$pkgname/docs/
+}
+
+sha512sums="a558d5e52b249b439d7c4b574d909d781c877d91d3b1e707938fb9856661542c2d7b36742c394e5a0a38d88cf9f65078093dcc4190e5d3a5672c0ef054eb6358  mapnik-v3.0.22.tar.bz2"

@@ -1,0 +1,41 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libdrm
+pkgver=2.4.101
+pkgrel=0
+pkgdesc="Userspace interface to kernel DRM services"
+url="https://dri.freedesktop.org/"
+arch="all"
+# Requires a computer with gfx, no X running, build user in 'video' group..
+options="!check"
+license="MIT"
+depends_dev="linux-headers"
+makedepends="$depends_dev meson libpthread-stubs eudev-dev libpciaccess-dev xmlto"
+checkdepends="cunit-dev bash"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://gitlab.freedesktop.org/mesa/drm/-/archive/libdrm-$pkgver/drm-libdrm-$pkgver.tar.gz"
+builddir="$srcdir/drm-libdrm-$pkgver"
+
+build() {
+	mkdir -p "$builddir"/builddir
+	cd "$builddir"/builddir
+	meson \
+		-Dprefix=/usr \
+		--buildtype=plain \
+		-Dfreedreno=true \
+		-Dtegra=true \
+		-Detnaviv=true \
+		-Dudev=true
+	ninja
+}
+
+check() {
+	cd "$builddir"/builddir
+	meson test
+}
+
+package() {
+	cd "$builddir"/builddir
+	DESTDIR="$pkgdir" ninja install
+}
+
+sha512sums="e1f5553eeb51bf420bd9faa21210104ae15df88f3f675a2289c3ede442c2b4141caba5a0e0e88adfcfd4e4a4d0bcdf896837b0f704db7a735955dbb70fdfc962  drm-libdrm-2.4.101.tar.gz"

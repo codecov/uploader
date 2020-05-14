@@ -1,0 +1,29 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Corey Oliver <coreyjonoliver@gmail.com>
+# Maintainer: Corey Oliver <coreyjonoliver@gmail.com>
+pkgname=argon2
+_pkgname=phc-winner-argon2
+pkgver=20190702
+pkgrel=1
+pkgdesc="The password hash Argon2, winner of PHC"
+url="https://github.com/P-H-C/phc-winner-argon2"
+arch="all"
+license="Apache-2.0 CC0-1.0"
+subpackages="$pkgname-static $pkgname-dev $pkgname-libs"
+source="$pkgname-$pkgver.tar.gz::https://github.com/P-H-C/$_pkgname/archive/$pkgver.tar.gz
+	"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	make OPTTARGET=none ARGON2_VERSION=$pkgver
+}
+
+check() {
+	make OPTTARGET=none test
+}
+
+package() {
+	make OPTTARGET=none LIBRARY_REL=lib DESTDIR="$pkgdir" install
+}
+
+sha512sums="0a4cb89e8e63399f7df069e2862ccd05308b7652bf4ab74372842f66bcc60776399e0eaf979a7b7e31436b5e6913fe5b0a6949549d8c82ebd06e0629b106e85f  argon2-20190702.tar.gz"

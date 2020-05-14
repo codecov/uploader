@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=udftools
+pkgver=2.2
+pkgrel=0
+arch="all"
+url="https://github.com/pali/udftools/"
+pkgdesc="Tools for UDF filesystems and DVD/CD-R(W) drives"
+license="GPL-2.0-or-later"
+makedepends="automake autoconf libtool eudev-dev linux-headers"
+source="https://github.com/pali/udftools/releases/download/$pkgver/udftools-$pkgver.tar.gz"
+subpackages="$pkgname-doc"
+options="!check" # No tests
+
+prepare() {
+	default_prepare
+
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--prefix=/usr
+
+	make
+}
+
+package() {
+	DESTDIR="$pkgdir" make install
+}
+
+sha512sums="1d6f7b725053ab8c2092ca07bce07fb075168ba48f7d2580076ee84b2652af3898622746c5a2f0bdb8c0d1d0e09d1f4a3cbaae4f998924652a56561b84690e2b  udftools-2.2.tar.gz"

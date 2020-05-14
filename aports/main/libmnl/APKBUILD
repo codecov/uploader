@@ -1,0 +1,32 @@
+# Contributor: Francesco Colista <francesco.colista@gmail.com>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=libmnl
+pkgver=1.0.4
+pkgrel=0
+pkgdesc="Library for minimalistic netlink"
+url="http://www.netfilter.org/projects/libmnl/"
+arch="all"
+license="GPL"
+depends=
+depends_dev="linux-headers"
+makedepends="$depends_dev"
+install=""
+subpackages="$pkgname-dev"
+source="https://www.netfilter.org/projects/$pkgname/files/$pkgname-$pkgver.tar.bz2"
+builddir="$srcdir"/$pkgname-$pkgver
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		|| return 1
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install || return 1
+}
+
+sha512sums="e2bbfb688fe41913d53c74ba7ec95b4e88ee2c52b556b8608185f2fcbd629665423a3b37f877f84426ba257cf6040fa701539d67166b00b8e3e2dfde6831a2f9  libmnl-1.0.4.tar.bz2"

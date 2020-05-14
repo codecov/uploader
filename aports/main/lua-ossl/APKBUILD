@@ -1,0 +1,94 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=lua-ossl
+_pkgname=luaossl
+pkgver=20190731
+_ver=${pkgver%_git*}
+pkgrel=1
+pkgdesc="A comprehensive OpenSSL Lua module"
+url="http://25thandclement.com/~william/projects/luaossl.html"
+arch="all"
+license="MIT"
+makedepends="openssl-dev"
+subpackages=""
+checkdepends=""
+source="$_pkgname-$_ver.tar.gz::https://github.com/wahern/$_pkgname/archive/rel-$pkgver.tar.gz
+	0001-pkey.toPEM-opts-rename-const-array.patch
+	0002-pkey.toPEM-accept-table-arguments.patch
+	0003-pkey.toPEM-private-key-encryption.patch
+	0004-pkey.new-type-rename-variable.patch
+	0005-pkey.new-opt-rename-variable.patch
+	0006-optencoding-allow-negative-indices.patch
+	0007-pkey.new-accept-option-table.patch
+	0008-pkey.new-decryption.patch
+	0009-pkey.toPEM-use-password-callback.patch
+	0010-pkey-PEM-password-callback.patch
+"
+builddir="$srcdir/$_pkgname-rel-$pkgver"
+
+_luaversions="5.1 5.2 5.3"
+for _v in $_luaversions; do
+	makedepends="$makedepends lua$_v-dev"
+	subpackages="$subpackages lua$_v-${pkgname#lua-}:_package"
+	checkdepends="$checkdepends lua$_v-cqueues"
+done
+
+build() {
+	cd "$builddir"
+
+	make config prefix=/usr
+	local lver; for lver in $_luaversions; do
+		make openssl$lver
+	done
+}
+
+check() {
+	# requires ffi
+	rm "$builddir"/regress/104-interposition-discarded.lua
+
+	local lver; for lver in $_luaversions; do
+		msg "Checking on lua$lver..."
+
+		# Lua sources in src/ are in non-standard layout, so we can't
+		# use them directly.
+		make -C "$builddir" DESTDIR="$builddir/.test$lver" install$lver
+
+		cd "$builddir"/regress
+		local file; for file in $(find . -type f -perm +111); do
+			echo "$file:" >&2
+			LUA_CPATH="../.test$lver/usr/lib/lua/$lver/?.so;;" \
+				LUA_PATH="../.test$lver/usr/share/lua/$lver/?.lua;;" \
+				lua$lver $file
+		done
+	done
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+_package() {
+	local lver="${subpkgname:3:3}"
+	pkgdesc="$pkgdesc for Lua $lver"
+	depends="lua$lver"
+	install_if="lua$lver $pkgname=$pkgver-r$pkgrel"
+	local rockdir="$subpkgdir/usr/lib/luarocks/rocks-$lver/$_pkgname/$pkgver-1"
+
+	cd "$builddir"
+	make DESTDIR="$subpkgdir" install$lver
+
+	mkdir -p "$rockdir"
+	echo 'rock_manifest = {}' > "$rockdir"/rock_manifest
+}
+
+sha512sums="09315deb0c40b59230d80262906cb9f067660242315544179ec5df57a028b088c56a4bb0b944e5975bccf86d521901eae36006c5623ec1159cfca94d05fb6890  luaossl-20190731.tar.gz
+896fd302480b42829c79226d08c05e9ed7348ba441ac15a2d4e0d473486f1476b36bc296878d55e5678864e6161861ab2e178973f3e1d7f3c2d4a915a62c7471  0001-pkey.toPEM-opts-rename-const-array.patch
+9362910e3bc5e1f3110d2e6f49c086374a9277698c26917a2b43e312f81160f5330212a27915efc8cd969273452f7057bf4db9cdb8481728067d1b10e03230cd  0002-pkey.toPEM-accept-table-arguments.patch
+2a021ab500e1539ba7259ef38e1e015c3ecf561b31c7f344732cbf860525db8335acd61eaaa10049881b862f17064d640da6dedeeb94d92b3aeba32d822b575c  0003-pkey.toPEM-private-key-encryption.patch
+2b1a0b702ba3e4787a706ba87b79eed7ea373075a2eb8b858258e8bed105222198a8ed73aa3aa973d24d9c2d7227bda7f049f01bda0b495da5a610789c63e187  0004-pkey.new-type-rename-variable.patch
+849aeef985cf9693b19b3f5131954c107c166871327bd2ae4db48b99b5e1bfa738270b9647a47cc8757d9f627b5bff4dc5ba71255be9ed9ee7741677df983b1f  0005-pkey.new-opt-rename-variable.patch
+9635f795875173842ed8fe286dfc2721a6af561fd3a25236bb5609875f4cbbe3a1b6021103747bd2d8acf03eb25d3eba1dd8e13ea2410776b8346493dcead221  0006-optencoding-allow-negative-indices.patch
+9b992db5d0c33258e3858bd60c2a085669112089658600fe8b84be947d33ee858a0189fc5aef96565c226ebaf3ae9a326c23fb993c95c5f3ae0caa02844f2632  0007-pkey.new-accept-option-table.patch
+f8b3a1c4815f03180ca60df62e6be307c180a9d5225dcb6b78b5f6fc2d67f176756d02b1a8cd06e1909b0b0430ae876b5b1172b090ba9b8b9873169ad21b354f  0008-pkey.new-decryption.patch
+fc433f9e15479083f1d737247556a2404704727712604c43d0bc93d3d7269dc73e07acd09bfaa46dfade6756cb67bcbf586aadf58f9b48c6c39ecb659ed02640  0009-pkey.toPEM-use-password-callback.patch
+edcbf7110c838404bda83a4d15719264e798ddd18d2b550652d6e07218104f9bfbf33a6a08ab9baa2491a56c8723394663a06be669aee92d3b3ecd83cc5f0305  0010-pkey-PEM-password-callback.patch"

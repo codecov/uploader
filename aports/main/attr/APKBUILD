@@ -1,0 +1,62 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=attr
+pkgver=2.4.48
+pkgrel=0
+pkgdesc="Utilities for managing filesystem extended attributes"
+options="checkroot !check" # attr.test fails with no error message
+url="https://savannah.nongnu.org/projects/attr"
+arch="all"
+license="GPL-2.0-or-later"
+checkdepends="perl"
+subpackages="$pkgname-dev $pkgname-doc lib$pkgname:libs"
+source="https://download.savannah.nongnu.org/releases/attr/attr-$pkgver.tar.gz
+	fix-tests.patch
+	"
+
+build() {
+	OPTIMIZER="${CFLAGS}" \
+	DEBUG=-DNDEBUG \
+	INSTALL_USER=root \
+	INSTALL_GROUP=root \
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/ \
+		--exec-prefix=/ \
+		--sbindir=/bin \
+		--bindir=/usr/bin \
+		--libdir=/lib \
+		--libexecdir=/usr/lib \
+		--includedir=/usr/include \
+		--mandir=/usr/share/man \
+		--docdir=/usr/share/doc \
+		--datadir=/usr/share \
+		--disable-nls \
+		--disable-static
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/lib
+	mv "$pkgdir"/lib/pkgconfig "$pkgdir"/usr/lib
+}
+
+dev() {
+	license="LGPL-2.1-or-later"
+	default_dev
+}
+
+libs() {
+	license="LGPL-2.1-or-later"
+	default_libs
+}
+
+sha512sums="75f870a0e6e19b8975f3fdceee786fbaff3eadaa9ab9af01996ffa8e50fe5b2bba6e4c22c44a6722d11b55feb9e89895d0151d6811c1d2b475ef4ed145f0c923  attr-2.4.48.tar.gz
+2ff96b8822c4344035eef6e2edc632e9b7381876cbc2c7e0931dfb43af3b9383c0066f9b9d125c53e030a6bf542dc5ae988610bda250a261a39ee211f6208cf2  fix-tests.patch"

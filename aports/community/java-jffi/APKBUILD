@@ -1,0 +1,42 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=java-jffi
+_pkgname=${pkgname#java-}
+pkgver=1.2.19
+_libver=${pkgver%.*}
+pkgrel=0
+pkgdesc="Java Foreign Function Interface"
+url="https://github.com/jnr/jffi"
+arch="all !mips !mips64"
+license="Apache-2.0"
+depends="openjdk8-jre-base"
+makedepends="apache-ant file openjdk8"
+subpackages="$pkgname-native"
+source="https://github.com/jnr/$_pkgname/archive/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$_pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	ant jar
+}
+
+check() {
+	cd "$builddir"
+	ant test
+}
+
+package() {
+	depends="$pkgname-native"
+
+	install -m644 -D "$builddir"/dist/jffi.jar \
+		"$pkgdir"/usr/share/java/$_pkgname-$pkgver.jar || return 1
+	ln -sf $_pkgname-$pkgver.jar "$pkgdir"/usr/share/java/$_pkgname.jar
+}
+
+native() {
+	# Note: jffi expects file named libjffi-x.y.so, not libjffi.so.x.y.
+	install -m755 -D "$builddir"/build/jni/libjffi-$_libver.so \
+		"$subpkgdir"/usr/lib/libjffi-$_libver.so
+}
+
+sha512sums="21eb754aecb06a1825f1e3c187fb2b8122ed4f5ebda5e288c785067f4a8d649b21266389ba1cf6398efd2202012cbb4d8186ca64eaf9b1bac83d373ba03a57bc  jffi-1.2.19.tar.gz"

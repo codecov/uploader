@@ -1,0 +1,31 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-py
+_pkgname=py
+pkgver=1.8.1
+pkgrel=0
+pkgdesc="Python3 library with cross-python path, ini-parsing, io, code, log facilities"
+url="https://py.readthedocs.io"
+arch="noarch"
+license="MIT"
+depends="python3"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-py" # Backwards compatibility
+provides="py-py=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="ba18fc5cc7a291c251f04e8565a35e94603eae718aad48252821f9d3b115a7cca4e640ea54d800eb71ec8ce345052d731fec9a115778b068526f394c5c45fb2a  py-1.8.1.tar.gz"

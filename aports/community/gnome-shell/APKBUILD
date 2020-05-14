@@ -1,0 +1,86 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-shell
+pkgver=3.36.2
+pkgrel=3
+pkgdesc="GNOME shell"
+url="https://wiki.gnome.org/Projects/GnomeShell"
+arch="all !s390x !ppc64le !mips !mips64"
+license="GPL-2.0-or-later"
+depends="accountsservice
+	caribou
+	elogind
+	gsettings-desktop-schemas
+	upower
+	ibus
+	librsvg
+	network-manager-applet
+	gnome-bluetooth
+	gnome-control-center
+	font-adobe-source-code-pro
+	ttf-cantarell
+	adwaita-icon-theme
+	gnome-themes-standard"
+makedepends="gnome-desktop-dev>=3.35.91
+	libxml2-dev
+	libcanberra-dev
+	gobject-introspection-dev
+	startup-notification-dev
+	libsoup-dev
+	polkit-dev
+	gcr-dev
+	gjs-dev>=1.64.0
+	mutter-dev>=3.36.0
+	libcroco-dev
+	pulseaudio-dev
+	evolution-data-server-dev evolution-dev
+	python3
+	meson
+	libxml2-utils
+	ibus-dev
+	sassc
+	networkmanager-dev
+	libnma-dev
+	gnome-control-center-dev
+	py3-setuptools
+	gnome-bluetooth-dev
+	gstreamer-dev
+	gnome-autoar-dev
+	asciidoc
+	libcap
+	elogind-dev
+	"
+checkdepends="
+	xvfb-run
+	mesa-dri-swrast
+	gdm
+	"
+subpackages="$pkgname-lang $pkgname-doc $pkgname-dbg"
+source="https://download.gnome.org/sources/gnome-shell/${pkgver%.*}/gnome-shell-$pkgver.tar.xz
+	disable-telepathy-integration.patch"
+options="!check" # Tests have circular dependency 'gnome-shell <-> gdm'
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dsystemd=true \
+		. output
+	ninja -C output
+}
+
+check() {
+	xvfb-run ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+	#allow realtime scheduling
+	setcap cap_sys_nice+ep "$pkgdir"/usr/bin/gnome-shell
+}
+
+sha512sums="5f4950e5570863f7951423286c066376a9d8221a99929a2ca26493f21f9230d89ad67ca48d9e94aa47ccc3fd83490edffbc2d4c5fd2f0d2c2ff6420975cdbb85  gnome-shell-3.36.2.tar.xz
+2ca70115fab957fdf276b7f0772786e1afd56b0b22bcfd92f5b5f1d29676dc97c19cfb079434d0dbf7b459f1d133dbd8d1faa0d88f7b94846040a23856f951f8  disable-telepathy-integration.patch"

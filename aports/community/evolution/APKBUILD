@@ -1,0 +1,45 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=evolution
+pkgver=3.36.2
+pkgrel=0
+pkgdesc="evolution mail client"
+url="https://projects.gnome.org/evolution"
+arch="all !s390x" # Limited by gnome-autoar
+license="GPL-2.0-or-later"
+depends="highlight gsettings-desktop-schemas"
+depends_dev="itstool libxml2-dev gcr-dev enchant2-dev libcanberra-dev
+	libgweather-dev openldap-dev libnotify-dev"
+makedepends="$depends_dev gperf flex bison libxml2-utils glib-dev
+	webkit2gtk-dev gtkspell3-dev evolution-data-server-dev gnome-autoar-dev
+	gtk+3.0-dev nss-dev cmake gsettings-desktop-schemas-dev
+	gspell-dev gnome-desktop-dev glade-dev"
+options="!check" # need to be installed
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://download.gnome.org/sources/evolution/${pkgver%.*}/evolution-$pkgver.tar.xz"
+
+build() {
+	cmake -B build \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DSYSCONF_INSTALL_DIR=/etc \
+		-DCMAKE_BUILD_TYPE=None \
+		-DENABLE_GNOME_DESKTOP=ON \
+		-DENABLE_AUTOAR=ON \
+		-DENABLE_YTNEF=OFF \
+		-DENABLE_PST_IMPORT=OFF \
+		-DENABLE_SMIME=ON \
+		-DENABLE_SCHEMAS_COMPILE=OFF \
+		-DWITH_GLADE_CATALOG=ON
+	make -C build
+}
+
+check() {
+	make -C build check
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="2dccf69d32c4381f40ccdf84b621b8241c22bdb992cb77a87ce2e62e3598c436e7d0f8b72ce4fe504399c04a38266b0b0c2abf04000267a16c242d2dec7b9e9c  evolution-3.36.2.tar.xz"

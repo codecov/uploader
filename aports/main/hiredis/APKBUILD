@@ -1,0 +1,42 @@
+# Contributor: Eivind Uggedal <eu@eju.no>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=hiredis
+pkgver=0.14.1
+pkgrel=0
+pkgdesc="Minimalistic C client library for Redis"
+url="https://github.com/redis/hiredis"
+arch="all"
+license="BSD-3-Clause"
+checkdepends="redis"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz
+	musl-test.patch"
+
+
+build() {
+	make PREFIX=/usr DEBUG="$CFLAGS" LDFLAGS="$LDFLAGS"
+}
+
+check() {
+	redis-server --dir "$builddir" --unixsocket "$builddir"/redis.sock&
+	local _redispid=$!
+
+	# make sure socket is available before we start running tests
+	local _n=100 # wait up to 10 sec
+	while ! [ -e "$builddir"/redis.sock ] && [ $_n -gt 0 ]; do
+		sleep 0.1s
+		_n=$(( $_n - 1))
+	done
+
+	make hiredis-test
+	./hiredis-test -s "$builddir"/redis.sock || (kill $_redispid && false)
+	kill $_redispid
+}
+
+package() {
+	make PREFIX="$pkgdir"/usr install
+}
+
+
+sha512sums="a7310f2d65075df0c17636a0220e16487759471a3442b1de2595ab747565f6b6262e37131613b13e396b31050bcbe5529c35d420cd43fd7d500d9d563d469c4f  hiredis-0.14.1.tar.gz
+a16c212e6c391a0434ffbd865b241cebfc6f46acc282ac6a651fb2dea7e30991fe5a2ef267dded03eb13c6d4012d7588f9d1224596da4782bc93b5fd6829c117  musl-test.patch"

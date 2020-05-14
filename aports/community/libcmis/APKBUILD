@@ -1,0 +1,46 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libcmis
+pkgver=0.5.2
+pkgrel=2
+pkgdesc="CMIS protocol client library"
+url="https://github.com/tdf/libcmis"
+arch="all"
+license="MPL-1.1 GPL-2.0-or-later LGPL-2.0-or-later"
+depends=""
+depends_dev="curl-dev libxml2-dev cppunit-dev boost-dev"
+makedepends="$depends_dev docbook2x autoconf automake libtool"
+install=""
+subpackages="$pkgname-dev $pkgname-doc cmis-client:client"
+source="https://github.com/tdf/$pkgname/releases/download/v$pkgver/$pkgname-$pkgver.tar.gz
+	"
+
+builddir="$srcdir"/libcmis-$pkgver
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--with-man \
+		--disable-werror \
+		|| return 1
+	make || return 1
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install || return 1
+}
+
+client() {
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr
+}
+
+sha512sums="3dac0eed31d1dd3ac4670e501e0677196811f7875e6d1c253c8d874d6903691cbe4f1c27c8468af07bfd7f79b0d6ec4f933b28cb3bb37dcbea18bc2dd8f6e374  libcmis-0.5.2.tar.gz"

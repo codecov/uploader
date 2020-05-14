@@ -1,0 +1,80 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=kimchi
+pkgver=3.0.0
+pkgrel=0
+pkgdesc="An HTML5 management interface for KVM"
+url="https://github.com/kimchi-project/kimchi"
+arch="noarch !mips64" # blocked by wok and others
+license="Apache-2.0 and LGPL-2.1-or-later"
+depends="
+	gingerbase
+	libvirt-daemon
+	novnc>=1.0.0-r1
+	py3-cheetah
+	py3-configobj
+	py3-ethtool
+	py3-ipaddr
+	py3-libuser
+	py3-libvirt
+	py3-lxml
+	py3-m2crypto
+	py3-magic
+	py3-netaddr
+	py3-numpy
+	py3-paramiko
+	py3-pillow
+	py3-psutil
+	py3-simplejson
+	py3-six
+	py3-yaml
+	python3
+	qemu
+	qemu-img
+	spice-html5
+	util-linux
+	websockify>=0.8.0-r2
+	wok>=3.0.0-r0
+	"
+makedepends="
+	autoconf
+	automake
+	bash
+	bc
+	gettext-dev
+	grep
+	libtool
+	libxslt
+	py3-cherrypy
+	py3-mock
+	py3-pip
+	py3-pyflakes
+	py3-pytest
+	py3-requests
+	py3-setuptools
+	python3-dev
+	spice-html5
+	"
+options="!check" # depends on jaraco
+subpackages="$pkgname-lang"
+source="$pkgname-$pkgver.tar.gz::https://github.com/kimchi-project/kimchi/archive/$pkgver.tar.gz"
+
+build()	{
+	sh ./autogen.sh --system
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--with-spice-html5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="0a10a4eb5a08d3bb9e16e9388031a1f01623aa150a66abcb7e25abac065151979777bfdc880ed9c200b028649766234776a64336c2a2e3a67f0d858d0afcda66  kimchi-3.0.0.tar.gz"

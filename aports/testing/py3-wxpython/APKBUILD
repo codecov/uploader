@@ -1,0 +1,41 @@
+# Maintainer: Marian Buschsieweke <marian.buschsieweke@ovgu.de>
+# Contributor: Marian Buschsieweke <marian.buschsieweke@ovgu.de>
+_pkgname=wxPython
+pkgname=py3-wxpython
+pkgver=4.0.7
+pkgrel=0
+pkgdesc="Cross-platform GUI toolkit for the Python language"
+url="https://wxpython.org/"
+arch="all"
+license="custom"
+depends="py3-six py3-pathlib2"
+makedepends="py3-setuptools wxgtk3-dev python3-dev"
+checkdepends="py3-pytest py3-pytest-xdist xvfb-run"
+source="https://files.pythonhosted.org/packages/source/w/wxPython/wxPython-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+# Not all unit tests are passing. Some due to missing features of xvfb where the
+# tests are running in (GL, display settings). Some are checking features that
+# have not been provided in this package. Disabling failing unit tests to track
+# regressions would be nice, but I do not have the time for that now
+options="!check"
+
+prepare() {
+	default_prepare
+	sed -i "s|WX_CONFIG = 'wx-config'|WX_CONFIG = 'wx-config-gtk3'|" build.py
+}
+
+build() {
+	python3 build.py build --use_syswx --release
+}
+
+check() {
+	xvfb-run python3 build.py test
+}
+
+package() {
+	python3 build.py install --destdir="$pkgdir"
+	install -Dm 644 LICENSE.txt "$pkgdir"/usr/share/licenses/$pkgname/LICENSE.txt
+	find "$pkgdir"/usr/lib -type f -exec chmod 644 {} \;
+}
+
+sha512sums="22d74a1285de432dd251ed6343b6138411a70742a7026e1ab002e08b84f111123382625bd64055412687d9ba7b579681d9894a58705455eb6a2b5e3c9d9985c0  wxPython-4.0.7.tar.gz"

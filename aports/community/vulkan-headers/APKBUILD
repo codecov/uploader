@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=vulkan-headers
+_pkgname=Vulkan-Headers
+# Please be VERY careful upgrading this - vulkan-headers breaks API even
+# on point releases. So please make sure everything using this still builds
+# after upgrades
+pkgver=1.2.139
+pkgrel=0
+arch="noarch"
+url="https://www.khronos.org/vulkan"
+pkgdesc="Vulkan header files"
+license="Apache-2.0"
+makedepends="cmake"
+source="$pkgname-$pkgver.tar.gz::https://github.com/khronosgroup/vulkan-headers/archive/v$pkgver.tar.gz"
+options="!check" # No tests
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="90ba5e3f2a28e4bd83e22b3b62dcddbe7e6b5cb01b1fcdb57834e0192bdb359103f586b1e70d8180afcb650ece551cbb406f354cc8ee25c284aeb7c96fecce3e  vulkan-headers-1.2.139.tar.gz"

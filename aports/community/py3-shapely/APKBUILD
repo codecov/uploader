@@ -1,0 +1,57 @@
+# Contributor: Holger Jaekel <holger.jaekel@gmx.de>
+# Maintainer: Holger Jaekel <holger.jaekel@gmx.de>
+pkgname=py3-shapely
+pkgver=1.7.0
+pkgrel=0
+pkgdesc="Manipulation and analysis of geometric objects in the Cartesian plane"
+url="https://pypi.python.org/pypi/Shapely"
+arch="all !s390x !mips !mips64"  # geos availability
+license="BSD-3-Clause"
+depends="
+	py3-numpy
+	"
+makedepends="
+	geos-dev
+	py3-matplotlib
+	py3-numpy-dev
+	py3-packaging
+	py3-setuptools
+	python3-dev
+	cython
+	"
+checkdepends="
+	py3-pytest
+	"
+source="
+	https://pypi.io/packages/source/S/Shapely/Shapely-$pkgver.tar.gz
+	10-packaging.patch
+	"
+builddir="$srcdir/Shapely-$pkgver"
+
+build() {
+	rm -r _vendor  # This is provided by py3-packaging
+
+	cython shapely/speedups/_speedups.pyx
+	cython shapely/vectorized/_vectorized.pyx
+
+	python3 setup.py build
+}
+
+check() {
+	# Tests fail on s390x
+	case "$CARCH" in
+		s390x) return 0 ;;
+	esac
+
+	# These examples are executed during test, but they depend on pylab, which is not in Alpine
+	rm -r shapely/examples/*
+
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir" --optimize=2
+}
+
+sha512sums="ff7a14f20c05e3949c1e689175b80ec1f8248a0f45370a6313dbf4319ec018a8fafcfd171efbaa81bd8ceaab9c54488feca61bb03067e22a275da2b8663dc8bc  Shapely-1.7.0.tar.gz
+7cebaf4e059d71e1cd374539eb056491afbf736e05bf369a3c6533306885940d108340ada56ec7662e30aac04d2bd3ac4019ccf2fc447151d2274009d93d00fe  10-packaging.patch"

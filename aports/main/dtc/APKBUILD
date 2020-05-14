@@ -1,0 +1,39 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=dtc
+pkgver=1.6.0
+pkgrel=0
+pkgdesc="Device Tree Compiler"
+url="https://git.kernel.org/pub/scm/utils/dtc/dtc.git/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="$depends_dev bison flex"
+checkdepends="coreutils"
+subpackages="$pkgname-dev libfdt"
+source="https://kernel.org/pub/software/utils/dtc/dtc-$pkgver.tar.xz
+	"
+
+prepare() {
+	default_prepare
+	sed -i s:-Werror::g "$builddir"/Makefile
+}
+
+build() {
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" PREFIX=/usr install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+
+libfdt() {
+	pkgdesc="Device tree library"
+	mkdir -p "$subpkgdir"/usr/lib/
+	mv "$pkgdir"/usr/lib/libfdt* "$subpkgdir"/usr/lib/
+}
+
+sha512sums="15433b24f1d6b7ed1f8066d050bd1bcbf988731aa38147564e3dd04b5f69af8d69e03befdc621a768526c620425a9bdd24aad4f9ff135930d6a1eeb0625f7de3  dtc-1.6.0.tar.xz"

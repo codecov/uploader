@@ -1,0 +1,68 @@
+# Contributor: Michael Mason <ms13sp@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=fetchmail
+pkgver=6.4.5
+pkgrel=0
+pkgdesc="A remote-mail retrieval and forwarding utility"
+url="https://www.fetchmail.info/"
+arch="all"
+license="GPL-2.0-or-later AND Public Domain"
+pkgusers="fetchmail"
+pkggroups="fetchmail"
+makedepends="openssl-dev python3"
+install="fetchmail.pre-install"
+subpackages="
+	$pkgname-doc
+	$pkgname-openrc
+	fetchmailconf::noarch
+	"
+source="https://downloads.sourceforge.net/fetchmail/fetchmail-$pkgver.tar.xz
+	$pkgname.initd
+	$pkgname.confd
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--with-ssl \
+		--disable-nls \
+		--enable-POP3 \
+		--enable-IMAP \
+		--without-hesiod \
+		--enable-ETRN \
+		--enable-NTLM \
+		--enable-SDPS \
+		--enable-RPA \
+		--without-kerberos5 \
+		--without-gssapi \
+		--enable-fallback=no
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -Dm644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+	install -o fetchmail -g fetchmail -d "$pkgdir"/var/lib/fetchmail \
+		"$pkgdir"/var/run/fetchmail
+}
+
+fetchmailconf() {
+	depends="python3 py3-future python3-tkinter"
+	pkgdesc="GUI for generating fetchmail configuration files"
+	install=""
+
+	amove usr/bin/fetchmailconf*
+	amove usr/lib/python3*/site-packages/fetchmailconf.py*
+	amove usr/lib/python3*/site-packages/__pycache__/fetchmailconf*
+}
+
+
+sha512sums="81470bff9450e6b2f2cc408cb66788a6c4b075e7471e299d312ca6aa149394be0cc0b045b1835f3507d75a2fcfd2bbeb67b34ae929144b32b76fa5df1e829a40  fetchmail-6.4.5.tar.xz
+9520ec6616f4004d091b1c908d3ea38e104ad8f6595959a3cd3ef7544d05e3b75854631289e167ead08479250d04584d3f1855668a7a0ebd16a1ee9106f3b0b3  fetchmail.initd
+6f031ec6bd4a3ae53cd04fbd8470f4d10bd46ca29cabffa634a6801aa2e7707169855fbc045ced3c9a69523e694511a3f076b611678143e49339c8ccac98074e  fetchmail.confd"

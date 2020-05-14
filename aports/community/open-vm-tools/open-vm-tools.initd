@@ -1,0 +1,47 @@
+#!/sbin/openrc-run
+
+: ${vm_drag_and_drop:="no"}
+
+command="/usr/bin/vmtoolsd"
+command_background="yes"
+pidfile="/run/vmtoolsd.pid"
+# To not complain about missing messages...
+start_stop_daemon_args="--env LANG=en_US.UTF-8"
+
+depend() {
+	before net X
+}
+
+start_pre() {
+	[ "$vm_drag_and_drop" != yes ] || start_vmblock
+}
+
+stop_post() {
+	[ "$vm_drag_and_drop" != yes ] || stop_vmblock || true
+}
+
+start_vmblock() {
+	if ! [ -x /usr/bin/vmware-vmblock-fuse ]; then
+		eerror "you have to install open-vm-tools-gtk to enable drag'n'drop!"
+		return 1
+	fi
+
+	modprobe fuse > /dev/null 2>&1
+
+	checkpath -d -m 1777 /tmp/VMwareDnD
+	checkpath -d /run/vmblock-fuse
+
+	ebegin "Mounting vmblock-fuse"
+	vmware-vmblock-fuse \
+		-o subtype=vmware-vmblock,default_permissions,allow_other \
+		/run/vmblock-fuse
+	eend $?
+}
+
+stop_vmblock() {
+	if mount | grep -qw /run/vmblock-fuse; then
+		ebegin "Unmounting vmblock-fuse"
+		umount /run/vmblock-fuse
+		eend $?
+	fi
+}

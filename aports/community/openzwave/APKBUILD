@@ -1,0 +1,38 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=openzwave
+pkgver=1.6.974
+pkgrel=0
+pkgdesc="a C++ and DotNet library to control Z-Wave Networks via a Z-Wave Controller."
+url="http://www.openzwave.net/"
+arch="all"
+license="LGPL-3.0-or-later GPL-3.0-or-later Apache-2.0"
+depends=""
+depends_dev="eudev-dev"
+makedepends="$depends_dev linux-headers coreutils libxml2-utils"
+checkdepends="perl-xml-simple"
+options="!check" # FIXME tests failing
+subpackages="$pkgname-dev $pkgname-doc $pkgname-libs"
+source="http://old.openzwave.com/downloads/openzwave-$pkgver.tar.gz
+	0001-fix-build-on-ppc64le.patch
+	"
+builddir="$srcdir"/openzwave-$pkgver
+
+build() {
+	cd "$builddir"
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" PREFIX=/usr instlibdir=usr/lib pkgconfigdir="usr/lib/pkgconfig/" \
+		sysconfdir=etc/openzwave install
+}
+
+sha512sums="51f0bbecb8851518865f9df10e7d8800929729f610f44bec1f5ce2110496344e8a47ff9b12e850ead47850379ddcdaf95c8d6e766ab8612c5f148714913afa44  openzwave-1.6.974.tar.gz
+23aac3bf8664cff3f32a839057d2b1ed564cb1b754eed595f12a8e31b3ca2955a7c85eb3f79e1831d62ad2c2dfe7237d8e65dac88af009b891e15c392400f385  0001-fix-build-on-ppc64le.patch"

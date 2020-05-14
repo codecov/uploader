@@ -1,0 +1,92 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=e2fsprogs
+pkgver=1.45.6
+pkgrel=0
+pkgdesc="Standard Ext2/3/4 filesystem utilities"
+url="http://e2fsprogs.sourceforge.net"
+arch="all"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later AND BSD-3-Clause AND MIT"
+depends_dev="util-linux-dev"
+makedepends="$depends_dev linux-headers"
+checkdepends="diffutils perl"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc libcom_err $pkgname-libs $pkgname-extra"
+source="$pkgname-$pkgver.tar.gz::https://github.com/tytso/e2fsprogs/archive/v$pkgver.tar.gz"
+
+# secfixes:
+#   1.45.5-r0:
+#     - CVE-2019-5188
+#   1.45.4-r0:
+#     - CVE-2019-5094
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--mandir=/usr/share/man \
+		--enable-elf-shlibs \
+		--enable-symlink-install \
+		--disable-fsck \
+		--disable-uuidd \
+		--disable-libuuid \
+		--disable-libblkid \
+		--disable-nls
+	make
+}
+
+check() {
+	# Disable failing test
+	rm -rf tests/m_offset*
+
+	# Failing on CI
+	rm -rf tests/f_bigalloc_orphan_list*
+
+	# Fails on armhf on CI
+	rm -rf tests/f_extent_htree*
+
+	# Fails on builders with less than 4TB free space
+	rm -rf tests/m_hugefile
+
+	make check
+}
+
+package() {
+	make -j1 MKDIR_P="install -d"  DESTDIR="$pkgdir" install install-libs
+	mv "$pkgdir"/sbin/* "$pkgdir"/usr/sbin/
+	local i; for i in e2fsck mke2fs mkfs.* fsck.*; do
+		mv "$pkgdir"/usr/sbin/$i "$pkgdir"/sbin/
+	done
+}
+
+dev() {
+	default_dev
+	mkdir -p "$subpkgdir"/usr/bin
+	mkdir -p "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/bin/compile_et "$pkgdir"/usr/bin/mk_cmds \
+		"$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/share/et "$pkgdir"/usr/share/ss \
+		"$subpkgdir"/usr/share
+}
+
+libcom_err() {
+	pkgdesc="Common error description library"
+	mkdir -p "$subpkgdir"/lib
+	mv "$pkgdir"/lib/libcom_err* "$subpkgdir"/lib/
+}
+
+extra() {
+	depends="$pkgname"
+	pkgdesc="Ext2/3/4 filesystem extra utilities"
+	mkdir -p "$subpkgdir"
+	rmdir "$pkgdir"/lib
+	mv "$pkgdir"/usr "$subpkgdir"/
+}
+
+static() {
+	depends=""
+	pkgdesc="$pkgdesc (static libraries)"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*.a "$subpkgdir"/usr/lib
+}
+
+sha512sums="0de9ee4df69d6be79f0c23baebf32266f0c0fb15190181edf9ebc78d486458b34229c18466646221566d16bc75a011cbe311fd34a72da53340e8de340f064cf9  e2fsprogs-1.45.6.tar.gz"

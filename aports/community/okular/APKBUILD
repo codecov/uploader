@@ -1,0 +1,68 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=okular
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by kirigami2 -> qt5-qtdeclarative
+url="https://kde.org/applications/office/org.kde.okular"
+pkgdesc="A universal document viewer"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later"
+depends="$pkgname-common"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtspeech-dev karchive-dev
+	kbookmarks-dev kcompletion-dev kconfig-dev kconfigwidgets-dev
+	kcoreaddons-dev kcrash-dev kiconthemes-dev kio-dev kparts-dev
+	threadweaver-dev kwindowsystem-dev kdoctools-dev kjs-dev kwallet-dev
+	kactivities-dev phonon-dev purpose-dev zlib-dev poppler-qt5-dev
+	kirigami2-dev qca-dev kpty-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/okular-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang $pkgname-common $pkgname-mobile"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DOKULAR_UI=both
+	make -C build
+}
+
+check() {
+	cd build
+
+	# All other tests are broken, require OpenGL, etc
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -R "^shelltest"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+common() {
+	pkgdesc="Common files for okular and okular-mobile"
+	mkdir -p \
+		"$subpkgdir"/usr/lib/qt5 \
+		"$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/lib/qt5/plugins "$subpkgdir"/usr/lib/qt5/
+	find "$pkgdir"/usr -name "libOkular5Core.so.*" -exec mv {} "$subpkgdir"/usr/lib/ +
+	mv "$pkgdir"/usr/share/okular "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/config.kcfg "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/qlogging-categories5 "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/icons "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/metainfo "$subpkgdir"/usr/share/
+	mv "$pkgdir"/usr/share/kconf_update "$subpkgdir"/usr/share/
+}
+
+mobile() {
+	depends="$pkgname-common kirigami2"
+	mkdir -p "$subpkgdir"/usr/bin
+	mkdir -p "$subpkgdir"/usr/lib/qt5
+	mkdir -p "$subpkgdir"/usr/share/applications
+
+	mv "$pkgdir"/usr/bin/okularkirigami "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/lib/qt5/qml "$subpkgdir"/usr/lib/qt5/
+	mv "$pkgdir"/usr/share/applications/org.kde.okular.kirigami.desktop "$subpkgdir"/usr/share/applications/
+	mv "$pkgdir"/usr/share/applications/org.kde.mobile* "$subpkgdir"/usr/share/applications/
+}
+
+sha512sums="97d999618cb6042108a420963154cccbc67e2cf96c0afef4ffb46c7c2cfbf976a316cc277cd78e7e67af7f405b4426cb6edb6cd51c736a1a5071fdb428d3b55d  okular-20.04.0.tar.xz"

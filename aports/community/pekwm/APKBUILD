@@ -1,0 +1,35 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=pekwm
+pkgver=0.1.17
+pkgrel=4
+pkgdesc="Fast & Light Window Manager"
+url="https://github.com/pekdon/pekwm"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="libx11-dev libpng-dev libxpm-dev libxrender-dev libxrandr-dev
+	automake autoconf libtool"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/pekdon/pekwm/archive/release-$pkgver.tar.gz"
+builddir="$srcdir/pekwm-release-$pkgver"
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="1950888402f11c5cd72c9d82de976c472d4a0443da206629a039d19a1729660fd7cd09535d35984d554dcdb366918d9e29536b1272521f36f7e54499df0c14af  pekwm-0.1.17.tar.gz"

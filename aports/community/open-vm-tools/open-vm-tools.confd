@@ -1,0 +1,8 @@
+# Configuration for /etc/init.d/open-vm-tools
+
+# Set this to 'yes' to enable drag'n'drop loading.
+# Please note that this feature requires open-vm-tools-gtk to be installed.
+#vm_drag_and_drop="no"
+
+# Additional options to pass into vmtoolsd.
+#command_args=""

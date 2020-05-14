@@ -1,0 +1,31 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=swaks
+pkgver=20190914.0
+pkgrel=0
+pkgdesc="Swiss Army Knife for SMTP"
+url="http://www.jetmore.org/john/code/swaks/"
+arch="noarch"
+license="GPL-2.0"
+depends="perl"
+subpackages="$pkgname-doc"
+source="http://www.jetmore.org/john/code/swaks/files/$pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	return 0
+}
+
+package() {
+	cd "$builddir"
+	install -Dm755 $pkgname "$pkgdir"/usr/bin/$pkgname
+}
+
+doc() {
+	cd "$builddir"
+	mkdir -p $subpkgdir/usr/share/doc/$pkgname
+	mv doc/* $subpkgdir/usr/share/doc/$pkgname
+}
+
+sha512sums="3167435a73e7729d090cba2431d5828895c25154c36d92e0ebecd5c4e2430ca596d62bb3e6eb3b65eadabd52c8331fe3bb8a492cce3ad247fa113c0af9c67339  swaks-20190914.0.tar.gz"

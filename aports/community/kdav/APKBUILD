@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kdav
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="A DAV protocol implementation with KJobs"
+url="https://kontact.kde.org/"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarativ
+license="LGPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev qt5-qtxmlpatterns-dev kcoreaddons-dev kio-dev ki18n-dev"
+makedepends="$depends_dev extra-cmake-modules"
+subpackages="$pkgname-dev $pkgname-lang"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kdav-$pkgver.tar.xz"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="9dbce79085fca66656bbed75db5e795c8163ab0c968c9d5250cf8be76cc17dc0ce4bc4434ba1b2ede313b397c3e31b329a6ae73e27ab2d0360535a299e2a5762  kdav-20.04.0.tar.xz"

@@ -1,0 +1,34 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer:
+pkgname=py3-pyrsistent
+pkgver=0.16.0
+pkgrel=0
+pkgdesc="Persistent/Functional/Immutable data structures"
+url="https://github.com/tobgu/pyrsistent"
+arch="all"
+license="MIT"
+depends="py3-six"
+makedepends="py3-setuptools python3-dev"
+checkdepends="py3-hypothesis py3-pytest py3-pytest-runner"
+source="pyrsistent-$pkgver.tar.gz::https://github.com/tobgu/pyrsistent/archive/v$pkgver.tar.gz"
+builddir="$srcdir/pyrsistent-$pkgver"
+provides="py-pyrsistent=$pkgver-r$pkgrel"
+
+prepare() {
+	default_prepare
+	sed -i 's/<5//g' setup.py
+}
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="5363c98da4e7f5428101813c8360ade7d22505a6504c9cc0f7f14f0a9815ed9cbda54d10afe24f6b519f0c1498da0b9657a0c8c3a02ff788bedeaa4cc42386e8  pyrsistent-0.16.0.tar.gz"

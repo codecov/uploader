@@ -1,0 +1,25 @@
+# Contributor: ScrumpyJack <scrumpyjack@st.ilet.to>
+# Maintainer: ScrumpyJack <scrumpyjack@st.ilet.to>
+pkgname=bogofilter
+pkgver=1.2.5
+pkgrel=0
+pkgdesc="A Bayesian mail filter that classifies mail by statistical analysis of the message's header and content."
+url="https://bogofilter.sourceforge.io/"
+arch="all"
+license="GPL-2.0"
+makedepends="sqlite-dev"
+subpackages="$pkgname-doc"
+source="https://downloads.sourceforge.net/project/bogofilter/bogofilter-stable/bogofilter-$pkgver.tar.xz"
+
+build() {
+	./configure --prefix=/usr \
+		--with-included-gsl \
+		--with-database=sqlite3
+	make
+}
+
+package() {
+	make DESTDIR=${pkgdir} install
+}
+
+sha512sums="3a7280485cfe5802dd3e9721c153f88ccf28bff7a6a24590e985e860d1f1e0ddea7bde8a8e5ad1ff643e94c9fd7b26b2a5ed5a9fb991cee3fd5b0ce67ce9abfe  bogofilter-1.2.5.tar.xz"

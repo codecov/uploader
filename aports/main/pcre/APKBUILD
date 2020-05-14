@@ -1,0 +1,82 @@
+# Contributor: Sergei Lukin <sergej.lukin@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=pcre
+pkgver=8.44
+pkgrel=0
+pkgdesc="Perl-compatible regular expression library"
+url="http://pcre.sourceforge.net"
+arch="all"
+license="BSD-3-Clause"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-tools
+	libpcrecpp libpcre16 libpcre32"
+source="https://ftp.pcre.org/pub/pcre/pcre-$pkgver.tar.bz2"
+
+# secfixes:
+#   8.40-r2:
+#     - CVE-2017-7186
+#   7.8-r0:
+#     - CVE-2017-11164
+#     - CVE-2017-16231
+
+
+build() {
+	local _enable_jit="--enable-jit"
+	case "$CARCH" in
+	mips64*) export CPPFLAGS="$CPPFLAGS -DSLJIT_IS_FPU_AVAILABLE=0";;
+	mips*) export CPPFLAGS="$CPPFLAGS -DSLJIT_IS_FPU_AVAILABLE=0 -DSLJIT_MIPS_R1=1";;
+	s390x) _enable_jit="";;
+	esac
+
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		$_enable_jit \
+		--enable-utf8 \
+		--enable-unicode-properties \
+		--enable-pcre8 \
+		--enable-pcre16 \
+		--enable-pcre32 \
+		--with-match-limit-recursion=8192 \
+		--htmldir=/usr/share/doc/$pkgname-$pkgver/html \
+		--docdir=/usr/share/doc/$pkgname-$pkgver
+
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+check() {
+	# skip locale specific tests
+	sed -i -e 's/do3=yes//g' RunTest
+
+	make check
+}
+
+libpcrecpp() {
+	pkgdesc="C++ bindings for PCRE"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libpcrecpp.so* "$subpkgdir"/usr/lib/
+}
+
+libpcre16() {
+	pkgdesc="PCRE with 16 bit character support"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libpcre16.so* "$subpkgdir"/usr/lib/
+}
+
+libpcre32() {
+	pkgdesc="PCRE with 32 bit character support"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libpcre32.so* "$subpkgdir"/usr/lib/
+}
+
+tools() {
+	pkgdesc="Auxiliary utilities for PCRE"
+	mkdir -p "$subpkgdir"/usr/
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}
+
+sha512sums="f26d850aab5228799e58ac8c2306fb313889332c39e29b118ef1de57677c5c90f970d68d3f475cabc64f8b982a77f04eca990ff1057f3ccf5e19bd137997c4ac  pcre-8.44.tar.bz2"

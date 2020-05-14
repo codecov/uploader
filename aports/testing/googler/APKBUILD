@@ -1,0 +1,53 @@
+# Contributor: Ivan Tham <pickfire@riseup.net>
+# Maintainer: Ivan Tham <pickfire@riseup.net>
+pkgname=googler
+pkgver=4.0
+pkgrel=0
+pkgdesc="Google Search, Google Site Search, Google News from the terminal"
+url="https://github.com/jarun/googler"
+arch="noarch"
+license="GPL-3.0-or-later"
+depends="python3"
+subpackages="$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-fish-completion:fishcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/jarun/googler/archive/v$pkgver.tar.gz"
+
+build() {
+	make disable-self-upgrade
+}
+
+package() {
+	make install DESTDIR="$pkgdir" PREFIX=/usr
+}
+
+bashcomp() {
+	pkgdesc="Bash completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions/
+	install -Dm644 "$builddir"/auto-completion/bash/* \
+		"$subpkgdir"/usr/share/bash-completion/completions/
+}
+
+fishcomp() {
+	pkgdesc="Fish completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel fish"
+
+	mkdir -p "$subpkgdir"/usr/share/fish/completions/
+	install -Dm644 "$builddir"/auto-completion/fish/* \
+		"$subpkgdir"/usr/share/fish/completions/
+}
+
+zshcomp() {
+	pkgdesc="Zsh completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	mkdir -p "$subpkgdir"/usr/share/zsh/site-functions
+	install -Dm644 "$builddir"/auto-completion/zsh/* \
+		"$subpkgdir"/usr/share/zsh/site-functions/
+}
+
+sha512sums="3422e9d7c9321554d755bdf0d6c03cce82489770b48bf9523aba8b79ef3985fda2c388c97e90ce5be312be18c94fed7186d03973e1406f5d16fd9ff2028b0620  googler-4.0.tar.gz"

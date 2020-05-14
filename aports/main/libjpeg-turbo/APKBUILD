@@ -1,0 +1,72 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libjpeg-turbo
+pkgver=2.0.4
+pkgrel=1
+pkgdesc="Accelerated baseline JPEG compression and decompression library"
+url="https://libjpeg-turbo.org/"
+arch="all"
+license="BSD-3-Clause IJG Zlib"
+makedepends="cmake nasm"
+replaces="libjpeg"
+subpackages="$pkgname-static $pkgname-doc $pkgname-dev $pkgname-utils"
+source="https://downloads.sourceforge.net/libjpeg-turbo/libjpeg-turbo-$pkgver.tar.gz"
+
+# Some tests broken on mips64.
+[ "$CARCH" = "mips64" ] && options="!check"
+
+# secfixes:
+#   2.0.4-r0:
+#     - CVE-2019-2201
+#   2.0.2-r0:
+#     - CVE-2018-20330
+#     - CVE-2018-19664
+#   1.5.3-r3:
+#     - CVE-2018-11813
+#   1.5.3-r2:
+#     - CVE-2018-1152
+
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=/usr/lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DWITH_JPEG8=1 \
+		$CMAKE_CROSSOPTS
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make -j1 DESTDIR="$pkgdir" install
+	install -d "$pkgdir"/usr/share/licenses/$pkgname
+	ln -s ../../doc/libjpeg-turbo/LICENSE.md "$pkgdir/usr/share/licenses/$pkgname"
+}
+
+utils() {
+	pkgdesc="Utilities for manipulating JPEG images"
+	replaces="jpeg"
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}
+
+doc() {
+	default_doc
+	replaces="jpeg-doc"
+}
+
+dev() {
+	default_dev
+	replaces="jpeg-dev"
+}
+
+sha512sums="708c2e7418d9ed5abca313e2ff5a08f8176d79cad2127573cda6036583c201973db4cfb0eafc0fc8f57ecc7b000d2b4af95980de54de5a0aed45969e993a5bf9  libjpeg-turbo-2.0.4.tar.gz"

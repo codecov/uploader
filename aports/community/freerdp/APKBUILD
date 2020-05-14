@@ -1,0 +1,84 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=freerdp
+_pkgname=FreeRDP
+pkgver=2.0.0
+pkgrel=0
+pkgdesc="FreeRDP client"
+url="https://www.freerdp.com/"
+arch="all"
+license="Apache-2.0"
+options="!check" # As of 2.0.0_rc4 no test suite is available
+makedepends="openssl-dev libxcursor-dev cups-dev alsa-lib-dev ffmpeg-dev
+	libxkbfile-dev libxinerama-dev libxv-dev libxdamage-dev
+	libjpeg-turbo-dev libxi-dev cmake bsd-compat-headers
+	gst-plugins-base-dev gsm-dev linux-headers libusb-dev"
+subpackages="$pkgname-doc $pkgname-dev $pkgname-plugins $pkgname-libs"
+source="$pkgname-$pkgver.tar.gz::https://github.com/FreeRDP/FreeRDP/archive/$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+# secfixes:
+#   2.0.0-r0:
+#     - CVE-2020-11521
+#     - CVE-2020-11522
+#     - CVE-2020-11523
+#     - CVE-2020-11524
+#     - CVE-2020-11525
+#     - CVE-2020-11526
+#   2.0.0_rc4-r0:
+#     - CVE-2018-8786
+#     - CVE-2018-8787
+#     - CVE-2018-8788
+#     - CVE-2018-8789
+
+build() {
+	export CFLAGS="$CFLAGS -D_BSD_SOURCE"
+	cmake -DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DWITH_ALSA=ON \
+		-DWITH_CUPS=ON \
+		-DWITH_CHANNELS=ON -DSTATIC_CHANNELS=OFF \
+		-DWITH_DIRECTFB=OFF \
+		-DWITH_FFMPEG=OFF \
+		-DWITH_GSM=ON \
+		-DWITH_GSTREAMER_1_0=ON \
+		-DWITH_IPP=OFF \
+		-DWITH_JPEG=ON \
+		-DWITH_OPENSSL=ON \
+		-DWITH_PCSC=OFF \
+		-DWITH_PULSE=OFF \
+		-DWITH_WAYLAND=OFF \
+		-DWITH_SERVER=ON \
+		-DWITH_X11=ON \
+		-DWITH_XCURSOR=ON \
+		-DWITH_XEXT=ON \
+		-DWITH_XKBFILE=ON \
+		-DWITH_XI=ON \
+		-DWITH_XINERAMA=ON \
+		-DWITH_XRENDER=ON \
+		-DWITH_XV=ON \
+		-DWITH_ZLIB=ON \
+		-DWITH_NEON=OFF \
+		-DARM_FP_API=hard
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+libs() {
+	pkgdesc="FreeRDP client - Libraries"
+	replaces="libfreerdp"
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/lib "$subpkgdir"/usr/
+}
+
+plugins() {
+	pkgdesc="FreeRDP client - Plugins"
+	replaces="libfreerdp"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/freerdp2 "$subpkgdir"/usr/lib/
+}
+
+sha512sums="efdaa1b018e5166c0f2469663bdd0dc788de0577d0c0cb8b98048a535f8cb07de1078f86aaacc9445d42078d2e02fd7bc7f1ed700ca96032976f6bd84c68ee8f  freerdp-2.0.0.tar.gz"

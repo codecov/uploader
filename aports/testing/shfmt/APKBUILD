@@ -1,0 +1,26 @@
+# Contributor: Olliver Schinagl <oliver@schinagl.nl>
+# Maintainer: Olliver Schinagl <oliver@schinagl.nl>
+pkgname=shfmt
+pkgver=3.1.1
+pkgrel=0
+pkgdesc="A shell parser, formatter, and interpreter (sh/bash/mksh)"
+url="https://mvdan.cc/sh"
+arch="all"
+license="BSD-3-Clause"
+options="!check" # no test suite
+makedepends="go"
+source="$pkgname-$pkgver.tar.gz::https://github.com/mvdan/sh/archive/v$pkgver.tar.gz"
+builddir="$srcdir/sh-$pkgver"
+
+build() {
+	go build \
+		-ldflags "-w -X main.version=$pkgver-$pkgrel" \
+		-v \
+		./cmd/shfmt
+}
+
+package() {
+	install -Dm755 shfmt "$pkgdir"/usr/bin/shfmt
+}
+
+sha512sums="3cfca494b1c3d87b7b5cf6435909637ee6e15147fe35a1f628a1c9f127c884efa4aae9e2e1dec989ff6a32cbad08cea925c6c427f9fe7ebe41333326d1ea747c  shfmt-3.1.1.tar.gz"

@@ -1,0 +1,49 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=iputils
+pkgver=20190709
+pkgrel=0
+pkgdesc="IP Configuration Utilities (and Ping)"
+url="https://github.com/iputils/iputils/"
+arch="all"
+license="BSD-3-Clause GPL-2.0-or-later"
+makedepends="libcap-dev openssl-dev meson"
+replaces="bbsuid"
+source="https://github.com/iputils/$pkgname/archive/s$pkgver.tar.gz"
+options="!check suid"
+builddir="$srcdir/$pkgname-s$pkgver"
+
+build() {
+	cd "$builddir"
+
+	meson \
+		--buildtype=plain \
+		--prefix="/usr" \
+		--sbindir="bin" \
+		-DNO_SETCAP_OR_SUID=true \
+		-DBUILD_RARPD=true \
+		-DBUILD_TRACEROUTE6=true \
+		-DBUILD_MANS=false \
+		-DUSE_IDN=false \
+		-DUSE_GETTEXT=false \
+		"build"
+	ninja -C "build"
+}
+
+package() {
+	local name
+	cd "$builddir"/build
+
+	for name in arping clockdiff rarpd rdisc tftpd tracepath; do
+		install -D -m755 $name "$pkgdir"/usr/sbin/$name
+	done
+	install -D -m755 ninfod/ninfod "$pkgdir"/usr/sbin/ninfod
+
+	for name in ping traceroute6; do
+		install -D -m4755 $name "$pkgdir"/bin/$name
+	done
+
+	ln -s tracepath "$pkgdir"/usr/sbin/tracepath6
+	ln -s ping "$pkgdir"/bin/ping6
+}
+
+sha512sums="5db18ac49fa46ed810da4d508e78f4baf2d5c07e7f923eb49d005ad8745743d8861e5788b34a7e37fb7261cee7ddfb768b737eee9d200502ea53537142cac6b5  s20190709.tar.gz"

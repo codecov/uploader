@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=libkcompactdisc
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://www.kde.org/applications/multimedia/"
+pkgdesc="Library for interfacing with CDs"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev kcoreaddons-dev solid-dev ki18n-dev phonon-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/libkcompactdisc-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="e327854937644ebcc5e99eef3f40acac3d43cfa0a8ad4d66b9d73a58d51687c6bf41629e6e66b9e9b6e5dfa2c4664bfbdf1a98171fd66e711c412805f79ad3ef  libkcompactdisc-20.04.0.tar.xz"

@@ -1,0 +1,28 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=py3-pyee
+pkgver=7.0.2
+pkgrel=0
+pkgdesc="A port of node.js's EventEmitter to Python"
+url="https://github.com/jfhbrook/pyee"
+arch="noarch"
+license="MIT"
+depends="python3 py3-vcversioner py3-async_generator py3-trio py3-twisted"
+makedepends="py3-setuptools py3-pytest-trio py3-pytest-asyncio py3-pytest-runner"
+checkdepends="pytest py3-mock"
+source="https://pypi.python.org/packages/source/p/pyee/pyee-$pkgver.tar.gz"
+builddir="$srcdir/pyee-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="f543cb1e6faa7dd0e430a0f50ca7e2dd4449f2627f1c81d01343effc87ce656a67813845a207786e0f93facf53896a647cf5caca0224fb4a07a3a2b76c5e4431  pyee-7.0.2.tar.gz"

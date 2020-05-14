@@ -1,0 +1,31 @@
+# Contributor: Robert Sacks <robert@sacks.email>
+# Maintainer: Robert Sacks <robert@sacks.email>
+pkgname=py3-commonmark
+_pyname=commonmark
+pkgver=0.9.1
+pkgrel=0
+pkgdesc="Python3 parser for the CommonMark Markdown specification"
+url="https://pypi.org/project/commonmark/"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3"
+makedepends="py3-setuptools"
+checkdepends="py3-hypothesis py3-flake8"
+source="https://files.pythonhosted.org/packages/source/${_pyname%${_pyname#?}}/$_pyname/$_pyname-$pkgver.tar.gz"
+builddir="$srcdir/$_pyname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	PYTHONPATH="$PWD/build/lib" python3 commonmark/tests/unit_tests.py
+	PYTHONPATH="$PWD/build/lib" python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+	rm -rf "$pkgdir"/usr/lib/python3*/site-packages/commonmark/tests
+}
+
+sha512sums="bacf5ef387a0c330a2128f42c42c29c1a48ae623683e6e56ad28a1621aabd72e29cd3e2d661e8207b8cc0c347d267f262a55f2145fc58f8c8aeff91e7a283324  commonmark-0.9.1.tar.gz"

@@ -1,0 +1,55 @@
+# Contributor: Curt Tilmes <Curt.Tilmes@nasa.gov>
+# Maintainer: Curt Tilmes <Curt.Tilmes@nasa.gov>
+pkgname=rakudo
+pkgver=2020.05
+pkgrel=0
+pkgdesc="A compiler for the Raku programming language"
+url="http://rakudo.org/"
+arch="all !x86 !armhf !armv7 !s390x !mips !mips64"
+license="Artistic-2.0"
+depends="nqp libffi"
+makedepends="perl-utils moarvm-dev libffi-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/rakudo/rakudo/releases/download/$pkgver/rakudo-$pkgver.tar.gz"
+
+build() {
+	perl Configure.pl --prefix=/usr --backends=moar
+	make DESTDIR=install install
+}
+
+check() {
+	make RAKUDO_SKIP_TIMING_TESTS=1 test
+}
+
+package() {
+	install -Dm755 install/usr/bin/perl6 "$pkgdir"/usr/bin/perl6
+	install -Dm755 install/usr/bin/rakudo "$pkgdir"/usr/bin/rakudo
+	ln -s rakudo "$pkgdir"/usr/bin/raku
+	cp -r install/usr/share "$pkgdir"/usr
+}
+
+dev() {
+	cd "$builddir"
+	install -Dm755 install/usr/bin/perl6-debug "$subpkgdir"/usr/bin/perl6-debug
+	install -Dm755 install/usr/bin/perl6-gdb-m "$subpkgdir"/usr/bin/perl6-gdb-m
+	install -Dm755 install/usr/bin/perl6-lldb-m "$subpkgdir"/usr/bin/perl6-lldb-m
+	install -Dm755 install/usr/bin/perl6-valgrind-m "$subpkgdir"/usr/bin/perl6-valgrind-m
+	ln -s rakudo-debug "$subpkgdir"/usr/bin/raku-debug
+	install -Dm755 install/usr/bin/rakudo-debug "$subpkgdir"/usr/bin/rakudo-debug
+	install -Dm755 install/usr/bin/rakudo-debug-m "$subpkgdir"/usr/bin/rakudo-debug-m
+	install -Dm755 install/usr/bin/rakudo-gdb-m "$subpkgdir"/usr/bin/rakudo-gdb-m
+	install -Dm755 install/usr/bin/rakudo-lldb-m "$subpkgdir"/usr/bin/rakudo-lldb-m
+	install -Dm755 install/usr/bin/rakudo-m "$subpkgdir"/usr/bin/rakudo-m
+	install -Dm755 install/usr/bin/rakudo-valgrind-m "$subpkgdir"/usr/bin/rakudo-valgrind-m
+	install -Dm755 tools/install-dist.p6 "$subpkgdir"/usr/share/perl6/bin/install-dist.p6
+}
+
+doc() {
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr/share/doc/"$pkgname"
+	for file in CONTRIBUTING.md CREDITS INSTALL.txt LICENSE README.md VERSION docs; do
+		cp -r $file "$subpkgdir"/usr/share/doc/"$pkgname"
+	done
+}
+
+sha512sums="1b78c9d12f38755a4b8f85639c0ac05064e3cf1bbcb8df68f82c54b245b8d573b74871019414dc7ec1ba1fdd2d57d1c48f90a47fea0b9f6d962942983ade6fba  rakudo-2020.05.tar.gz"

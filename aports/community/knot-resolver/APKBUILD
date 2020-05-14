@@ -1,0 +1,149 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Contributor: tcely <knot-resolver+aports@tcely.33mail.com>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=knot-resolver
+pkgver=5.1.0
+pkgrel=0
+pkgdesc="Minimalistic caching DNS resolver implementation"
+url="https://www.knot-resolver.cz/"
+arch="all"
+license="GPL-3.0-or-later"
+pkgusers="kresd"
+pkggroups="kresd"
+depends="dns-root-hints dnssec-root lua5.1-cqueues lua5.1-http"
+_depends_dnstap="$pkgname=$pkgver-r$pkgrel"
+_depends_http="$pkgname=$pkgver-r$pkgrel lua5.1-mmdb"
+_depends_dnstap_dev="fstrm-dev protobuf-dev protobuf-c-dev"
+depends_dev="
+	knot-dev>=2.8.0
+	libedit-dev
+	libuv-dev>=1.7
+	luajit-dev>=2.0
+	$_depends_dnstap_dev
+	"
+depends_static="$pkgname-dev=$pkgver-r$pkgrel"
+makedepends="
+	$depends_dev
+	bash
+	cmake
+	gnutls-dev
+	libcap
+	libcap-ng-dev
+	lmdb-dev
+	luacheck
+	meson>=0.46
+	ninja
+	pkgconf
+	py3-flake8
+	"
+checkdepends="cmocka-dev"
+install="
+	$pkgname.pre-install
+	$pkgname.post-upgrade
+	$pkgname-openrc.pre-upgrade
+	$pkgname-openrc.post-upgrade
+	"
+subpackages="
+	$pkgname-mod-http:http:noarch
+	$pkgname-mod-dnstap:dnstap
+	$pkgname-libs-static
+	$pkgname-dev
+	$pkgname-dbg
+	$pkgname-doc
+	$pkgname-openrc
+	"
+source="https://secure.nic.cz/files/knot-resolver/knot-resolver-$pkgver.tar.xz
+	kresd.confd
+	kresd.initd
+	kres-cache-gc.initd
+	kres-cache-gc.confd
+	"
+
+# secfixes:
+#   4.3.0-r0:
+#     - CVE-2019-19331
+#   4.1.0-r0:
+#     - CVE-2019-10190
+#     - CVE-2019-10191
+#   2.3.0-r0:
+#     - CVE-2018-1110
+
+build() {
+	# strict-aliasing breaks stats module - variable "sa" in stats.c:495 is 0x0.
+	# (https://gitlab.labs.nic.cz/knot/knot-resolver/blob/v4.2.2/modules/stats/stats.c#L495)
+	export CFLAGS="$CFLAGS -fno-strict-aliasing"
+
+	meson build \
+		--prefix=/usr \
+		--buildtype=plain \
+		--default-library=both \
+		-Dclient=enabled \
+		-Dgroup="$pkggroups" \
+		-Dinstall_kresd_conf=enabled \
+		-Dunit_tests=enabled \
+		-Duser="$pkgusers" \
+		-Droot_hints=/usr/share/dns-root-hints/named.root \
+		-Dmanaged_ta=disabled \
+		-Dkeyfile_default=/usr/share/dnssec-root/trusted-key.key
+
+	ninja -C build
+}
+
+check() {
+	meson test -C build
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+
+	cd "$pkgdir"
+
+	# net_bind_service - required to bind to well-known ports
+	# setpcap - when available, resd drops any extra privileges after the
+	#   daemon successfully start
+	setcap 'cap_net_bind_service,cap_setpcap=+ep' ./usr/sbin/kresd
+
+	# These are useless on non-systemd distro.
+	rm ./usr/lib/knot-resolver/distro-preconfig.lua
+	rm ./usr/lib/knot-resolver/upgrade-4-to-5.lua
+
+	install -m 755 -D "$srcdir"/kresd.initd ./etc/init.d/kresd
+	install -m 644 -D "$srcdir"/kresd.confd ./etc/conf.d/kresd
+	install -m 755 -D "$srcdir"/kres-cache-gc.initd ./etc/init.d/kres-cache-gc
+	install -m 644 -D "$srcdir"/kres-cache-gc.confd ./etc/conf.d/kres-cache-gc
+
+	install -d -m 750 -o kresd -g kresd ./var/cache/knot-resolver
+}
+
+http() {
+	pkgdesc="Knot Resolver - HTTP/2 services"
+	depends="$_depends_http"
+
+	local moddir="usr/lib/$pkgname/kres_modules"
+
+	mkdir -p "$subpkgdir"/$moddir
+	mv "$pkgdir"/$moddir/http* "$subpkgdir"/$moddir/
+}
+
+dnstap() {
+	pkgdesc="Knot Resolver - dnstap logging"
+	depends="$_depends_dnstap"
+
+	local moddir="usr/lib/$pkgname/kres_modules"
+
+	mkdir -p "$subpkgdir"/$moddir
+	mv "$pkgdir"/$moddir/dnstap.so "$subpkgdir"/$moddir/
+}
+
+_gpg_signature_extensions="asc"
+_gpgfingerprints="
+	good:BE26 EBB9 CBE0 59B3 910C  A35B CE8D D6A1 A50A 21E4
+	good:4A8B A48C 2AED 933B D495  C509 A1FB A5F7 EF8C 4869
+	B600 6460 B60A 80E7 8206  2449 E747 DF1F 9575 A3AA
+	"
+
+sha512sums="45ed8728eaf1911062a816f4197a7e57fa00f25120668550c994d4689c592d8627178f32abddd8903a58a76cfdacef2e14711ce72f30b16de807ec65d344ba79  knot-resolver-5.1.0.tar.xz
+3df654ade6d8d0f584425090cae038e2ab67e99748f33a936f9401f2ac91b3364a3db34d9b16468a13909530b23665318ab9046e363cf0efd0a9f1e0b4678a96  kresd.confd
+7c5ec1c90e90dc5b603cc6ce718ef858ee44aca38100d97d1e346cd74f3f41a0fc9dd2260938741c5c9a880031dc5eee1430d187ca47675fc41ef2c92619197d  kresd.initd
+a1e4af78ad8df36feb41619ac63aa8505cb68b434a3e01c8929f69759f5a6abe9667a6d5738928ff67daaccab58e5fecd49ce4ff439674f1e073982042a907fd  kres-cache-gc.initd
+ad017f54aaa214862a67c8242efe9fa56dc66a8ac0012cc0f4eb981d6fd631b250378602f8f5af9916fff071d9a60d1e588e07458f8d891d19787c3b5d48cdb5  kres-cache-gc.confd"

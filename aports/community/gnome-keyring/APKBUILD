@@ -1,0 +1,40 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-keyring
+pkgver=3.36.0
+pkgrel=0
+pkgdesc="GNOME keyring"
+url="https://wiki.gnome.org//Projects/GnomeKeyring"
+arch="all"
+license="GPL-2.0-only LGPL-2.0-only"
+makedepends="gtk+3.0-dev gcr-dev libcap-ng-dev linux-pam-dev
+	intltool gobject-introspection-dev gtk-doc libxslt
+	openssh-client libgcrypt-dev"
+checkdepends="python3 dbus-x11 xvfb-run"
+provides="dbus:org.freedesktop.Secrets"
+# Highest priority of the bunch since it has the least deps
+provider_priority=100
+options="!check" # Failing tests on the builders :/
+subpackages="$pkgname-lang $pkgname-doc"
+source="https://download.gnome.org/sources/gnome-keyring/${pkgver%.*}/gnome-keyring-$pkgver.tar.xz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--with-pam-dir=/lib/security
+	make
+}
+
+check() {
+	xvfb-run make check -j1
+}
+
+package() {
+	export GCONF_DISABLE_MAKEFILE_SCHEMA_INSTALL=1
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="e5aed36ad109cbd2dcb534843f8565829366acc955cadc6e9bbe87ebbb6a8a907211aa3a42f7f26148ac69726af2f9238965707d1259319435bd20aa8c4859ed  gnome-keyring-3.36.0.tar.xz"

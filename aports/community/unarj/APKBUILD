@@ -1,0 +1,20 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=unarj
+pkgver=2.65
+pkgrel=0
+pkgdesc="Extracting, testing and  viewing the contents of archives created with the ARJ archiver"
+options="!check" # No testsuite
+url="http://www.arjsoftware.com"
+arch="all"
+license="custom"
+source="https://src.fedoraproject.org/repo/pkgs/unarj/unarj-$pkgver.tar.gz/c6fe45db1741f97155c7def322aa74aa/unarj-$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+package() {
+	install -D -m755 unarj $pkgdir/usr/bin/unarj
+}
+
+sha512sums="747bdc940fcb8ac28207a90cec8011deb93fe26064a44c94de44d7dfc82cb1cc6db2d1a648af3626283fc4f5d608ec312900455827fd1b7835ccfb89e71a7ac7  unarj-2.65.tar.gz"

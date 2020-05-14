@@ -1,0 +1,61 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=cryptsetup
+pkgver=2.3.2
+pkgrel=0
+pkgdesc="Userspace setup tool for transparent encryption of block devices using the Linux 2.6 cryptoapi"
+url="https://gitlab.com/cryptsetup/cryptsetup"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends_host="lvm2-dev openssl-dev popt-dev util-linux-dev
+	json-c-dev argon2-dev"
+makedepends="$makedepends_build $makedepends_host"
+checkdepends="device-mapper sharutils which bash"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-libs $pkgname-openrc"
+source="https://www.kernel.org/pub/linux/utils/cryptsetup/v${pkgver%.*}/cryptsetup-$pkgver.tar.gz
+	flush-stdout.patch
+	dmcrypt.confd
+	dmcrypt.initd
+	"
+
+build() {
+	./configure \
+		--build="$CBUILD" \
+		--host="$CHOST" \
+		--prefix=/usr \
+		--libdir=/lib \
+		--sbindir=/sbin \
+		--disable-static \
+		--enable-libargon2 \
+		--with-crypto_backend=openssl
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR=$pkgdir install
+
+	mkdir -p "$pkgdir"/usr/lib
+	mv "$pkgdir"/lib/pkgconfig "$pkgdir"/usr/lib/
+
+	install -Dm644 "$srcdir"/dmcrypt.confd "$pkgdir"/etc/conf.d/dmcrypt
+	install -Dm755 "$srcdir"/dmcrypt.initd "$pkgdir"/etc/init.d/dmcrypt
+
+	mkdir -p "$pkgdir"/usr/share/doc/$pkgname/
+	install -m644 README TODO FAQ NEWS docs/v$pkgver-ReleaseNotes \
+		"$pkgdir"/usr/share/doc/$pkgname/
+}
+
+libs() {
+	pkgdesc="Cryptsetup shared library"
+	mkdir -p "$subpkgdir"
+	mv "$pkgdir"/lib "$subpkgdir"/
+}
+
+sha512sums="a3e8694e52b2d92269f74d5c796a18ef3bf8fe8b082192b1a31090542ca95392f4909218581eb9df5c79a465a03ef08e25df3358c382a7ab1394e9df276357df  cryptsetup-2.3.2.tar.gz
+dc896fdb7697d01443a168819f01af02db00a9de75589f062a1ebbfc0bc185b6d2109b18352309c41b818e3ad89609dcea3660d6f3cda890de825f053f94de97  flush-stdout.patch
+74422d5e1614b43af894ea01da1ea80d805ec7f77981cbb80a6b1a4becad737a8825d7269812499095a7f50d39fa7da5bf4e4edae63529b1fe87b9176943a733  dmcrypt.confd
+81dad61cdecf1dc529b26eb3cdc15979a582c876b01268f88e7a71c8fae6911137c03bfa63fee64e064e5fb31f673610be27ecab9fc432229f13e7040698bd5c  dmcrypt.initd"

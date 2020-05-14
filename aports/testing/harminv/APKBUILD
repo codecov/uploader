@@ -1,0 +1,38 @@
+# Contributor: Isaac Dunham <ibid.ag@gmail.com>
+# Maintainer: Roberto Oliveira <robertoguimaraes8@gmail.com>
+pkgname=harminv
+pkgver=1.4.1
+pkgrel=4
+pkgdesc="Free program to solve the problem of harmonic inversion"
+url="https://github.com/stevengj/harminv"
+arch="all !mips !mips64"
+license="GPL"
+depends_dev="openblas-dev>=0.3.0 lapack-dev"
+makedepends="$depends_dev gfortran"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-libs"
+source="harminv-$pkgver.tar.gz::https://github.com/stevengj/harminv/releases/download/v$pkgver/harminv-$pkgver.tar.gz"
+
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--disable-static \
+		--enable-shared
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="30720804286e4d373bcaae5b1b8238748b3077bfd6e6afb98eba571d8acfd13d927b84d1f6ab2b975bd665063dfc533bd7a0d19f199bf51694c6d93f6c7c947c  harminv-1.4.1.tar.gz"

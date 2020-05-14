@@ -1,0 +1,30 @@
+# Contributor: Robert Sacks <robert@sacks.email>
+# Maintainer: Robert Sacks <robert@sacks.email>
+pkgname=py3-freezegun
+_pyname=freezegun
+pkgver=0.3.15
+pkgrel=0
+pkgdesc="Let your Python tests travel through time"
+url="https://pypi.org/project/freezegun/"
+arch="noarch"
+license="Apache-2.0"
+depends="python3 py3-dateutil py3-six"
+makedepends="py3-setuptools"
+checkdepends="py3-mock py3-pytest py3-nose"
+source="https://files.pythonhosted.org/packages/source/${_pyname%${_pyname#?}}/$_pyname/$_pyname-$pkgver.tar.gz"
+builddir="$srcdir/$_pyname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	rm -f tests/test_uuid.py
+	pytest-3
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="9f3836f8c9f207d9bccbcaec3f1af977b26aa3699ad5f792d052e105a0de530c6dda1641480c9cd551627186bf0c65d92bf39a6f4a61f458f762d8aa999180ba  freezegun-0.3.15.tar.gz"

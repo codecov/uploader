@@ -1,0 +1,33 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=perl-canary-stability
+pkgver=2013
+pkgrel=0
+pkgdesc="CPAN/Canary-Stability - canary to check perl compatability for schmorp's modules"
+url="https://metacpan.org/release/Canary-Stability"
+arch="noarch"
+license="GPL-1.0-or-later Artistic-1.0-Perl"
+makedepends="perl"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/M/ML/MLEHMANN/Canary-Stability-$pkgver.tar.gz"
+
+builddir="$srcdir"/Canary-Stability-$pkgver
+
+build() {
+	cd "$builddir"
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	cd "$builddir"
+	make test
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="9dfb0e6d136048050aac7c29e1fc79dc2a7703c8800582aa837c5d9b9934c48bfcb0a9ef1c6b5bb7e71a10a709e7f7431b3c79ea12b8d9f374b33bfd4a3e468d  Canary-Stability-2013.tar.gz"

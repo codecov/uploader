@@ -1,0 +1,82 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+# Based on the Arch Linux package
+pkgname=nethack
+pkgver=3.6.6
+pkgrel=0
+pkgdesc="A single player dungeon exploration game"
+options="suid"
+url="https://www.nethack.org/index.html"
+arch="all"
+license="NGPL"
+makedepends="ncurses-dev linux-headers bison flex"
+subpackages="$pkgname-doc"
+source="https://www.nethack.org/download/$pkgver/nethack-${pkgver//.}-src.tgz"
+builddir="$srcdir/NetHack-NetHack-${pkgver}_Released"
+
+# secfixes:
+#   3.6.4-r0:
+#     - CVE-2019-19905
+
+prepare() {
+	default_prepare
+
+	# Fix linking against debian-specific tinfo
+	sed -e 's|^WINTTYLIB.*|WINTTYLIB = -lncurses|' -i sys/unix/hints/linux
+	# Fix nonstandard cp usage
+	sed -e 's/cp -n/cp/g' -i sys/unix/hints/linux
+	# Fix glibc issue
+	sed -e 's/#define _GNU_SOURCE//g' -i include/config1.h
+	# Configuration stuff
+	sed -e 's|^/\* \(#define LINUX\) \*/|\1|' \
+		-e 's|^/\* \(#define TIMED_DELAY\) \*/|\1|' \
+		-i include/unixconf.h
+	# we are setting up for setgid games, so modify all necessary permissions
+	# to allow full access for groups
+	sed -e '/^HACKDIR/ s|/games/lib/\$(GAME)dir|/var/games/nethack/|' \
+		-e '/^SHELLDIR/ s|/games|/usr/bin|' \
+		-e '/^VARDIRPERM/ s|0755|0775|' \
+		-e '/^VARFILEPERM/ s|0600|0664|' \
+		-e '/^GAMEPERM/ s|0755|02755|' \
+		-e 's|\(DSYSCF_FILE=\)\\"[^"]*\\"|\1\\"/var/games/nethack/sysconf\\"|' \
+		-e 's|\(DHACKDIR=\)\\"[^"]*\\"|\1\\"/var/games/nethack/\\"|' \
+		-i sys/unix/hints/linux
+	sed -e 's|^#GAMEUID.*|GAMEUID = root|' \
+		-e 's|^#GAMEGRP.*|GAMEGRP = games|' \
+		-e '/^FILEPERM\s*=/ s|0644|0664|' \
+		-e '/^DIRPERM\s*=/ s|0755|0775|' \
+		-i sys/unix/Makefile.top
+	sed -e "/^MANDIR\s*=/s|/usr/man/man6|$pkgdir/usr/share/man/man6|" \
+		-i sys/unix/Makefile.doc
+}
+
+build() {
+	cd "$builddir"/sys/unix
+	sh setup.sh hints/linux
+	cd "$builddir"
+	make
+}
+
+check() {
+	NETHACKDIR=/tmp ./src/nethack --version
+}
+
+package() {
+	install -dm755 $pkgdir/usr/share/man/man6
+	install -dm755 $pkgdir/usr/share/doc/nethack
+	install -dm775 $pkgdir/var/games/
+	make PREFIX=$pkgdir -j1 install manpages # Multi-threaded builds fail.
+	sed -e "s|HACKDIR=$pkgdir/|HACKDIR=/|" \
+		-e 's|HACK=$HACKDIR|HACK=/usr/lib/nethack|' \
+		-i $pkgdir/usr/bin/nethack
+
+	install -dm755 $pkgdir/usr/lib/nethack
+	mv $pkgdir/var/games/nethack/nethack $pkgdir/usr/lib/nethack/
+	mv $pkgdir/var/games/nethack/recover $pkgdir/usr/lib/nethack/
+
+	chown -R root:games $pkgdir/var/games/
+	chown root:games $pkgdir/usr/lib/nethack/nethack
+
+	install -Dm644 doc/Guidebook.txt $pkgdir/usr/share/doc/nethack/Guidebook.txt
+}
+sha512sums="579fde93a37a1b5df637d5bac2601194beeb455c175fbe3ef89342122c8567bb8221ce60d8a6168e6b45c67ade7d7b09c86bf202c8cbe2d6294d276be3e53055  nethack-366-src.tgz"

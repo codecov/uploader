@@ -1,0 +1,29 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=libutempter
+pkgver=1.2.0
+_pkgver=$pkgver-alt1
+pkgrel=0
+pkgdesc="Library interface to record user sessions in utmp/wtmp files"
+url="http://freecode.com/projects/libutempter"
+arch="all"
+license="LGPL-2.1"
+subpackages="$pkgname-dev $pkgname-doc"
+options="suid !check"
+pkggroups="utmp"
+source="https://github.com/altlinux/libutempter/archive/$_pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$_pkgver"
+
+build() {
+	cd $pkgname
+	make
+}
+
+package() {
+	cd $pkgname
+	make DESTDIR="$pkgdir" install
+	chown root:$pkggroups "$pkgdir/usr/lib/utempter/utempter"
+	chmod 2755 "$pkgdir/usr/lib/utempter/utempter"
+}
+
+sha512sums="3e43b63ed988c82b91f6685463aa3556817fcc0b0ea9e2d84213cf63e06813ab89d55a317a2001e454ab0c3a96062d4a260a1f458e49289cfa1d407aa0eca209  1.2.0-alt1.tar.gz"

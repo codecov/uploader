@@ -1,0 +1,61 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=pmacct
+pkgver=1.7.4
+pkgrel=0
+pkgdesc="Measure, account, classify, aggregate and export IPv4 and IPv6 traffic"
+url="http://www.pmacct.net/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="bsd-compat-headers libpcap-dev mariadb-connector-c-dev postgresql-dev
+	zlib-dev jansson-dev sqlite-dev libnetfilter_log-dev"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="http://www.pmacct.net/pmacct-$pkgver.tar.gz
+	pmacctd.initd
+	pmacctd.confd
+	pmacctd.conf
+	sfacctd.conf
+	nfacctd.conf
+	uacctd.conf
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--enable-pgsql \
+		--enable-64bit \
+		--enable-mysql \
+		--enable-sqlite3 \
+		--enable-jansson \
+		--enable-nflog
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	install -m755 -D "$srcdir"/${pkgname}d.initd "$pkgdir"/etc/init.d/pmacctd
+	install -m644 -D "$srcdir"/${pkgname}d.confd "$pkgdir"/etc/conf.d/pmacctd
+	install -m644 -D "$srcdir"/pmacctd.conf "$pkgdir"/etc/pmacctd.conf
+	install -m644 -D "$srcdir"/nfacctd.conf "$pkgdir"/etc/nfacctd.conf
+	install -m644 -D "$srcdir"/sfacctd.conf "$pkgdir"/etc/sfacctd.conf
+	install -m644 -D "$srcdir"/uacctd.conf "$pkgdir"/etc/uacctd.conf
+	ln -s /etc/init.d/pmacctd "$pkgdir"/etc/init.d/nfacctd &>/dev/null
+	ln -s /etc/init.d/pmacctd "$pkgdir"/etc/init.d/sfacctd &>/dev/null
+	ln -s /etc/init.d/pmacctd "$pkgdir"/etc/init.d/uacctd &>/dev/null
+	mkdir -p $pkgdir/usr/share/doc/pmacct/sql
+	cp sql/README.* $pkgdir/usr/share/doc/pmacct
+	cp sql/* $pkgdir/usr/share/doc/pmacct/sql
+}
+
+sha512sums="780b6cc25562fb7b5a1f55b48ce9719b36c1ee0d9ee2b6db8d7f238cd5d9f204938313b13e3ff3f62c7b9b179279f18314eba38ad787ffc346a4b217da239ca1  pmacct-1.7.4.tar.gz
+62418cf66d44099ca93926d3ef9fc2d9b93922fd6edbb1d079d4f10063ad63bf922e60ebf128a86282bd0891afbddc380f9723fa1e82e128dd79feccc759645d  pmacctd.initd
+6078607dde8619f8fa5698f217c40a7e46ed85843923abecc87652d2e9df6db677898ee1965367247e6ac838d907533a8b1c7ab0515f3f2dc6f3fd4eb14bd5be  pmacctd.confd
+119f69c0ba49609ddbe8455cfa53cb45f94b5dc26b745292bc30422f97a3002dfc5e8b6d63ef17e8a8a5497adbcd64c9edf4476336e5c27144e1d2094a8e6c0a  pmacctd.conf
+a02d3b0c2ce56a11d965c395033ebec8e64581b7e9f60a128e8864521eeacf69a0d6a3994b47d3f3c252cd4b8ebbdc3406711fe305a80267aa151bc2da60f93f  sfacctd.conf
+8534411d0bb2c56d627c30f7fa60253fe5a4a2cf3119eb429f414d71cf181fa1ce94b1bb31d5e0f9fbf996afeb2cf7af39e14bd86948f00de8d2ee44ad874434  nfacctd.conf
+a02d3b0c2ce56a11d965c395033ebec8e64581b7e9f60a128e8864521eeacf69a0d6a3994b47d3f3c252cd4b8ebbdc3406711fe305a80267aa151bc2da60f93f  uacctd.conf"

@@ -1,0 +1,38 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=compton-conf
+pkgver=0.14.1
+pkgrel=1
+pkgdesc="GUI configuration tool for compton X composite manager"
+url="https://github.com/lxde/compton-conf"
+options="!check" # No testsuite
+arch="" # fails to build
+license="LGPL-2.1-or-later"
+depends_dev="libconfig-dev qt5-qtbase-dev qt5-qttools-dev lxqt-build-tools"
+makedepends="cmake $depends_dev"
+source="compton-conf-$pkgver.tar.gz::https://github.com/lxde/compton-conf/archive/$pkgver.tar.gz"
+
+build() {
+	mkdir build && cd build
+
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux \
+			-DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake .. \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		${CMAKE_CROSSOPTS} \
+		-DPULL_TRANSLATIONS=False
+	make
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="e40810c44076e9f06970c4645e2f72fadbf7912485f1815d02593ae7a5db4987054f263a73252ba1c99de7b9812decd92021bc5758f211325e494912535c51f7  compton-conf-0.14.1.tar.gz"

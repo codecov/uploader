@@ -1,0 +1,55 @@
+# Contributor:
+# Maintainer:
+pkgname=talloc
+pkgver=2.3.1
+pkgrel=0
+pkgdesc="Memory pool management library"
+url="https://talloc.samba.org"
+arch="all"
+license="LGPL-3.0-or-later"
+replaces="samba-common"
+makedepends="docbook-xsl libxslt python3-dev"
+subpackages="$pkgname-static $pkgname-dev py3-$pkgname:_py3 $pkgname-doc"
+source="https://samba.org/ftp/talloc/talloc-$pkgver.tar.gz
+	always-libs.patch
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--bundled-libraries=NONE \
+		--builtin-libraries=replace \
+		--disable-rpath \
+		--disable-rpath-install \
+		--without-gettext
+	make
+
+	# talloc's Waf setup doesn't build static libraries, so we do it manually
+	ar qf libtalloc.a bin/default/talloc.c*.o
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -Dm644 libtalloc.a "$pkgdir"/usr/lib/libtalloc.a
+}
+
+_py3() {
+	pkgdesc="Python 3 binding for libtalloc"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libpytalloc-util.cpython* \
+		"$pkgdir"/usr/lib/python3* "$subpkgdir"/usr/lib/
+}
+
+sha512sums="064fc39a9aaace6e0209f3251c8ff198d8a318b4cf4198006ff9892ca6e15e7d817b2fda43e0444fbbf04d2c3e70d06523dff5d57cbb796d27317ef4759e062e  talloc-2.3.1.tar.gz
+66d06f735fe591f3a888ced25c4c5a0068402001736ce52443d0670d42bf7144c7f69ff9c6299ecf4d9001f23c68403953c4bdc7325f4d094d304e4215ff90b1  always-libs.patch"

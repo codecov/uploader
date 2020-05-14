@@ -1,0 +1,45 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer:  Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-libwww
+_realname=libwww-perl
+pkgver=6.44
+pkgrel=0
+pkgdesc="Perl module - World Wide Web library"
+url="https://metacpan.org/author/MSCHILLI"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl-http-date perl-http-cookies perl-net-http perl-http-daemon
+	perl-html-parser perl-file-listing perl-www-robotrules
+	perl-http-negotiate perl-uri perl-http-message
+	perl-lwp-mediatypes perl-encode-locale perl-try-tiny"
+makedepends="perl-dev perl-test-fatal perl-test-requiresinternet"
+checkdepends="perl-test-needs perl-test-leaktrace"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/O/OA/OALDERS/libwww-perl-$pkgver.tar.gz"
+builddir="$srcdir/$_realname-$pkgver"
+
+prepare() {
+	default_prepare
+
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	rm -v t/base/protocols/nntp.t
+}
+
+
+build() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make
+}
+
+check() {
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="ccb7e8a7aa0b10a78d5cc6b70a79b155642932646ee1940e6e0aa051e216e495ce9f85510b12e6cc06d9d3dac5a7d6f7b960479770c3ab60ff3be628876b3046  libwww-perl-6.44.tar.gz"

@@ -1,0 +1,32 @@
+# Maintainer: Daniel Sabogal <dsabogalcc@gmail.com>
+pkgname=csfml
+pkgver=2.5
+pkgrel=1
+pkgdesc="C bindings for SFML"
+url="https://www.sfml-dev.org/"
+arch="all"
+license="zlib"
+makedepends="cmake doxygen sfml-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+options="!check"
+source="$pkgname-$pkgver.tar.gz::https://github.com/SFML/CSFML/archive/$pkgver.tar.gz"
+
+builddir="$srcdir/CSFML-$pkgver"
+build() {
+	cmake . \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCSFML_BUILD_DOC=TRUE \
+		-DCSFML_LINK_SFML_STATICALLY=FALSE \
+		-DSFML_DIR=/usr/share/SFML/cmake/Modules
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" -C "$builddir" install
+
+	mkdir -p "$pkgdir"/usr/share/doc
+	mv "$pkgdir"/usr/share/CSFML/doc "$pkgdir"/usr/share/doc/CSFML
+}
+
+sha512sums="186ed87d8b925cfd51cc4aa0ba440407d18adc875da760576b5fafdf3e8c7e01ca0f594d9950495eb3e607c65bff12341a81df24af81043dce89d25d7cc24626  csfml-2.5.tar.gz"

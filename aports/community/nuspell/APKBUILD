@@ -1,0 +1,38 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=nuspell
+pkgver=3.1.1
+pkgrel=0
+pkgdesc="Free and open source C++ spell checking library"
+url="https://nuspell.github.io/"
+arch="all"
+license="LGPL-3.0-or-later"
+depends_dev="boost-dev"
+makedepends="$depends_dev cmake icu-dev ronn catch2"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/nuspell/nuspell/archive/v$pkgver/nuspell-$pkgver.tar.gz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		$CMAKE_CROSSOPTS .
+	make
+}
+
+check() {
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="239855051d9f49ba16913283090c4214a8f6a6cc290d359ab54014ff76fc297c131b67c6748bd1d4cdcec43c00dccc7f0c1bf8b07e06c9c648bff52ff193e096  nuspell-3.1.1.tar.gz"

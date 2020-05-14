@@ -1,0 +1,30 @@
+# Contributor: Joonas Kuorilehto <oss@derbian.fi>
+# Maintainer: Joonas Kuorilehto <oss@derbian.fi>
+pkgname=ruuvi-prometheus
+pkgver=0.1.1
+pkgrel=1
+pkgdesc="Ruuvi sensor Prometheus exporter"
+url="https://github.com/joneskoo/ruuvi-prometheus"
+arch="all"
+depends="bluez"
+license="BSD-2-Clause"
+options="!check"  # No test suite
+makedepends="go"
+subpackages="$pkgname-openrc"
+
+source="$pkgname-$pkgver.tar.gz::https://github.com/joneskoo/ruuvi-prometheus/archive/v$pkgver.tar.gz
+	ruuvi-prometheus.initd
+	"
+
+build() {
+	go build -ldflags="-s -w -X main.version=$pkgver"
+}
+
+package() {
+	install -Dm755 ./ruuvi-prometheus "$pkgdir"/usr/bin/ruuvi-prometheus
+	install -Dm755 "$srcdir"/ruuvi-prometheus.initd "$pkgdir"/etc/init.d/ruuvi-prometheus
+}
+
+
+sha512sums="006f58bc0da72c0f8cc94c9cbfe3b5bf7e9197d87539588d493075f113d77d8fb6a87619b09fddbf2619eb6b28583f6bdb201949cf871bd00bc725bf7cd2c95a  ruuvi-prometheus-0.1.1.tar.gz
+6eb05b76ea6289799f37a0e0d42e663d6bd013b46468126cb2ac3c90bfd3421db7044895d49e059e32e9d3f5e870343b494ab455f2164727b111b647af107d61  ruuvi-prometheus.initd"

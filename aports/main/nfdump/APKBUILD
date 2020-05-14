@@ -1,0 +1,82 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=nfdump
+pkgver=1.6.20
+pkgrel=0
+pkgdesc="Tools to collect and process netflow data"
+url="https://github.com/phaag/nfdump"
+arch="all"
+license="BSD-3-Clause"
+makedepends="autoconf automake bison bzip2-dev flex libtool rrdtool-dev"
+subpackages="
+	$pkgname-doc
+	$pkgname-dbg
+	$pkgname-openrc
+	$pkgname-static
+	nfprofile
+	sfcapd
+	sfcapd-openrc
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/phaag/nfdump/archive/v$pkgver.tar.gz
+	nfcapd.confd
+	nfcapd.initd
+	sfcapd.confd
+	sfcapd.initd
+	"
+
+# secfixes:
+#   1.6.18-r0:
+#     - CVE-2019-14459
+#     - CVE-2019-1010057
+
+prepare() {
+	default_prepare
+	./autogen.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--enable-nfprofile \
+		--enable-sflow \
+		--enable-shared
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -D -m755 "$srcdir"/nfcapd.initd \
+		"$pkgdir"/etc/init.d/nfcapd
+
+	install -D -m644 "$srcdir"/nfcapd.confd \
+		"$pkgdir"/etc/conf.d/nfcapd
+}
+
+nfprofile() {
+	pkgdesc="Create views of the data with NFdump filters"
+	depends="nfdump"
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/nfprofile "$subpkgdir"/usr/bin
+}
+
+sfcapd() {
+	pkgdesc="sFlow collector"
+	cd "$builddir"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/sfcapd "$subpkgdir"/usr/bin
+
+	# Install to pkgdir so it is later caught by sfcapd-openrc
+	install -D -m644 "$srcdir"/sfcapd.confd \
+		"$pkgdir"/etc/conf.d/sfcapd
+	install -D -m755 "$srcdir"/sfcapd.initd \
+		"$pkgdir"/etc/init.d/sfcapd
+}
+
+sha512sums="8396241fa24d532540135762a81ce035586c405d4ab1e01d6e2b8226b7cc9b6784170ca1fa4c1581fb60f324473cca5ce2d3de82282313d3877f9584e449d137  nfdump-1.6.20.tar.gz
+fcb467f819f2b73ac0e13de6de4d6c94cafd3866a7a56685d5d4a048fa975135299655e896ff8370c8c5061d03ab38644623f8be455c08dfe5f630f152820148  nfcapd.confd
+97e432e884dd1cc8f27c2d7398bb0320164d46dea06c64ad72fa385d190998b3d62356634962f42652daf6e31f237baa2f3f3efad47c3fc38cc6bea799db61cc  nfcapd.initd
+abe594a95a9320bec1d6ee6af6b75cd4d176526d4b10d07aa7ed79fc292b51c341339ba8e1e468df9ec2aae138b1dd66e3a291921938217835ac33819da9d153  sfcapd.confd
+7a65c80186a8708a27e90a7239d1b44ee919c3bbf8cd1ca07ef5d35a623d0dce5eac516b65ba7a98c5fcfab5bad6c15e1f03af38a06eb6280afd1c1f0f52cee4  sfcapd.initd"

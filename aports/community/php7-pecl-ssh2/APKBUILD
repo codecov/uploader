@@ -1,0 +1,40 @@
+# Contributor: Andy Postnikov <apostnikov@gmail.com>
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=php7-pecl-ssh2
+_pkgreal=ssh2
+pkgver=1.2
+pkgrel=0
+pkgdesc="PHP extension provide bindings for the libssh2 library - PECL"
+url="https://pecl.php.net/package/ssh2"
+arch="all"
+license="PHP-3.01"
+depends="php7-common"
+makedepends="php7-dev autoconf libssh2-dev re2c"
+# PECL source is not avaliable for 1.2 https://bugs.php.net/bug.php?id=78560
+_ver="${pkgver//./_}"
+_ghdir="pecl-networking-ssh2-RELEASE_$_ver"
+source="$_ghdir.tgz::https://github.com/php/pecl-networking-ssh2/archive/RELEASE_$_ver.tar.gz"
+builddir="$srcdir/$_ghdir"
+provides="php7-ssh2=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-ssh2" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+	# Check extension loading, testsuite skips tests if extension broken
+	php7 -d extension="$builddir"/modules/$_pkgreal.so --ri $_pkgreal
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir/" install
+
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_pkgreal.so" > "$pkgdir"/etc/php7/conf.d/$_pkgreal.ini
+}
+
+sha512sums="8b5dad15028d60b059d1b6721879ad53956e77ded4fb39218907019f7b8a28b0d77641f9f8ed502c14b9757bbb10232aa1cf192146d9ee5a0c025d132c0ada82  pecl-networking-ssh2-RELEASE_1_2.tgz"

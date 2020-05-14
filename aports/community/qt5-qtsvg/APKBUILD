@@ -1,0 +1,41 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtsvg
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="Qt5 - Support for rendering and displaying SVG"
+url="https://www.qt.io/developers/"
+arch="all"
+license="(LGPL-2.0-or-later OR GPL-3.0-only OR GPL-2.0-or-later) AND Qt-GPL-exception-1.0"
+makedepends="qt5-qtbase-dev zlib-dev"
+subpackages="$pkgname-dev"
+builddir="$srcdir/qtsvg-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtsvg-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+
+sha512sums="b4cf8a7081e01caea3c71826d32ebb9da6a71bd4eab3cf353e87080009065aff2c533300c0c08a005ff8f441d2da641a097319114a5c11b618398fac41f574a7  qtsvg-everywhere-src-5.14.2.tar.xz"

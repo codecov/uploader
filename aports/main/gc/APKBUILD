@@ -1,0 +1,42 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=gc
+pkgver=8.0.4
+pkgrel=1
+pkgdesc="A garbage collector for C and C++"
+url="https://hboehm.info/gc/"
+arch="all"
+license="custom:GPL-like"
+makedepends="libatomic_ops-dev linux-headers"
+subpackages="$pkgname-dev $pkgname-doc libgc++:libgccpp"
+source="http://hboehm.info/gc/gc_source/gc-$pkgver.tar.gz
+	0001-Fix-gctest-with-musl-libc-on-s390x.patch
+	"
+
+build() {
+	export CFLAGS="$CFLAGS -D_GNU_SOURCE -DNO_GETCONTEXT -DUSE_MMAP -DHAVE_DL_ITERATE_PHDR"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--datadir=/usr/share/doc/gc \
+		--enable-static \
+		--enable-cplusplus
+	make
+}
+
+check() {
+	# two FAILs due to grsecurity
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+libgccpp() {
+	install -d "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libgccpp.* "$subpkgdir"/usr/lib/
+}
+
+sha512sums="57ccca15c6e50048d306a30de06c1a844f36103a84c2d1c17cbccbbc0001e17915488baec79737449982da99ce5d14ce527176afae9ae153cbbb5a19d986366e  gc-8.0.4.tar.gz
+0441dfe85b36e9e80b9135d62d56e5e9b67c6db1f927480dd3cf5048765f3a2ab51a45eaa0068066af97ce0398333890fff2f84cd01fec476655f34e0325bc13  0001-Fix-gctest-with-musl-libc-on-s390x.patch"

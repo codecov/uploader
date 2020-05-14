@@ -1,0 +1,59 @@
+# Contributor: Konstantin Kulikov <k.kulikov2@gmail.com>
+# Maintainer: Konstantin Kulikov <k.kulikov2@gmail.com>
+pkgname=bpftrace
+pkgver=0.10.0
+pkgrel=0
+_llvmver=10
+pkgdesc="High-level tracing language for Linux eBPF"
+url="https://github.com/iovisor/bpftrace"
+arch="aarch64 x86_64"
+license="Apache-2.0"
+makedepends="cmake llvm$_llvmver-dev llvm$_llvmver-static clang-dev clang-static
+	flex-dev bison elfutils-dev linux-headers bcc-dev binutils-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/iovisor/bpftrace/archive/v$pkgver.tar.gz"
+# Tests require root, network to download gmock and a few tests fail.
+options="!check"
+subpackages="$pkgname-doc:doc $pkgname-tools:tools:noarch $pkgname-tools-doc:tools_doc"
+
+build() {
+	cmake -B build \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DBUILD_TESTING:BOOL=OFF \
+		-DLLVM_REQUESTED_VERSION=$_llvmver
+	make -C build
+}
+
+# Main package contains only bpftrace binary.
+package() {
+	make -C build DESTDIR="$pkgdir" install
+
+	mv "$pkgdir/usr/share/bpftrace/tools/doc" "$pkgdir/usr/share/bpftrace/tools_doc"
+}
+
+# Doc package should contain only man page for bpftrace.
+doc() {
+	mkdir -p "$subpkgdir/usr/share/man/man8"
+	mv "$pkgdir/usr/share/man/man8/bpftrace.8.gz" "$subpkgdir/usr/share/man/man8/"
+}
+
+# Tools are not installed in PATH, because they would conflict with other tools provided by bcc or perf-tools.
+tools() {
+	depends="$pkgname"
+	pkgdesc="$pkgdesc (tools)"
+	mkdir -p "$subpkgdir/usr/share/bpftrace"
+	mv "$pkgdir/usr/share/bpftrace/tools" "$subpkgdir/usr/share/bpftrace/tools"
+}
+
+# Tools docs contains man pages and examples for tools. They shouldn't go into shared MANPATH for the same reasons as tools pkg above.
+tools_doc() {
+	pkgdesc="$pkgdesc (tool docs and examples)"
+
+	mkdir -p "$subpkgdir/usr/share/bpftrace"
+	mv "$pkgdir/usr/share/bpftrace/tools_doc" "$subpkgdir/usr/share/bpftrace/doc"
+	mv "$pkgdir/usr/share/man/man8" "$subpkgdir/usr/share/bpftrace/"
+}
+
+sha512sums="da400efe78cea505a32deead594b047ec4394d3eefe86e7b6853fe2dc715c5847a3abcbd26c1fac39d0a534f1e57d6c0bc3625e0c3f1054b0d84b7b1d6eb69b9  bpftrace-0.10.0.tar.gz"

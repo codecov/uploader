@@ -1,0 +1,34 @@
+# Contributor: Lucas Ramage <ramage.lucas@protonmail.com>
+# Maintainer: Lucas Ramage <ramage.lucas@protonmail.com>
+pkgname=img
+pkgver=0.5.7
+pkgrel=1
+pkgdesc="Standalone, daemon-less, unprivileged Dockerfile and OCI compatible container image builder"
+url="https://github.com/genuinetools/img"
+arch="x86_64"
+license="MIT"
+options="!check"
+depends="go runc shadow-uidmap"
+makedepends="bash libseccomp-dev"
+install=""
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/genuinetools/$pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/src/github.com/genuinetools/img"
+
+build() {
+        cd "$srcdir"
+        export GOPATH="$PWD"
+        mkdir -p $(dirname "$builddir")
+        ln -s "$PWD/$pkgname-$pkgver" "$builddir"
+        cd "$builddir"
+        go get -u github.com/jteeuwen/go-bindata/...
+        make BUILDTAGS="seccomp noembed"
+}
+
+package() {
+        cd "$builddir"
+        install -Dm755 $pkgname "$pkgdir"/usr/bin/$pkgname
+        install -Dm644 README.md "$pkgdir"/usr/share/doc/$pkgname/README.md
+}
+
+sha512sums="a42247c2ceac0ccfcc2cfd6a561a058855869f0219994cd8fa2bdd5092be17803057e4cb48a2d5277fdfded74dd06eb7c3c3db590fbde91502aebcaf593ddef7  img-0.5.7.tar.gz"

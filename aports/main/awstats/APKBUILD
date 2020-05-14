@@ -1,0 +1,60 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=awstats
+pkgver=7.8
+pkgrel=0
+pkgdesc="Free real-time logfile analyzer to get advanced statistics"
+url="http://awstats.sourceforge.net/"
+arch="noarch"
+license="GPL-3.0-or-later"
+depends="perl perl-uri"
+subpackages="$pkgname-doc"
+options="!check" # no testsuite
+source="https://prdownloads.sourceforge.net/awstats/awstats-$pkgver.tar.gz"
+
+# secfixes:
+#   7.6-r2:
+#     - CVE-2017-1000501
+
+prepare() {
+	local file
+	default_prepare
+	for file in tools/* wwwroot/cgi-bin/*; do
+		[ -f "$file" ] || continue
+		sed -e "s:/usr/local/$pkgname/wwwroot:/usr/lib/$pkgname:g" \
+			-i "$file"
+	done
+	for file in wwwroot/cgi-bin/*; do
+		[ -f "$file" ] || continue
+		sed -e "s:/usr/share/$pkgname:/usr/lib/$pkgname/cgi-bin:g" \
+			-i "$file"
+	done
+}
+
+package() {
+	install -d "$pkgdir"/usr/share/doc/$pkgname \
+		"$pkgdir"/var/lib/$pkgname \
+		"$pkgdir"/usr/lib/$pkgname \
+		"$pkgdir"/etc/$pkgname \
+		"$pkgdir"/usr/bin
+
+	# docs
+	cp -a docs tools/xslt "$pkgdir"/usr/share/doc/$pkgname
+
+	# cgi-bin
+	cp -a wwwroot/* "$pkgdir"/usr/lib/$pkgname
+	mv "$pkgdir"/usr/lib/$pkgname/cgi-bin/$pkgname.model.conf \
+		"$pkgdir"/etc/awstats/
+	ln -s /etc/$pkgname/$pkgname.model.conf \
+		"$pkgdir"/usr/lib/$pkgname/cgi-bin/$pkgname.model.conf
+
+	# tools
+	cp tools/*.pl "$pkgdir"/usr/bin/
+	ln -s /usr/lib/$pkgname/cgi-bin/$pkgname.pl "$pkgdir"/usr/bin/
+
+	# remove java sources and example plugin
+	rm -fr "$pkgdir"/usr/lib/$pkgname/classes/src \
+		"$pkgdir"/usr/lib/$pkgname/cgi-bin/plugins/example
+}
+
+sha512sums="2fd78e8c7eefb5c9ed39d8ee830ee8ad00b622b812ae40a84cb01c4fa653b9ab7822d1592313d7a8c4b8503d04dcba48b1775d33a629f1ac1278d2300eef931d  awstats-7.8.tar.gz"

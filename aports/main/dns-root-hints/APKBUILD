@@ -1,0 +1,93 @@
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=dns-root-hints
+pkgver=2019073000
+pkgrel=2
+pkgdesc="The DNS root hint(s)"
+url="https://www.internic.net/domain"
+arch="noarch"
+license="Public-Domain"
+depends="curl gnupg"
+makedepends="curl"
+options="net"
+source="verisign-grs-nstld-key.asc named.root named.root.sig
+	update-$pkgname
+	$pkgname.crond
+	"
+
+build() {
+	mkdir -p "$builddir"
+}
+
+package() {
+	cd "$builddir"
+	install -D -m 644 -o root -g root "$srcdir"/named.root \
+		"$pkgdir"/usr/share/$pkgname/named.root
+	install -D -m 644 -o root -g root "$srcdir"/named.root.sig \
+		"$pkgdir"/usr/share/$pkgname/named.root.sig
+	install -D -m 644 -o root -g root "$srcdir"/verisign-grs-nstld-key.asc \
+		"$pkgdir"/usr/share/$pkgname/verisign-grs-nstld-key.asc
+	install -D -m 755 -o root -g root "$srcdir"/update-$pkgname \
+		"$pkgdir"/usr/bin/update-$pkgname
+	install -D -m 755 -o root -g root "$srcdir"/$pkgname.crond \
+		"$pkgdir"/etc/periodic/monthly/$pkgname
+
+	# compatibility links
+	cd "$pkgdir/usr/share/$pkgname"
+	ln -s named.root named.cache
+	ln -s named.root db.cache
+}
+
+check() {
+	cd "$builddir"
+	local _awkprog='
+		/related version of root zone:/ {
+			rootver=$NF;
+			if (pkgver != rootver) {
+				$1="ERROR:";
+				print;
+				exit 1;
+			};
+			printf "OK: %s\n", rootver;
+			quit;
+		}'
+	awk -v pkgver="$pkgver" "$_awkprog" "$srcdir"/named.root
+}
+
+# check new versions of root hints and commit
+snapshot() {
+	# use a temporary dir for new files
+	export _tmp=$(mktemp -d -p .)
+	for file in named.root named.root.sig; do
+		curl -sLR "${url}/${file}" -o "${_tmp}/${file}"
+	done
+
+	# compare new and current versions
+	local _drh_new_ver=$(grep "related version of root zone:" ${_tmp}/named.root | egrep -o '[0-9]{10}')
+	local _drh_current_ver=$(grep "related version of root zone:" named.root | egrep -o '[0-9]{10}')
+
+	# commit if new version is found
+	if [ "$_drh_new_ver" != "$_drh_current_ver" ]; then
+		_check_sig
+		mv ${_tmp}/named.root named.root
+		mv ${_tmp}/named.root.sig named.root.sig
+		git add named.root named.root.sig
+		abump $pkgname-$_drh_new_ver
+	fi
+
+	# cleanup
+	rm "${_tmp}"/* 2>/dev/null || true
+	rmdir "${_tmp}"
+}
+
+_check_sig() {
+	local GNUPGHOME="$builddir/.gpg"
+	install -d -m 0700 "$GNUPGHOME"
+	gpg --import < verisign-grs-nstld-key.asc
+	gpg --verify "${_tmp}/named.root.sig" "${_tmp}/named.root"
+}
+
+sha512sums="3ecf5d66e506526ad98ea0b371202f0763b987322bd4407b40fcd95415202bddb18fd06c82eb397566b393e214dc88cb17ec94f3908328e8a55f5f68cc730993  verisign-grs-nstld-key.asc
+0491784a0d0722113120bae4dd42c7671cb05b4b76d4dd4773718ee4c7777d7fb7b039f76b8a30179d5dfa8f3142182bf0b0d809f9d6e1ef581d08482e06d250  named.root
+b1d76a8040c534f2a5ffc54b92aa3a465ddd01b345e2a7eade258359017c623d5a847a270b259cd58ba3d8550a3519b0921f9f62dc6e98a0acdd3873b2556359  named.root.sig
+7e640e997dd0eae47fb1e609f73d5206e09684eada15d3b6043fc23e639859af743b99cbd868e98269c2af25e7c3eeea307f52f2fb7d4a6f3e00f8b14a289322  update-dns-root-hints
+67a7ef07ee9086ce584a8b316b15cd05214968f89bbc363fb2d5932ebf47ed962c0862fe254082e68f27574acb62f3672137dd23c40d7d2047c969ee449827f8  dns-root-hints.crond"

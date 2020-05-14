@@ -1,0 +1,64 @@
+# Contributor: Matt Smith <mcs@darkregion.net>
+# Maintainer: Matt Smith <mcs@darkregion.net>
+pkgname=py3-docutils
+_pkgname=docutils
+pkgver=0.15.2
+pkgrel=0
+pkgdesc="Documentation Utilities for Python3"
+# 3 Tests fail with such message (same expected and actual len)
+# AssertionError: content.xml not equal: expected len: 1961  actual len: 1961
+options="!check"
+url="https://pypi.python.org/pypi/docutils"
+arch="noarch"
+license="Public-Domain"
+depends="python3 py3-pillow"
+makedepends="py3-setuptools"
+subpackages="$pkgname-doc::noarch"
+source="https://files.pythonhosted.org/packages/source/d/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-docutils" # Backwards compatibility
+provides="py-docutils=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	cd test3
+	python3 alltests.py
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	# Remove .py extension and add version suffix to executable files.
+	local path; for path in "$pkgdir"/usr/bin/*.py; do
+		mv "$path" "${path/.py/-3}"
+	done
+
+	cd "$pkgdir"/usr/bin
+	local name; for name in *-3; do
+		ln -s -- ${name} "$pkgdir"/usr/bin/${name%-3}
+	done
+}
+
+doc() {
+	replaces=""
+	provides=""
+	pkgdesc="$pkgdesc (documentation)"
+	local docdir="$subpkgdir/usr/share/doc/$pkgname"
+	local licdir="$subpkgdir/usr/share/licenses/$pkgname"
+
+	cd "$builddir"
+
+	mkdir -p "$docdir"
+	cp -R docs/* "$docdir"/
+	cp *.txt "$docdir"/
+
+	mkdir -p "$licdir"
+	rm -f licenses/docutils.conf
+	cp licenses/* "$licdir"/
+}
+
+sha512sums="b4528c7eba5a27e40f290a9df6894c277d11906d02f6842b9f364b29af9aa1e46f6008c87e4355947bcfa9f2db1cae9f38cf9fa7b8008ba45fa6d685922003a6  docutils-0.15.2.tar.gz"

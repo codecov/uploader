@@ -1,0 +1,29 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=smooth
+pkgver=0.9.4
+pkgrel=0
+arch="all"
+url="https://github.com/enzo1982/smooth"
+pkgdesc="The smooth Class Library"
+license="Artistic-2.0"
+makedepends="fribidi-dev gtk+3.0-dev libx11-dev libjpeg-turbo-dev curl-dev libxml2-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/enzo1982/smooth/archive/v$pkgver.tar.gz"
+subpackages="$pkgname-dev"
+options="!check" # No tests
+
+prepare() {
+	default_prepare
+
+	find "$builddir" -type f -exec sed -i 's|/usr/local|/usr|g' {} \;
+}
+
+build() {
+	make
+}
+
+package() {
+	DESTDIR="$pkgdir" make install
+}
+
+sha512sums="dbe444157c29518d8989f5cd8e8d9cd21f6d769a83ecc4dd54b7817b67bc960431f7cc370f6baadfcc9aac63c26b210422eaa929b91d0c5c4c435f24928ac621  smooth-0.9.4.tar.gz"

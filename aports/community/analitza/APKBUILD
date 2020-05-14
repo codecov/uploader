@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=analitza
+pkgver=20.04.0
+pkgrel=0
+# armhf blocked by qt5-qtdeclarative
+# mips blocked by eigen -> suitesparse -> openblas
+arch="all !armhf !mips !mips64"
+url="https://edu.kde.org/"
+pkgdesc="A library to add mathematical features to your program"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtdeclarative-dev qt5-qtsvg-dev qt5-qttools-dev eigen-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/analitza-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="db24d29222b88474ee851fab3c90cdf7906f0524b41af71292c7b3f36e2da926b091a9eff06212670687268719ad05577694f865ebebd54c2cd9c417472998b8  analitza-20.04.0.tar.xz"

@@ -1,0 +1,49 @@
+# Maintainer: Carlo Landmeter <clandmeter@gmail.com>
+pkgname=tar
+pkgver=1.32
+pkgrel=1
+pkgdesc="Utility used to store, backup, and transport files"
+url="https://www.gnu.org/software/tar/"
+arch="all"
+license="GPL-3.0-or-later"
+makedepends="acl-dev"
+subpackages="$pkgname-doc"
+source="https://ftp.gnu.org/gnu/tar/$pkgname-$pkgver.tar.xz
+	ignore-apk-tools-checksums.patch"
+
+# secfixes:
+#   1.29-r1:
+#     - CVE-2016-6321
+#   1.31-r0:
+#     - CVE-2018-20482
+
+build() {
+	gl_cv_func_gettimeofday_clobber=no \
+	gl_cv_func_tzset_clobber=no \
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir/" install
+
+	rm -rf "$pkgdir"/usr/lib/charset.alias
+	rmdir -p "$pkgdir"/usr/lib 2>/dev/null || true
+
+	mkdir "$pkgdir"/bin
+	mv "$pkgdir"/usr/bin/tar "$pkgdir"/bin/
+	ln -s /bin/tar "$pkgdir"/usr/bin/tar
+}
+
+sha512sums="1bd13854009b6ee08958481738e6bf661e40216a2befe461d06b4b350eb882e431b3a4eeea7ca1d35d37102df76194c9d933df2b18b3c5401350e9fc17017750  tar-1.32.tar.xz
+9cde0f1509328bc5fe2cb46642b53c7681c548cf28a2fb83eda7e9374c9c0ad27a0cd55b9c0cc93951def58dafa55ee71cace5493ddcb7966ee94dc5f1099739  ignore-apk-tools-checksums.patch"

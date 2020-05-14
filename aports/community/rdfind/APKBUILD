@@ -1,0 +1,39 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=rdfind
+pkgver=1.4.1
+pkgrel=1
+pkgdesc="Redundant data find - a program that finds duplicate files"
+url="http://rdfind.pauldreik.se"
+arch="all"
+license="GPL-2.0 "
+makedepends="nettle-dev automake autoconf libtool"
+subpackages="$pkgname-doc"
+source="https://rdfind.pauldreik.se/$pkgname-$pkgver.tar.gz
+disable-makefile-test-failing.patch"
+builddir="$srcdir/$pkgname-$pkgver"
+
+prepare() {
+	default_prepare
+	cd "$builddir"
+	./bootstrap.sh
+}
+
+build() {
+	cd "$builddir"
+	./configure	--prefix=/usr
+	make -s
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="${pkgdir}/" install
+}
+
+sha512sums="38fceac92386b75cb66a85fb369dedc393e7ea08634f4972d83138c43c5ee04c3471df21aaf5192a8218714171fbc05cd7315c2422371d03c312d116c7902945  rdfind-1.4.1.tar.gz
+721274beca762433cd4ae15905d5ec13c8b4d21ca533dcf8b1f3e680a8c0c4043aa67ecedc7c863959dc9bb8b44cedd260486682d48aaa51a365982a4f3835ec  disable-makefile-test-failing.patch"

@@ -1,0 +1,34 @@
+# Contributor: Fabio Ribeiro <fabiorphp@gmail.com>
+# Maintainer: Fabio Ribeiro <fabiorphp@gmail.com>
+pkgname=php7-pecl-uuid
+_pkgreal=uuid
+pkgver=1.1.0
+pkgrel=1
+pkgdesc="A wrapper around libuuid from the ext2utils project."
+url="https://pecl.php.net/package/uuid"
+arch="all"
+license="LGPL-2.1-or-later"
+depends="php7-common"
+makedepends="php7-dev autoconf re2c util-linux-dev"
+source="https://pecl.php.net/get/$_pkgreal-$pkgver.tgz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+provides="php7-uuid=$pkgver-r$pkgrel" # for backward compatibility
+replaces="php7-uuid" # for backward compatibility
+
+build() {
+	phpize7
+	./configure --prefix=/usr --with-php-config=php-config7
+	make
+}
+
+check() {
+	make NO_INTERACTION=1 REPORT_EXIT_STATUS=1 test
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir"/ install
+	install -d "$pkgdir"/etc/php7/conf.d
+	echo "extension=$_pkgreal.so" > "$pkgdir"/etc/php7/conf.d/50_$_pkgreal.ini
+}
+
+sha512sums="aea814a12e266e4a9e36c58bae78927fa9de6d2b7bf9c75a911710b26958aeecd31d972f56519cf4882a4b13864bc0740ad968b06e704ce7642279253009e76d  uuid-1.1.0.tgz"

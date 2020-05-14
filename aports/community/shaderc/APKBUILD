@@ -1,0 +1,59 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=shaderc
+pkgver=2020.0
+pkgrel=0
+pkgdesc="A collection of tools, libraries, and tests for Vulkan shader compilation"
+options="!check" # Fails to configure when tests are enabled
+url="https://github.com/google/shaderc"
+arch="all"
+license="Apache-2.0"
+makedepends="cmake glslang-static glslang-dev spirv-tools-dev python3"
+subpackages="$pkgname-static $pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/google/shaderc/archive/v$pkgver.tar.gz
+	fix-link-order.patch
+	third-party.patch
+	"
+
+prepare() {
+	default_prepare
+
+	rm -rf third_party
+
+	_glslang_ver="$( . $startdir/../../*/glslang/APKBUILD; echo $pkgver)"
+	_spirv_ver="$( . $startdir/../../*/spirv-tools/APKBUILD; echo $pkgver)"
+
+	# Create our own build-version.inc since we disabled git versioning
+	# need to keep this in sync with glslang and SPIRV-Tools versions
+	# this is displayed with 'glslc --version'
+	cat <<- EOF > glslc/src/build-version.inc
+		"shaderc $pkgver\n"
+		"SPIRV-Tools $_spirv_ver\n"
+		"glslang $_glslang_ver\n"
+	EOF
+}
+
+build() {
+	export CXXFLAGS="$CXXFLAGS -I/usr/include/glslang"
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake -B build . \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_SHARED_LIBS=True \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		-DSHADERC_SKIP_TESTS=ON \
+		$CMAKE_CROSSOPTS
+	make -C build
+}
+
+package() {
+	make -C build DESTDIR="$pkgdir" install
+}
+
+sha512sums="1971673d7a5fe77ef827c29db14112d4935c573c7c4f3b00fff3729334284d11640ee40c9e97ebcb2a14c6d5c6db0cf5e2ef6b2dfb59c759d1322c6d38624eb4  shaderc-2020.0.tar.gz
+bd24c90b93bf8bd7e56682e02543ff8a5c988549e76502144c2f4904e96b67ca0bc9d1e94b811bcdad1e765625256d3feabeb20ca299f2abb220e6e398d5a590  fix-link-order.patch
+5c5171ef2561070fece6b4cfa087f5baace7e5f828443719570494d9adc39ad724a414da7570f38629dbc9e7b563c8ad8226143c907ce7139a87615098006585  third-party.patch"

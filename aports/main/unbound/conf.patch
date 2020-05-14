@@ -1,0 +1,49 @@
+--- a/doc/example.conf.in
++++ b/doc/example.conf.in
+@@ -337,12 +337,9 @@
+ 	# print log lines that say why queries return SERVFAIL to clients.
+ 	# log-servfail: no
+ 
+-	# the pid file. Can be an absolute path outside of chroot/work dir.
+-	# pidfile: "@UNBOUND_PIDFILE@"
+-
+ 	# file to read root hints from.
+ 	# get one from https://www.internic.net/domain/named.cache
+-	# root-hints: ""
++	root-hints: /usr/share/dns-root-hints/named.root
+ 
+ 	# enable to not answer id.server and hostname.bind queries.
+ 	# hide-identity: no
+@@ -489,7 +486,7 @@
+ 	# you start unbound (i.e. in the system boot scripts).  And enable:
+ 	# Please note usage of unbound-anchor root anchor is at your own risk
+ 	# and under the terms of our LICENSE (see that file in the source).
+-	# auto-trust-anchor-file: "@UNBOUND_ROOTKEY_FILE@"
++	# auto-trust-anchor-file: ""
+ 
+ 	# trust anchor signaling sends a RFC8145 key tag query after priming.
+ 	# trust-anchor-signaling: yes
+@@ -506,7 +503,7 @@
+ 	# with several entries, one file per entry.
+ 	# Zone file format, with DS and DNSKEY entries.
+ 	# Note this gets out of date, use auto-trust-anchor-file please.
+-	# trust-anchor-file: ""
++	trust-anchor-file: "@UNBOUND_ROOTKEY_FILE@"
+ 
+ 	# Trusted key for validation. DS or DNSKEY. specify the RR on a
+ 	# single line, surrounded by "". TTL is ignored. class is IN default.
+@@ -841,12 +838,13 @@
+ remote-control:
+ 	# Enable remote control with unbound-control(8) here.
+ 	# set up the keys and certificates with unbound-control-setup.
+-	# control-enable: no
++	control-enable: yes
+ 
+ 	# what interfaces are listened to for remote control.
+ 	# give 0.0.0.0 and ::0 to listen to all interfaces.
+ 	# set to an absolute path to use a unix local name pipe, certificates
+ 	# are not used for that, so key and cert files need not be present.
++	control-interface: /run/unbound.control.sock
+ 	# control-interface: 127.0.0.1
+ 	# control-interface: ::1
+ 

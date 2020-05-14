@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kmouth
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" #qtdeclarative
+url="https://kde.org/applications/utilities/org.kde.kmouth"
+pkgdesc="Speech Synthesizer Frontend"
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtspeech-dev kcrash-dev kcompletion-dev kconfig-dev kconfigwidgets-dev kcoreaddons-dev kdoctools-dev ki18n-dev kio-dev kwidgetsaddons-dev kxmlgui-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kmouth-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="457b606122b952647ac0ed078ac2cea53d6c033b3eb0e68f4bbb1ad211ff944be5e401cb089d48ca8f433b45025daad4d99e36a7397721ff5af642baed45ae4c  kmouth-20.04.0.tar.xz"

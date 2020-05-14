@@ -1,0 +1,31 @@
+# Contributor: Sascha Paunovic <azarus@posteo.net>
+# Maintainer: Sascha Paunovic <azarus@posteo.net>
+pkgname=pqiv
+pkgver=2.11
+pkgrel=0
+pkgdesc="powerful image viewer with minimal UI"
+url="http://www.pberndt.com/Programme/Linux/pqiv/index.html"
+arch="all"
+license="GPL-3.0-only"
+makedepends="autoconf gtk+3.0-dev glib-dev cairo-dev libwebp-dev libspectre-dev
+	bash"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/phillipberndt/$pkgname/archive/$pkgver.tar.gz"
+options="!check" # no testsuites
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="6017a9d7ed332915a9f6fa788bb02c3b9d4d83c2ae2f9a8ab7d7738caa14ba3e9d253906f2e73fdfd368bb5e7bc51380ee9906fd9921e5f7f113811fd3da66f7  pqiv-2.11.tar.gz"

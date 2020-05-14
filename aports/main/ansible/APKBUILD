@@ -1,0 +1,71 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Takuya Noguchi <takninnovationresearch@gmail.com>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=ansible
+pkgver=2.9.9
+pkgrel=0
+pkgdesc="A configuration-management, deployment, task-execution, and multinode orchestration framework"
+url="https://ansible.com/"
+arch="noarch"
+license="GPL-3.0-or-later"
+depends="python3 py3-yaml py3-paramiko py3-jinja2 py3-markupsafe py3-pycryptodome"
+makedepends="python3-dev py3-setuptools"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://releases.ansible.com/ansible/ansible-$pkgver.tar.gz
+	add-lxc-container_shell-option.patch
+	0001-new-module-lbu.patch
+	"
+
+# secfixes:
+#   2.9.7-r0:
+#     - CVE-2019-3828
+#     - CVE-2020-1733
+#     - CVE-2020-1739
+#     - CVE-2020-1740
+#     - CVE-2020-1746
+#     - CVE-2020-10691
+#   2.9.6-r0:
+#     - CVE-2020-1737
+#     - CVE-2020-1739
+#   2.9.3-r0:
+#     - CVE-2019-14904
+#     - CVE-2019-14905
+#   2.8.6-r0:
+#     - CVE-2019-14846
+#     - CVE-2019-14856
+#     - CVE-2019-14858
+#   2.8.4-r0:
+#     - CVE-2019-10206
+#     - CVE-2019-10217
+#   2.8.2-r0:
+#     - CVE-2019-10156
+#   2.7.9-r0:
+#     - CVE-2018-16876
+#   2.6.3-r0:
+#     - CVE-2018-10875
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	mkdir -p "$pkgdir"/usr/share/man/man1
+	install -Dm644 "$builddir"/docs/man/man1/*.1 \
+		"$pkgdir"/usr/share/man/man1/
+
+	mkdir -p "$pkgdir"/usr/share/doc/$pkgname/examples/
+	cp -r examples/* \
+		"$pkgdir"/usr/share/doc/$pkgname/examples/
+	install -m644 README.rst "$pkgdir"/usr/share/doc/$pkgname
+}
+
+sha512sums="327c5ece277096f71f10fec2b33a8d2c94ee59b0e22b15bb5ca449da2331b8158239bdbc8e3afd093af358a787f410c7c2e0942010de65a8d9c8719cf83e4abd  ansible-2.9.9.tar.gz
+f44f1492495abe092cd9f91669ccfee65748f43663571361de97c3b1c5c1219d355aa7236179decb73446376018fa81aace7eaeb8c10a83d3cf4e006508533dd  add-lxc-container_shell-option.patch
+d6aa6827acee61d857444a00364f9b057a216a0a6f5217f353e8b8e0118db7aee54b7578a3fb31cb43bfa8e0709db8d43dcdb819eb28a457a692359887dad115  0001-new-module-lbu.patch"

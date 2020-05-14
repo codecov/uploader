@@ -1,0 +1,36 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=peek
+pkgver=1.5.1
+pkgrel=0
+pkgdesc="Simple animated GIF screen recorder with an easy to use interface"
+url="https://github.com/phw/peek"
+arch="all"
+license="GPL-3.0-or-later"
+depends="ffmpeg gst-plugins-good gst-plugins-bad"
+makedepends="meson gtk+3.0-dev gettext-dev vala txt2man keybinder3-dev"
+checkdepends="appstream-glib desktop-file-utils"
+subpackages="$pkgname-lang $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/phw/peek/archive/$pkgver.tar.gz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Denable-filechoosernative=true \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="dc25f24b1f5954ff26f399f86bf0a2a9b90c4d63c9cd33fcd44f16e447d23070c04e760c57bdc8a946e699c3038b8ee7afc44ce6daa7030e2f9e6f071be6eae4  peek-1.5.1.tar.gz"

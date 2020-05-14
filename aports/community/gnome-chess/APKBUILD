@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-chess
+pkgver=3.36.0
+pkgrel=0
+arch="all !s390x !mips !mips64" # Blocked by librsvg -> rust
+url="https://wiki.gnome.org/Apps/Chess"
+pkgdesc="Play the classic two-player boardgame of chess"
+license="GPL-3.0-or-later"
+makedepends="meson ninja itstool vala gtk+3.0-dev librsvg-dev"
+source="https://download.gnome.org/sources/gnome-chess/${pkgver%.*}/gnome-chess-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="b0013005052739ee17070e2be36b7c15242e9d9caf82b5641197ffe0bad9112ed3d1803c8aceeacfb9014e1cd3f4fb698b21bcbd43a7aa8395a9cdc98c330609  gnome-chess-3.36.0.tar.xz"

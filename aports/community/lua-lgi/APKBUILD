@@ -1,0 +1,65 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+_luaversions="5.1 5.2 5.3"
+pkgname=lua-lgi
+_rockname="${pkgname#lua-*}"
+pkgver=0.9.2
+pkgrel=2
+pkgdesc="Dynamic Lua binding to GObject libraries using GObject-Introspection"
+url="https://github.com/pavouk/lgi"
+arch="all"
+license="MIT"
+makedepends="glib-dev gobject-introspection-dev libffi-dev"
+subpackages="$pkgname-doc"
+for _i in $_luaversions; do
+	makedepends="$makedepends lua$_i-dev"
+	subpackages="$subpackages lua$_i-$_rockname:_split"
+done
+subpackages="${subpackages} ${pkgname}-doc"
+
+source="lgi-$pkgver.tar.gz::https://github.com/pavouk/lgi/archive/$pkgver.tar.gz"
+
+_sdir="$srcdir"/lgi-$pkgver
+prepare() {
+	default_prepare
+
+	for _i in $_luaversions; do
+		cp -r "$_sdir" "$srcdir"/build-$_i
+	done
+}
+
+build() {
+	for _i in $_luaversions; do
+		msg "build for $_i"
+		make -C "$srcdir"/build-$_i PREFIX=/usr LUA_VERSION=$_i \
+			LUA_CFLAGS="$(pkg-config --cflags lua$_i)"
+	done
+}
+
+package() {
+	for _i in $_luaversions; do
+		cd "$srcdir"/build-$_i
+		make install PREFIX=/usr DESTDIR="$pkgdir" LUA_VERSION=$_i
+	done
+	cd "$_sdir"
+	mkdir -p "$pkgdir"/usr/share/doc/lua-lgi
+	cp -r docs/* samples "$pkgdir"/usr/share/doc/lua-lgi/
+}
+
+_split() {
+	_luaversion="${subpkgname%-${_rockname}}"
+	_luaversion="${_luaversion#lua*}"
+	pkgdesc="Lua ${_luaversion} binding to GObject libraries using introspection"
+	install_if="lua${_luaversion} ${pkgname}=${pkgver}-r${pkgrel}"
+	depends="${depends} lua${_luaversion}"
+
+	mkdir -p "${subpkgdir}/usr/lib/lua/"
+	mv "${pkgdir}/usr/lib/lua/${_luaversion}" \
+	   "${subpkgdir}/usr/lib/lua/"
+
+	mkdir -p "${subpkgdir}/usr/share/lua/"
+	mv "${pkgdir}/usr/share/lua/${_luaversion}" \
+	   "${subpkgdir}/usr/share/lua/"
+}
+
+sha512sums="755a96b78530f42da6d4e2664f8e37cb07a356419e7e6448003c3f841c9d98ad18b851715d9eb203ea7eb27b13ec46223fa8a1c90a99fd12960ce85b0a695335  lgi-0.9.2.tar.gz"

@@ -1,0 +1,36 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=xfdesktop
+pkgver=4.14.2
+pkgrel=0
+pkgdesc="Desktop manager for Xfce"
+url="https://xfce.org/"
+arch="all"
+license="GPL-2.0-or-later"
+subpackages="$pkgname-doc $pkgname-lang"
+depends="hicolor-icon-theme"
+makedepends="garcon-dev thunar-dev libxfce4ui-dev libwnck3-dev libnotify-dev
+	exo-dev"
+source="https://archive.xfce.org/src/xfce/xfdesktop/${pkgver%.*}/xfdesktop-$pkgver.tar.bz2"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--libexecdir=/usr/lib \
+		--localstatedir=/var \
+		--disable-static
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="8515fc1c048da50c8c2986ea8590144203fdf3107b81e2d2dd44ee408938fb71281abe52cc098508dc2ae20ef2cbc31903086941206c0cbbc92a661dbfb2c472  xfdesktop-4.14.2.tar.bz2"

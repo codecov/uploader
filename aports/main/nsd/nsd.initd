@@ -1,0 +1,48 @@
+#!/sbin/openrc-run
+
+name="NSD"
+
+extra_commands="checkconfig"
+extra_started_commands="reload reopen"
+
+description="An authoritative-only, high performance, open source name server"
+description_checkconfig="Checks NSD configuration file for errors"
+description_reload="Reloads NSD config file and modified zone files from disk"
+description_reopen="Reopen NSD log file (for logrotate)"
+
+: ${cfgfile:=${NSD_CONFIG:-"/etc/nsd/nsd.conf"}}  # NSD_CONFIG is for backward compatibility
+
+command="/usr/sbin/nsd"
+command_args="-c $cfgfile -d -P '' ${command_args:-}"
+command_background="yes"
+pidfile="/run/$RC_SVCNAME.pid"
+start_stop_daemon_args="--wait 50"
+
+required_files="$cfgfile"
+
+depend() {
+	need net
+	use logger
+}
+
+start_pre() {
+	checkconfig
+}
+
+checkconfig() {
+	ebegin "Checking $name config file"
+	/usr/sbin/nsd-checkconf "$cfgfile"
+	eend $?
+}
+
+reload() {
+	ebegin "Reloading $name config file and all zones"
+	/usr/sbin/nsd-control reconfig && /usr/sbin/nsd-control reload
+	eend $?
+}
+
+reopen() {
+	ebegin "Reopening $name log file"
+	/usr/sbin/nsd-control log_reopen
+	eend $?
+}

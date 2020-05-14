@@ -1,0 +1,41 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtwayland
+pkgver=5.14.2
+pkgrel=0
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://www.qt.io/developers/"
+license="LGPL-2.1-only AND LGPL-3.0-only AND GPL-3.0-only AND Qt-GPL-exception-1.0"
+pkgdesc="Provides APIs for Wayland"
+depends_dev="qt5-qtquickcontrols2-dev libxkbcommon-dev libxcomposite-dev wayland-dev"
+makedepends="$depends_dev qt5-qtbase-dev qt5-qtdeclarative-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+builddir="$srcdir/qtwayland-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="http://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtwayland-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+sha512sums="0f396cabace17f099c2f2c0be54317006dc00c5f4be08cd79a4fa4fdc94362f63cc6ce9decc7feb63f566dd2ea52d562257e4bb23332557054418fc16dc7e899  qtwayland-everywhere-src-5.14.2.tar.xz"

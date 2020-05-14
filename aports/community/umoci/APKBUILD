@@ -1,0 +1,35 @@
+# Contributor: Carlo Landmeter <clandmeter@alpinelinux.org>
+# Maintainer: Carlo Landmeter <clandmeter@alpinelinux.org>
+pkgname=umoci
+pkgver=0.4.5
+pkgrel=1
+pkgdesc="umoci modifies Open Container images"
+url="https://umo.ci/"
+arch="all"
+license="Apache-2.0"
+makedepends="go"
+options="!check" # has no check
+source="umoci-$pkgver.tar.gz::https://github.com/openSUSE/umoci/archive/v$pkgver.tar.gz"
+builddir="$srcdir/src/github.com/openSUSE/$pkgname"
+
+prepare() {
+	mkdir -p ${builddir%/*}
+	mv "$srcdir"/$pkgname-$pkgver "$builddir"/
+	default_prepare
+}
+
+build() {
+	export GOPATH="$srcdir"
+	go build -o bin/$pkgname ./cmd/$pkgname
+}
+
+package() {
+	install -Dm755 bin/$pkgname "$pkgdir"/usr/bin/$pkgname
+}
+
+cleanup_srcdir() {
+	go clean -modcache
+	default_cleanup_srcdir
+}
+
+sha512sums="662d15aad65dc159f148c564d3b3263db2fc893c74a05a68e107f6d7a233d7dfff13b3dc34895486b7da095992411aef1001d3613ab4b759988533ac83ed7d17  umoci-0.4.5.tar.gz"

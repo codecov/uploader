@@ -1,0 +1,43 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=libpeas
+pkgver=1.26.0
+pkgrel=1
+pkgdesc="GObject-based plugin system"
+url="https://wiki.gnome.org/Projects/Libpeas"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="glib-dev gobject-introspection-dev intltool gtk+3.0-dev
+	py3-gobject3-dev python3-dev meson vala glade-dev"
+checkdepends="py3-gobject3 xvfb-run"
+subpackages="$pkgname-dev $pkgname-python3:py3 $pkgname-lang"
+source="https://download.gnome.org/sources/libpeas/${pkgver%.*}/libpeas-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		-Dvapi=true \
+		-Ddemos=false \
+		. output
+	ninja -C output
+}
+
+check() {
+	xvfb-run meson test -C output -t 10
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+py3() {
+	depends="py3-gobject3"
+	mkdir -p "$subpkgdir"/usr/lib/libpeas-1.0/loaders
+	mv "$pkgdir"/usr/lib/libpeas-1.0/loaders/libpython3loader.* "$subpkgdir"/usr/lib/libpeas-1.0/loaders/
+}
+
+sha512sums="86157da14d17c16df2ef3f44ab48822ea1a8be8aec8f5419bc421bd475113f686cd16f9616ac53cbf3dc6f31f521384ac63eb8e9f1a46ea21b5cda8ba21e855f  libpeas-1.26.0.tar.xz"

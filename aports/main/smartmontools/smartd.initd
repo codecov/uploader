@@ -1,0 +1,23 @@
+#!/sbin/openrc-run
+supervisor=supervise-daemon
+
+name=smartd
+description="Daemon to monitor the SMART system built into storage devices"
+description_reload="Reload configuration without exiting"
+
+command=/usr/sbin/smartd
+command_args="$SMARTD_OPTS"
+command_args_foreground="--no-fork"
+
+depend() {
+    need localmount
+    after bootmisc
+}
+
+extra_started_commands="reload"
+
+reload() {
+	ebegin "Reloading configuration"
+	$supervisor $RC_SVCNAME --signal HUP
+	eend $?
+}

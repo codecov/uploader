@@ -1,0 +1,32 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-distro
+_pkgname=distro
+pkgver=1.5.0
+pkgrel=1
+pkgdesc="A Linux OS platform information API"
+options="!check" # Some tests fail
+url="https://github.com/nir0s/distro"
+arch="noarch"
+license="Apache-2.0"
+depends="python3 py3-setuptools"
+checkdepends="py3-pytest py3-pytest-cov"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces=py-distro # Backwards compatibility
+provides=py-distro=$pkgver-r$pkgrel # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 -m pytest
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="14831fe1355e9ef4f58f273ce4a548a3fe438e95466b4b4f596b8110da51305d66ed77c2e40c3dbfbcbd1a66c74e23a4d4244c8bfdebc4b49b3e7ddcbff55b8f  distro-1.5.0.tar.gz"

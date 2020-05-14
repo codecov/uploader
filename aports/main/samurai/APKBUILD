@@ -1,0 +1,25 @@
+# Contributor: Drew DeVault <sir@cmpwn.com>
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=samurai
+pkgver=1.1
+pkgrel=0
+pkgdesc="ninja-compatible build tool written in C"
+url="https://github.com/michaelforney/samurai"
+arch="all"
+license="Apache-2.0"
+options="!check"  # No test suite.
+subpackages="$pkgname-doc"
+source="https://github.com/michaelforney/samurai/releases/download/$pkgver/samurai-$pkgver.tar.gz"
+provides="ninja"
+replaces="ninja"
+
+build() {
+	make
+}
+
+package() {
+	make install PREFIX="/usr" DESTDIR="$pkgdir"
+	ln -s samu "$pkgdir"/usr/bin/ninja
+}
+
+sha512sums="b27302c34d736f483909e57c8b162609eaa4c86571c1167b71a5564b521cc3af2861307a16bb6dca55e80952088989e9526b103160d2ea054d15f4ed85b1cedb  samurai-1.1.tar.gz"

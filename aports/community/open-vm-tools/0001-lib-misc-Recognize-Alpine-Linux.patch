@@ -1,0 +1,42 @@
+From cb8c4078a9e10c2cbb142d6b9a179cc83015806d Mon Sep 17 00:00:00 2001
+From: Natanael Copa <ncopa@alpinelinux.org>
+Date: Thu, 5 Nov 2015 13:09:34 +0000
+Subject: [PATCH 01/12] lib/misc: Recognize Alpine Linux
+
+Signed-off-by: Natanael Copa <ncopa@alpinelinux.org>
+---
+ open-vm-tools/lib/include/guest_os.h   | 1 +
+ open-vm-tools/lib/misc/hostinfoPosix.c | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/open-vm-tools/lib/include/guest_os.h b/open-vm-tools/lib/include/guest_os.h
+--- a/open-vm-tools/lib/include/guest_os.h
++++ b/open-vm-tools/lib/include/guest_os.h
+@@ -239,6 +239,7 @@
+ 
+ /* Linux */
+ #define STR_OS_AMAZON_LINUX        "amazonlinux"
++#define STR_OS_ALPINE              "Alpine"
+ #define STR_OS_ANNVIX              "Annvix"
+ #define STR_OS_ARCH                "Arch"
+ #define STR_OS_ARKLINUX            "Arklinux"
+diff --git a/open-vm-tools/lib/misc/hostinfoPosix.c b/open-vm-tools/lib/misc/hostinfoPosix.c
+--- a/open-vm-tools/lib/misc/hostinfoPosix.c
++++ b/open-vm-tools/lib/misc/hostinfoPosix.c
+@@ -182,6 +182,7 @@
+ 
+ /* KEEP SORTED! (sort -d) */
+ static const DistroInfo distroArray[] = {
++   { "Alpine",             "/etc/alpine-release"        },
+    { "Annvix",             "/etc/annvix-release"        },
+    { "Arch",               "/etc/arch-release"          },
+    { "Arklinux",           "/etc/arklinux-release"      },
+@@ -895,6 +896,8 @@
+       Str_Strcpy(distroShort, STR_OS_TURBO, distroShortSize);
+    } else if (strstr(distroLower, "sun")) {
+       Str_Strcpy(distroShort, STR_OS_SUN_DESK, distroShortSize);
++   } else if (strstr(distroLower, "alpine")) {
++      Str_Strcpy(distroShort, STR_OS_ALPINE, distroShortSize);
+    } else if (strstr(distroLower, "amazon")) {
+       if (version < 2) {
+          version = 2;

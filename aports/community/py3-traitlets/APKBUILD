@@ -1,0 +1,27 @@
+# Contributor: Kevin Daudt <kdaudt@alpinelinux.org>
+# Maintainer: Kevin Daudt <kdaudt@alpinelinux.org>
+pkgname=py3-traitlets
+pkgver=4.3.3
+pkgrel=2
+pkgdesc="A lightweight Traits like module"
+url="https://traitlets.readthedocs.io/"
+arch="noarch"
+license="BSD-3-Clause"
+depends="python3 py3-six py3-ipython_genutils"
+makedepends="py3-setuptools"
+options="!check" # No test suite present
+source="traitlets-$pkgver.tar.gz::https://github.com/ipython/traitlets/archive/$pkgver.tar.gz"
+builddir="$srcdir/${pkgname#py3-}-$pkgver"
+
+replaces="py-traitlets" # Backwards compatibility
+provides="py-traitlets=$pkgver-r$pkgrel" # Backwards compatibility
+
+build()	{
+	python3	setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="4847e0e544b2bb9b185e1f14a35f652bfc8a4d572e7b37401d492b5f10ac403bc506549a0f6dca786e590e8cd5e7764720ae4b88628737b6fef45c1d0750d4b8  traitlets-4.3.3.tar.gz"

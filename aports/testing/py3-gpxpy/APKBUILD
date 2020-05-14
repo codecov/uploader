@@ -1,0 +1,28 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=py3-gpxpy
+_pkgname=${pkgname/py3-/}
+pkgver=1.4.0
+pkgrel=0
+pkgdesc="Python3 GPX parser"
+url="https://github.com/tkrajina/gpxpy"
+arch="noarch"
+license="Apache-2.0"
+depends="python3"
+makedepends="py3-setuptools"
+source="$pkgname-$pkgver.tar.gz::https://github.com/tkrajina/$_pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="3238b89526bf435b43874966c4b25f74080065d6bdbe1757aeb7efdabdaa0e3ae474be50a8fed47cd46881595d9085729509914e3b7e89504fba70b838a9b5c3  py3-gpxpy-1.4.0.tar.gz"

@@ -1,0 +1,32 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=ktoblzcheck
+pkgver=1.53
+pkgrel=0
+pkgdesc="A library to check account numbers and bank codes of german banks"
+url="http://ktoblzcheck.sourceforge.net/"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="cmake python3 python3-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://downloads.sourceforge.net/sourceforge/ktoblzcheck/ktoblzcheck-$pkgver.tar.gz"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DENABLE_BANKDATA_DOWNLOAD=OFF
+	make -C build
+}
+
+check() {
+	cd build
+	ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="7264d436e4fd5a52fbc7a0ffb372f8cf902c3cd631a4822f735813f8f36b90644f4f23ad71d52525dd6e2a98f1d896d8863f4bf926fdbf3491008e43f9841776  ktoblzcheck-1.53.tar.gz"

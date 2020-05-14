@@ -1,0 +1,34 @@
+# Contributor: ScrumpyJack <scrumpyjack@st.ilet.to>
+# Maintainer: ScrumpyJack <scrumpyjack@st.ilet.to>
+pkgname=lensfun
+pkgver=0.3.2
+pkgrel=2
+pkgdesc="Image manipulation library to rectify lens defects"
+url="http://lensfun.sourceforge.net/"
+arch="all"
+license="LGPL-3.0-or-later"
+makedepends="py3-docutils cmake doxygen libpng glib-dev"
+subpackages="$pkgname-dev"
+source="https://downloads.sourceforge.net/project/lensfun/$pkgver/lensfun-$pkgver.tar.gz"
+
+build() {
+	local opts=""
+	case "$CARCH" in
+		x86*) ;;
+		*) opts="-DBUILD_FOR_SSE=OFF -DBUILD_FOR_SSE2=OFF";;
+	esac
+
+	cmake \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		$opts
+
+	make all
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="9c6f546fa70e6dc692e66ef378447345be6d3383812934780d326d772d775c1918cbf3447cd91c067655044cf659025763bf47ba2d938a82a3c2de4d60127446  lensfun-0.3.2.tar.gz"

@@ -1,0 +1,82 @@
+# Contributor: André Klitzing <aklitzing@gmail.com>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: André Klitzing <aklitzing@gmail.com>
+pkgname=unit
+pkgver=1.17.0
+pkgrel=2
+pkgdesc="NGINX Unit is a dynamic web application server"
+url="https://unit.nginx.org/"
+arch="all"
+license="Apache-2.0"
+_phpver=7
+makedepends="perl-dev php$_phpver-dev php$_phpver-embed python3-dev ruby-dev"
+install="$pkgname.pre-install"
+subpackages="$pkgname-openrc"
+source="https://unit.nginx.org/download/unit-$pkgver.tar.gz
+	$pkgname.initd
+	$pkgname.confd
+	$pkgname.logrotate"
+
+for _mod in perl php$_phpver python3 ruby; do
+	subpackages="$subpackages $pkgname-$_mod:_module"
+done
+
+_modules_dir="/usr/lib/unit/modules"
+
+build() {
+	# Needed for building perl module.
+	export CFLAGS="$CFLAGS -D_LARGEFILE64_SOURCE"
+
+	./configure \
+		--prefix="/usr" \
+		--state="/var/lib/unit" \
+		--control="unix:/run/control.unit.sock" \
+		--pid="/run/unit.pid" \
+		--log="/var/log/unit.log" \
+		--modules="$_modules_dir" \
+		--user=unit \
+		--group=unit \
+		--tests
+	./configure perl
+	./configure php --module=php$_phpver --config=php-config$_phpver
+	./configure python --config=python3-config
+	./configure ruby
+
+	make
+	make tests
+}
+
+check() {
+	./build/tests
+
+	# FIXME: Some tests are broken.
+	#make install DESTDIR=".dest"
+	#./test/run.py
+}
+
+package() {
+	make unitd-install DESTDIR="$pkgdir"
+
+	install -D -m 755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -D -m 644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+	install -D -m 644 "$srcdir"/$pkgname.logrotate "$pkgdir"/etc/logrotate.d/$pkgname
+}
+
+openrc() {
+	default_openrc
+	depends="curl"
+}
+
+_module() {
+	local modname=${subpkgname#$pkgname-}
+	pkgdesc="$modname module for NGINX Unit"
+	depends="$pkgname=$pkgver-r$pkgrel"
+
+	cd "$builddir"
+	make $modname-install DESTDIR="$subpkgdir"
+}
+
+sha512sums="4175fc6dd84ad8a3bbdc117d3ce0c7a11c708a7a204ade0bb40f5606f6923e351bb1a8f1f8394c09cdf12fdc20bc927920412dc4b41d3141f76482db047c4bed  unit-1.17.0.tar.gz
+76ca55b0b697361c9799a57414d88c36bc59458af8154f7c4275302ad7694bef4ba4a295685956dd5472d8508bac8e1d1977ff7ff4f46cc443f63ea3e3c35d55  unit.initd
+f85112726dfcace2b6d94b10669615fef517f5aa10ac858890dd9f5c868a6e2569500f7411f758fcb24c98c9630760d36a74bd33ea510ab0f8ca8cd6cb1fb1e8  unit.confd
+723e465162dfdb31881680200221542add414e54ef4f4f1fc57e91b7b57777dfb21c2eee4727ecbba0c1943bb77a2597cc0225b16e334c38258c296d15b1df74  unit.logrotate"

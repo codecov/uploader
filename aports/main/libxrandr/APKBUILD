@@ -1,0 +1,36 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libxrandr
+pkgver=1.5.2
+pkgrel=0
+pkgdesc="X11 RandR extension library"
+url="http://xorg.freedesktop.org/"
+arch="all"
+license="MIT"
+subpackages="$pkgname-dev $pkgname-doc"
+options="!check"  # No test suite.
+depends=
+depends_dev="libxext-dev"
+makedepends="xorgproto $depends_dev libx11-dev libxrender-dev util-macros"
+source="https://www.x.org/releases/individual/lib/libXrandr-$pkgver.tar.bz2
+	"
+
+builddir="$srcdir"/libXrandr-$pkgver
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	install -Dm644 COPYING "$pkgdir"/usr/share/licenses/$pkgname/COPYING
+}
+
+sha512sums="fcd005f9839e7ef980607128a5d76d7b671cc2f5755949e03c569c500d7e987cb3f6932750ab8bf6e2c1086ec69dde09d5831f0c2098b9f9ad46be4f56db0d87  libXrandr-1.5.2.tar.bz2"

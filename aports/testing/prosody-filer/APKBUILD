@@ -1,0 +1,48 @@
+# Contributor: Galen Abell <galen@galenabell.com>
+# Maintainer: Galen Abell <galen@galenabell.com>
+pkgname=prosody-filer
+pkgver=1.0.2
+pkgrel=1
+pkgdesc="Golang mod_http_upload_external server for Prosody and Ejabberd"
+url="https://github.com/ThomasLeister/prosody-filer"
+arch="all"
+license="MIT"
+makedepends="go"
+options="!check" # tests are broken
+install="$pkgname.pre-install"
+subpackages="$pkgname-openrc"
+source="
+	$pkgname-$pkgver.tar.gz::https://github.com/ThomasLeister/prosody-filer/archive/v$pkgver.tar.gz
+	$pkgname.initd
+	$pkgname.confd
+"
+builddir="$srcdir/src/github.com/ThomasLeister/$pkgname"
+
+prepare() {
+	mkdir -p ${builddir%/*}
+	mv $srcdir/$pkgname-$pkgver "$builddir"/
+
+	# fetch dependencies
+	GOPATH="$srcdir" go get github.com/BurntSushi/toml
+
+	default_prepare
+}
+
+build() {
+	GO111MODULE=off GOPATH="$srcdir" go build -v -o $pkgname prosody-filer.go
+}
+
+package() {
+	install -Dm755 "$builddir"/$pkgname "$pkgdir"/usr/bin/$pkgname
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -Dm644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+}
+
+cleanup_srcdir() {
+	go clean -modcache
+	default_cleanup_srcdir
+}
+
+sha512sums="8bf3d3d2c8add7cfdfbe4dd1294ac6e1a14e48ad5927e700bbbbe1e06a16a754ecd4a2228dff1fd8be57ef29602631d8c1e9085073625ee9734e5eaf0324ba28  prosody-filer-1.0.2.tar.gz
+1460dd00df99fe8dc04f42c65731c6b002ac5a2c5dcd73af598f2a3c6d8befa5ff1d910b5417477a3c79efc5065e609621eab6919f93c3bef34169264939929f  prosody-filer.initd
+d2ca3f7801bbf6252b3ee739aff79460ec76dbc0798ea8995d0f2b684d85347685ae3b7f2cc4cf186ad1c889fd79bc267f57f9c6c120f491afe943bf725e4abd  prosody-filer.confd"

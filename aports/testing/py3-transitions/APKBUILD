@@ -1,0 +1,32 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-transitions
+_pkgname=transitions
+pkgver=0.7.2
+pkgrel=0
+pkgdesc="A lightweight, object-oriented Python state machine implementation"
+url="https://github.com/tyarkoni/transitions"
+arch="noarch"
+license="MIT"
+depends="py3-six"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest py3-pycodestyle"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces=py-transitions # Backwards compatibility
+provides=py-transitions=$pkgver-r$pkgrel # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	py.test-3
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="c33eaec3e338b6febd924d803b85436df3ec3ab728315290fe81c73fb328aedcdb15e8f19f0e3d9d3a7d62750671686ae65bad560c48cfd113481dfe702a4204  transitions-0.7.2.tar.gz"

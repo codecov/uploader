@@ -1,0 +1,33 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-sphinx_rtd_theme
+_pkgname=sphinx_rtd_theme
+pkgver=0.4.3
+pkgrel=3
+pkgdesc="Sphinx theme for readthedocs.org"
+url="https://github.com/snide/sphinx_rtd_theme"
+arch="noarch"
+license="MIT"
+depends="python3"
+makedepends="py3-setuptools"
+checkdepends="py3-pytest"
+options="!check" # readthedocs_ext is missing
+source="$_pkgname-$pkgver.tar.gz::https://github.com/snide/$_pkgname/archive/$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-sphinx_rtd_theme" # Backwards compatibility
+provides="py-sphinx_rtd_theme=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	py.test-3
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="6e5d4d0c44ea8acdf382dd589a194be2777e4c4f66f27705eb32d0507cf71b9d289df860bc3d9845242629cd92d62154040f9063f1c05ff6f329e210e14a6a9a  sphinx_rtd_theme-0.4.3.tar.gz"

@@ -1,0 +1,76 @@
+# Contributor: Natanael Copa <ncopa@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=audacity
+pkgver=2.3.3
+pkgrel=0
+pkgdesc="Multitrack audio editor"
+url="https://www.audacityteam.org/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="
+	alsa-lib-dev
+	bash
+	expat-dev
+	flac-dev
+	jack-dev
+	lame-dev
+	libid3tag-dev
+	libmad-dev
+	libogg-dev
+	libsndfile-dev
+	libvorbis-dev
+	soundtouch-dev
+	soxr-dev
+	taglib-dev
+	wxgtk3-dev
+	ffmpeg-dev
+	automake
+	autoconf
+	libtool
+	"
+subpackages="$pkgname-doc $pkgname-lang"
+source="https://github.com/audacity/audacity/archive/Audacity-$pkgver.tar.gz
+	"
+
+builddir="$srcdir"/audacity-Audacity-$pkgver
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
+
+build() {
+	local _arch
+
+	case "$CTARGET" in
+		x86|x86_64) _arch="--enable-sse";;
+		*) _arch="--disable-sse";;
+	esac
+
+	WX_CONFIG=wx-config-gtk3 \
+	bash configure \
+		--prefix="/usr" \
+		--with-libsndfile="system" \
+		--with-ffmpeg="system" \
+		--with-expat="system" \
+		--with-lame="system" \
+		--with-libsoxr="system" \
+		--with-portaudio \
+		--with-portmidi \
+		--with-libflac \
+		--with-libid3tag \
+		--with-libsamplerate \
+		--with-sbsms \
+		--with-soundtouch \
+		--with-libtwolame \
+		--with-libvorbis \
+		--without-lv2 \
+		$_arch
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="0789d5bc27933c688b8c99e0d9d9ca65f3b0c59cf74a235feee094a1815bdb59a32a4f50d2938b8fb9d72b0c5ba88451d02f90c5163931774a2088463562c5ef  Audacity-2.3.3.tar.gz"

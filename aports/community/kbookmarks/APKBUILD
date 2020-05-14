@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kbookmarks
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Support for bookmarks and the XBEL format"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-or-later"
+depends_dev="qt5-qtbase-dev kconfig-dev kcoreaddons-dev kcodecs-dev kconfigwidgets-dev kwidgetsaddons-dev kxmlgui-dev"
+makedepends="$depends_dev extra-cmake-modules qt5-qttools-dev doxygen"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kbookmarks-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="8b267b13efc2546fb30a3d43fb17ee4edfc1a09c3ba8a56d87538592862404fb7d7d9424e3f35dda56749e250abf7103d63834375418d262a6dc822744d0e8ed  kbookmarks-5.70.0.tar.xz"

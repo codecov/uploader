@@ -1,0 +1,31 @@
+# Contributor: Alan Lacerda <alacerda@alpinelinux.org>
+# Maintainer: Alan Lacerda <alacerda@alpinelinux.org>
+pkgname=mate-icon-theme
+pkgver=1.24.0
+pkgrel=0
+pkgdesc="MATE desktop icons"
+url="https://github.com/mate-desktop/mate-icon-theme"
+arch="noarch"
+license="GPL-2.0-or-later"
+depends="mate-common"
+makedepends="icon-naming-utils intltool"
+source="https://pub.mate-desktop.org/releases/${pkgver%.*}/mate-icon-theme-$pkgver.tar.xz"
+
+build() {
+	DATADIRNAME=share ./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--sysconfdir=/etc \
+		--prefix=/usr
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="18ad6a236f02b7536697fed9086eadd997f0c47cc8311324e43641b21ccf942d0dbd52fa6c49623e679d3b23d82619cc256c98d9f8ccc3b3d4cda5d9a6e465f1  mate-icon-theme-1.24.0.tar.xz"

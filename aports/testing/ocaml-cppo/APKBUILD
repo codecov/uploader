@@ -1,0 +1,63 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ocaml-cppo
+_pkgname=cppo
+pkgver=1.6.6
+pkgrel=0
+pkgdesc="C-style preprocessor for OCaml"
+url="https://github.com/mjambon/cppo"
+arch="all !x86 !armhf !armv7 !s390x !mips !mips64"  # limited by ocaml
+license="BSD-3-Clause"
+makedepends="dune ocaml ocaml-ocamlbuild-dev ocaml-findlib opam"
+options="textrels"  # needed for ppc64le
+subpackages="$pkgname-dev $pkgname-ocamlbuild"
+source="$pkgname-$pkgver.tar.gz::https://github.com/mjambon/$_pkgname/archive/v$pkgver.tar.gz
+	"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	dune build --root . @install @DEFAULT
+}
+
+check() {
+	dune runtest
+}
+
+package() {
+	mkdir -p "$pkgdir"/usr/lib/ocaml
+	dune install \
+		--destdir="$pkgdir" \
+		--prefix=/usr \
+		--libdir=/usr/lib/ocaml
+
+	cd "$pkgdir"
+
+	# Remove annotation files and sources.
+	rm -Rf usr/lib/ocaml/$_pkgname*/*.cmt*
+	rm -Rf usr/lib/ocaml/$_pkgname*/*.ml
+
+	# Nothing interesting here.
+	rm -Rf usr/doc
+}
+
+ocamlbuild() {
+	pkgdesc="$pkgdesc (Ocamlbuild plugin)"
+	depends="ocaml-runtime ocaml-ocamlbuild"
+
+	mkdir -p "$subpkgdir"/usr/lib/ocaml
+	mv "$pkgdir"/usr/lib/ocaml/${_pkgname}_ocamlbuild \
+		"$subpkgdir"/usr/lib/ocaml/
+}
+
+dev() {
+	default_dev
+
+	depends="$pkgname=$pkgver-r$pkgrel $pkgname-ocamlbuild=$pkgver-r$pkgrel"
+	local sitelib="usr/lib/ocaml/${_pkgname}_ocamlbuild"
+
+	cd "$pkgdir"/$sitelib
+	mkdir -p "$subpkgdir"/$sitelib
+	mv *.cmx *.cmxa *.mli "$subpkgdir"/$sitelib/
+}
+
+sha512sums="80b0d7a5f0f5b7d9d62ddfb204ebf5e3216c2926ba7f667b9ef10981de6a51cd6d670b7062769bf6fbdd163c1c8fb5426a74c31234ddc03ec94a75645bf469da  ocaml-cppo-1.6.6.tar.gz"

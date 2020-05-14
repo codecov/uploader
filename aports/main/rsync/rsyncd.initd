@@ -1,0 +1,19 @@
+#!/sbin/openrc-run
+
+supervisor=supervise-daemon
+
+: ${cfgfile:="/etc/rsyncd.conf"}
+
+name="rsync daemon"
+description="A file transfer program to keep remote files in sync"
+
+command="/usr/bin/rsync"
+command_args="--daemon --config=$cfgfile $RSYNC_OPTS"
+command_args_foreground="--no-detach"
+
+required_files="$cfgfile"
+
+depend() {
+	use net
+	after firewall
+}

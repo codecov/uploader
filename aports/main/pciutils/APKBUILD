@@ -1,0 +1,51 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=pciutils
+pkgver=3.6.4
+pkgrel=0
+pkgdesc="PCI bus configuration space access library and tools"
+url="http://mj.ucw.cz/pciutils.html"
+arch="all"
+license="GPL-2.0-only"
+depends="hwids-pci"
+makedepends="linux-headers"
+options="!check"
+subpackages="$pkgname-doc $pkgname-dev $pkgname-libs"
+source="https://www.kernel.org/pub/software/utils/pciutils/pciutils-$pkgver.tar.gz
+	fix-linking-pci-malloc-Makefile.patch
+	pread.patch
+	"
+
+build() {
+	sed -i -e "106s/^/\#/" Makefile
+	make OPT="$CFLAGS" ZLIB=no \
+		SHARED=yes \
+		PREFIX=/usr \
+		SHAREDIR=/usr/share/hwdata \
+		MANDIR=/usr/share/man \
+		all
+}
+
+package() {
+	make PREFIX="$pkgdir"/usr \
+		SHARED=yes \
+		SHAREDIR="$pkgdir"/usr/share/hwdata \
+		MANDIR="$pkgdir"/usr/share/man \
+		install
+
+	install -d "$pkgdir"/usr/lib
+	ln -s libpci.so.${pkgver%%.*} "$pkgdir"/usr/lib/libpci.so
+	install -D -m 644 lib/libpci.pc "$pkgdir"/usr/lib/pkgconfig/libpci.pc
+	for i in config.h header.h pci.h types.h; do
+		install -D -m 644 lib/$i "$pkgdir"/usr/include/pci/$i
+	done
+
+	# this is now supplied by the hwids package
+	rm -rf "$pkgdir"/usr/sbin/update-pciids
+	rm -rf "$pkgdir"/usr/share/man/man8/update-pciids.8
+	rm -rf "$pkgdir"/usr/share/hwdata
+}
+
+sha512sums="ace51681d8803a06fdfa7153a56f586616044823cb10b0e701a7fb57af0e38884537afc27be0885cf244c0a8dec7c6295baf226f1ef2868ed1eedff10565945f  pciutils-3.6.4.tar.gz
+520b39602078e4325d7dac2d460547b360f7b52c668d88cf3d776c59246c8cfcb537b7b4f50575da9d2fcea1e207b3e99626ce4f23df890d2565b7dac1db2d94  fix-linking-pci-malloc-Makefile.patch
+aa1d3272500180256929b39a5fc4ea38ddb6a9fad090d732832ded9cc396303cf56efc91cfdeb76edbcfefc9a7c8eb058562c3c2b09a9090a59d3e68c27cec62  pread.patch"

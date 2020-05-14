@@ -1,0 +1,26 @@
+# Contributor: Hauke Loeffler <alpine@hauke-loeffler.de>
+# Maintainer: Hauke Loeffler <alpine@hauke-loeffler.de>
+pkgname=rgxg
+pkgver=0.1.1
+pkgrel=0
+pkgdesc="rgxg (ReGular eXpression Generator) is a C library and a command-line tool to generate (extended) regular expressions."
+url="https://rgxg.github.io/"
+arch="all"
+license="zlib"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/rgxg/rgxg/releases/download/v$pkgver/rgxg-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	./configure --prefix=/usr \
+		|| return 1
+	make || return 1
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install || return 1
+}
+
+sha512sums="5a0e3849dd7c312efdac064675c94188a18c55002843887216009295ddeb522c01593f9de6c0517df058f9525dac355665bb3dbaf0041472d8a80dd6368b08f6  rgxg-0.1.1.tar.gz"

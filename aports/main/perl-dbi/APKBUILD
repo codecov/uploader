@@ -1,0 +1,32 @@
+# Contributor: Jeff Bilyk <jbilyk at gmail>
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=perl-dbi
+_realpkgname=DBI
+pkgver=1.643
+pkgrel=0
+pkgdesc="Database independent interface for Perl"
+url="https://metacpan.org/release/DBI"
+arch="all"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl"
+makedepends="perl-dev"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/T/TI/TIMB/DBI-$pkgver.tar.gz"
+builddir="$srcdir"/$_realpkgname-$pkgver
+
+build() {
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	# creates file collision among perl modules
+	find "$pkgdir" -name perllocal.pod -delete
+}
+
+sha512sums="03812f3eb1e43c8290dadb8cb14bbced9ec6e237228ea2a2ba91f22e52143906a91a7e82945dab30b1d1b9fc925073721111adafd9a09fac070808ab88f908b8  DBI-1.643.tar.gz"

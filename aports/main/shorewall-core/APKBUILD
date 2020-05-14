@@ -1,0 +1,40 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=shorewall-core
+pkgver=5.2.4
+
+_maj_min_patch=$pkgver
+case $pkgver in
+	*.*.*.*) _maj_min_patch=${pkgver%.*};;
+esac
+_maj_min=${_maj_min_patch%.*}
+
+pkgrel=0
+pkgdesc="Core libraries for Shorewall"
+url="https://shorewall.org/"
+arch="noarch"
+license="GPL-2.0-or-later"
+options="!check" # No test suite
+# coreutils for install -T
+makedepends="coreutils bash"
+subpackages="$pkgname-doc"
+source="https://shorewall.org/pub/shorewall/$_maj_min/shorewall-$_maj_min_patch/shorewall-core-$pkgver.tar.bz2
+	shorewallrc.alpine
+	"
+
+prepare() {
+	default_prepare
+
+	cp "$srcdir"/shorewallrc.alpine .
+}
+
+build() {
+	./configure
+}
+
+package() {
+	DESTDIR="$pkgdir" ./install.sh shorewallrc.alpine
+}
+
+sha512sums="40add35f175abd62ede0b0b8f84151d7a81d56bcc3d622ed9ac676e382bd33cfee648da205f23ead462b5e6e577784c79ffdcdde5f45c731c6d93c11788d982d  shorewall-core-5.2.4.tar.bz2
+c076ae42e7b404cecf521fdc32f92ba3a6b77d61579726abde2f00b6b6282e55b0b334b9fe5e43a6e4ae56361cce3214d9a38099f9f8714f03ae4fb888c744b7  shorewallrc.alpine"

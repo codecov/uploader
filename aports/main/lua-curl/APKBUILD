@@ -1,0 +1,58 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=lua-curl
+_pkgname=Lua-cURLv3
+pkgver=0.3.11
+pkgrel=1
+pkgdesc="Lua bindings to cURL library"
+url="https://github.com/Lua-cURL/Lua-cURLv3"
+arch="all"
+license="MIT"
+makedepends="curl-dev"
+subpackages=""
+source="$pkgname-$pkgver.tar.gz::https://github.com/Lua-cURL/$_pkgname/archive/v$pkgver.tar.gz"
+
+builddir="$srcdir/$_pkgname-$pkgver"
+
+_luaversions="5.1 5.2 5.3"
+for _v in $_luaversions; do
+	makedepends="$makedepends lua$_v-dev"
+	subpackages="$subpackages lua$_v-${pkgname#lua-}:_subpackage"
+done
+
+prepare() {
+	default_prepare
+
+	local lver; for lver in $_luaversions; do
+		cp -r "$builddir" "$builddir-$lver"
+	done
+}
+
+build() {
+	local lver; for lver in $_luaversions; do
+		msg "Building for Lua $lver..."
+
+		cd "$builddir-$lver"
+		echo LUA_IMPL=lua$lver >> .config
+		make LUA_VERSION=$lver
+	done
+}
+
+package() {
+	mkdir -p "$pkgdir"
+}
+
+_subpackage() {
+	local lver="${subpkgname:3:3}"
+	pkgdesc="$pkgdesc (for Lua $lver)"
+	depends="lua$lver"
+	install_if="$pkgname=$pkgver-r$pkgrel lua$lver"
+	local rockdir="$subpkgdir/usr/lib/luarocks/rocks-$lver/$pkgname/$pkgver-1"
+
+	cd "$builddir-$lver"
+	make install DESTDIR="$subpkgdir" LUA_VERSION=$lver
+
+	mkdir -p "$rockdir"
+	echo 'rock_manifest = {}' > "$rockdir"/rock_manifest
+}
+
+sha512sums="5b200463e481a1fdb6f05c87e25690bddc58e45e2c48e32eafaebd55d667771b1556aafa3f208ff5cb874dbe66b0850f52210cb60e223503ad22fe37b92b3b93  lua-curl-0.3.11.tar.gz"

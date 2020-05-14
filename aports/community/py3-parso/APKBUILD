@@ -1,0 +1,33 @@
+# Contributor: Kevin Daudt <kdaudt@alpinelinux.org>
+# Maintainer: Kevin Daudt <kdaudt@alpinelinux.org>
+pkgname=py3-parso
+pkgver=0.7.0
+pkgrel=0
+pkgdesc="Python3 parser that supports error recovery and round-trip parsing for different Python versions"
+url="https://github.com/davidhalter/parso"
+arch="noarch"
+license="MIT"
+depends="python3"
+makedepends="py3-setuptools py3-pbr"
+checkdepends="py3-pytest"
+source="
+	https://files.pythonhosted.org/packages/source/p/parso/parso-$pkgver.tar.gz
+	"
+builddir="$srcdir/parso-$pkgver"
+
+replaces="py-parso" # Backwards compatibility
+provides="py-parso=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	py.test-3
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="7ca6fbf001826afd57c9777bc5cc0d206b52c5c15b8f237ab4add041c2a7b9cf911a9959e1e9e24c5a00d46d447b0c66efd5381955201d7053933a97e32b8934  parso-0.7.0.tar.gz"

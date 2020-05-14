@@ -1,0 +1,63 @@
+# Contributor: André Klitzing <aklitzing@gmail.com>
+# Maintainer: André Klitzing <aklitzing@gmail.com>
+pkgname=xbps
+pkgver=0.59.1
+pkgrel=0
+pkgdesc="The X Binary Package System"
+arch="all"
+url="https://github.com/void-linux/xbps"
+license="BSD-2-Clause AND (BSD-3-Clause AND ISC AND BSD-2-Clause-NetBSD)"
+depends="ca-certificates"
+makedepends="zlib-dev libarchive-dev openssl-dev"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+options="!check"
+source="$pkgname-$pkgver.tar.gz::https://github.com/void-linux/xbps/archive/$pkgver.tar.gz"
+
+# secfixes:
+#   0.58-r0:
+#     - CVE-2020-7450
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--bindir=/usr/bin \
+		--localstatedir=/var/lib/xbps \
+		--enable-lto
+	sed 's|-O2|-Os|g' config.mk
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir/" install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+
+bashcomp() {
+	pkgdesc="Bash completions for $pkgname"
+	depends=""
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	_submv usr/share/bash-completion/completions
+}
+
+zshcomp() {
+	pkgdesc="ZSH completions for $pkgname"
+	depends=""
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	_submv usr/share/zsh/site-functions
+}
+
+_submv() {
+	local path="$1"
+	mkdir -p "$subpkgdir"/${path%/*}
+	mv "$pkgdir"/$path "$subpkgdir"/${path%/*}/
+}
+
+sha512sums="95f887e4de2a8d49269d32eccd58c2e996600c72b0269eade24df6dc6d6b844cfadecdaa42224747c0567c3080e54e7d4890ec0001e4ed0a9f4dd72bc4c868fe  xbps-0.59.1.tar.gz"

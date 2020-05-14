@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kxmlrpcclient
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="XML-RPC client library for KDE"
+arch="all !armhf"
+url="https://projects.kde.org/projects/kde/pim/kxmlrpcclient"
+license="BSD-2-Clause"
+depends_dev="ki18n-dev kio-dev"
+makedepends="$depends_dev extra-cmake-modules qt5-qttools-dev doxygen"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/kxmlrpcclient-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="e15628128ec629b4c24ef953cee2b538097288ca606a065dcb0d665c0e73dd12a7cc4cc655dc42933c7e4fcf57ae1ef84d0e641b0b3f299bfe0fc0d184c98645  kxmlrpcclient-5.70.0.tar.xz"

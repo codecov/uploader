@@ -1,0 +1,68 @@
+# Contributor: Stefan Wagner <stw@bit-strickerei.de>
+# Maintainer: Konstantin Kulikov <k.kulikov2@gmail.com>
+pkgname=influxdb
+pkgver=1.8.0
+pkgrel=1
+_commit=781490de48 # git rev-parse --short HEAD
+_branch=1.8 # Keep in sync with $pkgver
+pkgdesc="Scalable datastore for metrics, events, and real-time analytics"
+url="https://www.influxdata.com/time-series-platform/influxdb/"
+# blocked by dep on mips
+# many tests fail on x86, it's unclear whether it works at all
+# armhf has no ci
+arch="all !x86 !armhf !mips !mips64"
+license="MIT"
+makedepends="go asciidoc xmlto"
+install="$pkgname.pre-install"
+subpackages="$pkgname-doc $pkgname-openrc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/influxdata/influxdb/archive/v$pkgver.tar.gz
+	influxdb.initd influxdb.confd"
+options="chmod-clean net"
+
+export GOPATH=${GOPATH:-$srcdir/go}
+export GOCACHE=${GOCACHE:-$srcdir/go-build}
+export GOTMPDIR=${GOTMPDIR:-$srcdir}
+
+build() {
+	local ldflags="-X main.version=$pkgver -X main.branch=$_branch -X main.commit=$_commit"
+	local pkgs="influx influx_inspect influx_stress influx_tools influx_tsm influxd"
+	local pkg
+	for pkg in $pkgs; do
+		go build -ldflags "$ldflags" -o ./bin/$pkg ./cmd/$pkg
+	done
+	make -C man
+}
+
+check() {
+	local pkgs="./..."
+	case "$CARCH" in
+	# One test in query pkg fail because of lesser float number precision, should be safe to ignore.
+	s390x|aarch64|ppc64le) pkgs="$(go list ./... | grep -v '^github.com/influxdata/influxdb/query$')" ;;
+	esac
+
+	# CI too slow, some tests timeout.
+	[ "$CARCH" == "armv7" ] && return 0
+
+	go test -short $pkgs
+}
+
+package() {
+	local pkgs="influx influx_inspect influx_stress influx_tools influx_tsm"
+	local pkg
+	for pkg in $pkgs; do
+		install -Dm755 "$builddir/bin/$pkg" "$pkgdir/usr/bin/$pkg"
+	done
+	install -Dm755 "$builddir/bin/influxd" "$pkgdir/usr/sbin/influxd"
+
+	install -d "$pkgdir/usr/share/man/man1/"
+	install -Dm644 man/*.1 "$pkgdir/usr/share/man/man1/"
+
+	install -Dm644 "etc/config.sample.toml" "$pkgdir/etc/influxdb.conf"
+
+	install -Dm755 "$srcdir/$pkgname.initd" "$pkgdir/etc/init.d/$pkgname"
+	install -Dm644 "$srcdir/$pkgname.confd" "$pkgdir/etc/conf.d/$pkgname"
+}
+
+sha512sums="d62aa9dc7777d8a1c5d3a9b36937255f783002c762ee3c60bbcb190edb4d4b0f67d99d500f67d726ec4f407b7ca350cb409b58dc6a999648884a286f8160f426  influxdb-1.8.0.tar.gz
+04fb33ee5b3d60c3e8655cc20423885140b66e74a822866cfe05668e942d24116878b1815a48b07063c707bb600cf0ff390994f0321c881eed557abde016eeb9  influxdb.initd
+1db8790c84a9e193a6029291b2a83a6083d1ddcc330c2191c4da6bdcc6410d832288aee275605b4ca041c8855fe8a1340631444e901044659755db0146d6d3dc  influxdb.confd"

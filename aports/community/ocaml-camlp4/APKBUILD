@@ -1,0 +1,56 @@
+# Contributor: Jon Ong <jonongjs@rottenmage.com>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Anil Madhavapeddy <anil@recoil.org>
+pkgname=ocaml-camlp4
+_pkgname=camlp4
+# NOTE: camlp4 version must match ocaml version!
+pkgver=4.08.1
+_pkgver="${pkgver%.*}+${pkgver##*.}"
+_ocamlver=${pkgver%.*}
+pkgrel=0
+pkgdesc="Caml preprocessor and pretty-printer"
+url="https://github.com/ocaml/camlp4/releases"
+arch="all !x86 !armhf !armv7 !mips !mips64"  # reflect ocaml aport platforms
+license="LGPL-2.0-or-later-WITH-linking-exception"
+depends="ocaml-runtime=~$_ocamlver ocaml-ocamlbuild"
+depends_dev="$pkgname=$pkgver-r$pkgrel"
+makedepends="ocaml=~$_ocamlver ocaml-compiler-libs=~$_ocamlver
+	ocaml-findlib ocaml-ocamlbuild-dev ocamlbuild"
+replaces="camlp4"  # for backward compatibility
+provides="camlp4=$pkgver-r$pkgrel"  # for backward compatibility
+subpackages="$pkgname-dev"
+source="$pkgname-$_pkgver.tar.gz::https://github.com/ocaml/$_pkgname/archive/$_pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-${_pkgver/+/-}"
+
+build() {
+	./configure \
+		--bindir="/usr/bin" \
+		--libdir="/usr/lib/ocaml" \
+		--pkgdir="/usr/lib/ocaml"
+	make -j1 all camlp4/META
+}
+
+package() {
+	make DESTDIR="$pkgdir" \
+		install install-META
+}
+
+dev() {
+	default_dev
+	replaces="camlp4"  # for backward compatibility
+	local sitelib="usr/lib/ocaml/$_pkgname"
+
+	cd "$pkgdir"
+
+	mkdir -p "$subpkgdir"/usr
+	mv usr/bin "$subpkgdir"/usr/
+
+	local path
+	for path in $(find $sitelib/ -name '*.cmx' -o -name '*.cmxa'); do
+		mkdir -p "$subpkgdir"/${path%/*}
+		mv "$path" "$subpkgdir"/${path%/*}/
+	done
+	rmdir "$subpkgdir"/$sitelib 2>/dev/null || true
+}
+
+sha512sums="1f8d6df42935ecdbed96a7b02d05564665b4bf0cbe4f5fd1800a1f292d8b3864d973df1e9e8c566c0fd00b5a55ba47ecd9bd07f134a9be83601e010b0246e075  ocaml-camlp4-4.08+1.tar.gz"

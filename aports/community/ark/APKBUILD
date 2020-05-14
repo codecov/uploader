@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=ark
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Graphical file compression/decompression utility with support for multiple formats"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://kde.org/applications/utilities/org.kde.ark"
+license="GPL-2.0-only"
+depends="lrzip zstd p7zip zip unzip unrar"
+makedepends="extra-cmake-modules qt5-qtbase-dev karchive-dev kconfig-dev kcrash-dev kdbusaddons-dev kdoctools-dev ki18n-dev kiconthemes-dev kitemmodels-dev kio-dev kservice-dev kparts-dev kpty-dev kwidgetsaddons-dev libarchive-dev libzip-dev xz-dev shared-mime-info"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/ark-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	# plugins-cliunarchivertest is broken since Qt 5.11
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "plugins-clirartest"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="f6d96ecefcbe550e26a7aa95e3f87a9272779fe21bbff31231aaebb83a43544b70f02bf36a3198f05a5bf48e855e003a74e4b32371c938eeaf6c4e76ba79ab89  ark-20.04.0.tar.xz"

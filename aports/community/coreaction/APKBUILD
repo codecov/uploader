@@ -1,0 +1,24 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=coreaction
+pkgver=2.8.0
+pkgrel=0
+pkgdesc="A side bar for showing widgets from the CoreApps family."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtsvg"
+makedepends="qt5-qtbase-dev libcprime-dev libcsys-dev qt5-qtsvg-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/coreaction/-/archive/v$pkgver/coreaction-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+sha512sums="80c248e561726761773d67b5ca928b236df0baf7cfcfaf003999071635f2c21df17120a19478219eebdbd85b08621ff2960e01bb41ba91e6e4549670e8986050  coreaction-2.8.0.tar.gz"

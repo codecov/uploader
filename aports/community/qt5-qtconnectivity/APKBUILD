@@ -1,0 +1,38 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtconnectivity
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="QT5 Connectivity Compontents"
+url="https://www.qt.io/developers/"
+arch="all"
+license="(LGPL-2.0-or-later OR GPL-3.0-only OR GPL-2.0-or-later) AND Qt-GPL-exception-1.0"
+#options="!check" # upstream does not provide check
+makedepends="qt5-qtbase-dev"
+subpackages="$pkgname-dev"
+options="!check" # No tests
+builddir="$srcdir/qtconnectivity-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtconnectivity-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+sha512sums="948050b915f6f2e1fffcb2c8b55d9061f25a82314d02e7a39faa9b88e065bb924ce5f8a7c26ed1f07b29b986d47acd5678f57bb96668d1c1ecd93ad3a7e40c7a  qtconnectivity-everywhere-src-5.14.2.tar.xz"

@@ -1,0 +1,243 @@
+# Contributor: Leo <thinkabit.ukim@gmail.com>
+# Contributor: Pedro Filipe <xpecex@outlook.com>
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Leo <thinkabit.ukim@gmail.com>
+pkgname=pulseaudio
+pkgver=13.0
+pkgrel=9
+pkgdesc="A featureful, general-purpose sound server"
+url="https://www.freedesktop.org/wiki/Software/PulseAudio/"
+arch="all"
+license="LGPL-2.1-or-later"
+makedepends="
+	meson
+	tdb-dev
+	alsa-lib-dev
+	libasyncns-dev
+	dbus-dev
+	glib-dev
+	gtk+3.0-dev
+	orc-dev
+	orc-compiler
+	libsndfile-dev
+	soxr-dev
+	libx11-dev
+	libxcb-dev
+	libice-dev
+	libsm-dev
+	libxtst-dev
+	avahi-dev
+	sbc-dev
+	fftw-dev
+	jack-dev
+	openssl-dev
+	speexdsp-dev
+	eudev-dev
+	libcap-dev
+	bluez-dev
+	check-dev
+	libtool
+	perl
+	perl-xml-parser
+	m4
+	"
+depends_openrc="alsa-utils-openrc"
+subpackages="
+	$pkgname-dev
+	$pkgname-doc
+	$pkgname-bluez
+	libpulse:_libpulse
+	libpulse-mainloop-glib:_libpulse_mainloop_glib
+	$pkgname-alsa
+	$pkgname-utils
+	$pkgname-jack
+	$pkgname-zeroconf
+	$pkgname-openrc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	$pkgname-lang
+	$pkgname-equalizer
+	"
+install="pulseaudio.post-install"
+source="https://freedesktop.org/software/pulseaudio/releases/pulseaudio-$pkgver.tar.xz
+	link-libintl.patch
+	python3.patch
+	$pkgname.initd
+	$pkgname.confd
+	define-tunnel_sink-for-module-tunnel-sink.patch
+	"
+
+case "$CARCH" in
+	x86|ppc64le)
+		options="$options !check" # once-test fails, all others pass
+		;;
+	s390x|mips*)
+		options="$options !check" # mix-test fails, all others pass
+		;;
+esac
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--optimization=s \
+		--buildtype=plain \
+		-Dgcov=false \
+		-Dman=true \
+		-Dtests=true \
+		-Dsystem_user=pulse \
+		-Dsystem_group=pulse \
+		-Ddatabase=tdb \
+		-Dalsa=enabled \
+		-Dasyncns=enabled \
+		-Davahi=enabled \
+		-Dbluez5=true \
+		-Ddbus=enabled \
+		-Dfftw=enabled \
+		-Dglib=enabled \
+		-Dgsettings=enabled \
+		-Dgtk=enabled \
+		-Dhal-compat=false \
+		-Dipv6=true \
+		-Djack=enabled \
+		-Dlirc=disabled \
+		-Dopenssl=enabled \
+		-Dorc=enabled \
+		-Dsamplerate=disabled \
+		-Dsoxr=enabled \
+		-Dspeex=enabled \
+		-Dsystemd=disabled \
+		-Dudev=enabled \
+		-Dx11=enabled \
+		-Dudevrulesdir=/usr/lib/udev/rules.d \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -Dm644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+
+	# Assumes that any volume adjustment is intended by the user, who can control
+	# each app's volume. Misbehaving clients can trigger earsplitting volume
+	# jumps. App volumes can diverge wildly and cause apps without their own
+	# volume control to fall below sink volume; a sink-only volume control will
+	# suddenly be unable to make such an app loud enough.
+	sed -e '/flat-volumes/iflat-volumes = no' -i "$pkgdir"/etc/pulse/daemon.conf
+
+	# Disable cork-request module, can result in e.g. media players unpausing
+	# when there's a Skype call incoming
+	sed -e 's|/usr/bin/pactl load-module module-x11-cork-request|#&|' \
+		-i "$pkgdir"/usr/bin/start-pulseaudio-x11
+
+	# Required by qpaeq
+	sed -e '/Load several protocols/aload-module module-dbus-protocol' \
+		-i "$pkgdir"/etc/pulse/default.pa
+}
+
+openrc() {
+	replaces="$pkgname-system" # Backward compatibility
+	default_openrc
+}
+
+_libpulse() {
+	replaces="$pkgname-libs"
+	pkgdesc="Pulseaudio libraries"
+	mkdir -p "$subpkgdir"/usr/lib \
+		"$subpkgdir"/etc/pulse
+	mv "$pkgdir"/usr/lib/pulseaudio \
+		"$subpkgdir"/usr/lib/
+	mv "$pkgdir"/usr/lib/libpulse.so.0* \
+		"$pkgdir"/usr/lib/libpulse-simple.so.0* \
+		"$subpkgdir"/usr/lib/
+	mv "$pkgdir"/etc/pulse/client.conf \
+		"$subpkgdir"/etc/pulse/
+}
+
+_libpulse_mainloop_glib() {
+	pkgdesc="Pulseaudio mainloop-glib library"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libpulse-mainloop-glib.so.* "$subpkgdir"/usr/lib
+}
+
+bluez() {
+	pkgdesc="Pulseaudio bluetooth support"
+	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules
+	mv "$pkgdir"/usr/lib/pulse-$pkgver/modules/*bluez*.so \
+		"$pkgdir"/usr/lib/pulse-$pkgver/modules/*bluetooth*.so \
+		"$subpkgdir"/usr/lib/pulse-$pkgver/modules/
+}
+
+alsa() {
+	pkgdesc="Pulseaudio alsa support"
+	install_if="$pkgname alsa-lib"
+	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules
+	mv "$pkgdir"/usr/lib/pulse-$pkgver/modules/*alsa*.so \
+		"$subpkgdir"/usr/lib/pulse-$pkgver/modules/
+}
+
+utils() {
+	pkgdesc="Pulseaudio utilities"
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/pa* \
+		"$subpkgdir"/usr/bin/
+}
+
+jack() {
+	pkgdesc="Pulseaudio jack support"
+	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules
+	mv "$pkgdir"/usr/lib/pulse-$pkgver/modules/*jack*.so \
+		"$subpkgdir"/usr/lib/pulse-$pkgver/modules/
+}
+
+zeroconf() {
+	pkgdesc="Pulseaudio zeroconf support"
+	depends="avahi"
+
+	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules
+	mv "$pkgdir"/usr/lib/pulse-$pkgver/modules/*avahi*.so \
+		"$pkgdir"/usr/lib/pulse-$pkgver/modules/*zeroconf*.so \
+		"$pkgdir"/usr/lib/pulse-$pkgver/modules/*raop*.so \
+		"$subpkgdir"/usr/lib/pulse-$pkgver/modules/
+}
+
+bashcomp() {
+	depends=""
+	pkgdesc="Bash completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+	install -dm755 "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/bash-completion "$subpkgdir"/usr/share
+}
+
+zshcomp() {
+	depends=""
+	pkgdesc="Zsh completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+	install -dm755 "$subpkgdir"/usr/share
+	mv "$pkgdir"/usr/share/zsh "$subpkgdir"/usr/share
+}
+
+equalizer() {
+	pkgdesc="Equalizer for $pkgname"
+	depends="pulseaudio=$pkgver-r$pkgrel py3-qt5 py3-sip py3-dbus"
+	mkdir -p "$subpkgdir"/usr/lib/pulse-$pkgver/modules "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/lib/pulse-$pkgver/modules/module-equalizer-sink.so \
+		"$subpkgdir"/usr/lib/pulse-$pkgver/modules/
+	mv "$pkgdir"/usr/bin/qpaeq \
+		"$subpkgdir"/usr/bin/
+}
+
+sha512sums="d445b8ccd43029a0ca0e456fc9291a79d3434d6496ead7eb329ab348d5249235e8bde6cf2be68765d8f761452dbe1486fb10c739e40b1e67ed75787bbd24ac0c  pulseaudio-13.0.tar.xz
+126b66e8fd3e0b231beed987acf0f1aecb8a9da1c4d4591eb65a5d8d3e0561bd6b3652e2c3dc079350be4219df48a446a58c4539f7275edba941db846837baae  link-libintl.patch
+f45f4c9ddc75ff6a3ef42cc916bc11615b74fa1214502455d13a05c90acd3dcab652681bab1f768f7f02a863226a717bd63585c3405a9f58db40470b293d61d3  python3.patch
+34fe54ece5df60ce63a7955cd828a2716670fef71f40960698ae5518fdaf9cd599f4d8f8852e2c88d715600a9ad06a38984415e5eb320071012e5eb6e5c1b8b1  pulseaudio.initd
+75b54581591519d63a3362b155c0f9b0501a60763ab394693a456c44d0216138cf3a40bdd0f7442028663bc045e9ffee286f8f8eaf2ee3bb17379b43615fee0e  pulseaudio.confd
+0493b75e0dcfa4a48c68a394c8a0aa4fc395803e572eff90ac3234da8e87da4b8f5dc2d3ed68322d4565364e7c12fc9eeea07aff9dc9a46d587135302bba92bd  define-tunnel_sink-for-module-tunnel-sink.patch"

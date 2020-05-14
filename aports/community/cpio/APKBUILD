@@ -1,0 +1,53 @@
+# Contributor: Stuart Cardall <developer@it-offshore.co.uk>
+# Maintainer: Stuart Cardall <developer@it-offshore.co.uk>
+pkgname=cpio
+pkgver=2.13
+pkgrel=0
+pkgdesc="A tool to copy files into or out of a cpio or tar archive"
+url="https://www.gnu.org/software/cpio"
+arch="all"
+license="GPL"
+checkdepends="autoconf"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.bz2::http://ftp.snt.utwente.nl/pub/software/gnu/cpio/$pkgname-$pkgver.tar.bz2"
+
+# secfixes:
+#   2.13-r0:
+#     - CVE-2015-1197
+#     - CVE-2019-14866
+#   2.12-r3:
+#     - CVE-2016-2037
+
+builddir="$srcdir"/$pkgname-$pkgver
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--enable-largefile \
+		--disable-mt \
+		--disable-rpath \
+		--disable-nls
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	rm -f "$pkgdir"/usr/lib/charset.alias
+	rm -f "$pkgdir"/usr/libexec/rmt # part of the tar pkg
+	rm "$pkgdir"/usr/share/man/*/rmt.*
+}
+
+sha512sums="459398e69f7f48201c04d1080218c50f75edcf114ffcbb236644ff6fcade5fcc566929bdab2ebe9be5314828d6902e43b348a8adf28351df978c8989590e93a3  cpio-2.13.tar.bz2"

@@ -1,0 +1,102 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jose-Luis Rivas <ghostbar@riseup.net>
+#
+# secfixes:
+#   13.11.0-r0:
+#     - CVE-2019-15604
+#     - CVE-2019-15605
+#     - CVE-2019-15606
+#   11.10.1-r0:
+#     - CVE-2019-5737
+#   11.3.0-r0:
+#     - CVE-2018-12121
+#     - CVE-2018-12122
+#     - CVE-2018-12123
+#     - CVE-2018-0735
+#     - CVE-2018-0734
+#   9.10.0-r0:
+#     - CVE-2018-7158
+#     - CVE-2018-7159
+#     - CVE-2018-7160
+#   9.2.1-r0:
+#     - CVE-2017-15896
+#     - CVE-2017-15897
+#
+pkgname=nodejs-current
+# The current stable version, i.e. non-LTS.
+pkgver=14.2.0
+pkgrel=0
+pkgdesc="JavaScript runtime built on V8 engine - current stable version"
+url="https://nodejs.org/"
+arch="all !mips64 !mips64el"
+license="MIT"
+depends="ca-certificates"
+depends_dev="libuv"
+makedepends="
+	brotli-dev
+	c-ares-dev
+	libuv-dev
+	linux-headers
+	nghttp2-dev
+	openssl-dev
+	python3
+	zlib-dev
+	"
+subpackages="$pkgname-dev $pkgname-doc"
+provides="nodejs"
+replaces="nodejs nodejs-lts"  # nodejs-lts for backward compatibility
+source="https://nodejs.org/dist/v$pkgver/node-v$pkgver.tar.gz
+	dont-run-gyp-files-for-bundled-deps.patch
+	link-with-libatomic-on-mips32.patch
+	elf.patch
+	unbundle-uv.patch
+	"
+builddir="$srcdir/node-v$pkgver"
+
+prepare() {
+	default_prepare
+
+	# Remove bundled dependencies that we're not using.
+	rm -rf deps/brotli deps/cares deps/openssl deps/uv deps/zlib
+}
+
+build() {
+	# Add defines recommended in libuv readme.
+	export CFLAGS="$CFLAGS -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+	export CXXFLAGS="$CXXFLAGS -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64"
+
+	case "$CARCH" in
+	mips*) _carchflags="--with-mips-arch-variant=r1 --with-mips-float-abi=soft";;
+	esac
+
+	./configure --prefix=/usr \
+		$_carchflags \
+		--shared-brotli \
+		--shared-zlib \
+		--shared-libuv \
+		--shared-openssl \
+		--shared-cares \
+		--shared-nghttp2 \
+		--without-npm \
+		--openssl-use-def-ca-store
+
+	make BUILDTYPE=Release
+}
+
+# TODO Run provided test suite.
+check() {
+	cd "$builddir"/out/Release
+
+	./node -e 'console.log("Hello, world!")'
+	./node -e "require('assert').equal(process.versions.node, '$pkgver')"
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="a13fe3cc94a14b3d2a6fcb8511e62e613b8467da7d53915e6454ca56012bb9c143e67730507a92cb1bb54ff5c2e1f388adaf220828a8246cddc5c08d8642c3ef  node-v14.2.0.tar.gz
+940cc90aaa77a531cde13e31918a9978f9478936c3851038bcdf2869e64de03ce84dec5a46519469a90a8ba2853226825452d23d9347752abdbe04e944c083eb  dont-run-gyp-files-for-bundled-deps.patch
+65df7eeadbdfc015185260c0e24f3206714e4d2aacceef742d078a4f8bae386b2867e0f7f3b8c2eac47180cb10a8e14b71a36a23bb74ed6a95eecbaf76897e0c  link-with-libatomic-on-mips32.patch
+ace818285ff0b868f17be64db7c7b77b314ba370fda6bac640d56bf18322a54fa015206a3e1adefa1d78ef66b597eebf10c28d6549005cd7e58f60a37c38b741  elf.patch
+6b06f819a026999e3a01bee09401004376e8c1fe19541a6f508557e73fbbb5b9d433cf8130a99230c7d04513715dff898f6004809e1ce7d0c01287312e468a5a  unbundle-uv.patch"

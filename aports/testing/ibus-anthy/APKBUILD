@@ -1,0 +1,32 @@
+# Maintainer: Drew DeVault <sir@cmpwn.com>
+pkgname=ibus-anthy
+pkgver=1.5.11
+pkgrel=2
+pkgdesc="Japanese input method Anthy IMEngine for IBus Framework"
+url="https://github.com/ibus/ibus-anthy"
+arch="all !s390x !mips !mips64" # ibus needs librsvg which isn't available on s390x
+license="GPL-2.0-only"
+depends="ibus anthy py3-gobject3 gtk-update-icon-cache"
+makedepends="
+	m4 automake autoconf intltool gobject-introspection
+	gobject-introspection-dev ibus-dev anthy-dev
+	py3-pytest
+"
+source="$pkgname-$pkgver.tar.gz::https://github.com/ibus/ibus-anthy/archive/$pkgver.tar.gz"
+subpackages="$pkgname-lang"
+# anthy tests require a running X server
+options="!check"
+
+build() {
+	./autogen.sh \
+		--prefix=/usr \
+		--libexec=/usr/lib/ibus
+	gettextize -f
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="ffdcdecb7c61afe1d52352935144f8b0af7fc0e22efce7b91b60c6c2061bc998362336a41c246887f604126e6bba2b215dbec771636926a9902ec5f761b918b9  ibus-anthy-1.5.11.tar.gz"

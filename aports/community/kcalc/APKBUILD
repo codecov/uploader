@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kcalc
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://kde.org/applications/utilities/org.kde.kcalc"
+pkgdesc="Scientific Calculator"
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev kcrash-dev kconfig-dev kconfigwidgets-dev kdoctools-dev kguiaddons-dev ki18n-dev kinit-dev knotifications-dev kxmlgui-dev gmp-dev mpfr-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kcalc-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="2a2b3a29b104abedc1b422a7654706fc482c316845e31ffe09d778c975ab2def26c0d6525a3f35dda0a2b3e677d359748765d2886d0f51ff0f1c8adb5ce81b36  kcalc-20.04.0.tar.xz"

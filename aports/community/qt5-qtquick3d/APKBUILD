@@ -1,0 +1,40 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtquick3d
+pkgver=5.14.2
+pkgrel=0
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+url="https://www.qt.io/developers/"
+license="LGPL-2.1-only AND LGPL-3.0-only AND GPL-3.0-only AND Qt-GPL-exception-1.0"
+pkgdesc="Qt module and API for defining 3D content in Qt Quick"
+makedepends="qt5-qtbase-dev qt5-qtdeclarative-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+builddir="$srcdir/qtquick3d-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="http://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtquick3d-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+sha512sums="213d0ad71efe80fbeffc54741dd06df494b9ba79343a8306955b07baa679b3ba60e147623ebad547b1547f896395ace35509d595b4f80af8923e3ff1296682fd  qtquick3d-everywhere-src-5.14.2.tar.xz"

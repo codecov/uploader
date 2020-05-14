@@ -1,0 +1,73 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=pcre2
+pkgver=10.35
+pkgrel=0
+pkgdesc="Perl-compatible regular expression library"
+url="https://pcre.org/"
+arch="all"
+license="BSD-3-Clause"
+depends_dev="libedit-dev zlib-dev"
+makedepends="$depends_dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-tools
+	libpcre2-16:_libpcre libpcre2-32:_libpcre"
+source="https://ftp.pcre.org/pub/pcre/pcre2-$pkgver.tar.gz"
+
+case "$CARCH" in
+	s390x|armhf) _enable_jit="";; # https://bugs.exim.org/show_bug.cgi?id=2468
+	*) _enable_jit="--enable-jit";;
+esac
+
+build() {
+	case "$CARCH" in
+	mips64*) export CPPFLAGS="$CPPFLAGS -DSLJIT_IS_FPU_AVAILABLE=0";;
+	mips*) export CPPFLAGS="$CPPFLAGS -DSLJIT_IS_FPU_AVAILABLE=0 -DSLJIT_MIPS_R1=1";;
+	esac
+
+	# Note: Forced -O3 is recommended (needed?) for Julia.
+	./configure \
+		CFLAGS="$CFLAGS -O3" \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--docdir=/usr/share/doc/$pkgname-$pkgver \
+		--htmldir=/usr/share/doc/$pkgname-$pkgver/html \
+		--enable-pcre2-16 \
+		--enable-pcre2-32 \
+		--enable-pcre2grep-libz \
+		--enable-pcre2test-libedit \
+		--with-match-limit-depth=8192 \
+		$_enable_jit
+	make
+}
+
+# Note: RunTest and pcre2_jit_test generates some binaries in .libs that needs
+# to disable MPROTECT on grsecurity kernel. That's why it's so complicated...
+check() {
+	./RunTest
+
+	if [ -n "$_enable_jit" ]; then
+		./pcre2_jit_test
+	fi
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+_libpcre() {
+	local bits="${subpkgname##*-}"
+	pkgdesc="PCRE2 with $bits bit character support"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/libpcre2-$bits.so* "$subpkgdir"/usr/lib/
+}
+
+tools() {
+	pkgdesc="Auxiliary utilities for PCRE2"
+
+	mkdir -p "$subpkgdir"/usr/
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
+}
+
+sha512sums="f9386de9211919da68ad0882dbfb72b344306280b3c4515f496cff4e3ff5c11e29fb71539a357a43a71ef668a742a54cc327a1dc3a00c767fbd0264933beecee  pcre2-10.35.tar.gz"

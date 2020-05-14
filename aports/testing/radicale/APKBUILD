@@ -1,0 +1,39 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=radicale
+pkgver=2.1.11
+pkgrel=2
+pkgdesc="A simple CalDAV (calendar) and CardDAV (contact) server"
+url="http://radicale.org"
+arch="noarch"
+license="GPL-3.0-or-later"
+depends="python3 py3-vobject py3-dateutil py3-setuptools"
+pkgusers="radicale"
+pkggroups="radicale"
+install="$pkgname.pre-install"
+options="!check"  # no test suite
+source="https://files.pythonhosted.org/packages/source/R/Radicale/Radicale-$pkgver.tar.gz
+	$pkgname.initd"
+subpackages="$pkgname-openrc"
+builddir="$srcdir/Radicale-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --skip-build --prefix=/usr \
+		--root="$pkgdir"
+
+	install -d "$pkgdir"/etc/radicale
+	install -m640 -g radicale config "$pkgdir"/etc/radicale/
+	install -m640 -g radicale logging "$pkgdir"/etc/radicale/
+
+	install -d -o radicale "$pkgdir"/var/lib/radicale \
+		"$pkgdir"/var/log/radicale
+	install -Dm755 "$srcdir"/radicale.initd \
+		"$pkgdir"/etc/init.d/radicale
+}
+
+sha512sums="e85f12664d3db6b911dd534eaddd15c498ca4f641cc15523644300aca8b1ef3f6fd4d9645857235502f03a7903111905537b04f9a6fdbde1a60fbb720d377733  Radicale-2.1.11.tar.gz
+9856e5dbea45a6d2de592191fb97c310453a839e386a81c2ba0f28a9fb6005d8e8284b0ff59e02950bac3f5f1107aadb109baffc6c9445885792b50af959c740  radicale.initd"

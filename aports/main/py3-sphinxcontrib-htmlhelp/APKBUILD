@@ -1,0 +1,23 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=py3-sphinxcontrib-htmlhelp
+_pyname=sphinxcontrib-htmlhelp
+pkgver=1.0.3
+pkgrel=0
+pkgdesc="Sphinx htmlhelp extension"
+url="https://pypi.python.org/pypi/sphinxcontrib-htmlhelp"
+arch="noarch"
+license="BSD-2-Clause"
+depends="python3"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/${_pyname%${_pyname#?}}/$_pyname/$_pyname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pyname-$pkgver
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="f37542c5789340bb26c41b84512e08998e4ef45ff2eb0fdb0e10f585cff27a145d5821b8eb3766d009e2b5a38c3d7efb127ab898982e1b6fd1d4ff7e26907db4  sphinxcontrib-htmlhelp-1.0.3.tar.gz"

@@ -1,0 +1,46 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=hy
+pkgver=0.18.0
+pkgrel=2
+pkgdesc="Dialect of Lisp that's embedded in Python"
+url="http://hylang.org/"
+arch="noarch"
+license="MIT"
+depends="python3 py3-funcparserlib py3-astor py3-rply py3-colorama"
+makedepends="py3-setuptools py3-sphinx py3-sphinx_rtd_theme"
+checkdepends="python3-tests py3-pytest py3-pytest-runner py3-tox"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/hylang/hy/archive/$pkgver.tar.gz"
+
+# By default setup.py tries to determine the hy version using
+# git-describe(1). Unfourtunatly, this will return the version
+# of the aports repository on Alpine.
+export HY_VERSION="$pkgver"
+
+build() {
+	python3 setup.py build
+	make -C docs/ man
+}
+
+check() {
+	# Ignore tests requiring binaries to be installed
+	py.test-3 --ignore tests/test_bin.py \
+		--ignore tests/test_hy2py.py
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+
+	local man
+	for man in docs/_build/man/*.?; do
+		install -Dm644 "$man" \
+			"$pkgdir"/usr/share/man/man${man##*.}/${man##*/}
+	done
+
+	# This file is only needed for setuptools-produced source
+	# distributions <https://github.com/hylang/hy/commit/bd7b8bf5e19e>.
+	rm -rf "$pkgdir"/usr/get_version
+}
+
+sha512sums="ff578eb6ca70f82492b37bfcc41167e8f8d50337bbdd6b049edb654163b60156a65933aa723ea357fee0f84dc25837d70bd00251760fa2b00f599088e592d97c  hy-0.18.0.tar.gz"

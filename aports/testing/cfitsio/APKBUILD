@@ -1,0 +1,51 @@
+# Contributor: Holger Jaekel <holger.jaekel@gmx.de>
+# Maintainer: Holger Jaekel <holger.jaekel@gmx.de>
+pkgname=cfitsio
+pkgver=3.48
+pkgrel=0
+pkgdesc="A library reading and writing data files in Flexible Image Transport System data format"
+url="https://heasarc.gsfc.nasa.gov/fitsio/"
+arch="all"
+license="custom"
+makedepends="
+	bzip2-dev
+	curl-dev
+	gfortran
+	"
+subpackages="
+	$pkgname-static
+	$pkgname-dev
+	"
+source="https://heasarc.gsfc.nasa.gov/FTP/software/fitsio/c/cfitsio-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--with-bzip2 \
+		--enable-reentrant \
+		--enable-sse2 \
+		--enable-ssse3 \
+		--enable-hera
+	make shared
+	make utils
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	mkdir -p "$pkgdir"/usr/share/licenses/cfitsio/
+	cp License.txt "$pkgdir"/usr/share/licenses/cfitsio/
+
+	# delete test/demo programs
+	rm "$pkgdir"/usr/bin/testprog
+	rm "$pkgdir"/usr/bin/cookbook
+
+	# avoid conflicts with smem
+	rm "$pkgdir"/usr/bin/smem
+}
+
+check() {
+	LD_LIBRARY_PATH=. ./testprog > testprog.lis
+	[[ -z $(diff testprog.lis testprog.out) ]]
+	[[ -z $(cmp testprog.fit testprog.std) ]]
+}
+sha512sums="08a13931726b0ee15bd4e2ad6dd4debb8268f3b0bc33adadec5c6a29295dd536bcccb3cc949721c6cebac6f43b6118e5e38332ac0ba8a07a43553416d8debae5  cfitsio-3.48.tar.gz"

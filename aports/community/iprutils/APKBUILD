@@ -1,0 +1,53 @@
+# Maintainer: Breno Leitao <breno.leitao@gmail.com>
+pkgname=iprutils
+pkgver=2.4.16
+pkgrel=2
+pkgdesc="user space tools required by the ipr device driver"
+url="https://github.com/bjking1/iprutils"
+arch="ppc64le"
+license="CPL-1.0"
+makedepends="autoconf automake libtool linux-headers m4 ncurses-dev zlib-dev"
+subpackages="$pkgname-doc $pkgname-bash-completion:bashcomp:noarch"
+_pkgver=${pkgver//./-}
+source="$pkgname-$pkgver.tar.gz::https://github.com/bjking1/iprutils/archive/rel-$_pkgver.tar.gz"
+
+builddir="$srcdir"/iprutils-rel-$_pkgver
+
+prepare() {
+	default_prepare
+	./bootstrap.sh
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--without-systemd
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/share/bash-completion
+	mv "$pkgdir"/etc/bash_completion.d "$pkgdir"/usr/share/bash-completion/completions
+}
+
+bashcomp() {
+	depends=""
+	pkgdesk="Bash completions for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	amove usr/share/bash-completion/completions
+}
+
+sha512sums="8d4d6adbdd91e95842415b1595131ffe029052a816e24dcd13538ec898cf720593411b3ce653ba8586c37ef377677881169c01a299d0a6bf3771e0975a040306  iprutils-2.4.16.tar.gz"

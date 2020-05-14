@@ -1,0 +1,27 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer:
+pkgname=py3-musicbrainzngs
+_pkgname=musicbrainzngs
+pkgver=0.7.1
+pkgrel=0
+pkgdesc="Bindings for the MusicBrainz NGS service"
+url="https://github.com/alastair/python-musicbrainzngs"
+arch="noarch"
+license="BSD-2-Clause AND ISC"
+depends="python3"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/m/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+replaces="py-musicbrainzngs" # Backwards compatibility
+provides="py-musicbrainzngs=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="df4a8aa184831301adae66f00638667a4a1c7124f61a7e00ef9051c33e35f2acf7aaf304ac4fcdf113566abd3164abe924f2cee91ca2015343b5bae308b91b9d  musicbrainzngs-0.7.1.tar.gz"

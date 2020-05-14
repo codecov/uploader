@@ -1,0 +1,34 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=perl-net-netmask
+_realname=Net-Netmask
+pkgver=1.9104
+pkgrel=0
+pkgdesc="Perl extension to parse, manipulate, and lookup IP network blocks"
+options="!check" # Requires perl-test-harness-switches
+url="https://metacpan.org/release/Net-Netmask"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+depends="perl"
+makedepends="perl-dev"
+checkdepends="perl-test2-suite perl-test-harness"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/J/JM/JMASLAK/Net-Netmask-$pkgver.tar.gz"
+
+builddir="$srcdir/$_realname-$pkgver"
+
+build() {
+	PERL_MM_USE_DEFAULT=1 perl Makefile.PL INSTALLDIRS=vendor
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+sha512sums="4bec48c8ba8b19baaa5cbfc6c17a539a663f3da8899f6dbdfbf455f7c6b8f00f102ff841e47656e83571cc44cec3d2665f5f29c827448b76f9424faafac8d1a3  Net-Netmask-1.9104.tar.gz"

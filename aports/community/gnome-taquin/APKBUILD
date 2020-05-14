@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-taquin
+pkgver=3.36.2
+pkgrel=0
+arch="all !s390x !mips !mips64" # Blocked by librsvg -> rust
+url="https://wiki.gnome.org/Apps/Taquin"
+pkgdesc="Move tiles so that they reach their places"
+license="GPL-3.0-or-later AND CC-BY-SA-3.0"
+makedepends="meson ninja itstool vala gtk+3.0-dev librsvg-dev gsound-dev"
+checkdepends="appstream-glib desktop-file-utils"
+source="https://download.gnome.org/sources/gnome-taquin/${pkgver%.*}/gnome-taquin-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="d51219f422804e1aaa64e52fdcc68b6bef44bcf3f23bbc694f88043bba4468e15ba79663d83235ebe00a33fa54087cb454c0ed5c37389618bde680f10c595fb4  gnome-taquin-3.36.2.tar.xz"

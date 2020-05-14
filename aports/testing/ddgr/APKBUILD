@@ -1,0 +1,51 @@
+# Contributor: dai9ah <dai9ah@protonmail.com>
+# Maintainer: dai9ah <dai9ah@protonmail.com>
+pkgname=ddgr
+pkgver=1.8.1
+pkgrel=0
+pkgdesc="DuckDuckGo from the terminal"
+url="https://github.com/jarun/ddgr"
+arch="noarch"
+license="GPL-3.0-or-later"
+depends="python3"
+subpackages="$pkgname-doc
+	$pkgname-bash-completion:bashcomp:noarch
+	$pkgname-fish-completion:fishcomp:noarch
+	$pkgname-zsh-completion:zshcomp:noarch
+	"
+source="$pkgname-$pkgver.tar.gz::https://github.com/jarun/ddgr/archive/v$pkgver.tar.gz"
+options="!check" # no test suite
+
+package() {
+	make DESTDIR="$pkgdir" PREFIX=/usr install
+}
+
+bashcomp() {
+	pkgdesc="Bash completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel bash-completion"
+
+	mkdir -p "$subpkgdir"/usr/share/bash-completion/completions/
+	install -Dm644 "$builddir"/auto-completion/bash/* \
+		"$subpkgdir"/usr/share/bash-completion/completions/
+}
+
+fishcomp() {
+	pkgdesc="Fish completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel fish"
+
+	mkdir -p "$subpkgdir"/usr/share/fish/completions/
+	install -Dm644 "$builddir"/auto-completion/fish/* \
+		"$subpkgdir"/usr/share/fish/completions/
+}
+
+zshcomp() {
+	pkgdesc="Zsh completion for $pkgname"
+	install_if="$pkgname=$pkgver-r$pkgrel zsh"
+
+	mkdir -p "$subpkgdir"/usr/share/zsh/site-functions
+	install -Dm644 "$builddir"/auto-completion/zsh/* \
+		"$subpkgdir"/usr/share/zsh/site-functions/
+
+}
+
+sha512sums="60fe045674f0d6e4b77e067c18fe26a59e8c1c2f139a773e5d4d5d308eb99473ef7df76c62995eddddd030758c63e9417d5d55e9448346f824b8391c99861c2f  ddgr-1.8.1.tar.gz"

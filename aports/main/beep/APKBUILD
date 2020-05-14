@@ -1,0 +1,22 @@
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Leonardo Arena <rnalrd@alpinelinux.org>
+pkgname=beep
+pkgver=1.4.9
+pkgrel=0
+pkgdesc="A terminal bell"
+url="https://github.com/spkr-beep/beep"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="linux-headers"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/spkr-beep/beep/archive/v$pkgver.tar.gz"
+
+build() {
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="46e6066cb4d9ad4a0c55a03bf5a2163426648ce3831fe1f7bafa2f02d0e407b50c52e58cc2b123c346df96e92b73d2458b473c3fb001d9a0d1470b7cf38cc35b  beep-1.4.9.tar.gz"

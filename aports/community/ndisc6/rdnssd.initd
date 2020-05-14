@@ -1,0 +1,6 @@
+#!/sbin/openrc-run
+
+supervisor=supervise-daemon
+command=/usr/sbin/rdnssd
+command_args="-H /etc/rdnssd/resolvconf"
+command_args_foreground="-f"

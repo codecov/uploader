@@ -1,0 +1,39 @@
+# Contributor: Danct12 <danct12@disroot.org>
+# Maintainer: Danct12 <danct12@disroot.org>
+pkgname=wayfire
+pkgver=0.4.0
+pkgrel=0
+pkgdesc="Compiz-clone Wayland compositor"
+url="https://wayfire.org"
+arch="all"
+license="MIT"
+install="$pkgname.post-install"
+makedepends="
+	meson
+	wlroots-dev
+	glm-dev
+	wf-config-dev
+	cairo-dev
+	libexecinfo-dev
+	libxml2-dev
+	"
+options="!check" # no testsuite
+subpackages="$pkgname-dev"
+source="https://github.com/WayfireWM/wayfire/releases/download/$pkgver/wayfire-$pkgver.tar.xz"
+
+build() {
+	meson build \
+		--prefix=/usr \
+		--buildtype=plain \
+		-Duse_system_wlroots=enabled \
+		-Duse_system_wfconfig=enabled
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C build install
+
+	install -Dm644 wayfire.ini "$pkgdir"/usr/share/wayfire/wayfire.ini.default
+	install -Dm644 wayfire.desktop "$pkgdir"/usr/share/wayland-sessions/wayfire.desktop
+}
+
+sha512sums="e96cdb90ce36c005476e08608683983aa167e58aea80fcfd3b24ab0836ec4aa50fb5a7eeb0872a1b1014e3073ed826e1c83d3146b39d3cdb2a8b3a0895155649  wayfire-0.4.0.tar.xz"

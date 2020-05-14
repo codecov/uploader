@@ -1,0 +1,36 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libmng
+pkgver=2.0.3
+pkgrel=1
+pkgdesc="A collection of routines used to create and manipulate MNG format graphics files"
+url="http://www.libmng.com/"
+arch="all"
+license="custom"
+depends_dev="libjpeg-turbo-dev"
+makedepends="$depends_dev zlib-dev lcms2-dev autoconf automake libtool"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://downloads.sourceforge.net/sourceforge/libmng/libmng-$pkgver.tar.gz"
+
+prepare() {
+	autoreconf --force --install
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--enable-shared \
+		--disable-static \
+		--with-zlib \
+		--with-jpeg \
+		--with-lcms2
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	install -D -m644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
+
+sha512sums="dc4035132fb85bee87785a4047c6727943fcbc10403bb24f674a600901ca7a57f589e7c8c41c7df153e3eeab85d032865126dd433a5fa990272ac8b6daf9314c  libmng-2.0.3.tar.gz"

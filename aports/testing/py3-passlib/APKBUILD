@@ -1,0 +1,35 @@
+# Contributor:
+# Maintainer:
+pkgname=py3-passlib
+_pkgname=passlib
+pkgver=1.7.2
+pkgrel=0
+pkgdesc="A python hashing library for over 30 schemes"
+url="https://pypi.python.org/pypi/passlib"
+arch="noarch"
+license="BSD-2-Clause"
+depends="python3"
+makedepends="py3-setuptools"
+checkdepends="py3-nose"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz
+	skip-bsdi_crypt-test.patch
+	"
+builddir="$srcdir"/passlib-$pkgver
+
+replaces="py-passlib" # Backwards compatibility
+provides="py-passlib=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+check() {
+	nosetests --tests passlib.tests
+}
+
+sha512sums="1ea0654b177b5ab2e1a7e5c3949642c34805ace6e4e4a0f82fafdb3f374edd99c667906ce598c335b668da049860648d5cbebb3e62d775898d5b0cb8cfc7bf53  passlib-1.7.2.tar.gz
+cdf085a94be88140dff421128bbeb9f4c05d13ae8c14ad80e7ab6d9edf2be19b0ad010eb18a5eccd3eefa679c4f634c6f98753571df72a1fc387343331fa8bae  skip-bsdi_crypt-test.patch"

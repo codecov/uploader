@@ -1,0 +1,40 @@
+# Contributor: TBK <alpine@jjtc.eu>
+# Maintainer: TBK <alpine@jjtc.eu>
+pkgname="jsonnet"
+pkgver="0.15.0"
+pkgrel=0
+pkgdesc="The data templating language"
+url="https://jsonnet.org/"
+arch="all"
+license="Apache-2.0"
+makedepends="cmake"
+checkdepends="bash gtest-dev"
+subpackages="$pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::https://github.com/google/jsonnet/archive/v$pkgver.tar.gz"
+
+build() {
+	if [ "$CBUILD" != "$CHOST" ]; then
+		CMAKE_CROSSOPTS="-DCMAKE_SYSTEM_NAME=Linux -DCMAKE_HOST_SYSTEM_NAME=Linux"
+	fi
+	cmake \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_STATIC_LIBS=OFF \
+		-DBUILD_SHARED_BINARIES=ON \
+		-DUSE_SYSTEM_GTEST=ON \
+		-DCMAKE_CXX_FLAGS="$CXXFLAGS" \
+		-DCMAKE_C_FLAGS="$CFLAGS" \
+		${CMAKE_CROSSOPTS} .
+	make
+}
+
+check() {
+	make test
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="b63c1bf82e4fc9ba3f1009ed4e4ba1010e3e7f81bd816a234e48d35607eae3cba95cab57813d35daa9f024e316bae5256340a6f8d6d884f9136cdbf062a2b351  jsonnet-0.15.0.tar.gz"

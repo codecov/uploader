@@ -1,0 +1,35 @@
+# Maintainer: Andy Postnikov <apostnikov@gmail.com>
+pkgname=py3-tabulate
+pkgver=0.8.7
+pkgrel=0
+pkgdesc="Pretty-print tabular data"
+url="https://bitbucket.org/astanin/python-tabulate"
+arch="noarch"
+license="MIT"
+depends="py3-setuptools py3-wcwidth"
+checkdepends="py3-nose"
+source="https://files.pythonhosted.org/packages/source/t/tabulate/tabulate-$pkgver.tar.gz"
+builddir="$srcdir/tabulate-$pkgver"
+
+replaces=py-tabulate # Backwards compatibility
+provides=py-tabulate=$pkgver-r$pkgrel # Backwards compatibility
+
+prepare() {
+	default_prepare
+	# fix interpreter invocation
+	sed -i 's/"python"/"python3"/g' test/test_cli.py
+}
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	PYTHONPATH="$builddir"/build/lib python3 setup.py test
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="963d12970227671fc80d26feacfafd37404034eba82778cee2450b8dbc7c723a7137209b601bc2adc13883543bff0d6b887ed2e7b91934a7f2ca4704ce5fd340  tabulate-0.8.7.tar.gz"

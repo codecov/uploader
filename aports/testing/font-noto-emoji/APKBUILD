@@ -1,0 +1,28 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Sören Tempel <soeren+alpine@soeren-tempel.net>
+pkgname=font-noto-emoji
+pkgver=0_git20191022
+_commit="018aa149d622a4fea11f01c61a7207079da301bc"
+pkgrel=0
+pkgdesc="Google Noto emoji fonts"
+url="https://www.google.com/get/noto/"
+arch="noarch !mips !mips64" # fails to build on mips
+license="OFL-1.1"
+makedepends="optipng py3-fonttools cairo-dev imagemagick
+	py3-setuptools bash nototools libpng-dev python3
+	pngquant"
+source="$pkgname-$pkgver.tar.gz::https://github.com/googlei18n/noto-emoji/archive/$_commit.tar.gz"
+options="!check" # No code to test
+builddir="$srcdir/noto-emoji-$_commit"
+
+build() {
+	make
+}
+
+package() {
+	mkdir -p "$pkgdir"/usr/share/fonts/noto
+	install -m644 NotoColorEmoji.ttf fonts/NotoEmoji-Regular.ttf \
+		"$pkgdir"/usr/share/fonts/noto
+}
+
+sha512sums="6c6c2f65aeca5d94d1b91799da58ce26ebb4da93d343e6264ab76e4b7eec723efdb856df47a13227ebca4dd6a5dc560fe8fe11a3a241fcb8541400227ea62321  font-noto-emoji-0_git20191022.tar.gz"

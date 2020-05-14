@@ -1,0 +1,50 @@
+# Contributor: Daniel Sabogal <dsabogalcc@gmail.com>
+# Maintainer:
+pkgname=octave
+pkgver=5.1.0
+pkgrel=1
+pkgdesc="A high-level language, primarily intended for numerical computations"
+url="https://www.gnu.org/software/octave/"
+arch="all !x86 !ppc64le !mips !mips64" # Tex dependencies aren't available for x86, openblas blocking on mips
+license="GPL-3.0-or-later"
+subpackages="$pkgname-doc"
+makedepends="autoconf automake libtool bison curl curl-dev fftw-dev fltk-dev fontconfig-dev
+	freetype-dev gfortran glu-dev gnuplot imagemagick-dev hdf5-dev
+	lapack-dev libsm-dev libltdl lcms2-dev openblas-dev pcre-dev perl pkgconf qt5-qtbase-dev
+	readline-dev texinfo zlib-dev texlive texlive-dvi"
+source="https://ftp.gnu.org/gnu/octave/octave-$pkgver.tar.gz
+	libinterp-deps.patch
+	abs.patch
+	"
+options="!check" # No test suite
+
+prepare() {
+	default_prepare
+
+	autoreconf -vif
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--infodir=/usr/share/info \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-shared \
+		--disable-static \
+		--with-qt
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir/" \
+		-C "$builddir" install
+	rm -rf "$pkgdir"/usr/lib/charset.alias
+}
+
+sha512sums="a842fb50c13f25e9d425fe9a2c71d9433d7e125747d2175efe0c9b2a780c799d9ce1ee085b5a13fbfedb7990b0ba5d11079d880ddb3bdb66782efc321390eebb  octave-5.1.0.tar.gz
+093b13ad457e290d746908a5de1855071b2cd27b4c08101826d32fcf63398e863c3b72bb81f19255a04a880a2bf49e3ced1141bf7d0044db1328c6f2c9492f66  libinterp-deps.patch
+bcd111f35baf2681da2b1ad1edbe956ee359c5fb0114797b27747fa78e6f118406bb7fb325c1fa03c18e29815d2d4b8d9a28faf72c1fbbec526e8fbaed0cb820  abs.patch"

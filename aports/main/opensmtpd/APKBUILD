@@ -1,0 +1,65 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Jonathan Curran <jonathan@curran.in>
+# Contributor: Shiz <hi@shiz.me>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+#
+# secfixes:
+#   6.6.2p1-r0:
+#     - CVE-2020-7247
+pkgname=opensmtpd
+pkgver=6.6.4p1
+pkgrel=1
+pkgdesc="Secure, reliable, lean, and easy-to configure SMTP server"
+url="https://www.opensmtpd.org/"
+arch="all"
+license="ISC"
+depends="!postfix ca-certificates"
+makedepends="automake autoconf libtool mandoc db-dev libasr-dev libevent-dev
+	fts-dev zlib-dev openssl-dev bison flex-dev"
+install="$pkgname.pre-install"
+subpackages="$pkgname-dbg $pkgname-doc"
+source="https://www.opensmtpd.org/archives/opensmtpd-$pkgver.tar.gz
+	smtpd.initd
+	aliases
+	autoconf-decl-checks.patch
+	smtpd.conf.patch
+	"
+options="suid !check"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc/smtpd \
+		--with-libssl=/usr/include/openssl \
+		--mandir=/usr/share/man \
+		--libexecdir=/usr/lib \
+		--with-path-mbox=/var/mail \
+		--with-table-db \
+		--with-user-queue=smtpq \
+		--with-group-queue=smtpq \
+		--with-user-smtpd=smtpd \
+		--with-path-socket=/run \
+		--with-libs="-lfts" \
+		--with-pie \
+		--with-path-CAfile=/etc/ssl/certs/ca-certificates.crt \
+		--with-mantype=doc
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" -C "$builddir" install
+
+	install -Dm755 "$srcdir"/smtpd.initd "$pkgdir"/etc/init.d/smtpd
+	install -Dm644 "$srcdir"/aliases "$pkgdir"/etc/smtpd/aliases
+
+	# Create compatibility symlinks for mailq, newaliases, makemap and sendmail.
+	local binary; for binary in mailq newaliases makemap sendmail; do
+		ln -s /usr/sbin/smtpctl "$pkgdir"/usr/sbin/$binary
+	done
+}
+
+sha512sums="267307c91f4fcf21624b0897dfb1f5638b77da7b8d9a02211d734ed2cc5bd39ea7542ae7f200255e2945518fbe7609a0e5aa4e5c6dcb8146014f08b3845c108b  opensmtpd-6.6.4p1.tar.gz
+d544d873e37a503f07808cf2fe0e14736b88401c1dfa08631c1ea49b7237733e2d0cbb3685e695854ae66227f129bb18e9d7e57cd617164017144d7ba00954eb  smtpd.initd
+51d47b34eb3d728daa45f29d6434cc75db28dfa69b6fb3ecd873121df85b296a2d2c81016d765a07778aa26a496e4b29c09a30b82678cf42596a536734b5deca  aliases
+37104cc605569f142ceffa902f200e8a7e9e1114ebe5394ed1eac0ed6ce25454e1610270921c45246de8396eee04b7c8ab5a112a231036a6ef14e7e229b264e3  autoconf-decl-checks.patch
+14ff3d4f56aee3a31551ea535c4a5bf9b760f0f11bc269225d7b176d5031294716133cbf4555a92e76cc6e33de89454435562672ddaf1ab365e61085eb1e4d53  smtpd.conf.patch"

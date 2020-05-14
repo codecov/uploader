@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=cantor
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf !mips !mips64"
+url="https://edu.kde.org/cantor/"
+pkgdesc="KDE Frontend to Mathematical Software "
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtsvg-dev qt5-qtxmlpatterns-dev kconfig-dev kcrash-dev kcompletion-dev kdoctools-dev knewstuff-dev kiconthemes-dev ktexteditor-dev kcoreaddons-dev karchive-dev kparts-dev syntax-highlighting-dev ktextwidgets-dev kio-dev kxmlgui-dev ki18n-dev poppler-qt5-dev kpty-dev analitza-dev python3-dev discount-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/cantor-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="e2c4bc617cbb14b79ac016258948adc5837c3cd422320ec61956664957fb20c9b72bf94ec2b8f635a541bd0a7314a2a918a377401f275c384b40480e7fbe2483  cantor-20.04.0.tar.xz"

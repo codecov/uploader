@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=poxml
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf"
+url="https://www.kde.org/applications/development/"
+pkgdesc="Translates DocBook XML files using gettext po files"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kdoctools-dev gettext-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/poxml-$pkgver.tar.xz"
+subpackages="$pkgname-doc"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="3a37e632c72a9f70d9c5405da1e1001f7c2f0f92c31f6529ade58557bf71fc9c46f3211ab9e81f24d9e0fc4d75b5ab263ce4faf4a5e6dc82b9c61ea1d0dff30e  poxml-20.04.0.tar.xz"

@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=knotifications
+pkgver=5.70.0
+pkgrel=0
+pkgdesc="Abstraction for system notifications"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://community.kde.org/Frameworks"
+license="LGPL-2.1-only OR LGPL-3.0-only"
+depends_dev="qt5-qtbase-dev qt5-qtspeech-dev qt5-qtx11extras-dev kconfig-dev kcoreaddons-dev kwindowsystem-dev phonon-dev libcanberra-dev"
+makedepends="$depends_dev extra-cmake-modules qt5-qttools-dev doxygen"
+source="https://download.kde.org/stable/frameworks/${pkgver%.*}/knotifications-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+options="!check" # Fails due to requiring running dbus-daemon
+
+build() {
+	cmake -B "$builddir"/build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib \
+		-DBUILD_QCH=ON
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+sha512sums="c17502641b1f447a09c09c41e416e1a1a57f568016e483b38be1bf92c7cadf0847284068893fc6a8dc149474c19e9467271dad8c73bd7a1ef32077a0d8ba1766  knotifications-5.70.0.tar.xz"

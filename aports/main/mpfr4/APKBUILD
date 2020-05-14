@@ -1,0 +1,49 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=mpfr4
+pkgver=4.0.2
+pkgrel=4
+pkgdesc="multiple-precision floating-point library"
+url="https://www.mpfr.org/"
+arch="all"
+license="LGPL-3.0-or-later"
+makedepends_build="texinfo"
+makedepends_host="gmp-dev"
+makedepends="$makedepends_build $makedepends_host"
+
+# mpfr is special because we cannot break ABI without first rebuild gcc.
+# so we need be able to have multiple version of mpfr installed in parallel
+# we also need be able to calculate bulid order from global scope, otherwise
+# it is not possible to calculate build order til after package is built.
+# Therfore we call -dev package mpfr-dev instead of mpfr4-dev with a
+# provides=mpfr-dev
+subpackages="$pkgname-doc mpfr-dev:dev"
+
+source="https://www.mpfr.org/mpfr-$pkgver/mpfr-$pkgver.tar.xz"
+builddir="$srcdir/mpfr-$pkgver"
+
+provides="mpfr=$pkgver-r$pkgrel"
+replaces="mpfr"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--with-sysroot="$CBUILDROOT" \
+		--prefix=/usr \
+		--enable-shared
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+dev() {
+	default_dev
+}
+
+sha512sums="d583555d08863bf36c89b289ae26bae353d9a31f08ee3894520992d2c26e5683c4c9c193d7ad139632f71c0a476d85ea76182702a98bf08dde7b6f65a54f8b88  mpfr-4.0.2.tar.xz"

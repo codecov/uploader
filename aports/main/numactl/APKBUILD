@@ -1,0 +1,57 @@
+# Maintainer: Daniel Sabogal <dsabogalcc@gmail.com>
+pkgname=numactl
+pkgver=2.0.13
+pkgrel=0
+pkgdesc="Simple NUMA policy support"
+url="https://github.com/numactl/numactl"
+# ARM lacks the __NR_migrate_pages syscall
+arch="all !armhf !armv7"
+license="LGPL-2.1-only"
+makedepends="autoconf automake libtool linux-headers"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-tools"
+source="numactl-$pkgver.tar.gz::https://github.com/numactl/numactl/archive/v$pkgver.tar.gz
+	musl.patch"
+
+case "$CARCH" in
+	s390x)  options="!check";; # FAIL: distance test
+	mips*)  options="!check";; # XXX: numa support not enabled on builder
+esac
+
+prepare() {
+	default_prepare
+
+	cd "$builddir"
+	./autogen.sh
+}
+
+check() {
+	cd "$builddir"
+	make check VERBOSE=1 TESTS='test/distance test/nodemap test/tbitmap'
+}
+
+build() {
+	cd "$builddir"
+	./configure \
+		--prefix=/usr \
+		--mandir=/usr/share/man
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+
+	# provided by linux man-pages
+	rm -r "$pkgdir"/usr/share/man/man2
+}
+
+tools() {
+	pkgdesc="NUMA policy control tools"
+	license="GPL-2.0-only"
+
+	mkdir -p "$subpkgdir"/usr
+	mv "$pkgdir"/usr/bin "$subpkgdir"/usr
+}
+
+sha512sums="328e2c9ff102f3402f02aac0c94a06c3d352a026ffb6dc31edb4dca029a530719f6dd9903163f6c2eef1a24f6aac10c2a6a52cefcdf7cf0bd9e3844ac85096d8  numactl-2.0.13.tar.gz
+c24affa5a8a8ea83d7f0ee384dc0629e17a5c4201357132f770f894ad4236772116d96d8389d54fb99095af40d1ccbffc3170b5fb9cc88cfca39179f50bee9c9  musl.patch"

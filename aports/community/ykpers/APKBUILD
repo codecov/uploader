@@ -1,0 +1,39 @@
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ykpers
+pkgver=1.20.0
+pkgrel=0
+pkgdesc="YubiKey Personalization library and tool"
+url="https://developers.yubico.com/yubikey-personalization/"
+arch="all"
+license="BSD-2-Clause"
+makedepends="libusb-dev yubico-c-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://developers.yubico.com/yubikey-personalization/Releases/$pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--with-udevrulesdir=/usr/lib/udev/rules.d \
+		--with-backend=libusb-1.0
+	make
+}
+
+check() {
+	cd "$builddir"
+	make check CFLAGS="$CFLAGS -D__GLIBC__"
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="96edc7225bbd71ca255d3915321d4a613603c321c8502a5b97f23598f1439b231fcfc323f4f3737293da59efae2837370a0b64fdbd9465f0e2c05822d604df9f  ykpers-1.20.0.tar.gz"

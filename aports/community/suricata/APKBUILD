@@ -1,0 +1,74 @@
+# Contributor: Michael Pirogov <vbnet.ru@gmail.com>
+# Contributor: Stuart Cardall <developer at it-offshore dot co.uk>
+# Maintainer: Steve McMaster <code@mcmaster.io>
+pkgname=suricata
+pkgver=5.0.2
+pkgrel=0
+pkgdesc="High performance Network IDS, IPS and Network Security Monitoring engine"
+url="https://suricata-ids.org/"
+# mips, s390x lacks rust support
+# ppc64le fails to build
+arch="all !s390x !ppc64le !mips !mips64"
+license="GPL-2.0-only"
+makedepends="automake autoconf libtool libhtp-dev>=0.5.25 libcap-ng-dev lz4-dev
+	file-dev geoip-dev pcre-dev yaml-dev libpcap-dev hiredis-dev nss-dev
+	libnet-dev libnetfilter_queue-dev libnfnetlink-dev jansson-dev nspr-dev
+	libnetfilter_log-dev libmaxminddb-dev rust luajit-dev cargo"
+depends="py3-yaml python3"
+subpackages="$pkgname-doc $pkgname-openrc"
+install="$pkgname.post-install"
+source="https://www.openinfosecfoundation.org/download/suricata-$pkgver.tar.gz
+	$pkgname.confd
+	$pkgname.initd
+	$pkgname.logrotate
+	$pkgname-json-ppc64le.patch
+	"
+
+prepare() {
+	default_prepare
+	autoreconf -vif
+}
+
+build() {
+	HAVE_PYTHON=/usr/bin/python3 ./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--enable-non-bundled-htp \
+		--enable-nfqueue \
+		--disable-gccmarch-native \
+		--enable-hiredis \
+		--enable-geoip \
+		--enable-gccprotect \
+		--enable-pie \
+		--enable-nflog \
+		--enable-luajit \
+		--enable-rust
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" install-conf
+
+	cd "$srcdir"
+	install -D -m 755 $pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -D -m 644 $pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+	install -D -m 644 $pkgname.logrotate "$pkgdir"/etc/logrotate.d/$pkgname
+
+	# install rules
+	mkdir -p "$pkgdir"/etc/$pkgname/rules
+	install -Dm644 "$builddir"/rules/*.rules "$pkgdir"/etc/$pkgname/rules/
+}
+sha512sums="e288f6aee9f8fafb8fa811d2c83a89a29434edc24e05542e172852dc139b9d0bb474d35ddbdc4723df04e7a8b4e70e181c822a4fb1315ba2879c3c7a5c16ef16  suricata-5.0.2.tar.gz
+ed7c78a80192f3f3ed433330df323beccb6079b5413289b9e9faa3fceea2c536de93de7372968d8605abd1618d73c9319ee39d86b16eed22e7313c8667252f5d  suricata.confd
+258c6d60fc878dc1c7b7bf93cc758080050f591084a1edf7f1aac81ccb523c73615716616fedd0269f9ac5ef2fa7adcb3e2cefd714754bac5571e9806b6781be  suricata.initd
+4f76a35bcde78c9860701897fe19bb84cc46bbc429124c4cb2e94cf3330f00ebe8067c0d7f3f83478e9b95323adb947e5081658f455657c4d03c682abe707534  suricata.logrotate
+e9405c8b500abff960f38965e2c7f1aaa88dbff800959492d9aff4c09d479d681e64bca6d987af6c75d1901f44749cf07db765e68a0dc953b6ca41440dccb19d  suricata-json-ppc64le.patch"

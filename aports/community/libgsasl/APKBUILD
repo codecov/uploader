@@ -1,0 +1,36 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=libgsasl
+pkgver=1.8.1
+pkgrel=1
+pkgdesc="An implementation of the Simple Authentication and Security Layer framework"
+url="https://josefsson.org/gsasl/"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="libidn-dev libgss-dev libgcrypt-dev krb5-dev"
+subpackages="$pkgname-dev"
+source="http://download.savannah.nongnu.org/releases/gsasl/libgsasl-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var \
+		--with-libgcrypt \
+		--with-gssapi-impl=mit \
+		--disable-nls
+	make
+}
+
+check() {
+	make tests
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	rm -f "$pkgdir"/usr/lib/*.a
+}
+
+sha512sums="52bda3a962a2cbb598009fd02c547a4f8b5b9a4243511aa8104df97b4737023281ab57dbbcf839db3cad73c64cbc72bbd89b49da8b0379dd635220ffb642aa22  libgsasl-1.8.1.tar.gz"

@@ -1,0 +1,35 @@
+# Maintainer: Przemyslaw Pawelczyk <przemoc@zoho.com>
+pkgname=rhash
+pkgver=1.3.9
+pkgrel=1
+pkgdesc="Utility for calculation and verification of hash sums and magnet links"
+url="http://rhash.anz.ru"
+arch="all"
+license="0BSD"
+makedepends="openssl-dev"
+subpackages="$pkgname-doc $pkgname-dev $pkgname-libs"
+source="https://downloads.sourceforge.net/rhash/rhash-$pkgver-src.tar.gz
+	byteorder.patch"
+builddir="$srcdir/RHash-$pkgver"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--enable-openssl \
+		--disable-openssl-runtime
+	make
+}
+
+check() {
+	make -C "$builddir" test-shared
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" \
+		install-lib-headers install-lib-shared install-lib-so-link
+}
+
+sha512sums="6fae0587cdeb42df59d542c58bad734259d1ff39fba92531c10a469b51310644669ffbe0453e72d85c2cf38b176962f6dca9062a121ac019f1b30f207a176e60  rhash-1.3.9-src.tar.gz
+a216a7cf5e1ea5fcb7b574a57bb8137e3dc0251bdefb2c30aacba08c54079d61a595c8c5636687c70e14724efa3a4b9ca7d9f98d9170eaa66ccb278834cf56d5  byteorder.patch"

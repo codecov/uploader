@@ -1,0 +1,47 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=mkvtoolnix
+pkgver=46.0.0
+pkgrel=0
+pkgdesc="Set of tools to create, edit and inspect Matroska files"
+url="https://mkvtoolnix.download/index.html"
+arch="all !armhf" # qtmultimedia -> qtdeclarative
+license="GPL-2.0-only"
+makedepends="boost-dev docbook-xsl file-dev flac-dev gtest-dev
+	libmatroska-dev libogg-dev libvorbis-dev ruby-json ruby-rake zlib-dev
+	qt5-qtbase-dev qt5-qtmultimedia-dev cmark-dev"
+subpackages="$pkgname-doc $pkgname-gui"
+source="https://mkvtoolnix.download/sources/$pkgname-$pkgver.tar.xz"
+
+build() {
+	./configure CC="${CC:-gcc}" CFLAGS="${CFLAGS}" \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--without-gettext
+	rake V=1 -j${JOBS}
+}
+
+check() {
+	rake V=1 -j${JOBS} tests:unit
+	rake V=1 -j${JOBS} tests:run_unit
+}
+
+package() {
+	rake DESTDIR="$pkgdir" install
+}
+
+gui() {
+	pkgdesc="$pkgdesc (GUI)"
+	depends="$pkgname qt5-qtmultimedia"
+
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/mkvtoolnix-gui "$subpkgdir"/usr/bin/
+	mv "$pkgdir"/usr/share "$subpkgdir"/usr/
+}
+
+sha512sums="8c88ba82a5b3eeb1eda2e1387a9beac1c3265761e189088d51464a4f6af0a9e6ba299254bbe84253ed7c832f2c4642513751617c928f1fdc52d8d7b286b6974c  mkvtoolnix-46.0.0.tar.xz"

@@ -1,0 +1,38 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=anytun
+pkgver=0.3.8
+pkgrel=0
+pkgdesc="Secure anycast tunneling protocol implementation for flexible and fault-tolerant VPNs"
+options="!check" # No testsuite
+url="https://www.anytun.org/"
+arch="all"
+license="GPL-3.0-or-later"
+depends_dev="openssl-dev boost-dev linux-headers"
+makedepends="$depends_dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-openrc"
+source="http://www.anytun.org/download/anytun-$pkgver.tar.gz
+	fix-iostream.patch
+	$pkgname.initd"
+
+builddir="$srcdir"/$pkgname-$pkgver/src
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--use-ssl-crypto \
+		--examplesdir=/usr/share/docs
+	make
+}
+
+package() {
+	mkdir -p $pkgdir/var/run/anytun  $pkgdir/var/run/anytun-controld  &>/dev/null
+	make install DESTDIR="$pkgdir"
+	rm "$pkgdir"/etc/init.d/$pkgname
+	install -Dm 755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+}
+
+sha512sums="c1631983c0f1d735792ae1775aedb87241ae94ccd9cda12885790ecb09e0279518d3414c41945f385b2b30ad20db6a4c68fc526d7d6f777f2929c0d23174f699  anytun-0.3.8.tar.gz
+8c2eece0357666867f8cd9c7ef9307bcf88b9172ac033c18bd33ba470b3c19ad722c7eeafcda3a9ae95539d86ab04285fe5d7fa9766630f689c58e2c3fb239c3  fix-iostream.patch
+a31455058e0ac60ed9457c79eea789ce19ba49abc200b59c0d8390eb0c3b6f09813177f9b679fb8ac69ac7b0be862e4604d19298ae4cd79925511fff3963e93d  anytun.initd"

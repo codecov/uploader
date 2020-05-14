@@ -1,0 +1,41 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libzmf
+pkgver=0.0.2
+pkgrel=5
+pkgdesc="Import filter and tools for Zoner Callisto/Draw documents"
+url="https://wiki.documentfoundation.org/DLP/Libraries/libzmf"
+arch="all"
+license="MPL-2.0"
+depends=""
+depends_dev="boost-dev icu-dev libpng-dev zlib-dev"
+makedepends="$depends_dev librevenge-dev doxygen"
+install=""
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://dev-www.libreoffice.org/src/libzmf/libzmf-$pkgver.tar.xz"
+builddir="$srcdir/libzmf-$pkgver"
+
+prepare() {
+	default_prepare
+	update_config_sub
+}
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--disable-werror
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="ad4a8e65e85434e43caa239ff2a3f358c6db6411235c4bb73d8d2aa1527a4f411433370706db391f8f8110a36759249ee19b27be75bae5f361c491006d1b9aa2  libzmf-0.0.2.tar.xz"

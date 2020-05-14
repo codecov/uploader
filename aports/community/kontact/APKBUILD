@@ -1,0 +1,34 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kontact
+pkgver=20.04.0
+pkgrel=0
+arch="all !ppc64le !s390x !armhf !mips !mips64" # Limited by qt5-qtwebengine
+url="https://kontact.kde.org/"
+pkgdesc="Container application to unify several major PIM applications within one application"
+license="GPL-2.0-or-later"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtwebengine-dev kdbusaddons-dev
+	kdoctools-dev kcmutils-dev kcrash-dev kwindowsystem-dev kiconthemes-dev
+	kpimtextedit-dev akonadi-dev libkdepim-dev grantleetheme-dev kontactinterface-dev
+	kdepim-apps-libs-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kontact-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="323e7410231877b9af20c5670cec4258afe5d36aa2b7c6a173eae6637bf14dbd83eb6b7e3dd7cf5606344e4b37b816c4c7290b80c774b5e659cd484c3f4e05ad  kontact-20.04.0.tar.xz"

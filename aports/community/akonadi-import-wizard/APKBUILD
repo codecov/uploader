@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=akonadi-import-wizard
+pkgver=20.04.0
+pkgrel=0
+arch="all !ppc64le !s390x !armhf !mips !mips64" # Limited by kmailtransport -> libkgapi -> qt5-qtwebengine
+url="https://kontact.kde.org/"
+pkgdesc="Import data from other mail clients to KMail"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules qt5-qtbase-dev kwallet-dev kconfig-dev kdbusaddons-dev kauth-dev kdoctools-dev kcrash-dev kio-dev akonadi-dev kcontacts-dev kidentitymanagement-dev kmailtransport-dev mailcommon-dev messagelib-dev pimcommon-dev libkdepim-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/akonadi-import-wizard-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="b4fbc70d28924fa2ad6bfc55439924504ceeb82d7fc202d174179051711f20f1a8d179b90da38218b5e1a9c7d3972b578aeb033d99fa4846502736f2ca0ba7aa  akonadi-import-wizard-20.04.0.tar.xz"

@@ -1,0 +1,40 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=libvirt-glib
+pkgver=3.0.0
+pkgrel=0
+pkgdesc="libvirt glib integration for events"
+url="https://libvirt.org/"
+arch="all"
+license="LGPL-2.0-or-later"
+depends_dev="libvirt-dev"
+makedepends="$depends_dev gobject-introspection-dev
+libxml2-dev vala sed intltool"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://libvirt.org/sources/glib/libvirt-glib-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	# work around parallel build issue
+	make -C libvirt-glib \
+		&& make -C libvirt-gconfig \
+		&& make -C libvirt-gobject
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="b9e7d782c25b5c3a9b2829f1be8162352438ab3505510a1ca7dd64d741eaab158dc9206fdd4b0e3e27b0c049e4bcfc47db0c9a7fa1a84888864e23d3c35c079e  libvirt-glib-3.0.0.tar.gz"

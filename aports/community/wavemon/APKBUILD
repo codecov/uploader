@@ -1,0 +1,42 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Contributor: Francesco Colista <francesco.colista@gmail.com>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=wavemon
+pkgver=0.9.1
+pkgrel=0
+pkgdesc="Ncurses-based monitoring application for wireless network devices"
+url="https://github.com/uoaerg/wavemon"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="ncurses-dev libcap-dev libnl3-dev autoconf automake"
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/uoaerg/wavemon/archive/v$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+
+	update_config_sub
+
+	sed -i '/^CFLAGS/d' configure.ac
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make CFLAGS="$CFLAGS -pthread -I/usr/include/libnl3"
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	mkdir -p "$pkgdir"/usr/share/doc
+	mv "$pkgdir"/usr/share/$pkgname "$pkgdir"/usr/share/doc/
+}
+
+sha512sums="c05e9ea488d3fb9bfdb15419aadc54bed08d338dba7c118d2a2ff6423ffe31c16ff8e9e05fc2e39fffb069f28fa7daef30f079ca63186064c0ade4f9fe98864c  wavemon-0.9.1.tar.gz"

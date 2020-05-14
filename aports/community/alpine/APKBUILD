@@ -1,0 +1,44 @@
+# Maintainer: Kaarle Ritvanen <kaarle.ritvanen@datakunkku.fi>
+pkgname=alpine
+pkgver=2.22
+_commit=7e3b3be
+pkgrel=1
+pkgdesc="Text-based email client, friendly for novices but powerful"
+url="http://alpine.x10host.com/alpine/"
+arch="all"
+license="Apache-2.0"
+makedepends="openldap-dev heimdal-dev ncurses-dev openssl-dev
+	automake autoconf libtool gettext-dev"
+subpackages="$pkgname-dbg $pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://repo.or.cz/alpine.git/snapshot/v$pkgver.tar.gz
+	uclibc-musl.patch
+	0001-ssl_unix-fix-server-name-validation.patch
+	"
+builddir="$srcdir/$pkgname-v$pkgver-$_commit"
+
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--with-passfile=.pine-pass \
+		--without-tcl \
+		--disable-shared \
+		--with-system-pinerc=/etc/alpine.d/pine.conf \
+		--with-system-fixed-pinerc=/etc/alpine.d/pine.conf.fixed
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="5d10c68374337dbaed9a8dcca91a17a20dfe240a13b28107574a8e37db70eaf3c959654c7f8ffc2d4292f643f4ea64344718bc8eda9fc5cda9955337f58aa7c3  alpine-2.22.tar.gz
+1b14352571dd12749bbb6ebc1fd468dbb5a8e4d7a27e87f5baeb00a60d5c1a016d925c6bc776da7e1dbf0ad8d799a65049b64774113274d7ffb07c7b1b196775  uclibc-musl.patch
+5e10289f292139bf576e40bda0f3539d62024309650473a2fdbb281e5d7691cc4c1d3d21f78615e2c900766eddba076f512d92f60d4fbb61e1683f35cba185aa  0001-ssl_unix-fix-server-name-validation.patch"

@@ -1,0 +1,35 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=gnome-weather
+pkgver=3.36.1
+pkgrel=0
+pkgdesc="GNOME Weather application"
+url="https://wiki.gnome.org/Apps/Weather"
+arch="noarch !s390x !mips !mips64" # missing gjs
+license="GPL-2.0-only"
+makedepends="meson glib-dev gobject-introspection-dev gtk+3.0-dev gjs-dev
+	geoclue-dev libgweather-dev"
+checkdepends="appstream-glib desktop-file-utils"
+subpackages="$pkgname-lang"
+source="https://download.gnome.org/sources/gnome-weather/${pkgver%.*}/gnome-weather-$pkgver.tar.xz"
+
+build() {
+	meson \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var \
+		--buildtype=plain \
+		. output
+	ninja -C output
+}
+
+check() {
+	ninja -C output test
+}
+
+package() {
+	DESTDIR="$pkgdir" ninja -C output install
+}
+
+sha512sums="c3d4b0e7258c0bfbc1ab2b5695d601fe79326e1bed856734edc309c612f1cc0adc9cfd6b4afb4ad3069b864c807ca0b21a60f89feba68f1dacac58d0fd2221be  gnome-weather-3.36.1.tar.xz"

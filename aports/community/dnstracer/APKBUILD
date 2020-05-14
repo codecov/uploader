@@ -1,0 +1,26 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=dnstracer
+pkgver=1.10
+pkgrel=0
+pkgdesc="Trace a chain of DNS servers to the source"
+url="http://www.mavetju.org/unix/dnstracer.php"
+arch="all"
+license="BSD"
+makedepends="perl"
+subpackages="$pkgname-doc"
+options="!check" # no test
+source="$pkgname-$pkgver.tar.gz::http://www.mavetju.org/download/$pkgname-$pkgver.tar.bz2
+makefile-path.patch"
+builddir="$srcdir"/$pkgname
+
+build() {
+	make PREFIX=/usr
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="8174f92c5c1b300c1011a24f0cf2f16dc2b52a082729e52d1033a047e20d132d6005b89618ecbbd25cbdc1c95cdc0748cf666bdc56b769b240d8885469bc6e05  dnstracer-1.10.tar.gz
+d82b83f14dea37159708d700c56f05fbcd930597f63142dea8e426717fda818cf12bdb5d307667d8d6ea04468371a4f7ff712bd65e305b7556a7f66b2c7e1155  makefile-path.patch"

@@ -1,0 +1,32 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=kfind
+pkgver=20.04.0
+pkgrel=0
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://www.kde.org/applications/utilities/kfind"
+pkgdesc="Find Files/Folders"
+license="GPL-2.0-or-later AND GFDL-1.2-only"
+makedepends="extra-cmake-modules karchive-dev kcoreaddons-dev kdoctools-dev kfilemetadata-dev ki18n-dev kio-dev ktextwidgets-dev kwidgetsaddons-dev"
+source="https://download.kde.org/stable/release-service/$pkgver/src/kfind-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+options="!check" # No tests
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="627cb706541b8129c80d79215e3a73a784433ca173a12229069b0bf1f04637162380ce01344c94b4c66fdb5dd465084db4930764e2e56e8759a60e7856d031cc  kfind-20.04.0.tar.xz"

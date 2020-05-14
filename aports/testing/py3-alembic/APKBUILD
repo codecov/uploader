@@ -1,0 +1,29 @@
+# Contributor:
+# Maintainer: Philipp Glaum <p@pglaum.de>
+pkgname=py3-alembic
+_pkgname=alembic
+pkgver=1.4.2
+pkgrel=0
+pkgdesc="A database migration tool for SQLAlchemy."
+url="https://pypi.org/project/alembic/"
+arch="noarch"
+license="MIT"
+depends="python3 py3-sqlalchemy py3-mako py3-python-editor py3-dateutil"
+checkdepends="py3-tox"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/${_pkgname:0:1}/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	python3 setup.py build
+}
+
+check() {
+	python3 setup.py check
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="82bdfe442c19033aa2b802ec49edd13ed265c00a2b5a048490a83ffa8e53587c56a90b64d554e746a9189923419c528482cb7a7c950c210e0de47b32fa7c270e  alembic-1.4.2.tar.gz"

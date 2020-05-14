@@ -1,0 +1,24 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=coreshot
+pkgver=2.8.0
+pkgrel=0
+pkgdesc="A screen capture utility from the CoreApps family."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtsvg"
+makedepends="qt5-qtbase-dev libcprime-dev qt5-qtx11extras-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/coreshot/-/archive/v$pkgver/coreshot-v$pkgver.tar.gz"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+sha512sums="3cce29274bd9787b3e31a720e55606e17bfc2ffaba7d52d125c39a6b63a0ee5d634c079c1db75c99e33fb052f4d49c99499de162313e6ca6eee01afcd88c25a7  coreshot-2.8.0.tar.gz"

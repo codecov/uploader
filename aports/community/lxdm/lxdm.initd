@@ -1,0 +1,10 @@
+#!/sbin/openrc-run
+depends() {
+	needs localmount
+}
+
+name="Login Manager"
+description="Lightweight Login Manager from LXDM"
+command=/usr/sbin/lxdm
+command_args="-d"
+pidfile=/var/run/lxdm.pid

@@ -1,0 +1,29 @@
+# Contributor: Valery Kartel <valery.kartel@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=aspell-en
+pkgver=2019.10.06
+pkgrel=0
+_lang=${pkgname##*-}
+_name=${pkgname%%-*}6-$_lang-$pkgver-0
+pkgdesc="English dictionary for aspell"
+url="http://aspell.net/"
+arch="noarch"
+license="custom"
+options="!check" # No test suite
+makedepends="aspell-dev"
+source="https://ftp.gnu.org/gnu/aspell/dict/$_lang/$_name.tar.bz2"
+builddir="$srcdir"/$_name
+
+build() {
+	cd "$builddir"
+	./configure
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	install -D -m644 Copyright "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+}
+
+sha512sums="e16c76bd2da4515af6f1e3dbbc1c5f26fc3be550e022cbb5b741b867be2acc1359a8902af1b359f6c8cff38de01b9aa43a02153a5a6bc618296e75bf86020a6e  aspell6-en-2019.10.06-0.tar.bz2"

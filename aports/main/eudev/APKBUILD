@@ -1,0 +1,107 @@
+# Contributor: Sören Tempel <soeren+alpine@soeren-tempel.net>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=eudev
+pkgver=3.2.9
+pkgrel=3
+pkgdesc="OpenRC compatible fork of systemd-udev"
+url="https://wiki.gentoo.org/wiki/Project:Eudev"
+arch="all"
+license="GPL-2.0-only"
+depends="udev-init-scripts"
+replaces="udev"
+provides="udev=176"
+makedepends="gperf glib-dev linux-headers kmod-dev gobject-introspection-dev
+	util-linux-dev"
+checkdepends="tree xz perl"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-libs $pkgname-openrc
+	$pkgname-netifnames::noarch $pkgname-rule-generator::noarch"
+triggers="eudev.trigger=/lib/udev/rules.d:/usr/lib/udev/rules.d"
+source="https://dev.gentoo.org/~blueness/eudev/eudev-$pkgver.tar.gz
+	default-rules.patch
+	load-fbcon.patch
+	udev-postmount.initd
+	setup-udev
+	"
+
+build() {
+	# we need disable kmod til busybox depmod generates binary formats:
+	# modules.dep.bin modules.alias.bin modules.symbols.bin
+	# modules.builtin.bin
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--sysconfdir=/etc \
+		--with-rootprefix= \
+		--with-rootrundir=/run \
+		--with-rootlibexecdir=/lib/udev \
+		--libdir=/usr/lib \
+		--enable-split-usr \
+		--enable-manpages \
+		--disable-hwdb \
+		--enable-kmod \
+		--exec-prefix=/ \
+		--bindir=/bin
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" sharepkgconfigdir=/usr/lib/pkgconfig \
+		install
+
+	install -Dm755 "$srcdir"/udev-postmount.initd \
+		"$pkgdir"/etc/init.d/udev-postmount
+	install -Dm755 "$srcdir"/setup-udev \
+		"$pkgdir"/sbin/setup-udev
+}
+
+dev() {
+	replaces="udev-dev"
+	default_dev
+}
+
+libs() {
+	pkgdesc="Dynamic library to access udev device information"
+	replaces="libudev"
+	depends=""
+
+	mkdir -p "$subpkgdir"/lib
+	local i; for i in "$pkgdir"/usr/lib/libudev.so.*; do
+		mv $i "$subpkgdir"/lib
+		ln -s ../../lib/${i##*/} "$pkgdir"/usr/lib/${i##*/}
+	done
+}
+
+netifnames() {
+	pkgdesc="udev rules for systemd-style interface names"
+	depends="!$pkgname-rule-generator"
+
+	mkdir -p "$subpkgdir"/lib/udev/rules.d
+	mv "$pkgdir"/lib/udev/rules.d/80-net-name-slot.rules \
+		"$subpkgdir"/lib/udev/rules.d/
+}
+
+generator() {
+	pkgdesc="generate udev net persistance rules"
+	depends="!$pkgname-netifnames"
+
+	# Since we didn't enable rules-generator which disables netifnames, we
+	# install the rule-generator files.
+	sed -i 's/"write_net_rules"/"\/lib\/udev\/rule_generator\/write_net_rules"/' \
+		"$builddir"/rule_generator/75-persistent-net-generator.rules
+	install -Dm644 "$builddir"/rule_generator/75-persistent-net-generator.rules \
+		"$subpkgdir"/lib/udev/rules.d/75-persistent-net-generator.rules
+	install -Dm755 "$builddir"/rule_generator/write_net_rules \
+		"$subpkgdir"/lib/udev/rule_generator/write_net_rules
+	install -Dm755 "$builddir"/rule_generator/rule_generator.functions \
+		"$subpkgdir"/lib/udev/rule_generator.functions
+}
+
+sha512sums="09e49fff9848e72507ef14b9d4cfab2d1443f16d5b3d54d2b0e4f6b04c471ca41f09200cb8772e9f850f0dc4a574a7ec7eede7ce11cbabda65e210a89287531f  eudev-3.2.9.tar.gz
+683e3c26ca4f058303f8db7d4977e436d728386ee6866719c4f11ff31db27572d3f486f51d3173310e1ec2cf995fa4c396f2415bdf45dabdd80e6e55e798a314  default-rules.patch
+ff5928fd555e095d9f3234dd004ac4c5925405d308777e9b018e8e03112cd109935b51d75a3bc4a2a1018eb486e8a5e5ef6ee978860002a8fff93b116e9721f5  load-fbcon.patch
+8ef1b911843ab13acb1c1b9b7a0a5cd76659f395c3db9e579429556f23eacebb414507dc0231e2455e7589bc70054fa1e6b6dd93dd833f7101c0da0597aabf88  udev-postmount.initd
+4e57349a9516d495a6eb6dd437e179c1f990b437c4e671667f64d4361fcd827a2172e4ca120fbd324ca29e9acc65a361cd22a75b8dd8437389cc19ba62198f83  setup-udev"

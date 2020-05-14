@@ -1,0 +1,28 @@
+# Contributor: Fabian Affolter <fabian@affolter-engineering.ch>
+# Maintainer: Fabian Affolter <fabian@affolter-engineering.ch>
+pkgname=py3-flake8-debugger
+_pkgname=flake8-debugger
+pkgver=3.2.1
+pkgrel=1
+pkgdesc="Extension for flake8 which lint for ipdb/pdb statements"
+options="!check" # No tests on PyPi, GitHub uses pyproject.toml
+url="https://github.com/jbkahn/flake8-debugger"
+arch="noarch"
+license="MIT"
+depends="py3-flake8"
+makedepends="py3-setuptools"
+source="https://files.pythonhosted.org/packages/source/f/$_pkgname/$_pkgname-$pkgver.tar.gz"
+builddir="$srcdir"/$_pkgname-$pkgver
+
+replaces="py-flake8-debugger" # Backwards compatibility
+provides="py-flake8-debugger=$pkgver-r$pkgrel" # Backwards compatibility
+
+build() {
+	python3 setup.py build
+}
+
+package() {
+	python3 setup.py install --prefix=/usr --root="$pkgdir"
+}
+
+sha512sums="0c67007e05f5ec7177bb27869ac4f05def04ecb4c5763b2d6860358f796333e833a5c87a5b6dc357000c9216850be9929de5f1d56297088b8e41039bb4ece18d  flake8-debugger-3.2.1.tar.gz"

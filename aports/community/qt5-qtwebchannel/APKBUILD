@@ -1,0 +1,37 @@
+# Contributor: Francesco Colista <fcolista@alpinelinux.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=qt5-qtwebchannel
+pkgver=5.14.2
+pkgrel=0
+pkgdesc="library for seamless integration of C++ +and QML applications with HTML/JavaScript clients."
+url="https://www.qt.io/developers/"
+arch="all !armhf" # armhf blocked by qt5-qtdeclarative
+license="LGPL-2.1-only AND LGPL-3.0-only AND GPL-3.0-only AND Qt-GPL-exception-1.0"
+options="!check" # No tests
+makedepends="qt5-qtbase-dev qt5-qtwebsockets-dev qt5-qtdeclarative-dev"
+subpackages="$pkgname-dev"
+builddir="$srcdir/qtwebchannel-everywhere-src-$pkgver"
+
+case $pkgver in
+	*_beta*|*_rc*) _rel=development_releases;;
+	*) _rel=official_releases;;
+esac
+
+source="https://download.qt.io/$_rel/qt/${pkgver%.*}/$pkgver/submodules/qtwebchannel-everywhere-src-$pkgver.tar.xz"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	make INSTALL_ROOT="$pkgdir" install
+
+	# Drop QMAKE_PRL_BUILD_DIR because reference the build dir
+	find "$pkgdir/usr/lib" -type f -name '*.prl' \
+		-exec sed -i -e '/^QMAKE_PRL_BUILD_DIR/d' {} \;
+
+	install -d "$pkgdir"/usr/share/licenses
+	ln -s /usr/share/licenses/qt5-base "$pkgdir"/usr/share/licenses/$pkgname
+}
+sha512sums="57080c8cf7fb5c91fa6b325566d3fb2dc3c1d3bcd8128d2a40ea92f8bae7ca0f0fb4bac1d68452998a5dc06781155058d149df069fed5ff16b6d8ad43a72e002  qtwebchannel-everywhere-src-5.14.2.tar.xz"

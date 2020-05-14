@@ -1,0 +1,41 @@
+# Contributor: ScrumpyJack <scrumpyjack@st.ilet.to>
+# Maintainer: ScrumpyJack <scrumpyjack@st.ilet.to>
+pkgname=cadaver
+pkgver=0.23.3
+pkgrel=4
+pkgdesc="Cadaver is a command line webDAV client for Linux"
+options="!check"
+url="http://webdav.org/cadaver/"
+arch="all"
+license="GPL-2.0-or-later"
+makedepends="libproxy-dev neon-dev expat-dev"
+subpackages="$pkgname-doc"
+source="https://dev.alpinelinux.org/archive/cadaver/cadaver-$pkgver.tar.gz
+	neon.patch
+	disable-nls.patch
+	"
+
+prepare() {
+	update_config_sub
+	default_prepare
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--with-ssl \
+		--with-expat \
+		--with-neon \
+		--disable-nls
+	make
+}
+
+package() {
+	make prefix=$pkgdir/usr install
+}
+
+sha512sums="48fe0a266be0ca7239f325377e5e2a8dc57a5d60466c7160e36c060ad24c09a50727695b9fa931844b1e66e173ebbb838f390d6c60fd07b614bd3b636cd4dd41  cadaver-0.23.3.tar.gz
+6686be92a117f126ad9b9cad0e2de49ebfdd2d0ea79fd9ea8ce57cbffcbdee0a3d67cbfc52fa22ff9569ab83457a6b57994cc3c0f8099fdcf0893a55b683f5ed  neon.patch
+58982830b63c9bf4c27455e2d0403489bfdda82e4d236841c877d49c7501865edb3438cdddfb77ef7e525c4a5edb34083d3af69824f0ba2dc7d5c3f7f69b50e5  disable-nls.patch"

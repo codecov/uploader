@@ -1,0 +1,37 @@
+# Contributor: Francesco Colis_ta <fcolista@alpinelinux.org>
+# Maintainer: Francesco Colista <fcolista@alpinelinux.org>
+pkgname=rutorrent
+_pkgname=ruTorrent
+pkgver=3.9
+pkgrel=0
+pkgdesc="Yet another web front-end for rTorrent"
+url="https://github.com/Novik/ruTorrent"
+arch="noarch"
+license="GPL"
+depends="php7 curl"
+options="!check" # no test available
+# we need to user gnu tar since the permissions on files in tar archive are
+# bad
+makedepends="tar"
+pkggroups="rutorrent"
+install="$pkgname.pre-install $pkgname.post-install"
+source="$pkgname-$pkgver.tar.gz::https://github.com/Novik/$_pkgname/archive/v$pkgver.tar.gz"
+builddir="$srcdir/$_pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	chmod -R u+w "$builddir"
+}
+
+package() {
+	cd "$builddir"
+	install -d $pkgdir/usr/share/webapps/$pkgname
+	install -d $pkgdir/var/www/localhost/htdocs/
+	cp -r * $pkgdir/usr/share/webapps/$pkgname
+	chgrp -R rutorrent $pkgdir/usr/share/webapps/$pkgname/share
+	chmod 0775 $pkgdir/usr/share/webapps/$pkgname/share/settings
+	chmod 0775 $pkgdir/usr/share/webapps/$pkgname/share/torrents
+	chmod 0775 $pkgdir/usr/share/webapps/$pkgname/share/users
+}
+
+sha512sums="190b9a0ada2756d3e3dd209082ef0b08c83a27349bb66ca8f8f47fa50337beeb4a93c340813fbb386cbf9919067c48a0fabf72a74d9248617015b70ce1c75099  rutorrent-3.9.tar.gz"

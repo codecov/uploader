@@ -1,0 +1,235 @@
+# Contributor: Łukasz Jendrysik <scadu@yandex.com>
+# Contributor: Leonardo Arena <rnalrd@alpinelinux.org>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=vlc
+pkgver=3.0.10
+pkgrel=3
+pkgdesc="A multi-platform MPEG, VCD/DVD, and DivX player"
+triggers="vlc-libs.trigger=/usr/lib/vlc/plugins"
+pkgusers="vlc"
+pkggroups="vlc"
+url="https://www.videolan.org/vlc/"
+arch="all !s390x !mips !mips64" # librsvg
+license="GPL-2.0-or-later"
+subpackages="$pkgname-dev
+	$pkgname-doc
+	$pkgname-qt
+	$pkgname-daemon::noarch
+	$pkgname-libs
+	"
+depends="ttf-dejavu"
+makedepends="
+	a52dec-dev
+	alsa-lib-dev
+	automake
+	autoconf
+	avahi-dev
+	bison
+	libtool
+	dav1d-dev
+	dbus-dev
+	faad2-dev
+	ffmpeg-dev
+	flac-dev
+	flex
+	freetype-dev
+	gtk+3.0-dev
+	libbluray-dev>=0.2.1 libbluray-dev<20100000
+	libavc1394-dev
+	libcddb-dev
+	libdc1394-dev>=2.1.0
+	libdvbpsi-dev
+	libdvdnav-dev
+	libdvdread-dev
+	libgcrypt-dev
+	libice-dev
+	libmad-dev
+	libmatroska-dev
+	libmpeg2-dev
+	libnotify-dev
+	libogg-dev
+	libraw1394-dev>=2.0.1
+	librsvg-dev
+	libshout-dev
+	libsm-dev
+	libtheora-dev
+	libva-dev
+	libvdpau-dev
+	libvorbis-dev
+	libvpx-dev
+	libx11-dev
+	libxext-dev
+	libxinerama-dev
+	libxml2-dev
+	libxpm-dev
+	libxv-dev
+	live-media-dev>=2012.01.26
+	lua5.2-dev
+	mesa-dev
+	ncurses-dev
+	opus-dev
+	pkgconfig
+	qt5-qtbase-dev
+	qt5-qtsvg-dev
+	qt5-qtx11extras-dev
+	sdl2-dev
+	speex-dev
+	speexdsp-dev
+	sysfsutils-dev
+	taglib-dev
+	eudev-dev
+	v4l-utils-dev
+	wayland-protocols
+	x264-dev
+	x265-dev
+	xcb-util-renderutil-dev
+	xcb-util-keysyms-dev
+	xdg-utils
+	samba-dev
+	gnutls-dev
+	"
+source="https://download.videolan.org/vlc/$pkgver/vlc-$pkgver.tar.xz
+	omxil-rpi-codecs.patch
+	check-headless.patch
+	disable-sub-autodetect-fuzzy-1-test.patch
+	test-s390x.patch
+	fribidi_allow_deprecated.patch
+	vlc.initd
+	vlc.confd
+	"
+
+# secfixes:
+#   3.0.9.2-r0:
+#     - CVE-2019-19721
+#     - CVE-2020-6071
+#     - CVE-2020-6072
+#     - CVE-2020-6073
+#     - CVE-2020-6077
+#     - CVE-2020-6078
+#     - CVE-2020-6079
+#   3.0.7.1-r2:
+#     - CVE-2019-13602
+
+prepare() {
+	default_prepare
+	NOCONFIGURE=1 ./bootstrap
+}
+
+build() {
+	local _arch_opts=
+	export CFLAGS="$CFLAGS -D_GNU_SOURCE"
+
+	case "$CARCH" in
+	arm*) _arch_opts="--enable-omxil --enable-omxil-vout --enable-rpi-omxil" ;;
+	esac
+
+	LUA=lua5.2 \
+	LUAC=luac5.2 \
+	BUILDCC="${CC:-gcc} -std=c99" \
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--disable-nls \
+		--disable-rpath \
+		--enable-a52 \
+		--enable-avcodec \
+		--enable-avformat \
+		--enable-bluray \
+		--enable-dav1d \
+		--enable-dbus \
+		--enable-dc1394 \
+		--enable-dvbpsi \
+		--enable-dvdread \
+		--enable-dvdnav \
+		--enable-faad \
+		--enable-flac \
+		--enable-libcddb \
+		--enable-libva \
+		--enable-live555 \
+		--enable-merge-ffmpeg \
+		--enable-ncurses \
+		--enable-realrtsp \
+		--enable-shout \
+		--enable-skins2 \
+		--enable-speex \
+		--enable-sout \
+		--enable-taglib \
+		--enable-theora \
+		--enable-v4l2 \
+		--enable-vdpau \
+		--enable-vlm \
+		--enable-vorbis \
+		--enable-wma-fixed \
+		--enable-x264 \
+		--enable-xvideo \
+		--enable-gnutls \
+		$_arch_opts
+
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	# delete cache as it's autocreated by trigger
+	rm -rf "$pkgdir"/usr/lib/vlc/plugins/plugins.dat
+	# delete unneeded mozilla and kde support files
+	rm -rf "$pkgdir"/usr/lib/mozilla
+	rm -rf "$pkgdir"/usr/share/kde4
+}
+
+check() {
+	make check
+}
+
+_mv() {
+	local dir=${1%/*}
+	mkdir -p "$subpkgdir"/$dir
+	mv "$1" "$subpkgdir"/$dir/
+}
+
+qt() {
+	pkgdesc="Qt frontend for VLC"
+	depends="vlc=$pkgver-r$pkgrel"
+	cd "$pkgdir"
+	# scan for elf files that directly or indirectly depends on
+	# libQt* libraries
+	cd "$pkgdir"
+	for i in $(find . -type f ); do
+		if ldd $i 2>/dev/null | grep -q "libQt"; then
+			_mv "$i"
+		fi
+	done
+	mkdir -p "$subpkgdir"/usr/bin
+	mv "$pkgdir"/usr/bin/qvlc \
+		"$subpkgdir"/usr/bin/
+}
+
+daemon() {
+	pkgdesc="Support for running VLC as a daemon"
+	install="vlc-daemon.pre-install"
+	depends="vlc=$pkgver-r$pkgrel"
+
+	mkdir -p "$subpkgdir"
+	cd "$pkgdir"
+	install -D -m755 "$srcdir"/vlc.initd $subpkgdir/etc/init.d/vlc
+	install -D -m664 "$srcdir"/vlc.confd $subpkgdir/etc/conf.d/vlc
+	install -d -o vlc -g vlc "$subpkgdir"/var/log/vlc
+}
+
+libs() {
+	depends=""
+	mkdir -p "$subpkgdir"/usr/lib/vlc
+	mv "$pkgdir"/usr/lib/vlc/vlc-cache-gen \
+		"$subpkgdir"/usr/lib/vlc/
+	default_libs
+}
+
+sha512sums="dcfa39e3e61bf522ea3a0e1686251356ec262dd8826fc64ccae5ac34a62f72ddc9fe9f2e2b45588013d5907e39649cf39d0c9156980d1eb679eac9b9cb434341  vlc-3.0.10.tar.xz
+e13e398b7bfd977f6e099bcb6cf8dc5cd5bad6dea3eff715881826246dc4329468846084aff2576de2b7fd28d3f06e7c327a6e4511a28d22e5cd198a81146c89  omxil-rpi-codecs.patch
+22d80df599b8b65a5439cefbb7140af8e9530f326d54945da3769af65f37518b99ec2cc8647aafd2763324a0698280915afe043cc87e5720c4694881ed35bffa  check-headless.patch
+e214b407235cb3afb8bec93f20c9b42957b57e6fd3960679d3d4235e77762e03e64d03c01f00ef63d589e7c85aaad02ce6abbeeccd66b1867bc92451a5b5e9b0  disable-sub-autodetect-fuzzy-1-test.patch
+c0107655249687655846a9547ca1a5670b9207443180600e7a149c69ffb96d7226787c19b018d4033db9b284c1a5faa8d7d42188ed40c3b8bb051256febf11c5  test-s390x.patch
+8230a83306905cdda07fecdb6cb2b791196034775cc5c8986ab63e97cd3476317544011cbce92948059ac9f7b57ef450cd71820f0f134bc3ab3bed38463a67c3  fribidi_allow_deprecated.patch
+55e245190b443dde9c7215ea5210612fcca164900a9a4b025ccf0d1e3fc5206d00b52355b256974421e37c609875627f1db19f0f5a084511aec0daf677ecc9d6  vlc.initd
+d89190dca1b8b2c3faca5863dc6c7e6eb24e05178e6f75ed752fd3c6a73cb8a42d2625b6e56453296b7096ea868be642ecd42745dac20e7f13fc67dd3c3c7c49  vlc.confd"

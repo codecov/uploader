@@ -1,0 +1,36 @@
+# Contributor: Rasmus Thomsen <oss@cogitri.dev>
+# Maintainer: Rasmus Thomsen <oss@cogitri.dev>
+pkgname=metacity
+pkgver=3.36.1
+pkgrel=0
+pkgdesc="Metacity is the Gtk+3-based window manager used in gnome-flashback"
+url="https://wiki.gnome.org/Projects/Metacity"
+arch="all"
+license="GPL-2.0-or-later"
+depends="zenity gsettings-desktop-schemas"
+makedepends="gtk+3.0-dev glib-dev pango-dev libxcomposite-dev libcanberra-dev
+	libsm-dev startup-notification-dev libxcursor-dev libgtop-dev libx11-dev
+	libxinerama-dev libxrandr-dev vulkan-headers<1.2.140 vulkan-loader-dev
+	gsettings-desktop-schemas-dev"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://download.gnome.org/sources/metacity/${pkgver%.*}/metacity-$pkgver.tar.xz"
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+sha512sums="98e73036cca238b713a112194b2cd7a866bcf7d08ef29fb590054b69a1bd807699317a51f9b851f9c474ae2557e27dc9fc4a52d7c436d93ad4a02babef68feeb  metacity-3.36.1.tar.xz"

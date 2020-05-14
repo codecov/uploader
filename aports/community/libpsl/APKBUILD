@@ -1,0 +1,45 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=libpsl
+pkgver=0.21.0
+pkgrel=1
+pkgdesc="C library for the Publix Suffix List"
+url="https://rockdaboot.github.io/libpsl"
+arch="all"
+license="MIT"
+makedepends="python3 libidn2-dev libunistring-dev"
+subpackages="$pkgname-static $pkgname-dev $pkgname-doc"
+source="https://github.com/rockdaboot/libpsl/releases/download/libpsl-$pkgver/libpsl-$pkgver.tar.gz"
+
+prepare() {
+	default_prepare
+	sed -i 's|env python|env python3|g' src/psl-make-dafsa
+}
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+
+static() {
+	depends=""
+	pkgdesc="$pkgdesc (static library)"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/*.a "$subpkgdir"/usr/lib
+}
+
+
+sha512sums="165c4f0b0640a813d512bd916e1532e32e43c8c81a5efd048f3a5b07b1b3c9129b4c4b5008b8b11a7c1b3914caea17564321389cd350bf1d687d53a97f2afa4d  libpsl-0.21.0.tar.gz"

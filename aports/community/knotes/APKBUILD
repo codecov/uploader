@@ -1,0 +1,37 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=knotes
+pkgver=20.04.0
+pkgrel=0
+# armhf blocked by extra-cmake-modules
+# mips, ppc64le and s390x blocked by kdepim-runtime
+arch="all !armhf !ppc64le !s390x !mips !mips64"
+url="https://kontact.kde.org/"
+pkgdesc="Popup notes"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later AND GFDL-1.2-only"
+depends="kdepim-runtime"
+makedepends="extra-cmake-modules qt5-qtbase-dev qt5-qtx11extras-dev grantlee-dev kcompletion-dev kconfig-dev kconfigwidgets-dev kcoreaddons-dev kcrash-dev kdbusaddons-dev kdnssd-dev kdoctools-dev kglobalaccel-dev kiconthemes-dev kitemmodels-dev kitemviews-dev kcmutils-dev knewstuff-dev knotifications-dev knotifyconfig-dev kparts-dev ktextwidgets-dev kwidgetsaddons-dev kwindowsystem-dev kxmlgui-dev knotifications-dev akonadi-dev akonadi-notes-dev kcalutils-dev kontactinterface-dev libkdepim-dev kmime-dev pimcommon-dev kpimtextedit-dev grantleetheme-dev akonadi-search-dev libxslt-dev"
+checkdepends="xvfb-run"
+source="https://download.kde.org/stable/release-service/$pkgver/src/knotes-$pkgver.tar.xz"
+subpackages="$pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+
+	# knotesgrantleeprinttest is broken
+	CTEST_OUTPUT_ON_FAILURE=TRUE xvfb-run ctest -E "knotesgrantleeprinttest"
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+
+sha512sums="8dc817a677fe7c67b35c2c0888ef686af019477897fa6ce4a5424a2ca8f78715e6e65b31096c8f07bcfbccf97695ff8ee73fa39c098b0edd9b761f48efa14bea  knotes-20.04.0.tar.xz"

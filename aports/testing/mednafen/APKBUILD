@@ -1,0 +1,34 @@
+# Contributor: August Klein <amatcoder@gmail.com>
+# Maintainer: August Klein <amatcoder@gmail.com>
+pkgname=mednafen
+pkgver=1.22.2
+pkgrel=0
+pkgdesc="A command-line multi-system emulator"
+url="https://mednafen.github.io/"
+arch="all !s390x !mips !mips64"
+license="GPL-2.0-only"
+makedepends="alsa-lib-dev flac-dev libogg-dev libsndfile-dev libvorbis-dev
+	lzo-dev sdl2-dev zlib-dev"
+subpackages="$pkgname-lang"
+source="https://mednafen.github.io/releases/files/mednafen-$pkgver.tar.xz
+	ppc64.patch
+	"
+
+builddir="$srcdir"/$pkgname
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+
+	rm -rf "$pkgdir"/usr/lib/charset.alias
+}
+
+sha512sums="e094a9134115344bf857eb7edce67f146fd43b83432db69271d5924ab5ec7dae11cdb7272c0d3c697a654902ce73cb42165f5e1256758f05e41167007e8f3a2d  mednafen-1.22.2.tar.xz
+eabdf2fb1b0872b902d2a7107b87a2033cdbbf177156061e086e808699b9a6d95533e32a2be1d9b9b3a714d64e2c79aa16ec0d68690cfd379940fec59c96960d  ppc64.patch"

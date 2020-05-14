@@ -1,0 +1,21 @@
+#!/sbin/openrc-run
+supervisor=supervise-daemon
+
+: ${cfgfile:=/etc/oidentd.conf}
+
+command=/usr/sbin/oidentd
+command_args="-u oidentd -g oidentd $opts"
+command_args_foreground="--foreground"
+required_files="$cfgfile"
+extra_started_commands="reload"
+
+depend() {
+	need net
+	after firewall
+}
+
+reload() {
+	ebegin "Reloading $RC_SVCNAME configuration"
+	$supervisor $RC_SVCNAME --signal HUP
+	eend $?
+}

@@ -1,0 +1,36 @@
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=gtksourceview
+pkgver=3.24.11
+pkgrel=1
+pkgdesc="A text widget adding syntax highlighting and more to GNOME"
+url="https://wiki.gnome.org/action/show/Projects/GtkSourceView"
+arch="all"
+license="LGPL-2.1-or-later"
+depends_dev="gtk+3.0-dev libxml2-dev"
+makedepends="$depends_dev gobject-introspection-dev automake autoconf libtool"
+checkdepends="xvfb-run ibus"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-lang"
+source="https://download.gnome.org/sources/gtksourceview/${pkgver%.*}/gtksourceview-$pkgver.tar.xz"
+
+prepare() {
+	default_prepare
+	autoreconf -fi
+}
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--localstatedir=/var \
+		--disable-static
+	make
+}
+
+check() {
+	xvfb-run make check
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="3490b34c6432a2e2ef292ad5bf982fdd22d33b1472434549b4ea8ddae0fc8808e128ef947e4d0dcb41e8de5e601b202f52532bbbbfa11d35050acfc42f9936b2  gtksourceview-3.24.11.tar.xz"

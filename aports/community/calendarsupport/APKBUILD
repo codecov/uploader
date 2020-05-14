@@ -1,0 +1,31 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=calendarsupport
+pkgver=20.04.0
+pkgrel=0
+pkgdesc="Library providing calendar support"
+arch="all !ppc64le !s390x !armhf !mips !mips64" # Limited by akonadi-calendar-dev -> kmailtransport -> libkgapi -> qt5-qtwebengine
+url="https://kontact.kde.org"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later"
+depends_dev="qt5-qtbase-dev akonadi-dev ki18n-dev kiconthemes-dev kguiaddons-dev kio-dev kmime-dev akonadi-mime-dev kcodecs-dev kcalutils-dev kcalendarcore-dev kidentitymanagement-dev kholidays-dev akonadi-calendar-dev pimcommon-dev kdepim-apps-libs-dev"
+makedepends="$depends_dev extra-cmake-modules qt5-qttools-dev qt5-qttools-static"
+source="https://download.kde.org/stable/release-service/$pkgver/src/calendarsupport-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	make -C build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" make -C build install
+}
+sha512sums="c020d6ae70cad1e026ab6ae7adefe2260da6e1b2a207b7178ea778a82f1910b0e431031a4087a9a7ae5ef8923f7126b8e4d10ec14b42473182f1cd0e23b12e79  calendarsupport-20.04.0.tar.xz"

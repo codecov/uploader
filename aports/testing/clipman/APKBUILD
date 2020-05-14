@@ -1,0 +1,24 @@
+# Contributor: Galen Abell <galen@galenabell.com>
+# Maintainer: Galen Abell <galen@galenabell.com>
+pkgname=clipman
+pkgver=1.5.1
+pkgrel=0
+pkgdesc="A simple clipboard manager for Wayland"
+url="https://github.com/yory8/clipman"
+arch="all"
+license="GPL-3.0-only"
+depends="wl-clipboard"
+makedepends="go"
+options="!check" # no tests
+subpackages="$pkgname-doc"
+source="$pkgname-$pkgver.tar.gz::https://github.com/yory8/clipman/archive/v$pkgver.tar.gz"
+
+build() {
+	go build -o $pkgname
+}
+
+package() {
+	install -Dm755 $pkgname "$pkgdir"/usr/bin/$pkgname
+	install -Dm644 docs/clipman.1 -t "$pkgdir"/usr/share/man/man1
+}
+sha512sums="617c7d06c3617c5aaf4b5dc526d86dc729daad8a8f6a5f1080279172e9d15c6633638b05985e88b29712da73708961182018166d5e73755993eda2dc3de9e454  clipman-1.5.1.tar.gz"

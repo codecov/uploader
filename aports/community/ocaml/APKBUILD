@@ -1,0 +1,125 @@
+# Contributor: Borys Zhukov <mp5@mp5.im>
+# Contributor: Jakub Jirutka <jakub@jirutka.cz>
+# Maintainer: Jakub Jirutka <jakub@jirutka.cz>
+pkgname=ocaml
+pkgver=4.08.1
+pkgrel=2
+pkgdesc="Main implementation of the Caml programming language"
+url="http://ocaml.org/"
+arch="all !x86 !armhf !armv7 !mips !mips64"
+license="LGPL-2.1-or-later-WITH-linking-exception"
+depends="$pkgname-runtime=$pkgver-r$pkgrel gcc"
+makedepends="gdbm-dev libc-dev ncurses-dev zlib-dev binutils-dev"
+[ "$CARCH" = "x86_64" ] || options="textrels"
+subpackages="
+	$pkgname-doc
+	$pkgname-dev
+	$pkgname-ocamldoc
+	$pkgname-compiler-libs:_compiler_libs
+	$pkgname-runtime
+	"
+source="http://caml.inria.fr/pub/distrib/ocaml-${pkgver%.*}/$pkgname-$pkgver.tar.gz
+	compile-without-debug-info.patch
+	fix-mcontext-fields.patch
+	fix-segfault-in-ppc64le.patch
+	fix-check-parser-uptodate-or-warn.sh.patch
+	"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--prefix /usr \
+		--bindir /usr/bin \
+		--libdir /usr/lib/ocaml \
+		--mandir /usr/share/man \
+		CC="${CC:-gcc}" \
+		AS="${CC:-gcc} -c" \
+		ASPP="${CC:-gcc} -c"
+	make world.opt
+}
+
+check() {
+	cd "$builddir"
+
+	# FIXME: there seem to be some spurious failures, ignore until fixed.
+	make -C testsuite all || true
+}
+
+package() {
+	cd "$builddir"
+
+	make DESTDIR="$pkgdir" install
+
+	install -Dm644 LICENSE "$pkgdir"/usr/share/licenses/$pkgname/LICENSE
+	install -Dm644 Changes "$pkgdir"/usr/share/doc/$pkgname/Changes
+
+	cd "$pkgdir"
+
+	# Remove annotation files and sources.
+	find usr/lib/ocaml \
+		\( -name '*.cmt' -o -name '*.cmti' -o -name '*.ml' \) \
+		-a -delete
+
+	# To be consistent with other binaries.
+	mv usr/bin/ocamldoc usr/bin/ocamldoc.byte
+	ln -s ocamldoc.opt usr/bin/ocamldoc
+}
+
+dev() {
+	pkgdesc="OCaml bytecode executables"
+
+	_submv 'usr/bin/*.byte'
+}
+
+ocamldoc() {
+	pkgdesc="Documentation generator for OCaml"
+	depends="$pkgname=$pkgver-r$pkgrel"
+	replaces="$pkgname"  # for backward compatibility
+
+	_submv usr/bin/ocamldoc\*
+	_submv usr/lib/ocaml/ocamldoc
+}
+
+_compiler_libs() {
+	pkgdesc="Compiler libraries for OCaml"
+	depends="$pkgname=$pkgver-r$pkgrel"
+	replaces="$pkgname"  # for backward compatibility
+
+	_submv usr/lib/ocaml/compiler-libs
+}
+
+runtime() {
+	pkgdesc="OCaml runtime environment"
+	depends=""
+	replaces="$pkgname"  # for backward compatibility
+
+	_submv usr/bin/ocamlrun
+
+	local i; for i in \
+		'*.cmo' \
+		'*.cmi' \
+		'*.cma' \
+		'VERSION' \
+		'stublibs' \
+		'vmthreads/*.cmi' \
+		'vmthreads/*.cma' \
+		'threads/*.cmi' \
+		'threads/*.cma'
+	do
+		_submv "usr/lib/ocaml/$i"
+	done
+}
+
+_submv() {
+	local path="$1"
+	mkdir -p "$subpkgdir"/${path%/*}
+	mv "$pkgdir"/$path "$subpkgdir"/${path%/*}/
+	rmdir -p "$pkgdir"/${path%/*} 2>/dev/null || true
+}
+
+sha512sums="8239c1879926e59c3d9611ad0d97618ce21b0528f1bd59db3df9c24287ad180ffa74f34e52e1fab39e71cbf8113a9a4ee5037cc33ae64ca6a9a109fe4ada0256  ocaml-4.08.1.tar.gz
+49cbd6df3a70d00df33d34ab4508dd04d52cbc94efc6c8cac8668758e7346be3c7acedf5b8af38a0adb18c69b8d0859667b12cc11699002c048af962cf283ad2  compile-without-debug-info.patch
+e853f609006bd2514bbf63cf9215150496ec62ceee3e55f6f719b19453c97251ad935245578528fab798e626dab5a6c4e2fd5fb652f99ddd5cfd261ac0c4c9bb  fix-mcontext-fields.patch
+e65b647427d9c94933d5be97857daf8cdc65e25c10066740dbcbab7a4e6f8ddb2277ee7d5796abf5916e5bdd59b057de736190432c480fc8ff2a4b2a94d46eca  fix-segfault-in-ppc64le.patch
+b3362906c23ecdb084db7dbf18cae22f0a54ba968f1ecf9c8d13c230ca221b3f77fa820a52e091ce7b71b1cb4a91faf1346692aa6fa411bb46fca784500def25  fix-check-parser-uptodate-or-warn.sh.patch"

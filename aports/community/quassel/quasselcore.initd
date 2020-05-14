@@ -1,0 +1,59 @@
+#!/sbin/openrc-run
+
+depend() {
+	need localmount
+	after bootmisc postgres
+}
+
+name="Quassel Core"
+pidfile="/run/${RC_SVCNAME}.pid"
+command="/usr/bin/quasselcore"
+command_background="true"
+
+QUASSEL_USER="${USER:-quassel}"
+QUASSEL_GROUP="${GROUP:-quassel}"
+command_user="$QUASSEL_USER:$QUASSEL_GROUP"
+
+LOGLEVEL=${LOGLEVEL:-"Info"}
+LOGFILE=${LOGFILE:-"/var/log/quassel.log"}
+CONFIGDIR=${CONFIGDIR:-"/var/lib/quassel"}
+command_args="--configdir='${CONFIGDIR}' \
+	--logfile='${LOGFILE}' --loglevel='${LOGLEVEL}' \
+	${LISTEN:+--listen='${LISTEN}'} ${PORT:+--port='${PORT}'}"
+
+checkconfig() {
+	# check config folder
+	if [ ! -d "${CONFIGDIR}" ]; then
+		mkdir "${CONFIGDIR}" || return 1
+	fi
+	# permissions always changed just to avoid runtime issues
+	chown -R "$command_user" "${CONFIGDIR}" || return 1
+
+	# check log file
+	if [ ! -e "${LOGFILE}" ]; then
+		touch "${LOGFILE}" || return 1
+	fi
+	# permissions always changed just to avoid runtime issues
+	chown "$command_user" "${LOGFILE}" || return 1
+}
+
+start_pre() {
+	# If this isn't a restart, make sure that the user's config isn't
+	# busted before we try to start the daemon (this will produce
+	# better error messages than if we just try to start it blindly).
+	#
+	# If, on the other hand, this *is* a restart, then the stop_pre
+	# action will have ensured that the config is usable and we don't
+	# need to do that again.
+	if [ "${RC_CMD}" != "restart" ] ; then
+		checkconfig || return $?
+	fi
+}
+
+stop_pre() {
+	# If this is a restart, check to make sure the user's config
+	# isn't busted before we stop the running daemon.
+	if [ "${RC_CMD}" = "restart" ] ; then
+		checkconfig || return $?
+	fi
+}

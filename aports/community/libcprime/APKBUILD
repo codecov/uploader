@@ -1,0 +1,25 @@
+# Contributor: rahmanshaber <rahmanshaber@yahoo.com>
+# Maintainer: rahmanshaber <rahmanshaber@yahoo.com>
+pkgname=libcprime
+pkgver=2.8.0
+pkgrel=0
+pkgdesc="A library for bookmarking, saving recent activities, managing settings of CoreApps."
+arch="all"
+url="https://gitlab.com/cubocore"
+license="GPL-3.0-or-later"
+depends="qt5-qtbase libnotify"
+makedepends="qt5-qtbase-dev libcprime-dev"
+source="$pkgname-$pkgver.tar.gz::https://gitlab.com/cubocore/libcprime/-/archive/v$pkgver/libcprime-v$pkgver.tar.gz"
+subpackages="$pkgname-dev"
+builddir="$srcdir/$pkgname-v$pkgver"
+options="!check"
+
+build() {
+	qmake-qt5
+	make
+}
+
+package() {
+	INSTALL_ROOT="$pkgdir" make install
+}
+sha512sums="fa3d5b03605a7b19e31b240c334b35b3a22d98c1f4d57c426b155ab29918cc8959dbdaad326806541016427705e3463c5158136ad561ad57a521eac568cf7046  libcprime-2.8.0.tar.gz"

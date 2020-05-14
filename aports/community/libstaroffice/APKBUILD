@@ -1,0 +1,32 @@
+# Contributor: Timo Teräs <timo.teras@iki.fi>
+# Maintainer: Timo Teräs <timo.teras@iki.fi>
+pkgname=libstaroffice
+pkgver=0.0.7
+pkgrel=0
+pkgdesc="Import filter for StarOffice documents"
+url="https://github.com/fosnola/libstaroffice"
+arch="all"
+license="MPL-2.0"
+depends_dev="zlib-dev boost-dev"
+makedepends="$depends_dev librevenge-dev doxygen"
+subpackages="$pkgname-dev $pkgname-doc"
+source="https://github.com/fosnola/libstaroffice/releases/download/$pkgver/libstaroffice-$pkgver.tar.xz
+	fix-maybe-uninitialized.patch
+	"
+
+build() {
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+}
+sha512sums="fae873457a8018c1613667aa92771981503585513ab01bdbd2dd6d506ed4f72a7a8fdcfcb8953a46dfcb8fd902d2c9ef8ccd1a5ff15c83990a89847fb98009f8  libstaroffice-0.0.7.tar.xz
+db7129b9bc0ef6fbf33ab43c647c9c48296791853ca5fce80fa2791351aafb16f654858db64d5c3f740083ffb900e241ee2ca461382ae42c008d8b74df9f94a5  fix-maybe-uninitialized.patch"

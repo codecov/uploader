@@ -1,0 +1,38 @@
+# Contributor: Roberto Oliveira <robertoguimaraes8@gmail.com>
+# Maintainer: Roberto Oliveira <robertoguimaraes8@gmail.com>
+pkgname=perl-clone-choose
+_pkgreal=Clone-Choose
+pkgver=0.010
+pkgrel=2
+pkgdesc="Choose appropriate clone utility"
+url="https://metacpan.org/release/Clone-Choose"
+arch="noarch"
+license="GPL-1.0-or-later OR Artistic-1.0-Perl"
+cpancheckdepends="perl-test-without-module"
+makedepends="perl-dev"
+checkdepends="$cpancheckdepends"
+subpackages="$pkgname-doc"
+source="https://cpan.metacpan.org/authors/id/H/HE/HERMES/$_pkgreal-$pkgver.tar.gz"
+builddir="$srcdir/$_pkgreal-$pkgver"
+
+prepare() {
+	default_prepare
+
+	export CFLAGS=$(perl -MConfig -E 'say $Config{ccflags}')
+	PERL_MM_USE_DEFAULT=1 perl -I. Makefile.PL INSTALLDIRS=vendor
+}
+
+build() {
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	find "$pkgdir" \( -name perllocal.pod -o -name .packlist \) -delete
+}
+
+check() {
+	make test
+}
+
+sha512sums="5dbcd1b031ddbdaff81c46c5a48eb51b31bfe451e0777dc88a107d2b104e8708f08a5717a0f82f4d03efb8610e2b42fcb2dc1269e3262ece16b9a503d606face  Clone-Choose-0.010.tar.gz"

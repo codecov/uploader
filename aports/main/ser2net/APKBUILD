@@ -1,0 +1,44 @@
+# Contributor: Carlo Landmeter <clandmeter@gmail.com>
+# Maintainer: Natanael Copa <ncopa@alpinelinux.org>
+pkgname=ser2net
+pkgver=3.5.1
+pkgrel=0
+pkgdesc="A proxy that allows telnet/tcp connections to be made to serial ports"
+url="https://sourceforge.net/projects/ser2net"
+arch="all"
+license="GPL"
+depends=""
+depends_dev=""
+makedepends="$depends_dev linux-headers"
+install=""
+subpackages="$pkgname-doc $pkgname-openrc"
+source="https://sourceforge.net/projects/ser2net/files/ser2net/$pkgname-$pkgver.tar.gz
+	$pkgname.confd
+	$pkgname.initd
+"
+builddir="$srcdir/$pkgname-$pkgver"
+
+build() {
+	cd "$builddir"
+	./configure \
+		--build=$CBUILD \
+		--host=$CHOST \
+		--prefix=/usr \
+		--sysconfdir=/etc \
+		--mandir=/usr/share/man \
+		--infodir=/usr/share/info \
+		--localstatedir=/var
+	make
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+	install -D -m755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+	install -D -m644 "$srcdir"/$pkgname.confd "$pkgdir"/etc/conf.d/$pkgname
+	install -D -m644 $pkgname.conf "$pkgdir"/etc/$pkgname.conf
+}
+
+sha512sums="5d052c84faa6172d94d616026b0a96f0c479b2c5d0571e6016d39097a877b2bb77e68fa792d957368d3339083d7cc5bd0bd18669ca37dfc9ddd4620d427e207b  ser2net-3.5.1.tar.gz
+15054f7aa604f93bd5a54c2bb96c9a3168905be5ace50bcd2ebeeaf9dc9ae19426388e6118e9e4850125349090ee29542c24487e64c349593a76366be4a5e501  ser2net.confd
+2b8dc01055222743398fc8ea6bf66b3aabc92661522284c8669d8114a32d376c03038e33fc9802c1cf93290a4ac4f07a4ca806056b98d1ecaff3cbc2614d3b7b  ser2net.initd"

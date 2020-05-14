@@ -1,0 +1,33 @@
+# Contributor: Bart Ribbers <bribbers@disroot.org>
+# Maintainer: Bart Ribbers <bribbers@disroot.org>
+pkgname=powerdevil
+pkgver=5.18.5
+pkgrel=0
+pkgdesc="Manages the power consumption settings of a Plasma Shell"
+arch="all !armhf" # armhf blocked by extra-cmake-modules
+url="https://www.kde.org/workspaces/plasmadesktop/"
+license="GPL-2.0-or-later AND LGPL-2.0-or-later AND (LGPL-2.1-only OR LGPL-3.0-only)"
+depends="upower"
+depends_dev="qt5-qtbase-dev qt5-qtx11extras-dev kactivities-dev kauth-dev kidletime-dev kconfig-dev kdbusaddons-dev solid-dev ki18n-dev kglobalaccel-dev kio-dev knotifyconfig-dev kwayland-dev kcrash-dev knotifications-dev libkscreen-dev plasma-workspace-dev bluez-qt-dev networkmanager-qt-dev eudev-dev"
+makedepends="$depends_dev extra-cmake-modules kdoctools-dev"
+source="https://download.kde.org/stable/plasma/$pkgver/powerdevil-$pkgver.tar.xz"
+subpackages="$pkgname-dev $pkgname-libs $pkgname-doc $pkgname-lang"
+
+build() {
+	cmake -B build \
+		-DCMAKE_BUILD_TYPE=None \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_INSTALL_LIBDIR=lib
+	cmake --build build
+}
+
+check() {
+	cd build
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+}
+
+package() {
+	DESTDIR="$pkgdir" cmake --build build --target install
+}
+
+sha512sums="b7054099cbf3e176591e4fff68ce1dbb7eb9d2f332a75bea3e2ad5954246f6d4d3b0018de101d8ca0df8c7cfa1988abaed40840466a503e09251e4af623fd3b3  powerdevil-5.18.5.tar.xz"

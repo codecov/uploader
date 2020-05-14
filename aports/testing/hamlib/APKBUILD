@@ -1,0 +1,52 @@
+# Contributor: Bradford D. Boyle <bradford.d.boyle@gmail.com>
+# Maintainer: Bradford D. Boyle <bradford.d.boyle@gmail.com>
+pkgname=hamlib
+pkgver=3.3
+pkgrel=2
+pkgdesc="Library to control radio transceivers and receivers"
+url="http://www.hamlib.org/"
+arch="all"
+license="LGPL-2.0-or-later"
+makedepends="linux-headers perl-dev swig tcl-dev chrpath libusb-dev"
+subpackages="$pkgname-dev $pkgname-doc $pkgname-perl $pkgname-tcl"
+source="https://downloads.sourceforge.net/project/hamlib/hamlib/$pkgver/hamlib-$pkgver.tar.gz"
+
+build() {
+	./configure \
+		--prefix=/usr \
+		--sbindir=/usr/bin \
+		--with-perl-binding \
+		--without-python-binding \
+		--with-tcl-binding
+	make
+}
+
+package() {
+	make DESTDIR="$pkgdir" install
+	rm -f "$pkgdir"/usr/lib/*.a
+	rm -f "$pkgdir"/usr/lib/tcl8.6/Hamlib/hamlibtcl.a
+}
+
+perl() {
+	pkgdesc="Perl bindings for $pkgname"
+	depends="perl"
+
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/perl5 "$subpkgdir"/usr/lib/
+
+	# fix perl module location
+	cd "$subpkgdir"/usr/lib/perl5/site_perl/
+	mkdir current
+	mv auto current
+	mv Hamlib.pm current
+	rm perltest.pl
+
+	chrpath --delete "$subpkgdir"/usr/lib/perl5/site_perl/current/auto/Hamlib/Hamlib.so
+}
+
+tcl() {
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/tcl8.6 "$subpkgdir"/usr/lib/
+}
+
+sha512sums="4cf6c94d0238c8a13aed09413b3f4a027c8ded07f8840cdb2b9d38b39b6395a4a88a8105257015345f6de0658ab8c60292d11a9de3e16a493e153637af630a80  hamlib-3.3.tar.gz"
