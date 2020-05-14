@@ -62,9 +62,12 @@ jobs:
 
     steps:
       - checkout
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: .
+
+      - run: whoami
+      - run: apk add alpine-sdk
+      - run: exit 1
+
+      # Nothing past here should run for testing
 
       # Download and cache dependencies
       - restore_cache:
