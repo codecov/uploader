@@ -76,6 +76,10 @@ jobs:
           name: Test new user
           command: |
             sudo -u codecov-builder whoami
+      - run:
+          name: Clone the aports tree
+          command: |
+            sudo -u codecov-builder git clone git://git.alpinelinux.org/aports
 
       - run: exit 1
 
