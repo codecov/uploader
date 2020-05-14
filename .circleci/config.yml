@@ -75,7 +75,7 @@ jobs:
       - run:
           name: Test new user
           command: |
-            sudo -u codecov-builder bash
+            sudo -u codecov-builder /bin/sh
             whoami
 
       - run: exit 1
