@@ -70,7 +70,7 @@ jobs:
 
       - run:
           name: Create new user
-          command: adduser --disabled-password codecov-builder
+          command: adduser -D codecov-builder
 
       - run:
           name: Test new user
