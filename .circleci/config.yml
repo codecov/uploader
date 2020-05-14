@@ -67,7 +67,9 @@ jobs:
           name: Initial Setup
           command: |
             apk add alpine-sdk
-            echo "" | login alpine-sdk
+            adduser -D codecov-builder
+            login alpine-sdk
+            whoami
             exit 1
             exit 1
 
