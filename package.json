@@ -91,6 +91,10 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/test_helpers.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "<rootDir>/aports"
     ]
   }
 }
