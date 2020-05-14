@@ -67,7 +67,14 @@ jobs:
           name: Initial Setup
           command: |
             apk add alpine-sdk
-            adduser --disabled-password codecov-builder
+
+      - run:
+          name: Create new user
+          command: adduser --disabled-password codecov-builder
+
+      - run:
+          name: Test new user
+          command: |
             login codecov-builder
             whoami
 
