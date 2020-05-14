@@ -80,11 +80,13 @@ jobs:
           command: |
             login codecov-builder
             whoami
+            exit
       - run:
           name: Clone the aports tree
           command: |
             login codecov-builder
             ls aports
+            exit
           working_directory: /home/codecov-builder
 
       - run: exit 1
