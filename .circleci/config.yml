@@ -75,7 +75,7 @@ jobs:
       - run:
           name: Test new user
           command: |
-            login codecov-builder
+            echo "" | login codecov-builder
             whoami
 
       - run: exit 1
