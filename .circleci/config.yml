@@ -63,9 +63,14 @@ jobs:
     steps:
       - checkout
 
-      - run: whoami
-      - run: apk add alpine-sdk
-      - run: exit 1
+      - run:
+          name: Initial Setup
+          command: |
+            apk add alpine-sdk
+            login alpine-sdk
+            exit 1
+            exit11
+
 
       # Nothing past here should run for testing
 
