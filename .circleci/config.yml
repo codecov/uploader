@@ -77,6 +77,7 @@ jobs:
           command: |
             sudo -u codecov-builder /bin/sh
             whoami
+            exit
 
       - run: exit 1
 
