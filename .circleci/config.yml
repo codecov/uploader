@@ -70,9 +70,8 @@ jobs:
             adduser --disabled-password codecov-builder
             login codecov-builder
             whoami
-            exit 1
-            exit 1
 
+      - run: exit 1
 
       # Nothing past here should run for testing
 
