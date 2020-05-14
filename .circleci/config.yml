@@ -72,7 +72,7 @@ jobs:
           name: Create new user
           command: |
             adduser -D codecov-builder
-            password -d codecov-builder
+            passwd -d codecov-builder
             # Add the new user to sudoers. Yes, I know this is the wrong way. I'm in CI.
             echo "codecov-builder    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
