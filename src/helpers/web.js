@@ -25,7 +25,6 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
       .send(uploadFile) // sends a JSON post body
       .set("Content-Type", "application/x-gzip")
       .set("Content-Encoding", "gzip")
-      .set("x-amz-acl", "public-read")
       .set("Content-Length", Buffer.byteLength(uploadFile));
 
     if (result.status === 200) {
