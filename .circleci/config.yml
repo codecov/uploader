@@ -26,16 +26,14 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - v1-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
       - run: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
       # run tests!
       - run: make test
@@ -83,9 +81,13 @@ jobs:
           # Must be absolute path or relative path from working_directory
           at: .
       - run:
-          name: Run Linux binary (dry run)
+          name: Run Linux binary -f (dry run)
           command: |
-            out/codecov-linux -F linux -d -Z > output_linux.txt
+            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z >> output_linux.txt
+      - run:
+          name: Run Linux binary auto-detect (dry run)
+          command: |
+            out/codecov-linux -F linux -d -Z >> output_linux.txt
       - run:
           name: Run Linux binary (upload)
           command: |
@@ -125,9 +127,13 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Run MacOS binary (dry-run)
+          name: Run MacOS binary -f (dry-run)
           command: |
-            out/codecov-macos -F macos -d -Z > output_osx.txt
+            out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z >> output_osx.txt
+      - run:
+          name: Run MacOS binary auto-detect (dry-run)
+          command: |
+            out/codecov-macos -F macos -d -Z >> output_osx.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
@@ -165,9 +171,16 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Run Windows binary (dry-run)
+          name: Run Windows binary -f (dry-run)
           command: |
-            .\out\codecov.exe -F windows -d -Z > output_win.txt
+            dir C:\Users\circleci\project\coverage\
+            attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
+            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z >> output_win.txt
+          shell: cmd.exe
+      - run:
+          name: Run Windows binary auto-detect (dry-run)
+          command: |
+            .\out\codecov.exe -F windows -d -Z >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
