@@ -241,6 +241,10 @@ jobs:
 
             unzip ghr_v0.5.4_linux_amd64.zip
       - run:
+          name: Make binaries executable
+          command: |
+            chmod +x out/*
+      - run:
           name: Package
           command: >
             RELEASE_TAG=v$(cat package.json | jq --raw-output
