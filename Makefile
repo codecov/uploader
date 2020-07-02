@@ -16,5 +16,6 @@ build:
 	rm -rf out
 	rm -rf dist
 	npm run prebuild
+	npm run build-linux
 
 .PHONY: clean install test build

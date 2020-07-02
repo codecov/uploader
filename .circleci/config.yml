@@ -53,6 +53,7 @@ jobs:
           # Must be absolute path or relative path from working_directory
           at: .
       - run: apk add git
+      - run: apk add --update nodejs npm
       - run: npm ci
 
       # run tests!
@@ -81,6 +82,7 @@ jobs:
           name: Build Windows Binary
           command: |
             npm ci
+            npm run prebuild
             npm run build-windows
 
       - persist_to_workspace:
