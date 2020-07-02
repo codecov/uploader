@@ -52,6 +52,7 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
+      - run: apk add git
       - run: npm ci
 
       # run tests!
