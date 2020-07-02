@@ -162,24 +162,24 @@ jobs:
           paths:
             - output_alpine.txt
 
-    test-alpine-without-git:
-      docker:
-        - image: gitlab/gitlab-runner:alpine
-      steps:
-        - attach_workspace:
-            at: .
-        - run:
-            name: Run Alpine binary (dry run)
-            command: |
-              out/codecov-alpine -F alpine-without-git -d -Z > output_alpine_without_git.txt
-        - run:
-            name: Run Linux binary (upload)
-            command: |
-              out/codecov-alpine -F alpine-without-git -Z
-        - persist_to_workspace:
-            root: .
-            paths:
-              - output_alpine_without_git.txt
+  test-alpine-without-git:
+    docker:
+      - image: gitlab/gitlab-runner:alpine
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Alpine binary (dry run)
+          command: |
+            out/codecov-alpine -F alpine-without-git -d -Z > output_alpine_without_git.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-alpine -F alpine-without-git -Z
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine_without_git.txt
 
   test-macos:
     macos:
