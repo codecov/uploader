@@ -55,7 +55,11 @@ jobs:
   build-alpine:
     docker:
       - image: mhart/alpine-node:10.20.1
-
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
       - run: npm ci
 
       # run tests!
