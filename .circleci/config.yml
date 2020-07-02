@@ -43,6 +43,8 @@ jobs:
             - out
             - coverage
             - package.json
+      - store_artifacts:
+          path: coverage
 
   build-alpine:
     docker:
