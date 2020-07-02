@@ -23,17 +23,9 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
-      - run: npm install
+      - run: npm ci
 
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
       # run tests!
       - run: make test
