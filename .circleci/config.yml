@@ -345,6 +345,9 @@ workflows:
       - test-linux:
           requires:
             - build-linux
+      - build-alpine:
+          requires:
+            - build-linux
       - test-linux-without-git:
           requires:
             - test-linux
