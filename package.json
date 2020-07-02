@@ -8,7 +8,7 @@
     "lint": "eslint src",
     "test": "jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
-    "build-alpine": "pkg . --targets alpine --output out/codecov-alpine",
+    "build-alpine": "pkg . --build --configure ['--partly-static', '--enable-static'] --targets alpine --output out/codecov-alpine",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-windows": "pkg . --targets win --output out/codecov.exe"
   },
