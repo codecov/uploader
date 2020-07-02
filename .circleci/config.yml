@@ -8,7 +8,7 @@ orbs:
   win: circleci/windows@2.2.0
 
 jobs:
-  build:
+  build-linux:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.16.3
@@ -40,6 +40,58 @@ jobs:
 
       # run tests!
       - run: make build
+
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: .
+          # Must be relative path from root
+          paths:
+            - out
+            - coverage
+            - package.json
+
+  build-alpine:
+    docker:
+      - image: mhart/alpine-node:10.20.1
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - run:
+          name: Initial Setup
+          command: |
+            apk add alpine-sdk
+      - run:
+          name: Create new user
+          command: |
+            adduser -D codecov-builder
+            passwd -d codecov-builder
+            # Add the new user to sudoers. Yes, I know this is the wrong way. I'm in CI.
+            echo "codecov-builder    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+      - run:
+          name: Test new user
+          command: |
+            login codecov-builder
+            whoami
+            exit
+      - run:
+          name: Clone the aports tree
+          command: |
+            login codecov-builder
+            ls aports
+            exit
+          working_directory: /home/codecov-builder
+
+      - run: exit 1
+
+      # Nothing past here should run for testing
+      - run: npm ci
+      # run tests!
+      - run: npm run build-alpine
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
@@ -119,10 +171,26 @@ jobs:
           paths:
             - output_linux.txt
 
+  test-alpine:
+    docker:
+      # specify the version you desire here
+      - image: gitlab/gitlab-runner:alpine
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Run Alpine binary (dry run)
+          command: |
+            out/codecov-alpine -F alpine -d -Z > output_alpine.txt
+      - run:
+
+
   test-macos:
-    macos: 
-      xcode: "10.0.0" 
-    steps: 
+    macos:
+      xcode: "10.0.0"
+    steps:
       - checkout
       - attach_workspace:
           at: .
@@ -145,9 +213,9 @@ jobs:
             - output_osx.txt
 
   test-macos-without-git:
-    macos: 
-      xcode: "10.0.0" 
-    steps: 
+    macos:
+      xcode: "10.0.0"
+    steps:
       - attach_workspace:
           at: .
       - run:
@@ -236,7 +304,7 @@ jobs:
       - store_artifacts:
           path: output_win.txt
       - store_artifacts:
-          path: output_win_without_git.txt     
+          path: output_win_without_git.txt
 
 # TODO: add test runs for each binary outside of a git project
 
@@ -275,16 +343,22 @@ workflows:
       - build
       - build-windows:
           requires:
-            - build
+            - build-linux
       - test-linux:
           requires:
-            - build
+            - build-linux
       - test-linux-without-git:
           requires:
             - test-linux
+      - test-alpine:
+          requires:
+            - build-alpine
+      - test-alpine-without-git:
+          requires:
+            - test-alpine
       - test-macos:
           requires:
-            - build
+            - build-linux
       - test-macos-without-git:
           requires:
             - test-macos
