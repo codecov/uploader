@@ -17,5 +17,6 @@ build:
 	rm -rf dist
 	npm run prebuild
 	npm run build-linux
+	npm run build-macos
 
 .PHONY: clean install test build

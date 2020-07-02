@@ -8,10 +8,10 @@
     "lint": "eslint src",
     "test": "jest",
     "prebuild": "rollup -c rollup.config.js",
-    "build-linux": "nexe dist/codecov.js -t linux-x64-10.16.3 -o out/codecov",
+    "build-linux": "nexe dist/codecov.js -t linux-x64-10.16.3 -o out/codecov-linux",
     "build-alpine": "nexe dist/codecov.js --build --configure ['--partly-static', '--enable-static'] --t alpine-x64-10.16.0 -o out/codecov-alpine",
     "build-macos": "nexe dist/codecov.js -t mac-x64-10.16.3 -o out/codecov-macos",
-    "build-windows": "nexe dist/codecov.js -t win32-x64-10.16.0x"
+    "build-windows": "nexe dist/codecov.js -t win32-x64-10.16.0x -o out/codecov.exe"
   },
   "repository": {
     "type": "git",

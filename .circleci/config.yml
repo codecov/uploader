@@ -55,6 +55,7 @@ jobs:
       - run: apk add git
       - run: apk add --update nodejs npm
       - run: npm ci
+      - run: npm run prebuild
 
       # run tests!
       - run: npm run build-alpine
