@@ -338,7 +338,7 @@ workflows:
 
   "Build and Test":
     jobs:
-      - build
+      - build-linux
       - build-windows:
           requires:
             - build-linux
