@@ -7,10 +7,11 @@
   "scripts": {
     "lint": "eslint src",
     "test": "jest",
-    "build-linux": "pkg . --targets linux --output out/codecov-linux",
-    "build-alpine": "pkg . --build --configure ['--partly-static', '--enable-static'] --targets alpine --output out/codecov-alpine",
-    "build-macos": "pkg . --targets macos --output out/codecov-macos",
-    "build-windows": "pkg . --targets win --output out/codecov.exe"
+    "prebuild": "rollup -c rollup.config.js",
+    "build-linux": "nexe dist/codecov.js -t linux-x64-10.16.3 -o out/codecov",
+    "build-alpine": "nexe dist/codecov.js --build --configure ['--partly-static', '--enable-static'] --t alpine-x64-10.16.0 -o out/codecov-alpine",
+    "build-macos": "nexe dist/codecov.js -t mac-x64-10.16.3 -o out/codecov-macos",
+    "build-windows": "nexe dist/codecov.js -t win32-x64-10.16.0x"
   },
   "repository": {
     "type": "git",

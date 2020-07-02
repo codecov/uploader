@@ -46,7 +46,7 @@ jobs:
 
   build-alpine:
     docker:
-      - image: mhart/alpine-node:10.20.1
+      - image: python:3.7.4-alpine
     steps:
       - checkout
       - attach_workspace:
