@@ -56,40 +56,8 @@ jobs:
     docker:
       - image: mhart/alpine-node:10.20.1
 
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      - run:
-          name: Initial Setup
-          command: |
-            apk add alpine-sdk
-      - run:
-          name: Create new user
-          command: |
-            adduser -D codecov-builder
-            passwd -d codecov-builder
-            # Add the new user to sudoers. Yes, I know this is the wrong way. I'm in CI.
-            echo "codecov-builder    ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-      - run:
-          name: Test new user
-          command: |
-            login codecov-builder
-            whoami
-            exit
-      - run:
-          name: Clone the aports tree
-          command: |
-            login codecov-builder
-            ls aports
-            exit
-          working_directory: /home/codecov-builder
-
-      - run: exit 1
-
-      # Nothing past here should run for testing
       - run: npm ci
+
       # run tests!
       - run: npm run build-alpine
 
@@ -103,6 +71,7 @@ jobs:
             - out
             - coverage
             - package.json
+
 
   build-windows:
     executor: win/default
@@ -185,7 +154,32 @@ jobs:
           command: |
             out/codecov-alpine -F alpine -d -Z > output_alpine.txt
       - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -F alpine -Z
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine.txt
 
+    test-alpine-without-git:
+      docker:
+        - image: gitlab/gitlab-runner:alpine
+      steps:
+        - attach_workspace:
+            at: .
+        - run:
+            name: Run Alpine binary (dry run)
+            command: |
+              out/codecov-alpine -F alpine-without-git -d -Z > output_alpine_without_git.txt
+        - run:
+            name: Run Linux binary (upload)
+            command: |
+              out/codecov-alpine -F alpine-without-git -Z
+        - persist_to_workspace:
+            root: .
+            paths:
+              - output_alpine_without_git.txt
 
   test-macos:
     macos:
@@ -371,6 +365,7 @@ workflows:
       - review:
           requires:
             - test-linux-without-git
+            - test-alpine-without-git
             - test-macos-without-git
             - test-windows-without-git
       - deploy:
