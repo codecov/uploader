@@ -18,4 +18,13 @@ build:
 	npm run build-linux
 	npm run build-macos
 
+build-alpine:
+	docker-compose -f docker-compose-build_alpine.yml up --build --no-deps
+	docker create -ti --name dummy uploader_build_alpine:latest bash
+	docker cp dummy:/out/codecov-alpine out
+	docker rm -f dummy
+
+test-alpine:
+	docker build -f Dockerfile.test_alpine .
+
 .PHONY: clean install test build
