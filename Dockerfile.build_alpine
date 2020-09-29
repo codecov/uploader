@@ -1,0 +1,15 @@
+FROM alpine:3.11.6
+
+RUN apk update
+RUN apk add nodejs npm
+
+# Dependencies for building nodejs
+RUN apk add git patch python2 gcc g++ make linux-headers paxctl
+
+COPY bin bin
+COPY src src
+COPY package.json package.json
+COPY npm-shrinkwrap.json npm-shrinkwrap.json
+RUN npm ci
+
+RUN npm run build-alpine
