@@ -26,16 +26,14 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package.json" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
+            - v1-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
       - run: npm install
 
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+          key: v1-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
       # run tests!
       - run: make test
@@ -43,15 +41,32 @@ jobs:
       # run tests!
       - run: make build
 
-      # upload coverage
-      # - run: out/codecov-linux -f coverage/cobertura-coverage.xml -F build
-
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
           # taken to be the root directory of the workspace.
           root: .
           # Must be relative path from root
+          paths:
+            - out
+            - coverage
+            - package.json
+
+  build-windows:
+    executor: win/default
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Build Windows Binary
+          command: |
+            npm ci
+            npm run build-windows
+
+      - persist_to_workspace:
+          root: .
           paths:
             - out
             - coverage
@@ -66,47 +81,106 @@ jobs:
           # Must be absolute path or relative path from working_directory
           at: .
       - run:
-          name: Run Linux binary (dry run)
+          name: Run Linux binary -f (dry run)
           command: |
-            out/codecov-linux -F linux -d -Z
+            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z >> output_linux.txt
+      - run:
+          name: Run Linux binary auto-detect (dry run)
+          command: |
+            out/codecov-linux -F linux -d -Z >> output_linux.txt
       - run:
           name: Run Linux binary (upload)
           command: |
             out/codecov-linux -F linux -Z
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_linux.txt
+
+  test-linux-without-git:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - attach_workspace:
+          # TODO: Determine why we use the cwd on Linex and not on other operating systems.
+          at: .
+      - run:
+          name: Run Linux binary (dry run)
+          command: |
+            out/codecov-linux -F linux-without-git -d -Z > output_linux_without_git.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-linux -F linux-without-git -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_linux.txt
+
   test-macos:
-    macos: # indicate that we are using the macOS executor
-      xcode: "10.0.0" # indicate our selected version of Xcode
-    steps: # a series of commands to run
+    macos: 
+      xcode: "10.0.0" 
+    steps: 
       - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run MacOS binary -f (dry-run)
+          command: |
+            out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z >> output_osx.txt
+      - run:
+          name: Run MacOS binary auto-detect (dry-run)
+          command: |
+            out/codecov-macos -F macos -d -Z >> output_osx.txt
+      - run:
+          name: Run MacOS binary (upload)
+          command: |
+            out/codecov-macos -F macos -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_osx.txt
+
+  test-macos-without-git:
+    macos: 
+      xcode: "10.0.0" 
+    steps: 
       - attach_workspace:
           at: .
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            out/codecov-macos -F macos -d -Z
+            out/codecov-macos -F macos-without-git -d > output_osx_without_git.txt
       - run:
-          # run our tests using xcode's cli tool `xcodebuild`
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-macos -F macos -Z
+            out/codecov-macos -F macos-without-git
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_osx.txt
 
   test-windows:
     executor: win/default
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
-          name: Build Windows Binary
+          name: Run Windows binary -f (dry-run)
           command: |
-            npm ci
-            npm run build-windows
+            dir C:\Users\circleci\project\coverage\
+            attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
+            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z >> output_win.txt
+          shell: cmd.exe
       - run:
-          name: Run Windows binary (dry-run)
+          name: Run Windows binary auto-detect (dry-run)
           command: |
-            .\out\codecov.exe -F windows -d -Z > output.txt
+            .\out\codecov.exe -F windows -d -Z >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
@@ -114,10 +188,84 @@ jobs:
             .\out\codecov.exe -F windows -Z
           shell: cmd.exe
 
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_win.txt
+
+  test-windows-without-git:
+    executor: win/default
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Run Windows binary (dry-run)
+          command: |
+            .\out\codecov.exe -F windows-without-git -d > output_win_without_git.txt
+          shell: cmd.exe
+      - run:
+          name: Run Windows binary (upload)
+          command: |
+            .\out\codecov.exe -F windows-without-git
+          shell: cmd.exe
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_win_without_git.txt
+
+  review:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - attach_workspace:
+          at: .
       - store_artifacts:
-          path: output.txt
+          path: coverage
+      - store_artifacts:
+          path: out
+      - store_artifacts:
+          path: output_linux.txt
+      - store_artifacts:
+          path: output_linux_without_git.txt
+      - store_artifacts:
+          path: output_osx.txt
+      - store_artifacts:
+          path: output_osx_without_git.txt
+      - store_artifacts:
+          path: output_win.txt
+      - store_artifacts:
+          path: output_win_without_git.txt     
 
 # TODO: add test runs for each binary outside of a git project
+
+  deploy:
+    docker:
+      - image: circleci/node:10.16.3
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: Install GHR
+          command: >
+            wget
+            https://github.com/tcnksm/ghr/releases/download/v0.5.4/ghr_v0.5.4_linux_amd64.zip
+
+            unzip ghr_v0.5.4_linux_amd64.zip
+      - run:
+          name: Make binaries executable
+          command: |
+            chmod +x out/*
+      - run:
+          name: Package
+          command: >
+            RELEASE_TAG=v$(cat package.json | jq --raw-output
+            .version)_$CIRCLE_BUILD_NUM
+
+            echo $RELEASE_TAG
+
+            ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
 
 workflows:
   version: 2
@@ -125,12 +273,35 @@ workflows:
   "Build and Test":
     jobs:
       - build
+      - build-windows:
+          requires:
+            - build
       - test-linux:
           requires:
             - build
+      - test-linux-without-git:
+          requires:
+            - test-linux
       - test-macos:
           requires:
             - build
+      - test-macos-without-git:
+          requires:
+            - test-macos
       - test-windows:
           requires:
-            - build
+            - build-windows
+      - test-windows-without-git:
+          requires:
+            - test-windows
+      - review:
+          requires:
+            - test-linux-without-git
+            - test-macos-without-git
+            - test-windows-without-git
+      - deploy:
+          requires:
+            - review
+          filters:
+            branches:
+              only: master

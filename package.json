@@ -9,6 +9,7 @@
     "test": "jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
+    "build-alpine": "pkg . --targets alpine --output out/codecov-alpine --build",
     "build-windows": "pkg . --targets win --output out/codecov.exe"
   },
   "repository": {
@@ -23,22 +24,23 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
-    "glob": "^7.1.6",
-    "line-reader": "^0.4.0",
-    "superagent": "5.2.1",
-    "validator": "12.2.0",
-    "yargs": "15.1.0"
+    "glob": "7.1.6",
+    "line-reader": "0.4.0",
+    "yargs": "15.3.1",
+    "validator": "13.0.0",
+    "superagent": "5.2.2"
   },
   "devDependencies": {
-    "eslint": "6.8.0",
-    "eslint-config-prettier": "6.10.0",
-    "eslint-plugin-prettier": "3.1.2",
-    "jest": "^25.1.0",
-    "nock": "11.7.2",
-    "pkg": "4.4.3",
-    "prettier": "1.19.1",
-    "testdouble": "^3.13.0",
-    "testdouble-jest": "^2.0.0"
+    "eslint": "7.0.0",
+    "eslint-config-prettier": "6.11.0",
+    "eslint-plugin-prettier": "3.1.3",
+    "expect": "26.0.1",
+    "jest": "^26.0.1",
+    "nock": "^12.0.3",
+    "pkg": "^4.4.8",
+    "prettier": "2.0.5",
+    "testdouble": "3.13.1",
+    "testdouble-jest": "2.0.0"
   },
   "nyc": {
     "all": true,
@@ -83,7 +85,10 @@
       "!**/node_modules/**",
       "!**/vendor/**"
     ],
-    "coverageReporters": ["text", "cobertura"],
+    "coverageReporters": [
+      "text",
+      "cobertura"
+    ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/test_helpers.js"
     ]

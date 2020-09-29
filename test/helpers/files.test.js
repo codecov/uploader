@@ -1,9 +1,9 @@
-/*global expect */
+const {afterEach, describe, it} = require("@jest/globals");
+
 const td = require("testdouble")
 const fs = require("fs");
 const path = require("path");
 const child_process = require("child_process")
-const process = require("process")
 const fileHelpers = require("../../src/helpers/files");
 
 describe("File Helpers", () => {
@@ -46,7 +46,7 @@ describe("File Helpers", () => {
     });
     it("can read a coverage report file", async () => {
       const readFileSync = td.replace(fs, 'readFileSync')
-      td.when(readFileSync("./test-coverage-file.xml")).thenReturn("I am test coverage data")
+      td.when(readFileSync("test-coverage-file.xml")).thenReturn("I am test coverage data")
       const reportContents = fileHelpers.readCoverageFile(
         ".",
         "test-coverage-file.xml"
@@ -59,9 +59,26 @@ describe("File Helpers", () => {
       ).toStrictEqual(["test/index.test.js", "test/providers/index.test.js"]);
     });
     describe("coverage file patterns", function() {
-      it("conatins `jacoco*.xml`", function() {
+      it("contains `jacoco*.xml`", function() {
         expect(fileHelpers.coverageFilePatterns()).toContain("jacoco*.xml");
       });
     });
+    describe("getFilePath()", () => {
+      it("should return path when file path has no starting slash", () => {
+        expect(fileHelpers.getFilePath("/usr/", "coverage.xml")).toEqual("/usr/coverage.xml")
+      })
+      it("should return path when file path has no starting slash", () => {
+        expect(fileHelpers.getFilePath("/usr", "coverage.xml")).toEqual("/usr/coverage.xml")
+      })
+      it("should return path when file path starts with a ./", () => {
+        expect(fileHelpers.getFilePath("/usr/", "./coverage.xml")).toEqual("./coverage.xml")
+      })
+      it("should return path when project root is . and filepath does not start with ./ or /", () => {
+        expect(fileHelpers.getFilePath(".", "coverage.xml")).toEqual("coverage.xml")
+      })
+      it("should return path when project root is . and filepath starts /", () => {
+        expect(fileHelpers.getFilePath(".", "/usr/coverage.xml")).toEqual("/usr/coverage.xml")
+      })
+    })
   });
 });
