@@ -19,4 +19,6 @@ build:
 	npm run build-macos
 	# npm run build-windows
 
-.PHONY: clean install test build, build-win
+make.base: docker build --pull --rm -f "Dockerfile" -t uploader:latest --no-cache "." 
+
+.PHONY: clean install test build, build-win make.base
