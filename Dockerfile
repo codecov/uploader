@@ -12,6 +12,6 @@ RUN apk add git python3 openssh g++ make openssl linux-headers
 
 RUN git clone https://github.com/nodejs/node.git 
 
-RUN cd node && ./configure
+RUN cd node && ./configure --fully-static
 
 RUN cd node && make -j4
