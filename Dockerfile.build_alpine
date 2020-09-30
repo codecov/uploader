@@ -6,9 +6,9 @@ RUN apk add nodejs npm
 # Dependencies for building nodejs
 RUN apk add git patch python2 gcc g++ make linux-headers paxctl
 
-RUN mkdir ~/.pkg-cache/v2.6
+RUN mkdir -p ~/.pkg-cache/v2.6
 
-COPY out/node-alpine ~/.pkg-cache/v2.6/fetched-v2.6-node-v12.14.4-alpine-x64
+COPY out/node-alpine /root/.pkg-cache/v2.6/fetched-v12.18.4-alpine-x64
 
 COPY bin bin
 COPY src src

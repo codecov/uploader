@@ -1,5 +1,5 @@
 FROM alpine:3.11.6
 
-COPY out/codecov-alpine codecov
+COPY out/codecov-alpine-static codecov
 
 RUN ./codecov
