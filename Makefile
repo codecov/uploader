@@ -24,6 +24,23 @@ build-alpine:
 	docker cp dummy:/out/codecov-alpine out
 	docker rm -f dummy
 
-make.base: docker build --pull --rm -f "Dockerfile" -t uploader:latest --no-cache "." 
+make.base: 
+	docker build --pull --rm -f "Dockerfile" -t uploader:latest --no-cache "." 
+
+make.node:
+	docker container rm node-alpine
+	sleep 5
+	docker run --name node-alpine uploader:latest
+	mkdir -p out
+	sleep 5
+	docker cp node-alpine:/node/out/Release/node out/node-alpine 
+	docker build --pull --rm -f "Dockerfile.build_alpine" -t builder:latest --no-cache "."
+	docker container rm codecov-builder
+	sleep 5
+	docker run --name codecov-builder builder:latest
+	mkdir -p out
+	sleep 5
+	docker cp codecov-builder:out/codecov-alpine out/codecov-alpine-static  
+	
 
 .PHONY: clean install test build, make.base
