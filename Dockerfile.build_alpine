@@ -8,7 +8,7 @@ RUN apk add git patch python2 gcc g++ make linux-headers paxctl
 
 RUN mkdir -p ~/.pkg-cache/v2.6
 
-COPY out/node-alpine /root/.pkg-cache/v2.6/fetched-v12.18.4-alpine-x64
+COPY out/node-alpine /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
 
 COPY bin bin
 COPY src src

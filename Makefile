@@ -40,7 +40,9 @@ make.node:
 	docker run --name codecov-builder builder:latest
 	mkdir -p out
 	sleep 5
-	docker cp codecov-builder:out/codecov-alpine out/codecov-alpine-static  
+	docker cp codecov-builder:out/codecov-alpine out/codecov-alpine  
 	
+make.test:
+	docker build --pull --rm -f "Dockerfile.test_alpine" -t alp-test:latest "."
 
 .PHONY: clean install test build, make.base
