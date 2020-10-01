@@ -1,0 +1,19 @@
+FROM alpine:3.11.6
+
+RUN apk update
+RUN apk add nodejs npm
+
+# Dependencies for building nodejs
+RUN apk add git patch python2 gcc g++ make linux-headers paxctl
+
+RUN mkdir -p ~/.pkg-cache/v2.6
+
+COPY out/node-alpine /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
+
+COPY bin bin
+COPY src src
+COPY package.json package.json
+COPY npm-shrinkwrap.json npm-shrinkwrap.json
+RUN npm ci
+
+RUN npm run build-alpine
