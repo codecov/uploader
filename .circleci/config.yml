@@ -99,6 +99,25 @@ jobs:
           working_directory: node
           command: make -j4
 
+      - run:
+          name: Create pkg-cache directory
+          command: mkdir -p ~/.pkg-cache/v2.6
+      
+      - run:
+          name: Copy node binary to pkg-cache
+          command: out/node-alpine /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
+          working_directory: node
+
+      - run:
+          name: Test uploader on alpine
+          command: |
+            npm ci
+            npm test
+
+      - run:
+          name: Build uploader binary on alpine
+          command: npm run build-alpine
+
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
@@ -106,7 +125,7 @@ jobs:
           root: .
           # Must be relative path from root
           paths:
-            - node/out/Release/node
+            - out
 
   build-windows:
     executor: win/default
