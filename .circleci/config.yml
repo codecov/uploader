@@ -8,7 +8,7 @@ orbs:
   win: circleci/windows@2.2.0
 
 jobs:
-  build:
+  build-linux-and-osx:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.16.3
@@ -51,6 +51,59 @@ jobs:
             - out
             - coverage
             - package.json
+
+  build-alpine:
+    docker:
+      # specify the version you desire here
+      - image: alpine:3.11.6
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - run:
+        name: Setup image
+        command: |
+          apk update
+          apk add git python3 openssh g++ make openssl linux-headers python2
+    - checkout
+    - attach_workspace:
+      # Must be absolute path or relative path from working_directory
+      at: .
+    - run:
+        name: Clone nodejs repo
+        command: |
+          git clone https://github.com/nodejs/node.git
+          cd node && git fetch --all --tags
+          cd node && git checkout tags/v12.16.1 -b build
+
+    - run:
+        name: Apply patch
+        command: cd node && git apply ../patches/node.v12.16.1.cpp.patch
+    
+    - run:
+        name: Configure build
+        command: cd node && ./configure --fully-static
+
+    - run:
+        name: Build static nodejs binary
+        command: cd node && make -j4
+
+    # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+    - persist_to_workspace:
+        # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+        # taken to be the root directory of the workspace.
+        root: .
+        # Must be relative path from root
+        paths:
+          - node/out/Release/node
+          - out
+          - coverage
+          - package.json
 
   build-windows:
     executor: win/default
@@ -222,6 +275,8 @@ jobs:
       - attach_workspace:
           at: .
       - store_artifacts:
+        path: node/out/Release/node
+      - store_artifacts:
           path: coverage
       - store_artifacts:
           path: out
@@ -272,19 +327,19 @@ workflows:
 
   "Build and Test":
     jobs:
-      - build
+      - build-linux-and-osx
       - build-windows:
           requires:
-            - build
+            - build-linux-and-osx
       - test-linux:
           requires:
-            - build
+            - build-linux-and-osx
       - test-linux-without-git:
           requires:
             - test-linux
       - test-macos:
           requires:
-            - build
+            - build-linux-and-osx
       - test-macos-without-git:
           requires:
             - test-macos
@@ -296,6 +351,7 @@ workflows:
             - test-windows
       - review:
           requires:
+            - build-alpine
             - test-linux-without-git
             - test-macos-without-git
             - test-windows-without-git
