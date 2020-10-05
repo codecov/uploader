@@ -112,7 +112,8 @@ jobs:
           name: Test uploader on alpine
           command: |
             npm ci
-            npm test
+            npm tests
+          working_directory: node
 
       - run:
           name: Build uploader binary on alpine
