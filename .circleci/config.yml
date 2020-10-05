@@ -111,7 +111,7 @@ jobs:
       - run:
           name: Test uploader on alpine
           command: |
-            rm- rf node  
+            rm -rf node  
             npm ci
             npm test
 
