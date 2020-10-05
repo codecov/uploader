@@ -111,9 +111,9 @@ jobs:
       - run:
           name: Test uploader on alpine
           command: |
+            rm- rf node  
             npm ci
             npm test
-          working_directory: node
 
       - run:
           name: Build uploader binary on alpine
