@@ -105,7 +105,9 @@ jobs:
       
       - run:
           name: Copy node binary to pkg-cache
-          command: cp out/Release/node /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
+          command: | 
+            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
+            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v12.18.1-alpine-x64
           working_directory: node
 
       - run:
