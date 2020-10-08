@@ -111,6 +111,13 @@ jobs:
           working_directory: node
 
       - run:
+          name: Confirm that apline node binary is static
+          command: |
+            apk add file
+            file out/Release/node
+          working_directory: node
+
+      - run:
           name: Test uploader on alpine
           command: |
             rm -rf node  
