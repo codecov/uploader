@@ -1,4 +1,4 @@
-.
+
 
 # Codecov Uploader
 
