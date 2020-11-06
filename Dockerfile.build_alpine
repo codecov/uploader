@@ -1,19 +1,31 @@
-FROM alpine:3.11.6
+FROM alpine:3.11.0 as build_node_stage
 
-RUN apk update
-RUN apk add nodejs npm
+RUN apk add \
+    git \
+    python3 \
+    openssh \
+    g++ \
+    make \
+    openssl \
+    linux-headers \
+    python2 \
+    musl \
+    nodejs \
+    libgcc
 
-# Dependencies for building nodejs
-RUN apk add git patch python2 gcc g++ make linux-headers paxctl
+RUN git clone https://github.com/nodejs/node.git && \
+    cd node && \
+    git fetch --all --tags && \
+    git checkout tags/v12.16.1 -b build
 
-RUN mkdir -p ~/.pkg-cache/v2.6
 
-COPY out/node-alpine /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
+COPY  patches node/patches
+RUN cd node && \
+    git apply patches/node.v12.16.1.cpp.patch
 
-COPY bin bin
-COPY src src
-COPY package.json package.json
-COPY npm-shrinkwrap.json npm-shrinkwrap.json
-RUN npm ci
+RUN cd node && \
+    ./configure --fully-static && \
+    make -j4
 
-RUN npm run build-alpine
+RUN mkdir -p /out && \
+    cp /node/out/Release/node /out/node-alpine 

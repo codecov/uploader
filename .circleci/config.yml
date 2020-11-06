@@ -79,25 +79,25 @@ jobs:
           command: git clone https://github.com/nodejs/node.git
       - run:
           name: Setup repo
-          working_directory: node
           command: |
             git fetch --all --tags
             git checkout tags/v12.16.1 -b build
+          working_directory: node
 
       - run:
           name: Apply patch
-          working_directory: node
           command: git apply ../patches/node.v12.16.1.cpp.patch
+          working_directory: node
       
       - run:
           name: Configure build
-          working_directory: node
           command: ./configure --fully-static
+          working_directory: node
 
       - run:
           name: Build static nodejs binary
-          working_directory: node
           command: make -j4
+          working_directory: node
 
       - run:
           name: Create pkg-cache directory

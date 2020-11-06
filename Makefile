@@ -1,3 +1,5 @@
+all:
+
 clean:
 	rm -rf node_modules
 	rm -rf out
@@ -19,18 +21,28 @@ build:
 	npm run build-macos
   
 build-alpine:
-	docker-compose -f docker-compose-build_alpine.yml up --build --no-deps
-	docker create -ti --name dummy uploader_build_alpine:latest bash
-	docker cp dummy:/out/codecov-alpine out
+	# docker-compose -f docker-compose-build_alpine.yml up --build --no-deps
+	docker run --name dummy drazisilcodecov/node-static-alpine:version-0.0.3.2
+	sleep 5
+	docker cp dummy:/node/out/codecov-alpine out
 	docker rm -f dummy
 
+.build-in-docker:
+	rm -rf out
+	docker build --file Dockerfile --output out --no-cache --progress=tty . &> build.log
+
+
+.build-node-in-docker:
+	rm -rf out
+	docker build -t alpine_node_builder:latest --file Dockerfile.build_alpine --output out --no-cache --progress=tty . &> build_node.log
+
 make.base: 
-	docker build --pull --rm -f "Dockerfile" -t uploader:latest --no-cache "." 
+	docker build -t uploader2:latest -f "Dockerfile" --no-cache "." 
 
 make.node:
-	docker container rm node-alpine
+	docker rm -f node-alpine || true
 	sleep 5
-	docker run --name node-alpine uploader:latest
+	docker run --name node-alpine drazisilcodecov/node-static-alpine:version-0.0.3.2
 	mkdir -p out
 	sleep 5
 	docker cp node-alpine:/node/out/Release/node out/node-alpine 
