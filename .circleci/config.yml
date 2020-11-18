@@ -386,6 +386,7 @@ workflows:
   "Build and Test":
     jobs:
       - build-linux-and-osx
+      - build-alpine
       - test-alpine:
           requires:
             - build-alpine
