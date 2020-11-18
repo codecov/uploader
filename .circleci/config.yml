@@ -77,10 +77,6 @@ jobs:
       - run:
           name: Clone nodejs repo
           command: |
-            mkdir -p ~/.ssh
-            sh-keyscan github.com >> ~/.ssh/known_hosts
-            ssh-keygen -t rsa -b 4096 -C "Alpine NodeJS Build Image" -f ~/.ssh/id_rsa -N ""
-            ssh -T git@github.com
             git clone https://github.com/nodejs/node.git 
       - run:
           name: Checkout v12.16.1 tag and apply patches
