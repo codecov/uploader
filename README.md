@@ -1,3 +1,5 @@
+.
+
 # Codecov Uploader
 
 [![CircleCI](https://circleci.com/gh/codecov/uploader.svg?style=shield&circle-token=def755bf76a1d8c36436c3115530c7eac7fa30e0)](https://circleci.com/gh/codecov/uploader) [![codecov](https://codecov.io/gh/codecov/uploader/branch/master/graph/badge.svg?token=X1gImxfIya)](https://codecov.io/gh/codecov/uploader)
@@ -11,7 +13,7 @@
 - `make install`
 - `make build`
 
-Note: `make build` does not currently build the Windows binary until I confirm that a Windows binary build under Linux works. To build the Windows binary, run `npm run build-windows`
+Note: `make build` does not currently build the Windows binary until I confirm that a Windows binary build under Linux works. It also does not build the Alpine binary, as that needs to be build in an alpine container, using a static build of NodeJS. To build the Windows binary, run `npm run build-windows`
 
 Binaries for Windows, MacOS, and Linux will be in the `out/` directory.
 

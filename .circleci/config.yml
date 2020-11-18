@@ -8,7 +8,7 @@ orbs:
   win: circleci/windows@2.2.0
 
 jobs:
-  build:
+  build-linux-and-osx:
     docker:
       # specify the version you desire here
       - image: circleci/node:10.16.3
@@ -51,6 +51,120 @@ jobs:
             - out
             - coverage
             - package.json
+
+  build-alpine:
+    docker:
+      # specify the version you desire here
+      - image: alpine:3.12.0
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      # - image: circleci/mongo:3.4.4
+
+    working_directory: ~/repo
+
+    steps:
+      - run:
+          name: Install dependencies for building a static copy of NodeJS
+          command: |
+            apk update
+            apk add git python3 openssh g++ make openssl linux-headers python2 npm
+      - checkout
+      - attach_workspace:
+         # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Clone nodejs repo
+          command: |
+            git clone https://github.com/nodejs/node.git 
+      - run:
+          name: Checkout v12.16.1 tag and apply patches
+          command: |
+            git fetch --all --tags
+            git checkout tags/v12.16.1 -b build
+            git apply ../patches/node.v12.16.1.cpp.patch
+          working_directory: node
+
+      - run:
+          name: Configure NodeJS build for static
+          command: ./configure --fully-static
+          working_directory: node
+
+      - run:
+          name: Build static nodejs binary
+          command: make -j4
+          working_directory: node
+
+      - run:
+          name: Confirm that alpine node binary is static
+          command: |
+            apk add file
+            file out/Release/node
+          working_directory: node
+
+      - run:
+          name: Create pkg-cache directory and copy static NodeJS binary
+          command: |
+            mkdir -p ~/.pkg-cache/v2.6
+            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
+          working_directory: node
+
+      - run:
+          name: Remove build dir and run tests
+          command: |
+            rm -rf node  
+            npm ci
+            npm test
+            mkdir -p coverage-alpine
+            cp coverage/* coverage-alpine/
+
+      - run:
+          name: Build uploader binary on alpine
+          command: npm run build-alpine
+
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: .
+          # Must be relative path from root
+          paths:
+            - out
+            - coverage-alpine
+
+  test-alpine:
+    docker:
+      # specify the version you desire here
+      - image: alpine:3.12.0
+    steps:  
+      - run:
+          name: Install git
+          command: |
+            apk update
+            apk add git
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Run Alpine binary -f (dry run)
+          command: |
+            out/codecov-alpine -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z >> output_alpine.txt
+      - run:
+          name: Run Alpine binary auto-detect (dry run)
+          command: |
+            out/codecov-alpine -F alpine -d -Z >> output_alpine.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -F alpine -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - coverage-alpine
+            - output_alpine.txt
 
   build-windows:
     executor: win/default
@@ -222,11 +336,17 @@ jobs:
       - attach_workspace:
           at: .
       - store_artifacts:
+          path: node/out/Release/node
+      - store_artifacts:
           path: coverage
+      - store_artifacts:
+          path: coverage-alpine
       - store_artifacts:
           path: out
       - store_artifacts:
           path: output_linux.txt
+      - store_artifacts:
+          path: output_alpine.txt
       - store_artifacts:
           path: output_linux_without_git.txt
       - store_artifacts:
@@ -272,19 +392,23 @@ workflows:
 
   "Build and Test":
     jobs:
-      - build
+      - build-linux-and-osx
+      - build-alpine
+      - test-alpine:
+          requires:
+            - build-alpine
       - build-windows:
           requires:
-            - build
+            - build-linux-and-osx
       - test-linux:
           requires:
-            - build
+            - build-linux-and-osx
       - test-linux-without-git:
           requires:
             - test-linux
       - test-macos:
           requires:
-            - build
+            - build-linux-and-osx
       - test-macos-without-git:
           requires:
             - test-macos
@@ -296,6 +420,7 @@ workflows:
             - test-windows
       - review:
           requires:
+            - test-alpine
             - test-linux-without-git
             - test-macos-without-git
             - test-windows-without-git
