@@ -116,7 +116,8 @@ jobs:
             rm -rf node  
             npm ci
             npm test
-            cp coverage/* coverae-alpine/
+            mkdir -p coverage-alpine
+            cp coverage/* coverage-alpine/
 
       - run:
           name: Build uploader binary on alpine
