@@ -55,7 +55,7 @@ jobs:
   build-alpine:
     docker:
       # specify the version you desire here
-      - image: alpine:3.11.6
+      - image: alpine:3.12.0
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -66,31 +66,32 @@ jobs:
 
     steps:
       - run:
-          name: Setup image
+          name: Install dependencies for building a static copy of NodeJS
           command: |
             apk update
-            apk add git python3 openssh g++ make openssl linux-headers python2 nodejs npm
+            apk apk add git python3 openssh g++ make openssl linux-headers python2
       - checkout
       - attach_workspace:
          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Clone nodejs repo
-          command: git clone https://github.com/nodejs/node.git
+          command: |
+            mkdir ~/.ssh
+            sh-keyscan github.com >> ~/.ssh/known_hosts
+            ssh-keygen -t rsa -b 4096 -C "Alpine NodeJS Build Image" -f ~/.ssh/id_rsa -N ""
+            ssh -T git@github.com
+            git clone https://github.com/nodejs/node.git 
       - run:
-          name: Setup repo
+          name: Checkout v12.16.1 tag and apply patches
           command: |
             git fetch --all --tags
             git checkout tags/v12.16.1 -b build
+            git apply ../patches/node.v12.16.1.cpp.patch
           working_directory: node
 
       - run:
-          name: Apply patch
-          command: git apply ../patches/node.v12.16.1.cpp.patch
-          working_directory: node
-      
-      - run:
-          name: Configure build
+          name: Configure NodeJS build for static
           command: ./configure --fully-static
           working_directory: node
 
@@ -100,25 +101,21 @@ jobs:
           working_directory: node
 
       - run:
-          name: Create pkg-cache directory
-          command: mkdir -p ~/.pkg-cache/v2.6
-      
-      - run:
-          name: Copy node binary to pkg-cache
-          command: | 
-            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
-            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v12.18.1-alpine-x64
-          working_directory: node
-
-      - run:
-          name: Confirm that apline node binary is static
+          name: Confirm that alpine node binary is static
           command: |
             apk add file
             file out/Release/node
           working_directory: node
 
       - run:
-          name: Test uploader on alpine
+          name: Create pkg-cache directory and copy static NodeJS binary
+          command: |
+            mkdir -p ~/.pkg-cache/v2.6
+            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
+          working_directory: node
+
+      - run:
+          name: Remove build dir and run tests
           command: |
             rm -rf node  
             npm ci
@@ -136,6 +133,33 @@ jobs:
           # Must be relative path from root
           paths:
             - out
+
+  test-alpine:
+    docker:
+      # specify the version you desire here
+      - image: alpine:3.12.0
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Run Alpine binary -f (dry run)
+          command: |
+            out/codecov-alpine -f /home/circleci/project/coverage/cobertura-coverage.xml -F alpine -d -Z >> output_alpine.txt
+      - run:
+          name: Run Alpine binary auto-detect (dry run)
+          command: |
+            out/codecov-alpine -F alpine -d -Z >> output_alpine.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -F alpine -Z
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine.txt
 
   build-windows:
     executor: win/default
@@ -315,6 +339,8 @@ jobs:
       - store_artifacts:
           path: output_linux.txt
       - store_artifacts:
+          path: output_alpine.txt
+      - store_artifacts:
           path: output_linux_without_git.txt
       - store_artifacts:
           path: output_osx.txt
@@ -360,7 +386,9 @@ workflows:
   "Build and Test":
     jobs:
       - build-linux-and-osx
-      - build-alpine
+      - test-alpine:
+          requires:
+            - build-alpine
       - build-windows:
           requires:
             - build-linux-and-osx
@@ -384,7 +412,7 @@ workflows:
             - test-windows
       - review:
           requires:
-            - build-alpine
+            - test-alpine
             - test-linux-without-git
             - test-macos-without-git
             - test-windows-without-git
