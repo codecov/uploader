@@ -116,6 +116,7 @@ jobs:
             rm -rf node  
             npm ci
             npm test
+            cp coverage/* coverae-alpine/
 
       - run:
           name: Build uploader binary on alpine
@@ -129,6 +130,7 @@ jobs:
           # Must be relative path from root
           paths:
             - out
+            - coverage-alpine
 
   test-alpine:
     docker:
@@ -147,7 +149,7 @@ jobs:
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
-            out/codecov-alpine -f /root/project/coverage/cobertura-coverage.xml -F alpine -d -Z >> output_alpine.txt
+            out/codecov-alpine -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z >> output_alpine.txt
       - run:
           name: Run Alpine binary auto-detect (dry run)
           command: |
@@ -160,6 +162,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
+            - coverage-alpine
             - output_alpine.txt
 
   build-windows:
@@ -335,6 +338,8 @@ jobs:
           path: node/out/Release/node
       - store_artifacts:
           path: coverage
+      - store_artifacts:
+          path: coverage-alpine
       - store_artifacts:
           path: out
       - store_artifacts:
