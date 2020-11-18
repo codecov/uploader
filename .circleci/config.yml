@@ -135,7 +135,12 @@ jobs:
     docker:
       # specify the version you desire here
       - image: alpine:3.12.0
-    steps:
+    steps:  
+      - run:
+          name: Install git
+          command: |
+            apk update
+            apk add git
       - checkout
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
