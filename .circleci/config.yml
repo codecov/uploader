@@ -129,7 +129,6 @@ jobs:
           # Must be relative path from root
           paths:
             - out
-            - coverage
 
   test-alpine:
     docker:
