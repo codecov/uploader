@@ -197,7 +197,7 @@ jobs:
       - run:
           name: Run Linux binary (upload)
           command: |
-            out/codecov-linux -F linux-without-git -Z
+            out/codecov-linux -u ec2-3-18-104-96.us-east-2.compute.amazonaws.com -F linux-without-git -Z
 
       - persist_to_workspace:
           root: .
@@ -388,9 +388,9 @@ workflows:
             - test-linux-without-git
             - test-macos-without-git
             - test-windows-without-git
-      - deploy:
-          requires:
-            - review
-          filters:
-            branches:
-              only: master
+#      - deploy:
+#          requires:
+#            - review
+#          filters:
+#            branches:
+#              only: master
