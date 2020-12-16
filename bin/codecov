@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const debug = require('debug')
 const app = require("../src");
 
 var argv = require("yargs") // eslint-disable-line

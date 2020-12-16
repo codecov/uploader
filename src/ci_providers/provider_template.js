@@ -137,7 +137,6 @@ function getServiceParams(inputs) {
 }
 
 module.exports = {
-  private: {
     _getBuild,
     _getBuildURL,
     _getBranch,
@@ -145,8 +144,7 @@ module.exports = {
     _getPR,
     _getService,
     _getSHA,
-    _getSlug
-  },
+    _getSlug,
   detect,
   getServiceName,
   getServiceParams
