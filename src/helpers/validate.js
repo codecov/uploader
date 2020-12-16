@@ -22,5 +22,5 @@ module.exports = {
   validateToken,
   validateURL,
   validateFlags,
-  validateFileNamePath
+  validateFileNamePath,
 };

@@ -23,13 +23,13 @@ function check_verbose(args) {
   if (args.debug.verbose) {
     if (process.env.NODE_DEBUG.length > 0) {
       // There are already debug options set, append
-      process.env.NODE_DEBUG = `${process.env.NODE_DEBUG},codecov`
-      return true
+      process.env.NODE_DEBUG = `${process.env.NODE_DEBUG},codecov`;
+      return true;
     } else {
-      process.env.NODE_DEBUG = 'codecov'
-      return true
+      process.env.NODE_DEBUG = "codecov";
+      return true;
     }
-    return false
+    return false;
   }
 }
 
@@ -195,5 +195,5 @@ function getVersion() {
 module.exports = {
   main,
   getVersion,
-  generateHeader
+  generateHeader,
 };

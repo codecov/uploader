@@ -132,20 +132,20 @@ function getServiceParams(inputs) {
     job: _getJob(inputs),
     pr: _getPR(inputs),
     service: _getService(),
-    slug: _getSlug(inputs)
+    slug: _getSlug(inputs),
   };
 }
 
 module.exports = {
-    _getBuild,
-    _getBuildURL,
-    _getBranch,
-    _getJob,
-    _getPR,
-    _getService,
-    _getSHA,
-    _getSlug,
+  _getBuild,
+  _getBuildURL,
+  _getBranch,
+  _getJob,
+  _getPR,
+  _getService,
+  _getSHA,
+  _getSlug,
   detect,
   getServiceName,
-  getServiceParams
+  getServiceParams,
 };

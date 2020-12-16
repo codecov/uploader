@@ -15,7 +15,7 @@ function manualBlacklist() {
     ".nyc_output",
     ".circleci",
     ".nvmrc",
-    ".gitignore"
+    ".gitignore",
   ];
 }
 
@@ -27,7 +27,7 @@ function globBlacklist() {
     ".nyc_output",
     ".circleci",
     ".nvmrc",
-    ".gitignore"
+    ".gitignore",
   ];
 }
 
@@ -52,7 +52,7 @@ function coverageFilePatterns() {
     "cover.out",
     "gcov.info",
     "*.gcov",
-    "*.lst"
+    "*.lst",
   ];
 }
 
@@ -62,7 +62,7 @@ function getCoverageFiles(projectRoot, coverageFilePatterns) {
     const pattern = coverageFilePatterns[index];
     const newFiles = glob.sync(`**/${pattern}`, {
       cwd: projectRoot,
-      ignore: globBlacklist()
+      ignore: globBlacklist(),
     });
 
     files = files.concat(newFiles);
@@ -82,10 +82,7 @@ function fetchGitRoot() {
         .spawnSync("git", ["rev-parse", "--show-toplevel"])
         .stdout.toString()
         .trimRight() ||
-      child_process
-        .spawnSync("hg", ["root"])
-        .stdout.toString()
-        .trimRight() ||
+      child_process.spawnSync("hg", ["root"]).stdout.toString().trimRight() ||
       process.cwd()
     );
   } catch (error) {
@@ -102,7 +99,7 @@ function parseGitIgnore(projectRoot) {
     throw new Error(`Unable to open ${gitIgnorePath}: ${error}`);
   }
 
-  const filteredLines = lines.filter(line => {
+  const filteredLines = lines.filter((line) => {
     if (line === "" || line.startsWith("#")) {
       return false;
     }
@@ -115,14 +112,14 @@ function getAllFiles(projectRoot, dirPath, arrayOfFiles) {
   const files = fs.readdirSync(dirPath);
   arrayOfFiles = arrayOfFiles || [];
 
-  files.forEach(function(file) {
+  files.forEach(function (file) {
     if (
       fs.statSync(path.join(dirPath, file)).isDirectory() &&
       !isBlacklisted(projectRoot, file, manualBlacklist())
     ) {
       arrayOfFiles = getAllFiles(
         projectRoot,
-        path.join(dirPath,  file),
+        path.join(dirPath, file),
         arrayOfFiles
       );
     } else {
@@ -161,17 +158,18 @@ function fileHeader(filePath) {
 }
 
 function getFilePath(projectRoot, filePath) {
-  if (filePath.startsWith("./")
-      || filePath.startsWith("/")
-      || filePath.startsWith(".\\")
-      || filePath.startsWith(".\\")) {
-    return filePath
+  if (
+    filePath.startsWith("./") ||
+    filePath.startsWith("/") ||
+    filePath.startsWith(".\\") ||
+    filePath.startsWith(".\\")
+  ) {
+    return filePath;
   }
   if (projectRoot === ".") {
-    return path.join(".", filePath)
+    return path.join(".", filePath);
   }
-  return path.join(projectRoot, filePath)
-
+  return path.join(projectRoot, filePath);
 }
 
 module.exports = {
@@ -183,5 +181,5 @@ module.exports = {
   parseGitIgnore,
   getCoverageFiles,
   coverageFilePatterns,
-  getFilePath
+  getFilePath,
 };
