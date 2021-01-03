@@ -145,8 +145,7 @@ async function main(args) {
       );
       const result = await webHelpers.uploadToCodecovPUT(
         uploadURL,
-        gzippedFile,
-        inputs
+        gzippedFile
       );
       console.log(result);
     }

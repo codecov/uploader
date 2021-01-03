@@ -16,6 +16,7 @@ describe("Web Helpers", function() {
     query = "hello";
     version = "0.0.1";
 
+      // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
       nock("https://codecov.io")
       .put("/")
       .query(true)
@@ -29,6 +30,7 @@ afterEach(function() {
 
   it("Can POST to the uploader endpoint (HTTP)", async function() {
     uploadURL = "http://codecov.io";
+    // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
     nock("http://codecov.io")
     .post("/upload/v4")
     .query(true)
@@ -51,6 +53,7 @@ afterEach(function() {
 
   it("Can POST to the uploader endpoint (HTTPS)", async function() {
     uploadURL = "https://codecov.io";
+    // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
     nock("https://codecov.io")
     .post("/upload/v4")
     .query(true)
