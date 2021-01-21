@@ -101,6 +101,7 @@ async function main(args) {
       );
       uploadFile = uploadFile.concat(fileHelpers.fileHeader(coverageFile));
       uploadFile = uploadFile.concat(fileContents);
+      uploadFile = uploadFile.concat(fileHelpers.endFileMarker());
     }
 
     const gzippedFile = zlib.gzipSync(uploadFile);
