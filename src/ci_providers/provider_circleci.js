@@ -65,7 +65,7 @@ function getServiceParams(inputs) {
     commit: _getSHA(inputs),
     job: _getJob(inputs.envs),
     pr: _getPR(inputs),
-    service: _getService(inputs),
+    service: _getService(),
     slug: _getSlug(inputs)
   };
 }

@@ -24,8 +24,7 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
       .retry()
       .send(uploadFile) // sends a JSON post body
       .set("Content-Type", "application/x-gzip")
-      .set("Content-Encoding", "gzip")
-      .set("Content-Length", Buffer.byteLength(uploadFile));
+      .set("Content-Encoding", "gzip");
 
     if (result.status === 200) {
       return { status: "success", resultURL: codecovResultURL };
@@ -45,8 +44,7 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
       .retry()
       .send(uploadFile) // sends a JSON post body
       .set("X-Reduced-Redundancy", "false")
-      .set("X-Content-Type", "application/x-gzip")
-      .set("Content-Length", Buffer.byteLength(uploadFile));
+      .set("X-Content-Type", "application/x-gzip");
 
     return result.res.text;
   } catch (error) {
