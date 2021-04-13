@@ -156,6 +156,10 @@ function endNetworkMarker() {
   return "<<<<<< network\n";
 }
 
+function endFileMarker() {
+  return "<<<<<< EOF\n";
+}
+
 function fileHeader(filePath) {
   return `# path=${filePath}\n`;
 }
@@ -177,6 +181,7 @@ function getFilePath(projectRoot, filePath) {
 module.exports = {
   readCoverageFile,
   getFileListing,
+  endFileMarker,
   endNetworkMarker,
   fileHeader,
   fetchGitRoot,

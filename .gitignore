@@ -69,3 +69,4 @@ codecov-macos
 codecov.exe
 .DS_Store
 .idea/*
+.dccache

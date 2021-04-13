@@ -17,6 +17,10 @@ describe("File Helpers", () => {
     expect(fileHelpers.endNetworkMarker()).toBe("<<<<<< network\n");
   });
 
+  it("can generate file end marker", () => {
+    expect(fileHelpers.endFileMarker()).toBe("<<<<<< EOF\n");
+  });
+
   it("can fetch the git root", function() {
     const cwd = td.replace(process, 'cwd')
     const spawnSync = td.replace(child_process, 'spawnSync')
