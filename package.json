@@ -5,7 +5,7 @@
   "private": true,
   "bin": "bin/codecov",
   "scripts": {
-    "lint": "eslint src",
+    "lint": "standard --fix",
     "test": "jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
@@ -31,14 +31,11 @@
     "superagent": "5.2.2"
   },
   "devDependencies": {
-    "eslint": "7.0.0",
-    "eslint-config-prettier": "6.11.0",
-    "eslint-plugin-prettier": "3.1.3",
     "expect": "26.0.1",
     "jest": "^26.0.1",
     "nock": "^12.0.3",
     "pkg": "^4.4.8",
-    "prettier": "2.0.5",
+    "standard": "16.0.3",
     "testdouble": "3.13.1",
     "testdouble-jest": "2.0.0"
   },
@@ -55,27 +52,6 @@
       "src/index.js"
     ]
   },
-  "eslintConfig": {
-    "env": {
-      "commonjs": true,
-      "es6": true,
-      "node": true,
-      "jest": true
-    },
-    "extends": [
-      "plugin:prettier/recommended"
-    ],
-    "globals": {
-      "Atomics": "readonly",
-      "SharedArrayBuffer": "readonly",
-      "td:": "readonly",
-      "expect": "readonly"
-    },
-    "parserOptions": {
-      "ecmaVersion": 2018
-    },
-    "rules": {}
-  },
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
@@ -91,6 +67,11 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/test_helpers.js"
+    ]
+  },
+  "standard": {
+    "globals": [
+      "expect", "it", "describe", "beforeEach", "afterEach"
     ]
   }
 }
