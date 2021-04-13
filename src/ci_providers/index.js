@@ -1,7 +1,7 @@
-const provider_circleci = require("./provider_circleci");
-const provider_local = require("./provider_local");
+const providerCircleci = require('./provider_circleci')
+const providerLocal = require('./provider_local')
 
 // Please make sure provider_local is last
-const providers = [provider_circleci, provider_local];
+const providers = [providerCircleci, providerLocal]
 
-module.exports = providers;
+module.exports = providers
