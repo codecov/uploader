@@ -1,41 +1,41 @@
-const superagent = require("superagent");
-const validateHelpers = require("./validate");
+const superagent = require('superagent')
+const validateHelpers = require('./validate')
 
-function populateBuildParams(inputs, serviceParams) {
-  const { args, envs } = inputs;
-  serviceParams.name = envs.CODECOV_NAME || "";
-  serviceParams.tag = args.tag || "";
+function populateBuildParams (inputs, serviceParams) {
+  const { args, envs } = inputs
+  serviceParams.name = envs.CODECOV_NAME || ''
+  serviceParams.tag = args.tag || ''
   serviceParams.flags = validateHelpers.validateFlags(args.flags)
     ? args.flags
-    : "";
-  return serviceParams;
+    : ''
+  return serviceParams
 }
 
-async function uploadToCodecovPUT(uploadURL, uploadFile) {
-  console.log("Uploading...");
+async function uploadToCodecovPUT (uploadURL, uploadFile) {
+  console.log('Uploading...')
 
-  const parts = uploadURL.split("\n");
-  const putURL = parts[1];
-  const codecovResultURL = parts[0];
+  const parts = uploadURL.split('\n')
+  const putURL = parts[1]
+  const codecovResultURL = parts[0]
 
   try {
     const result = await superagent
       .put(`${putURL}`)
       .retry()
       .send(uploadFile) // sends a JSON post body
-      .set("Content-Type", "application/x-gzip")
-      .set("Content-Encoding", "gzip");
+      .set('Content-Type', 'application/x-gzip')
+      .set('Content-Encoding', 'gzip')
 
     if (result.status === 200) {
-      return { status: "success", resultURL: codecovResultURL };
+      return { status: 'success', resultURL: codecovResultURL }
     }
-    throw new Error(`Error uploading: ${result.status}, ${result.body}`);
+    throw new Error(`Error uploading: ${result.status}, ${result.body}`)
   } catch (error) {
-    throw new Error(`Error uploading: ${error}`);
+    throw new Error(`Error uploading: ${error}`)
   }
 }
 
-async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
+async function uploadToCodecov (uploadURL, token, query, uploadFile, version) {
   try {
     const result = await superagent
       .post(
@@ -43,41 +43,41 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
       )
       .retry()
       .send(uploadFile) // sends a JSON post body
-      .set("X-Reduced-Redundancy", "false")
-      .set("X-Content-Type", "application/x-gzip");
+      .set('X-Reduced-Redundancy', 'false')
+      .set('X-Content-Type', 'application/x-gzip')
 
-    return result.res.text;
+    return result.res.text
   } catch (error) {
-    throw new Error(`Error uploading to Codecov: ${error}`);
+    throw new Error(`Error uploading to Codecov: ${error}`)
   }
 }
 
-function generateQuery(queryParams) {
-  const query = "".concat(
-    "branch=",
+function generateQuery (queryParams) {
+  const query = ''.concat(
+    'branch=',
     queryParams.branch,
-    "&commit=",
+    '&commit=',
     queryParams.commit,
-    "&build=",
+    '&build=',
     queryParams.build,
-    "&build_url=",
+    '&build_url=',
     queryParams.buildURL,
-    "&name=",
+    '&name=',
     queryParams.name,
-    "&tag=",
+    '&tag=',
     queryParams.tag,
-    "&slug=",
+    '&slug=',
     queryParams.slug,
-    "&service=",
+    '&service=',
     queryParams.service,
-    "&flags=",
+    '&flags=',
     queryParams.flags,
-    "&pr=",
+    '&pr=',
     queryParams.pr,
-    "&job=",
+    '&job=',
     queryParams.job
-  );
-  return query;
+  )
+  return query
 }
 
 module.exports = {
@@ -85,4 +85,4 @@ module.exports = {
   uploadToCodecov,
   uploadToCodecovPUT,
   generateQuery
-};
+}

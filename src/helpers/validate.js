@@ -1,21 +1,21 @@
-var validator = require("validator");
+const validator = require('validator')
 
-function validateToken(token) {
-  return validator.isAlphanumeric(token);
+function validateToken (token) {
+  return validator.isAlphanumeric(token)
 }
 
-function validateURL(url) {
-  return validator.isURL(url, { require_protocol: true });
+function validateURL (url) {
+  return validator.isURL(url, { require_protocol: true })
 }
 
-function validateFlags(flags) {
-  const mask = /^[\w,]+$/;
-  return mask.test(flags);
+function validateFlags (flags) {
+  const mask = /^[\w,]+$/
+  return mask.test(flags)
 }
 
-function validateFileNamePath(path) {
-  const mask = /^[\w/.,-]+$/;
-  return mask.test(path);
+function validateFileNamePath (path) {
+  const mask = /^[\w/.,-]+$/
+  return mask.test(path)
 }
 
 module.exports = {
@@ -23,4 +23,4 @@ module.exports = {
   validateURL,
   validateFlags,
   validateFileNamePath
-};
+}
