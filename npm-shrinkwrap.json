@@ -12,7 +12,7 @@
         "glob": "7.1.6",
         "line-reader": "0.4.0",
         "superagent": "5.2.2",
-        "validator": "13.0.0"
+        "validator": "13.5.2"
       },
       "bin": {
         "codecov": "bin/codecov"
@@ -10520,9 +10520,9 @@
       }
     },
     "node_modules/validator": {
-      "version": "13.0.0",
-      "resolved": "https://registry.npmjs.org/validator/-/validator-13.0.0.tgz",
-      "integrity": "sha512-anYx5fURbgF04lQV18nEQWZ/3wHGnxiKdG4aL8J+jEDsm98n/sU/bey+tYk6tnGJzm7ioh5FoqrAiQ6m03IgaA==",
+      "version": "13.5.2",
+      "resolved": "https://registry.npmjs.org/validator/-/validator-13.5.2.tgz",
+      "integrity": "sha512-mD45p0rvHVBlY2Zuy3F3ESIe1h5X58GPfAtslBjY7EtTqGquZTj+VX/J4RnHWN8FKq0C9WRVt1oWAcytWRuYLQ==",
       "engines": {
         "node": ">= 0.10"
       }
@@ -19559,9 +19559,9 @@
       }
     },
     "validator": {
-      "version": "13.0.0",
-      "resolved": "https://registry.npmjs.org/validator/-/validator-13.0.0.tgz",
-      "integrity": "sha512-anYx5fURbgF04lQV18nEQWZ/3wHGnxiKdG4aL8J+jEDsm98n/sU/bey+tYk6tnGJzm7ioh5FoqrAiQ6m03IgaA=="
+      "version": "13.5.2",
+      "resolved": "https://registry.npmjs.org/validator/-/validator-13.5.2.tgz",
+      "integrity": "sha512-mD45p0rvHVBlY2Zuy3F3ESIe1h5X58GPfAtslBjY7EtTqGquZTj+VX/J4RnHWN8FKq0C9WRVt1oWAcytWRuYLQ=="
     },
     "verror": {
       "version": "1.10.0",
