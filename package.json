@@ -36,7 +36,7 @@
     "nock": "13.0.11",
     "pkg": "4.5.1",
     "standard": "16.0.3",
-    "testdouble": "3.13.1",
+    "testdouble": "3.16.1",
     "testdouble-jest": "2.0.0"
   },
   "nyc": {
