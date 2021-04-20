@@ -4,5 +4,11 @@
   ],
   "reviewers": [
     "codecov/open-source"
+  ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["pkg"],
+      "allowedVersions": "4.4.8"
+    }
   ]
 }
