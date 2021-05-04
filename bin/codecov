@@ -26,6 +26,11 @@ var argv = require("yargs") // eslint-disable-line
       default: "",
       description: "Flag the upload to group coverage metrics"
     },
+    name: {
+      alias: "n",
+      default: "",
+      description: "Custom defined name of the upload. Visible in Codecov UI"
+    },
     pr: {
       alias: "P",
       description: "Specify the pull request number mannually"

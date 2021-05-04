@@ -3,7 +3,7 @@ const validateHelpers = require('./validate')
 
 function populateBuildParams (inputs, serviceParams) {
   const { args, envs } = inputs
-  serviceParams.name = envs.CODECOV_NAME || ''
+  serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
   serviceParams.flags = validateHelpers.validateFlags(args.flags)
     ? args.flags
@@ -11,6 +11,12 @@ function populateBuildParams (inputs, serviceParams) {
   return serviceParams
 }
 
+/**
+ *
+ * @param {string} uploadURL
+ * @param {Buffer} uploadFile
+ * @returns {Promise<{ status: string, resultURL: string }>}
+ */
 async function uploadToCodecovPUT (uploadURL, uploadFile) {
   console.log('Uploading...')
 
@@ -35,6 +41,15 @@ async function uploadToCodecovPUT (uploadURL, uploadFile) {
   }
 }
 
+/**
+ *
+ * @param {string} uploadURL The upload url
+ * @param {string} token Covecov token
+ * @param {string} query Query parameters
+ * @param {Buffer} uploadFile Coverage file to upload
+ * @param {string} version uploader version number
+ * @returns {Promise<string>}
+ */
 async function uploadToCodecov (uploadURL, token, query, uploadFile, version) {
   try {
     const result = await superagent

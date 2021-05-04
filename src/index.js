@@ -14,6 +14,25 @@ function dryRun (uploadHost, token, query, uploadFile) {
   process.exit()
 }
 
+/**
+ *
+ * @param {Object} args
+ * @param {string} args.build Specify the build number manually
+ * @param {string} args.branch Specify the branch manually
+ * @param {string} args.sha Specify the commit SHA mannually
+ * @param {string} args.file Target file(s) to upload
+ * @param {string} args.flags Flag the upload to group coverage metrics
+ * @param {string} args.name Custom defined name of the upload. Visible in Codecov UI
+ * @param {string} args.pr Specify the pull request number mannually
+ * @param {string} args.token Codecov upload token
+ * @param {string} args.tag Specify the git tag
+ * @param {boolean} args.verbose Run with verbose logging
+ * @param {string} args.rootDir Specify the project root directory when not in a git repo
+ * @param {boolean} args.nonZero Should errors exit with a non-zero (default: false)
+ * @param {boolean} args.dryRun Don't upload files to Codecov
+ * @param {string} args.slug Specify the slug manually (Enterprise use)
+ * @param {string} args.url Change the upload host (Enterprise use)
+ */
 async function main (args) {
   try {
     /*
@@ -149,6 +168,7 @@ async function main (args) {
         gzippedFile
       )
       console.log(result)
+      return result
     }
   } catch (error) {
     // Output any exceptions and exit
