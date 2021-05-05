@@ -19,6 +19,7 @@ function dryRun (uploadHost, token, query, uploadFile) {
  * @param {Object} args
  * @param {string} args.build Specify the build number manually
  * @param {string} args.branch Specify the branch manually
+ * @param {string} args.env Specify environment variables to be included with this build
  * @param {string} args.sha Specify the commit SHA mannually
  * @param {string} args.file Target file(s) to upload
  * @param {string} args.flags Flag the upload to group coverage metrics
@@ -121,6 +122,18 @@ async function main (args) {
       uploadFile = uploadFile.concat(fileHelpers.fileHeader(coverageFile))
       uploadFile = uploadFile.concat(fileContents)
       uploadFile = uploadFile.concat(fileHelpers.endFileMarker())
+    }
+
+    // Environment variables
+    if (args.env || envs.CODECOV_ENV) {
+      const environmentVars = args.env || envs.CODECOV_ENV
+      const vars = environmentVars
+        .split(',')
+        .filter(Boolean)
+        .map(evar => `${evar}=${process.env[evar] || ''}\n`)
+        .join('')
+      uploadFile = uploadFile.concat(vars)
+      uploadFile = uploadFile.concat(fileHelpers.endEnvironmentMarker())
     }
 
     const gzippedFile = zlib.gzipSync(uploadFile)

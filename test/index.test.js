@@ -8,6 +8,7 @@ describe('Uploader Core', function () {
 
   afterEach(() => {
     process.env = env
+    jest.restoreAllMocks()
   })
 
   it('Can return version', function () {
@@ -46,4 +47,21 @@ describe('Uploader Core', function () {
     })
     expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
   }, 30000)
+
+  it('Can parse environment variables', async function () {
+    process.env.SOMETHING = 'red'
+    process.env.ANOTHER = 'blue'
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log')
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: true,
+      env: 'SOMETHING,ANOTHER'
+    })
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/SOMETHING=red/))
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/ANOTHER=blue/))
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< ENV/))
+  })
 })
