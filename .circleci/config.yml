@@ -83,7 +83,7 @@ jobs:
           command: |
             git fetch --all --tags
             git checkout tags/v14.16.1 -b build
-            git apply ../patches/node.v14.16.1.cpp.patch
+            patch -p1 -i ../patches/node.v14.16.1.cpp.patch
           working_directory: node
 
       - run:
