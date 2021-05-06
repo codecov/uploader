@@ -69,7 +69,7 @@ jobs:
           name: Install dependencies for building a static copy of NodeJS
           command: |
             apk update
-            apk add git python3 openssh g++ make openssl linux-headers python2 npm
+            apk add git python3 openssh g++ make openssl linux-headers python2 npm patch
       - checkout
       - attach_workspace:
          # Must be absolute path or relative path from working_directory
