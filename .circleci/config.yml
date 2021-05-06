@@ -107,7 +107,7 @@ jobs:
           name: Create pkg-cache directory and copy static NodeJS binary
           command: |
             mkdir -p ~/.pkg-cache/v2.6
-            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v14.16.1-alpine-x64
+            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v14.0.0-alpine-x64
           working_directory: node
 
       - run:
