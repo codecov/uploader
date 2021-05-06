@@ -9,6 +9,10 @@
     {
       "matchPackageNames": ["pkg"],
       "allowedVersions": "4.4.8"
+    },
+    {
+      "matchPackageNames": ["yargs"],
+      "allowedVersions": "<17"
     }
   ]
 }
