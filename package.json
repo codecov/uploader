@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
-    "glob": "7.1.6",
+    "glob": "7.1.7",
     "line-reader": "0.4.0",
     "yargs": "16.2.0",
     "validator": "13.6.0",
