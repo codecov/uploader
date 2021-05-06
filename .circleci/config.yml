@@ -79,11 +79,11 @@ jobs:
           command: |
             git clone https://github.com/nodejs/node.git 
       - run:
-          name: Checkout v12.16.1 tag and apply patches
+          name: Checkout v14.16.1 tag and apply patches
           command: |
             git fetch --all --tags
-            git checkout tags/v12.16.1 -b build
-            git apply ../patches/node.v12.16.1.cpp.patch
+            git checkout tags/v14.16.1 -b build
+            git apply ../patches/node.v14.16.1.cpp.patch
           working_directory: node
 
       - run:
@@ -107,7 +107,7 @@ jobs:
           name: Create pkg-cache directory and copy static NodeJS binary
           command: |
             mkdir -p ~/.pkg-cache/v2.6
-            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v12.16.1-alpine-x64
+            cp out/Release/node /root/.pkg-cache/v2.6/fetched-v14.16.1-alpine-x64
           working_directory: node
 
       - run:
