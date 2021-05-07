@@ -9,7 +9,7 @@
     "test": "jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
-    "build-alpine": "pkg . --targets node12-alpine-x64 --output out/codecov-alpine",
+    "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
     "build-windows": "pkg . --targets win --output out/codecov.exe"
   },
   "repository": {
@@ -33,7 +33,7 @@
   "devDependencies": {
     "jest": "26.6.3",
     "nock": "13.0.11",
-    "pkg": "4.4.8",
+    "pkg": "5.1.0",
     "standard": "16.0.3",
     "testdouble": "3.16.1",
     "testdouble-jest": "2.0.0"
