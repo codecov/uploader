@@ -13,6 +13,10 @@ var argv = require("yargs") // eslint-disable-line
       alias: "B",
       description: "Specify the branch manually"
     },
+    env: {
+      alias: "e",
+      description: "Specify environment variables to be included with this build.\nAlso accepting environment variables: CODECOV_ENV=VAR,VAR2"
+    },
     sha: {
       alias: "C",
       description: "Specify the commit SHA mannually"

@@ -164,6 +164,10 @@ function fileHeader (filePath) {
   return `# path=${filePath}\n`
 }
 
+function endEnvironmentMarker () {
+  return '<<<<<< ENV\n'
+}
+
 function getFilePath (projectRoot, filePath) {
   if (filePath.startsWith('./') ||
       filePath.startsWith('/') ||
@@ -182,6 +186,7 @@ module.exports = {
   getFileListing,
   endFileMarker,
   endNetworkMarker,
+  endEnvironmentMarker,
   fileHeader,
   fetchGitRoot,
   parseGitIgnore,

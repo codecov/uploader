@@ -77,7 +77,7 @@ jobs:
       - run:
           name: Clone nodejs repo
           command: |
-            git clone https://github.com/nodejs/node.git 
+            git clone https://github.com/nodejs/node.git
       - run:
           name: Checkout v14.16.1 tag and apply patches
           command: |
@@ -113,7 +113,7 @@ jobs:
       - run:
           name: Remove build dir and run tests
           command: |
-            rm -rf node  
+            rm -rf node
             npm ci
             npm test
             mkdir -p coverage-alpine
@@ -137,7 +137,7 @@ jobs:
     docker:
       # specify the version you desire here
       - image: alpine:3.13.5
-    steps:  
+    steps:
       - run:
           name: Install git
           command: |
@@ -150,15 +150,15 @@ jobs:
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
-            out/codecov-alpine -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z >> output_alpine.txt
+            out/codecov-alpine -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
       - run:
           name: Run Alpine binary auto-detect (dry run)
           command: |
-            out/codecov-alpine -F alpine -d -Z >> output_alpine.txt
+            out/codecov-alpine -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
       - run:
           name: Run Alpine binary (upload)
           command: |
-            out/codecov-alpine -F alpine -Z
+            out/codecov-alpine -F alpine -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
@@ -197,15 +197,15 @@ jobs:
       - run:
           name: Run Linux binary -f (dry run)
           command: |
-            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z >> output_linux.txt
+            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -e CIRCLE_BRANCH >> output_linux.txt
       - run:
           name: Run Linux binary auto-detect (dry run)
           command: |
-            out/codecov-linux -F linux -d -Z >> output_linux.txt
+            out/codecov-linux -F linux -d -Z -e CIRCLE_BRANCH >> output_linux.txt
       - run:
           name: Run Linux binary (upload)
           command: |
-            out/codecov-linux -F linux -Z
+            out/codecov-linux -F linux -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
@@ -222,11 +222,11 @@ jobs:
       - run:
           name: Run Linux binary (dry run)
           command: |
-            out/codecov-linux -F linux-without-git -d -Z > output_linux_without_git.txt
+            out/codecov-linux -F linux-without-git -d -Z -e CIRCLE_BRANCH > output_linux_without_git.txt
       - run:
           name: Run Linux binary (upload)
           command: |
-            out/codecov-linux -F linux-without-git -Z
+            out/codecov-linux -F linux-without-git -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
@@ -234,24 +234,24 @@ jobs:
             - output_linux.txt
 
   test-macos:
-    macos: 
-      xcode: "10.0.0" 
-    steps: 
+    macos:
+      xcode: "10.0.0"
+    steps:
       - checkout
       - attach_workspace:
           at: .
       - run:
           name: Run MacOS binary -f (dry-run)
           command: |
-            out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z >> output_osx.txt
+            out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary auto-detect (dry-run)
           command: |
-            out/codecov-macos -F macos -d -Z >> output_osx.txt
+            out/codecov-macos -F macos -d -Z -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-macos -F macos -Z
+            out/codecov-macos -F macos -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
@@ -259,9 +259,9 @@ jobs:
             - output_osx.txt
 
   test-macos-without-git:
-    macos: 
-      xcode: "10.0.0" 
-    steps: 
+    macos:
+      xcode: "10.0.0"
+    steps:
       - attach_workspace:
           at: .
       - run:
@@ -289,17 +289,17 @@ jobs:
           command: |
             dir C:\Users\circleci\project\coverage\
             attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
-            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z >> output_win.txt
+            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary auto-detect (dry-run)
           command: |
-            .\out\codecov.exe -F windows -d -Z >> output_win.txt
+            .\out\codecov.exe -F windows -d -Z -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
           command: |
-            .\out\codecov.exe -F windows -Z
+            .\out\codecov.exe -F windows -Z -e CIRCLE_BRANCH
           shell: cmd.exe
 
       - persist_to_workspace:
@@ -356,7 +356,7 @@ jobs:
       - store_artifacts:
           path: output_win.txt
       - store_artifacts:
-          path: output_win_without_git.txt     
+          path: output_win_without_git.txt
 
 # TODO: add test runs for each binary outside of a git project
 
