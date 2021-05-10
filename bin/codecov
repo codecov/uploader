@@ -35,6 +35,10 @@ var argv = require("yargs") // eslint-disable-line
       default: "",
       description: "Custom defined name of the upload. Visible in Codecov UI"
     },
+    parent: {
+      alias: "N",
+      description: "The commit SHA of the parent for which you are uploading coverage. If not present, the parent will be determined using the API of your repository provider. When using the repository provider's API, the parent is determined via finding the closest ancestor to the commit."
+    },
     pr: {
       alias: "P",
       description: "Specify the pull request number mannually"

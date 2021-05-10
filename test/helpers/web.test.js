@@ -78,15 +78,15 @@ describe('Web Helpers', function () {
     const queryParams = {}
     queryParams.branch = 'testBranch'
     queryParams.commit = 'commitSHA'
-    queryParams.buildURL = 'https://ci-providor.local/job/xyz'
-    queryParams.job = '6'
-    queryParams.flags = 'unit,uploader'
-    queryParams.slug = 'testOrg/testRepo'
     queryParams.build = '4'
-    queryParams.service = 'testingCI'
+    queryParams.buildURL = 'https://ci-providor.local/job/xyz'
     queryParams.name = 'testName'
     queryParams.tag = 'tagV1'
+    queryParams.slug = 'testOrg/testRepo'
+    queryParams.service = 'testingCI'
+    queryParams.flags = 'unit,uploader'
     queryParams.pr = '2'
+    queryParams.job = '6'
     expect(webHelper.generateQuery(queryParams)).toBe(
       'branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6'
     )

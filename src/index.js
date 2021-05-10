@@ -24,6 +24,7 @@ function dryRun (uploadHost, token, query, uploadFile) {
  * @param {string} args.file Target file(s) to upload
  * @param {string} args.flags Flag the upload to group coverage metrics
  * @param {string} args.name Custom defined name of the upload. Visible in Codecov UI
+ * @param {string} args.parent The commit SHA of the parent for which you are uploading coverage.
  * @param {string} args.pr Specify the pull request number mannually
  * @param {string} args.token Codecov upload token
  * @param {string} args.tag Specify the git tag
