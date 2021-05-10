@@ -11,8 +11,16 @@ describe('Input Validators', function () {
   })
 
   describe('Flags', function () {
-    it('Should fail with a dash', function () {
-      expect(validate.validateFlags('moo-foor')).toBe(false)
+
+    it('Should pass without a dash', function () {
+      expect(validate.validateFlags('moo')).toBe(true)
+    })
+    it('Should pass with a dash', function () {
+      expect(validate.validateFlags('moo-foor')).toBe(true)
+    })
+
+    it('Should fail with a dash at the start', function () {
+      expect(validate.validateFlags('-moo-foor')).toBe(false)
     })
   })
 

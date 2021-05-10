@@ -47,6 +47,28 @@ describe('Uploader Core', function () {
     expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
   }, 30000)
 
+  describe('Flags', () => {
+    it('can upload with flags', async () => {
+      process.env.CI = 'true'
+      process.env.CIRCLECI = 'true'
+
+      nock('https://codecov.io')
+        .post('/upload/v4')
+        .query(actualQueryObject => actualQueryObject.flags === 'a-flag')
+        .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
+
+      nock('https://codecov.io')
+        .put('/')
+        .reply(200, 'success')
+
+      const result = await app.main({
+        flags: 'a-flag',
+        token: 'abcdefg',
+        url: 'https://codecov.io'
+      })
+      expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
+    }, 30000)
+  })
   it('Can upload with parent sha', async function () {
     process.env.CI = 'true'
     process.env.CIRCLECI = 'true'
