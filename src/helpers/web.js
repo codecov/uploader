@@ -8,6 +8,7 @@ function populateBuildParams (inputs, serviceParams) {
   serviceParams.flags = validateHelpers.validateFlags(args.flags)
     ? args.flags
     : ''
+  serviceParams.parent = args.parent || ''
   return serviceParams
 }
 
@@ -67,31 +68,18 @@ async function uploadToCodecov (uploadURL, token, query, uploadFile, version) {
   }
 }
 
+
+function camelToSnake(str) {
+  return str && str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+      .map(s => s.toLowerCase())
+      .join('_')
+}
+
 function generateQuery (queryParams) {
-  const query = ''.concat(
-    'branch=',
-    queryParams.branch,
-    '&commit=',
-    queryParams.commit,
-    '&build=',
-    queryParams.build,
-    '&build_url=',
-    queryParams.buildURL,
-    '&name=',
-    queryParams.name,
-    '&tag=',
-    queryParams.tag,
-    '&slug=',
-    queryParams.slug,
-    '&service=',
-    queryParams.service,
-    '&flags=',
-    queryParams.flags,
-    '&pr=',
-    queryParams.pr,
-    '&job=',
-    queryParams.job
-  )
+  const query = Object
+    .entries(queryParams)
+    .map(([key, value]) => `${camelToSnake(key)}=${value}`)
+    .join('&')
   return query
 }
 
