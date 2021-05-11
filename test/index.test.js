@@ -110,7 +110,7 @@ describe('Uploader Core', function () {
     expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
   }, 30000)
 
-  it('Can find coverage from root dir', async function () {
+  it('Can find all coverage from root dir', async function () {
     jest.spyOn(process, 'exit').mockImplementation(() => {})
     const log = jest.spyOn(console, 'log')
     await app.main({
@@ -119,10 +119,11 @@ describe('Uploader Core', function () {
       url: 'https://codecov.io',
       dryRun: true,
     })
-    expect(log).toHaveBeenCalledWith(expect.stringMatching(/cobertura-coverage.xml/))
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
   })
 
-  it('Can find coverage from custom dir', async function () {
+  it('Can find only coverage from custom dir', async function () {
     jest.spyOn(process, 'exit').mockImplementation(() => {})
     const log = jest.spyOn(console, 'log')
     await app.main({
@@ -130,8 +131,9 @@ describe('Uploader Core', function () {
       token: 'abcdefg',
       url: 'https://codecov.io',
       dryRun: true,
-      dir: './test/fixtures'
+      dir: './test/fixtures/other'
     })
-    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage file/))
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
+    expect(log).not.toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
   })
 })
