@@ -130,7 +130,7 @@ jobs:
           root: .
           # Must be relative path from root
           paths:
-            - out
+            - out/codecov-alpine
             - coverage-alpine
 
   test-alpine:
