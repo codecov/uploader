@@ -27,6 +27,7 @@ function dryRun (uploadHost, token, query, uploadFile) {
  * @param {Object} args
  * @param {string} args.build Specify the build number manually
  * @param {string} args.branch Specify the branch manually
+ * @param {string} args.dir Directory to search for coverage reports.
  * @param {string} args.env Specify environment variables to be included with this build
  * @param {string} args.sha Specify the commit SHA mannually
  * @param {string} args.file Target file(s) to upload
@@ -90,7 +91,7 @@ async function main (args) {
     let coverageFilePaths = []
     if (!args.file) {
       coverageFilePaths = fileHelpers.getCoverageFiles(
-        projectRoot,
+        args.dir || projectRoot,
         // TODO: Determine why this is so slow (I suspect it's walking paths it should not)
         fileHelpers.coverageFilePatterns()
       )
@@ -125,7 +126,7 @@ async function main (args) {
     for (let index = 0; index < coverageFilePaths.length; index++) {
       const coverageFile = coverageFilePaths[index]
       const fileContents = await fileHelpers.readCoverageFile(
-        '.',
+        args.dir || projectRoot,
         coverageFile
       )
       uploadFile = uploadFile.concat(fileHelpers.fileHeader(coverageFile))

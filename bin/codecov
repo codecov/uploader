@@ -43,6 +43,10 @@ var argv = require("yargs") // eslint-disable-line
       alias: "P",
       description: "Specify the pull request number mannually"
     },
+    dir: {
+      alias: "s",
+      description: "Directory to search for coverage reports.\nAlready searches project root and current working directory"
+    },
     token: {
       alias: "t",
       default: "",
