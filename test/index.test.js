@@ -109,4 +109,31 @@ describe('Uploader Core', function () {
     })
     expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
   }, 30000)
+
+  it('Can find all coverage from root dir', async function () {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log')
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: true,
+    })
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
+  })
+
+  it('Can find only coverage from custom dir', async function () {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log')
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: true,
+      dir: './test/fixtures/other'
+    })
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
+    expect(log).not.toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
+  })
 })
