@@ -11,7 +11,6 @@ describe('Input Validators', function () {
   })
 
   describe('Flags', function () {
-
     it('Should pass without a dash', function () {
       expect(validate.validateFlags('moo')).toBe(true)
     })
