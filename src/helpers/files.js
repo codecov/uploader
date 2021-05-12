@@ -85,7 +85,7 @@ function fetchGitRoot () {
         .spawnSync('hg', ['root'], { encoding: 'utf-8' })
         .stdout ||
       process.cwd()
-    )
+    ).trimRight()
   } catch (error) {
     throw new Error('Error fetching git root. Please try using the -R flag.')
   }
