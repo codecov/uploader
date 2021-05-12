@@ -72,7 +72,8 @@
       "it",
       "describe",
       "beforeEach",
-      "afterEach"
+      "afterEach",
+      "jest"
     ]
   }
 }

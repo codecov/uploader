@@ -79,13 +79,11 @@ function fetchGitRoot () {
   try {
     return (
       childProcess
-        .spawnSync('git', ['rev-parse', '--show-toplevel'])
-        .stdout.toString()
-        .trimRight() ||
+        .spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf-8' })
+        .stdout ||
       childProcess
-        .spawnSync('hg', ['root'])
-        .stdout.toString()
-        .trimRight() ||
+        .spawnSync('hg', ['root'], { encoding: 'utf-8' })
+        .stdout ||
       process.cwd()
     )
   } catch (error) {

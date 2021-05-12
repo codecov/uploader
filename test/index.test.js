@@ -105,7 +105,7 @@ describe('Uploader Core', function () {
     const result = await app.main({
       token: 'abcdefg',
       url: 'https://codecov.io',
-      parent,
+      parent
     })
     expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
   }, 30000)
@@ -117,7 +117,7 @@ describe('Uploader Core', function () {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: true,
+      dryRun: true
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
