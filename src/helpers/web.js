@@ -1,6 +1,13 @@
 const superagent = require('superagent')
 const validateHelpers = require('./validate')
 
+/**
+ *
+ * @param {Object} inputs
+ * @param {NodeJS.ProcessEnv} inputs.envs
+ * @param {Object} serviceParams
+ * @returns Object
+ */
 function populateBuildParams (inputs, serviceParams) {
   const { args, envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
@@ -68,13 +75,22 @@ async function uploadToCodecov (uploadURL, token, query, uploadFile, version) {
   }
 }
 
-
-function camelToSnake(str) {
+/**
+ *
+ * @param {string} str
+ * @returns string
+ */
+function camelToSnake (str) {
   return str && str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-      .map(s => s.toLowerCase())
-      .join('_')
+    .map(s => s.toLowerCase())
+    .join('_')
 }
 
+/**
+ *
+ * @param {Object} queryParams
+ * @returns string
+ */
 function generateQuery (queryParams) {
   const query = Object
     .entries(queryParams)

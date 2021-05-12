@@ -1,3 +1,4 @@
+// @ts-check
 const zlib = require('zlib')
 const { version } = require('../package.json')
 const fileHelpers = require('./helpers/files')
@@ -5,6 +6,13 @@ const validateHelpers = require('./helpers/validate')
 const webHelpers = require('./helpers/web')
 const providers = require('./ci_providers')
 
+/**
+ *
+ * @param {string} uploadHost
+ * @param {string} token
+ * @param {string} query
+ * @param {string} uploadFile
+ */
 function dryRun (uploadHost, token, query, uploadFile) {
   console.log('==> Dumping upload file (no upload)')
   console.log(
@@ -191,6 +199,11 @@ async function main (args) {
   }
 }
 
+/**
+ *
+ * @param {string} version
+ * @returns string
+ */
 function generateHeader (version) {
   return `
      _____          _

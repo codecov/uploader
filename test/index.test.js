@@ -105,7 +105,7 @@ describe('Uploader Core', function () {
     const result = await app.main({
       token: 'abcdefg',
       url: 'https://codecov.io',
-      parent,
+      parent
     })
     expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
   }, 30000)
