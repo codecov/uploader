@@ -27,7 +27,8 @@ function globBlacklist () {
     '.nyc_output',
     '.circleci',
     '.nvmrc',
-    '.gitignore'
+    '.gitignore',
+    '*.exe'
   ]
 }
 
