@@ -1,8 +1,14 @@
+// @ts-check
 const childProcess = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const glob = require('glob')
 
+/**
+ *
+ * @param {string} projectRoot
+ * @returns Promise<string>
+ */
 async function getFileListing (projectRoot) {
   return getAllFiles(projectRoot, projectRoot).join('')
 }
@@ -144,20 +150,29 @@ function coverageFilePatterns () {
   ]
 }
 
+/**
+ *
+ * @param {string} projectRoot
+ * @param {string[]} coverageFilePatterns
+ * @returns string[]
+ */
 function getCoverageFiles (projectRoot, coverageFilePatterns) {
-  let files = []
-  for (let index = 0; index < coverageFilePatterns.length; index++) {
-    const pattern = coverageFilePatterns[index]
-    const newFiles = glob.sync(`**/${pattern}`, {
+  const files = coverageFilePatterns.flatMap(pattern => {
+    return glob.sync(`**/${pattern}`, {
       cwd: projectRoot,
       ignore: globBlacklist()
     })
-
-    files = files.concat(newFiles)
-  }
+  })
   return files
 }
 
+/**
+ *
+ * @param {string} projectRoot
+ * @param {string} file
+ * @param {string[]} manualBlacklist
+ * @returns boolean
+ */
 function isBlacklisted (projectRoot, file, manualBlacklist) {
   const blacklist = manualBlacklist
   return blacklist.includes(file)
@@ -179,6 +194,11 @@ function fetchGitRoot () {
   }
 }
 
+/**
+ *
+ * @param {string} projectRoot
+ * @returns string[]
+ */
 function parseGitIgnore (projectRoot) {
   const gitIgnorePath = path.join(projectRoot, '.gitignore')
   let lines
@@ -197,9 +217,15 @@ function parseGitIgnore (projectRoot) {
   return filteredLines
 }
 
-function getAllFiles (projectRoot, dirPath, arrayOfFiles) {
+/**
+ *
+ * @param {string} projectRoot Root of the project
+ * @param {string} dirPath Directory to search in
+ * @param {string[]} arrayOfFiles
+ * @returns {string[]}
+ */
+function getAllFiles (projectRoot, dirPath, arrayOfFiles = []) {
   const files = fs.readdirSync(dirPath)
-  arrayOfFiles = arrayOfFiles || []
 
   files.forEach(function (file) {
     if (
@@ -223,6 +249,11 @@ function getAllFiles (projectRoot, dirPath, arrayOfFiles) {
   return arrayOfFiles
 }
 
+/**
+ *
+ * @param {string} filePath
+ * @returns string[]
+ */
 function readAllLines (filePath) {
   const fileContents = fs.readFileSync(filePath)
 
@@ -230,6 +261,12 @@ function readAllLines (filePath) {
   return lines
 }
 
+/**
+ *
+ * @param {string} projectRoot
+ * @param {string} filePath
+ * @returns string
+ */
 function readCoverageFile (projectRoot, filePath) {
   try {
     return fs.readFileSync(getFilePath(projectRoot, filePath))
@@ -254,6 +291,12 @@ function endEnvironmentMarker () {
   return '<<<<<< ENV\n'
 }
 
+/**
+ *
+ * @param {string} projectRoot
+ * @param {string} filePath
+ * @returns string
+ */
 function getFilePath (projectRoot, filePath) {
   if (filePath.startsWith('./') ||
       filePath.startsWith('/') ||
