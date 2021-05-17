@@ -130,7 +130,7 @@ jobs:
           root: .
           # Must be relative path from root
           paths:
-            - out
+            - out/codecov-alpine
             - coverage-alpine
 
   test-alpine:
@@ -393,7 +393,9 @@ workflows:
   "Build and Test":
     jobs:
       - build-linux-and-osx
-      - build-alpine
+      - build-alpine:
+          requires:
+            - build-linux-and-osx
       - test-alpine:
           requires:
             - build-alpine
