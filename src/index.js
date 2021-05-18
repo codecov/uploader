@@ -84,7 +84,7 @@ async function main (args) {
     log(`=> Project root located at: ${projectRoot}`)
 
     // == Step 3: get network
-    const fileListing = await fileHelpers.getFileListing(projectRoot)
+    const fileListing = await fileHelpers.getFileListing(projectRoot, args)
 
     // == Step 4: select coverage files (search or specify)
 

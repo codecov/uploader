@@ -3,14 +3,15 @@ const childProcess = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const glob = require('glob')
+const { log } = require('./logger')
 
 /**
  *
  * @param {string} projectRoot
  * @returns Promise<string>
  */
-async function getFileListing (projectRoot) {
-  return getAllFiles(projectRoot, projectRoot).join('')
+async function getFileListing (projectRoot, args) {
+  return getAllFiles(projectRoot, projectRoot, args).join('')
 }
 
 function manualBlacklist () {
@@ -224,7 +225,8 @@ function parseGitIgnore (projectRoot) {
  * @param {string[]} arrayOfFiles
  * @returns {string[]}
  */
-function getAllFiles (projectRoot, dirPath, arrayOfFiles = []) {
+function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
+  log(`Searching for files in ${dirPath}`, { level: 'debug', args })
   const files = fs.readdirSync(dirPath)
 
   files.forEach(function (file) {
@@ -235,6 +237,7 @@ function getAllFiles (projectRoot, dirPath, arrayOfFiles = []) {
       arrayOfFiles = getAllFiles(
         projectRoot,
         path.join(dirPath, file),
+        args,
         arrayOfFiles
       )
     } else {
