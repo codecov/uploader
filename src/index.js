@@ -4,6 +4,7 @@ const { version } = require('../package.json')
 const fileHelpers = require('./helpers/files')
 const validateHelpers = require('./helpers/validate')
 const webHelpers = require('./helpers/web')
+const { log } = require('./helpers/logger')
 const providers = require('./ci_providers')
 
 /**
@@ -14,11 +15,11 @@ const providers = require('./ci_providers')
  * @param {string} uploadFile
  */
 function dryRun (uploadHost, token, query, uploadFile) {
-  console.log('==> Dumping upload file (no upload)')
-  console.log(
+  log('==> Dumping upload file (no upload)')
+  log(
     `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`
   )
-  console.log(uploadFile)
+  log(uploadFile)
   process.exit()
 }
 
@@ -70,17 +71,17 @@ async function main (args) {
       token = process.env.CODECOV_TOKEN || ''
     }
     token = args.token || process.env.CODECOV_TOKEN || ''
-    console.log(generateHeader(getVersion()))
+    log(generateHeader(getVersion()))
 
     // == Step 2: detect if we are in a git repo
     const projectRoot = args.rootDir || fileHelpers.fetchGitRoot()
     if (projectRoot === '') {
-      console.log(
+      log(
         '=> No git repo detected. Please use the -R flag if the below detected directory is not correct.'
       )
     }
 
-    console.log(`=> Project root located at: ${projectRoot}`)
+    log(`=> Project root located at: ${projectRoot}`)
 
     // == Step 3: get network
     const fileListing = await fileHelpers.getFileListing(projectRoot)
@@ -96,13 +97,13 @@ async function main (args) {
         fileHelpers.coverageFilePatterns()
       )
       if (coverageFilePaths.length > 0) {
-        console.log(
+        log(
           `=> Found ${coverageFilePaths.length} possible coverage files:`
         )
-        console.log(coverageFilePaths.join('\n'))
+        log(coverageFilePaths.join('\n'))
       } else {
-        console.error(
-          'No coverage files located, please try use `-f`, or change the project root with `-R`'
+        log(
+          'No coverage files located, please try use `-f`, or change the project root with `-R`', { level: 'error' }
         )
         process.exit(args.nonZero ? -1 : 0)
       }
@@ -111,7 +112,7 @@ async function main (args) {
         ? args.file
         : ''
       if (coverageFilePaths.length === 0) {
-        console.error('Not coverage file found, exiting.')
+        log('Not coverage file found, exiting.', { level: 'error' })
         process.exit(args.nonZero ? -1 : 0)
       }
     }
@@ -154,7 +155,7 @@ async function main (args) {
     let serviceParams
     for (const provider of providers) {
       if (provider.detect(envs)) {
-        console.log(
+        log(
           `Detected ${provider.getServiceName()} as the CI provider.`
         )
         serviceParams = provider.getServiceParams(inputs)
@@ -163,7 +164,7 @@ async function main (args) {
     }
 
     if (serviceParams === undefined) {
-      console.error('Unable to detect service, please specify manually.')
+      log('Unable to detect service, please specify manually.', { level: 'error' })
       process.exit(args.nonZero ? -1 : 0)
     }
 
@@ -176,7 +177,7 @@ async function main (args) {
     if (args.dryRun) {
       dryRun(uploadHost, token, query, uploadFile)
     } else {
-      console.log(
+      log(
         `Pinging Codecov: ${uploadHost}/v4?package=uploader-${version}&token=*******&${query}`
       )
       const uploadURL = await webHelpers.uploadToCodecov(
@@ -190,12 +191,12 @@ async function main (args) {
         uploadURL,
         gzippedFile
       )
-      console.log(result)
+      log(result)
       return result
     }
   } catch (error) {
     // Output any exceptions and exit
-    console.error(error.message)
+    log(error.message, { level: 'error' })
     process.exit(args.nonZero ? -1 : 0)
   }
 }

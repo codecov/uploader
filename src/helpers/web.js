@@ -1,5 +1,6 @@
 const superagent = require('superagent')
 const validateHelpers = require('./validate')
+const { log } = require('./logger')
 
 /**
  *
@@ -26,7 +27,7 @@ function populateBuildParams (inputs, serviceParams) {
  * @returns {Promise<{ status: string, resultURL: string }>}
  */
 async function uploadToCodecovPUT (uploadURL, uploadFile) {
-  console.log('Uploading...')
+  log('Uploading...')
 
   const parts = uploadURL.split('\n')
   const putURL = parts[1]
