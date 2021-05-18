@@ -31,4 +31,10 @@ describe('Logger Helper', () => {
     logger.log('message with error level', { level: 'error' })
     expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/error level/))
   })
+
+  it('Should call logger with unsupported options.level ', () => {
+    jest.spyOn(console, 'log').mockImplementation(() => {})
+    logger.log('message with error level of foobar', { level: 'foobar' })
+    expect(console.log).toHaveBeenCalledWith(expect.stringMatching(/of foobar/))
+  })
 })
