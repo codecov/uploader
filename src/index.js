@@ -13,13 +13,17 @@ const providers = require('./ci_providers')
  * @param {string} token
  * @param {string} query
  * @param {string} uploadFile
+ * @param {Object} args
+ * @param {Date} start
  */
-function dryRun (uploadHost, token, query, uploadFile) {
+function dryRun (uploadHost, token, query, uploadFile, args, start) {
   log('==> Dumping upload file (no upload)')
   log(
     `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`
   )
   log(uploadFile)
+  const end = Date.now()
+  log(`End of uploader: ${end - start} milliseconds`, { level: 'debug', args })
   process.exit()
 }
 
@@ -46,6 +50,8 @@ function dryRun (uploadHost, token, query, uploadFile) {
  * @param {string} args.url Change the upload host (Enterprise use)
  */
 async function main (args) {
+  const start = Date.now()
+  log(`Start of uploader: ${start}...`, { level: 'debug', args })
   try {
     /*
   Step 1: validate and sanitize inputs
@@ -84,6 +90,7 @@ async function main (args) {
     log(`=> Project root located at: ${projectRoot}`)
 
     // == Step 3: get network
+    log('Start of network processing...', { level: 'debug', args })
     const fileListing = await fileHelpers.getFileListing(projectRoot, args)
 
     // == Step 4: select coverage files (search or specify)
@@ -116,6 +123,7 @@ async function main (args) {
         process.exit(args.nonZero ? -1 : 0)
       }
     }
+    log('End of network processing', { level: 'debug', args })
 
     // == Step 5: generate upload file
     // TODO: capture envs
@@ -175,7 +183,7 @@ async function main (args) {
     )
 
     if (args.dryRun) {
-      dryRun(uploadHost, token, query, uploadFile)
+      dryRun(uploadHost, token, query, uploadFile, args, start)
     } else {
       log(
         `Pinging Codecov: ${uploadHost}/v4?package=uploader-${version}&token=*******&${query}`
@@ -197,8 +205,12 @@ async function main (args) {
   } catch (error) {
     // Output any exceptions and exit
     log(error.message, { level: 'error' })
+    const end = Date.now()
+    log(`End of uploader: ${end - start} milliseconds`, { level: 'debug', args })
     process.exit(args.nonZero ? -1 : 0)
   }
+  const end = Date.now()
+  log(`End of uploader: ${end - start} milliseconds`, { level: 'debug', args })
 }
 
 /**

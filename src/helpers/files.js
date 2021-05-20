@@ -122,7 +122,7 @@ function globBlacklist () {
     'remapInstanbul.coverage*.json',
     'scoverage.measurements.*',
     'test_*_coverage.txt',
-    'testrunner-coverage*',
+    'testrunner-coverage*'
   ]
 }
 
@@ -230,9 +230,11 @@ function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
   const files = fs.readdirSync(dirPath)
 
   files.forEach(function (file) {
+    if (isBlacklisted(projectRoot, file, manualBlacklist())) {
+      return
+    }
     if (
-      fs.statSync(path.join(dirPath, file)).isDirectory() &&
-      !isBlacklisted(projectRoot, file, manualBlacklist())
+      fs.statSync(path.join(dirPath, file)).isDirectory()
     ) {
       arrayOfFiles = getAllFiles(
         projectRoot,
@@ -241,14 +243,12 @@ function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
         arrayOfFiles
       )
     } else {
-      if (!isBlacklisted(projectRoot, file, manualBlacklist())) {
-        arrayOfFiles.push(
+      arrayOfFiles.push(
           `${path.join(dirPath.replace(projectRoot, '.'), file)}\n`
-        )
-      }
+      )
     }
   })
-
+  log(`Search complete for files in ${dirPath}`, { level: 'debug', args })
   return arrayOfFiles
 }
 
