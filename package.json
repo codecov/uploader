@@ -60,8 +60,7 @@
     ],
     "coverageReporters": [
       "text",
-      "cobertura",
-      "html"
+      "cobertura"
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/test_helpers.js"
