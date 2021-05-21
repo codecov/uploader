@@ -3,14 +3,15 @@ const childProcess = require('child_process')
 const fs = require('fs')
 const path = require('path')
 const glob = require('glob')
+const { log } = require('./logger')
 
 /**
  *
  * @param {string} projectRoot
  * @returns Promise<string>
  */
-async function getFileListing (projectRoot) {
-  return getAllFiles(projectRoot, projectRoot).join('')
+async function getFileListing (projectRoot, args) {
+  return getAllFiles(projectRoot, projectRoot, args).join('')
 }
 
 function manualBlacklist () {
@@ -121,7 +122,7 @@ function globBlacklist () {
     'remapInstanbul.coverage*.json',
     'scoverage.measurements.*',
     'test_*_coverage.txt',
-    'testrunner-coverage*',
+    'testrunner-coverage*'
   ]
 }
 
@@ -224,28 +225,30 @@ function parseGitIgnore (projectRoot) {
  * @param {string[]} arrayOfFiles
  * @returns {string[]}
  */
-function getAllFiles (projectRoot, dirPath, arrayOfFiles = []) {
+function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
+  log(`Searching for files in ${dirPath}`, { level: 'debug', args })
   const files = fs.readdirSync(dirPath)
 
   files.forEach(function (file) {
+    if (isBlacklisted(projectRoot, file, manualBlacklist())) {
+      return
+    }
     if (
-      fs.statSync(path.join(dirPath, file)).isDirectory() &&
-      !isBlacklisted(projectRoot, file, manualBlacklist())
+      fs.statSync(path.join(dirPath, file)).isDirectory()
     ) {
       arrayOfFiles = getAllFiles(
         projectRoot,
         path.join(dirPath, file),
+        args,
         arrayOfFiles
       )
     } else {
-      if (!isBlacklisted(projectRoot, file, manualBlacklist())) {
-        arrayOfFiles.push(
+      arrayOfFiles.push(
           `${path.join(dirPath.replace(projectRoot, '.'), file)}\n`
-        )
-      }
+      )
     }
   })
-
+  log(`Search complete for files in ${dirPath}`, { level: 'debug', args })
   return arrayOfFiles
 }
 

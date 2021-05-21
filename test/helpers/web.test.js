@@ -23,6 +23,7 @@ describe('Web Helpers', function () {
 
   afterEach(function () {
     uploadURL = ''
+    jest.restoreAllMocks()
   })
 
   it('Can POST to the uploader endpoint (HTTP)', async function () {
@@ -48,6 +49,7 @@ describe('Web Helpers', function () {
   })
 
   it('Can POST to the uploader endpoint (HTTPS)', async function () {
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     uploadURL = 'https://codecov.io'
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
     nock('https://codecov.io')
@@ -66,6 +68,7 @@ describe('Web Helpers', function () {
   })
 
   it('Can PUT to the storage endpoint', async function () {
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     uploadURL = 'https://results.codecov.io\nhttps://codecov.io'
     const response = await webHelper.uploadToCodecovPUT(
       uploadURL,

@@ -28,6 +28,7 @@ describe('Uploader Core', function () {
   })
 
   it('Can upload with custom name', async function () {
+    jest.spyOn(console, 'log').mockImplementation(() => {})
     process.env.CI = 'true'
     process.env.CIRCLECI = 'true'
 
@@ -52,7 +53,7 @@ describe('Uploader Core', function () {
     process.env.SOMETHING = 'red'
     process.env.ANOTHER = 'blue'
     jest.spyOn(process, 'exit').mockImplementation(() => {})
-    const log = jest.spyOn(console, 'log')
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
       token: 'abcdefg',
@@ -112,7 +113,7 @@ describe('Uploader Core', function () {
 
   it('Can find all coverage from root dir', async function () {
     jest.spyOn(process, 'exit').mockImplementation(() => {})
-    const log = jest.spyOn(console, 'log')
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
       token: 'abcdefg',
@@ -125,7 +126,7 @@ describe('Uploader Core', function () {
 
   it('Can find only coverage from custom dir', async function () {
     jest.spyOn(process, 'exit').mockImplementation(() => {})
-    const log = jest.spyOn(console, 'log')
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
       token: 'abcdefg',
