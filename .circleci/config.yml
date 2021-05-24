@@ -74,8 +74,7 @@ jobs:
           name: Download prebuilt static node binary
           command: |
             apk add wget
-            wget wget
-            https://github.com/codecov/node-static-alpine/releases/download/node.v14.16.1_0b668b007c0533fa4be1b24c66941a06f5965fdf/node
+            wget https://github.com/codecov/node-static-alpine/releases/download/node.v14.16.1_0b668b007c0533fa4be1b24c66941a06f5965fdf/node
 
       - run:
           name: Confirm that alpine node binary is static
