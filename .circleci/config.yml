@@ -92,6 +92,7 @@ jobs:
           name: Remove downloaded binary and run tests
           command: |
             rm -rf node
+            apk add npm
             npm ci
             npm test
             mkdir -p coverage-alpine
