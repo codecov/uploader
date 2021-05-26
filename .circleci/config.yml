@@ -73,9 +73,13 @@ jobs:
       - run:
           name: Download prebuilt static node binary
           command: |
-            apk add wget
-            wget https://github.com/codecov/node-static-alpine/releases/download/node.v14.16.1_0b668b007c0533fa4be1b24c66941a06f5965fdf/node
-
+            apk add wget coreutils
+            NODE_RELEASE=node.v14.16.1_0b668b007c0533fa4be1b24c66941a06f5965fdf
+            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/node
+            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA1SUM
+            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA256SUM
+            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA512SUM
+            for i in 1 256 512; do "sha${i}sum" node -c "SHA${i}SUM"; done
       - run:
           name: Confirm that alpine node binary is static
           command: |
