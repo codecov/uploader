@@ -158,13 +158,12 @@ function coverageFilePatterns () {
  * @returns string[]
  */
 function getCoverageFiles (projectRoot, coverageFilePatterns) {
-  const files = coverageFilePatterns.flatMap(pattern => {
+  return coverageFilePatterns.flatMap(pattern => {
     return glob.sync(`**/${pattern}`, {
       cwd: projectRoot,
       ignore: globBlacklist()
     })
   })
-  return files
 }
 
 /**
@@ -209,13 +208,12 @@ function parseGitIgnore (projectRoot) {
     throw new Error(`Unable to open ${gitIgnorePath}: ${error}`)
   }
 
-  const filteredLines = lines.filter(line => {
+  return lines.filter(line => {
     if (line === '' || line.startsWith('#')) {
       return false
     }
     return true
   })
-  return filteredLines
 }
 
 /**
@@ -272,7 +270,7 @@ function readAllLines (filePath) {
  */
 function readCoverageFile (projectRoot, filePath) {
   try {
-    return fs.readFileSync(getFilePath(projectRoot, filePath))
+    return fs.readFileSync(getFilePath(projectRoot, filePath), { encoding:'utf-8' })
   } catch (error) {
     throw new Error(`There was an error reading the coverage file: ${error}`)
   }
@@ -313,6 +311,14 @@ function getFilePath (projectRoot, filePath) {
   return path.join(projectRoot, filePath)
 }
 
+function removeFile (projectRoot, filePath) {
+  fs.unlink(getFilePath(projectRoot, filePath), (err) => {
+    if (err) {
+      log(`Error removing ${filePath} coverage file`)
+    }
+  })
+}
+
 module.exports = {
   readCoverageFile,
   getFileListing,
@@ -324,5 +330,6 @@ module.exports = {
   parseGitIgnore,
   getCoverageFiles,
   coverageFilePatterns,
-  getFilePath
+  getFilePath,
+  removeFile
 }

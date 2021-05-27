@@ -85,6 +85,12 @@ var argv = require("yargs") // eslint-disable-line
       type: "string",
       description: "Change the upload host (Enterprise use)",
       default: "https://codecov.io"
+    },
+    clean: {
+      alias: "c",
+      type: "boolean",
+      default: false,
+      description: "Move discovered coverage reports to the trash"
     }
   })
   .version()

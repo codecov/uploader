@@ -2,10 +2,10 @@
 
 /**
  *
- * @param {string} message
- * @param {Object} options
- * @param {string} options.level
- * @param {Object} options.args
+ * @param {string|Object} message
+ * @param {Object} [options]
+ * @param {string} [options.level]
+ * @param {Object} [options.args]
  * @returns void
  */
 function log (message, options) {

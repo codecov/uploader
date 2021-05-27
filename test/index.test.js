@@ -2,6 +2,7 @@ const app = require('../src')
 
 const { version } = require('../package.json')
 const nock = require('nock')
+const fs = require('fs')
 
 describe('Uploader Core', function () {
   const env = process.env
@@ -136,5 +137,19 @@ describe('Uploader Core', function () {
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
     expect(log).not.toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
+  })
+
+  it('Can remove coverage files', async function () {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const unlink = jest.spyOn(fs, 'unlink').mockImplementation(() => {})
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: true,
+      dir: './test/fixtures/other',
+      clean: true,
+    })
+    expect(unlink).toHaveBeenCalledWith('test/fixtures/other/coverage.txt', expect.any(Function))
   })
 })

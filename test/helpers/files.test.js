@@ -47,7 +47,7 @@ describe('File Helpers', () => {
     })
     it('can read a coverage report file', async () => {
       const readFileSync = td.replace(fs, 'readFileSync')
-      td.when(readFileSync('test-coverage-file.xml')).thenReturn('I am test coverage data')
+      td.when(readFileSync('test-coverage-file.xml', { encoding:'utf-8' })).thenReturn('I am test coverage data')
       const reportContents = fileHelpers.readCoverageFile(
         '.',
         'test-coverage-file.xml'
@@ -81,5 +81,11 @@ describe('File Helpers', () => {
         expect(fileHelpers.getFilePath('.', '/usr/coverage.xml')).toEqual('/usr/coverage.xml')
       })
     })
+  })
+
+  it('can remove a file', function () {
+    const fn = jest.spyOn(fs, 'unlink').mockImplementation(() => null)
+    fileHelpers.removeFile('.', 'coverage.xml')
+    expect(fn).toHaveBeenCalledWith('coverage.xml', expect.any(Function))
   })
 })
