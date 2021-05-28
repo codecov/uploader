@@ -11,7 +11,7 @@ jobs:
   build-linux-and-osx:
     docker:
       # specify the version you desire here
-      - image: circleci/node:14.16.1
+      - image: circleci/node:14.17.0
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -167,7 +167,7 @@ jobs:
   test-linux:
     docker:
       # specify the version you desire here
-      - image: circleci/node:14.16.1
+      - image: circleci/node:14.17.0
     steps:
       - checkout
       - attach_workspace:
@@ -193,7 +193,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: circleci/node:14.16.1
+      - image: circleci/node:14.17.0
     steps:
       - attach_workspace:
           # TODO: Determine why we use the cwd on Linex and not on other operating systems.
@@ -310,7 +310,7 @@ jobs:
 
   review:
     docker:
-      - image: circleci/node:14.16.1
+      - image: circleci/node:14.17.0
     steps:
       - attach_workspace:
           at: .
@@ -341,7 +341,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:14.16.1
+      - image: circleci/node:14.17.0
     steps:
       - attach_workspace:
           at: .
