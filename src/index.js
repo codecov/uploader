@@ -48,6 +48,7 @@ function dryRun (uploadHost, token, query, uploadFile, args, start) {
  * @param {boolean} args.dryRun Don't upload files to Codecov
  * @param {string} args.slug Specify the slug manually (Enterprise use)
  * @param {string} args.url Change the upload host (Enterprise use)
+ * @param {string} args.feature Toggle features
  */
 async function main (args) {
   const start = Date.now()
@@ -90,8 +91,14 @@ async function main (args) {
     log(`=> Project root located at: ${projectRoot}`)
 
     // == Step 3: get network
-    log('Start of network processing...', { level: 'debug', args })
-    const fileListing = await fileHelpers.getFileListing(projectRoot, args)
+    let uploadFile = ''
+
+    if (!args.feature || args.feature.split(',').includes('network') === falses) {
+      log('Start of network processing...', { level: 'debug', args })
+      const fileListing = await fileHelpers.getFileListing(projectRoot, args)
+
+      uploadFile = uploadFile.concat(fileListing).concat(fileHelpers.endNetworkMarker())
+    }
 
     // == Step 4: select coverage files (search or specify)
 
@@ -127,9 +134,6 @@ async function main (args) {
 
     // == Step 5: generate upload file
     // TODO: capture envs
-    let uploadFile = fileListing
-
-    uploadFile = uploadFile.concat(fileHelpers.endNetworkMarker())
 
     // Get coverage report contents
     for (let index = 0; index < coverageFilePaths.length; index++) {

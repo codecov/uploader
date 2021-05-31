@@ -85,6 +85,12 @@ var argv = require("yargs") // eslint-disable-line
       type: "string",
       description: "Change the upload host (Enterprise use)",
       default: "https://codecov.io"
+    },
+    feature: {
+      alias: 'X',
+      type: "string",
+      description: `Toggle functionalities
+        -X network       Disable uploading the file network`
     }
   })
   .version()
