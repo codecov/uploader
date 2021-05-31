@@ -93,7 +93,7 @@ async function main (args) {
     // == Step 3: get network
     let uploadFile = ''
 
-    if (!args.feature || args.feature.split(',').includes('network') === falses) {
+    if (!args.feature || args.feature.split(',').includes('network') === false) {
       log('Start of network processing...', { level: 'debug', args })
       const fileListing = await fileHelpers.getFileListing(projectRoot, args)
 
