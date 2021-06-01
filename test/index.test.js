@@ -137,4 +137,29 @@ describe('Uploader Core', function () {
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
     expect(log).not.toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
   })
+
+  it('Can include the network', async function () {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: true,
+    })
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
+  })
+
+  it('Can ignore the network', async function () {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: true,
+      feature: 'network'
+    })
+    expect(log).not.toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
+  })
 })
