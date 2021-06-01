@@ -1,6 +1,5 @@
-var execSync = require('child_process').execSync
-
-const { log } = require('./helpers/logger')
+var childProcess = require('child_process')
+var { log } = require('../helpers/logger')
 
 function detect (envs) {
   return envs.GITHUB_ACTIONS
@@ -14,17 +13,21 @@ function _getBuild (inputs) {
 function _getBuildURL (inputs) {
   const { args, envs } = inputs
   return encodeURIComponent(
-    `https://github.com/${env.GITHUB_REPOSITORY}/actions/runs/${_getBuild(inputs)}`
+    `https://github.com/${envs.GITHUB_REPOSITORY}/actions/runs/${_getBuild(inputs)}`
   )
 }
 
 function _getBranch (inputs) {
-  const { args, env } = inputs
+  const { args, envs } = inputs
   const branchRegex = /refs\/heads\/(.*)/
-  let branch = branchRegex.exec(env.GITHUB_REF)
+  const branchMatches = branchRegex.exec(envs.GITHUB_REF)
+  let branch
+  if (branchMatches) {
+    branch = branchMatches[1]
+  }
 
-  if (env.GITHUB_HEAD_REF != '') {
-    branch = env.GITHUB_HEAD_REF
+  if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF != '') {
+    branch = envs.GITHUB_HEAD_REF
   }
   return args.branch || branch
 }
@@ -34,12 +37,16 @@ function _getJob (envs) {
 }
 
 function _getPR (inputs) {
-  const { args, env } = inputs
-  if (env.GITHUB_HEAD_REF != '') {
+  const { args, envs } = inputs
+  let match
+  if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF != '') {
     const prRegex = /refs\/pull\/([0-9]+)\/merge/
-    const matches = prRegex.exec(env.GITHUB_REF)
+    const matches = prRegex.exec(envs.GITHUB_REF)
+    if (matches) {
+      match = matches[1]
+    }
   }
-  return args.pr || matches[1] || '';
+  return args.pr || match || '';
 }
 
 function _getService () {
@@ -49,22 +56,18 @@ function _getService () {
 function getServiceName () {
   return 'GitHub Actions'
 }
-/**
- * Determine the commit SHA that is being uploaded, based on args or envs
- *
- * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns String
- */
+
 function _getSHA (inputs) {
-  const { args, env } = inputs
+  const { args, envs } = inputs
   const pr = _getPR(inputs)
 
-  let commit = env.GITHUB_SHA
+  let commit = envs.GITHUB_SHA
   if (pr && pr != false && !args.sha) {
     const mergeCommitRegex = /^[a-z0-9]{40}[[:space:]][a-z0-9]{40}$/
-    const mergeCommitMessage = execSync(`
+    const mergeCommitMessage = childProcess.execSync(`
       git show --no-patch --format="%P" 2>/dev/null || echo ""
     `)
+    console.log(`this is mergeCommitMessage ${mergeCommitMessage}`)
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(" ")[1]
       log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
@@ -78,8 +81,8 @@ function _getSHA (inputs) {
 }
 
 function _getSlug (inputs) {
-  const { args, env } = inputs
-  return args.slug || env.GITHUB_REPOSITORY || ''
+  const { args, envs } = inputs
+  return args.slug || envs.GITHUB_REPOSITORY || ''
 }
 
 function getServiceParams (inputs) {
@@ -88,7 +91,7 @@ function getServiceParams (inputs) {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs)

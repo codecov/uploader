@@ -15,7 +15,10 @@ describe('CI Providers', () => {
       envs: {
         CIRCLE_PROJECT_USERNAME: 'testOrg',
         CIRCLE_PROJECT_REPONAME: 'testRepo',
-        CIRCLE_SHA1: 'testingSHA'
+        CIRCLE_SHA1: 'testingSHA',
+        GITHUB_ACTIONS: true,
+        GITHUB_REF: 'refs/heads/test',
+        GITHUB_REPOSITORY: 'testOrg/testRepo',
       }
     }
     describe(`${provider.getServiceName() || ''}`, () => {
