@@ -152,4 +152,31 @@ describe('Uploader Core', function () {
     })
     expect(unlink).toHaveBeenCalledWith('test/fixtures/other/coverage.txt', expect.any(Function))
   })
+
+  it('Can include the network', async function () {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: true,
+      dir: './test/fixtures/other',
+      clean: true,
+    })
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
+  })
+
+  it('Can ignore the network', async function () {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: true,
+      feature: 'network'
+    })
+    expect(log).not.toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
+  })
 })

@@ -91,6 +91,12 @@ var argv = require("yargs") // eslint-disable-line
       type: "boolean",
       default: false,
       description: "Move discovered coverage reports to the trash"
+    },
+    feature: {
+      alias: 'X',
+      type: "string",
+      description: `Toggle functionalities
+        -X network       Disable uploading the file network`
     }
   })
   .version()
