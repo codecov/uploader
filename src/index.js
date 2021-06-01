@@ -14,7 +14,7 @@ const providers = require('./ci_providers')
  * @param {string} query
  * @param {string} uploadFile
  * @param {Object} args
- * @param {Date} start
+ * @param {number} start
  */
 function dryRun (uploadHost, token, query, uploadFile, args, start) {
   log('==> Dumping upload file (no upload)')
@@ -48,6 +48,7 @@ function dryRun (uploadHost, token, query, uploadFile, args, start) {
  * @param {boolean} args.dryRun Don't upload files to Codecov
  * @param {string} args.slug Specify the slug manually (Enterprise use)
  * @param {string} args.url Change the upload host (Enterprise use)
+ * @param {boolean} args.clean Move discovered coverage reports to the trash
  * @param {string} args.feature Toggle features
  */
 async function main (args) {
@@ -136,8 +137,7 @@ async function main (args) {
     // TODO: capture envs
 
     // Get coverage report contents
-    for (let index = 0; index < coverageFilePaths.length; index++) {
-      const coverageFile = coverageFilePaths[index]
+    for (let coverageFile of coverageFilePaths) {
       const fileContents = await fileHelpers.readCoverageFile(
         args.dir || projectRoot,
         coverageFile
@@ -145,6 +145,13 @@ async function main (args) {
       uploadFile = uploadFile.concat(fileHelpers.fileHeader(coverageFile))
       uploadFile = uploadFile.concat(fileContents)
       uploadFile = uploadFile.concat(fileHelpers.endFileMarker())
+    }
+
+    // Cleanup
+    if (args.clean) {
+      for (let coverageFile of coverageFilePaths) {
+        fileHelpers.removeFile(args.dir || projectRoot, coverageFile)
+      }
     }
 
     // Environment variables
