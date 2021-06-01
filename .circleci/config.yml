@@ -79,7 +79,7 @@ jobs:
             wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA1SUM
             wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA256SUM
             wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA512SUM
-            for i in 1 256 512; do "sha${i}sum" node -c "SHA${i}SUM"; done
+            for i in 1 256 512; do "sha${i}sum" -c "SHA${i}SUM"; done
       - run:
           name: Confirm that alpine node binary is static
           command: |
