@@ -367,6 +367,8 @@ jobs:
             .version)_$CIRCLE_BUILD_NUM
 
             echo $RELEASE_TAG
+            
+            echo $RELEASE_TAG > release_tag
 
             ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
   release:
@@ -379,8 +381,7 @@ jobs:
       - run:
           name: Push release tag to pubsub
           command: |
-            apt update && apt install -y jq
-            RELEASE_TAG=v$(cat package.json | jq --raw-output .version)_$CIRCLE_BUILD_NUM
+            RELEASE_TAG=$(cat release_tag)
             echo $RELEASE_TAG
             echo "$GCLOUD_UPLOADER_SERVICE_KEY" > service.json
             gcloud auth activate-service-account --key-file service.json
