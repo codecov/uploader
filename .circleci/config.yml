@@ -342,7 +342,7 @@ jobs:
           path: output_win_without_git.txt
 
 # TODO: add test runs for each binary outside of a git project
-
+  
   deploy:
     docker:
       - image: circleci/node:14.17.0
@@ -369,6 +369,18 @@ jobs:
             echo $RELEASE_TAG
 
             ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
+  release:
+    docker:
+      - image: google/cloud-sdk:342.0.0-slim
+    steps:
+      - run:
+          name: Push release tag to pubsub
+          command: >
+            echo $RELEASE_TAG
+            echo "$GCLOUD_UPLOADER_SERVICE_KEY" > service.json
+            gcloud auth activate-service-account --key-file service.json
+            gcloud --quiet config set project $GCLOUD_UPLOADER_PROJECT_ID
+            gcloud pubsub topics publish $GCLOUD_UPLOADER_PUBSUB_TOPIC --message '{"release":"'"$RELEASE_TAG"'", "latest":true}'
 
 workflows:
   version: 2
@@ -412,6 +424,12 @@ workflows:
       - deploy:
           requires:
             - review
+          filters:
+            branches:
+              only: master
+      - release:
+          requires:
+            - deploy
           filters:
             branches:
               only: master
