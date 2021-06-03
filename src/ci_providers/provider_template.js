@@ -129,7 +129,7 @@ function getServiceParams (inputs) {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs)
