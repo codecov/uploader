@@ -371,7 +371,7 @@ jobs:
             ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
   release:
     docker:
-      - image: google/cloud-sdk:342.0.0-slim
+      - image: google/cloud-sdk:343.0.0-slim
     steps:
       - run:
           name: Push release tag to pubsub
