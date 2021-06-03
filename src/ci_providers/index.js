@@ -7,8 +7,8 @@ const providerTravisci = require('./provider_travisci')
 const providers = [
   providerCircleci,
   providerGitHubactions,
-  providerLocal,
-  providerTravisci
+  providerTravisci,
+  providerLocal
 ]
 
 module.exports = providers
