@@ -20,6 +20,11 @@ describe('Local Params', () => {
   })
 
   describe('getSlug()', () => {
+    const inputs = {
+      args: {},
+      envs: {},
+    }
+
     it('can get the slug from a git url', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(spawnSync('git', [
@@ -39,7 +44,7 @@ describe('Local Params', () => {
         'HEAD'])).thenReturn({
         stdout: 'testSHA'
       })
-      expect(provider.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
+      expect(providerLocal.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from an http(s) url', () => {
@@ -61,7 +66,7 @@ describe('Local Params', () => {
         'HEAD'])).thenReturn({
         stdout: 'testSHA'
       })
-      expect(provider.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
+      expect(providerLocal.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
     })
   })
 })
