@@ -21,7 +21,7 @@ describe('GitHub Actions Params', () => {
       }
     }
     const detected = providerGitHubactions.detect(inputs.envs)
-    expect(detected).toBe(false)
+    expect(detected).toBeFalsy()
   })
 
   it('gets correct params for a push event', () => {

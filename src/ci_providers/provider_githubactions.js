@@ -97,16 +97,6 @@ function getServiceParams (inputs) {
 }
 
 module.exports = {
-  private: {
-    _getBuild,
-    _getBuildURL,
-    _getBranch,
-    _getJob,
-    _getPR,
-    _getService,
-    _getSHA,
-    _getSlug
-  },
   detect,
   getServiceName,
   getServiceParams

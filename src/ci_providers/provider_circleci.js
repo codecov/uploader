@@ -24,12 +24,7 @@ function _getBranch (inputs) {
 
 function _getSHA (inputs) {
   const { args, envs } = inputs
-  try {
-    const sha = envs.CIRCLE_SHA1
-    return args.sha || sha
-  } catch (error) {
-    throw new Error(`There was an error getting the commit SHA: ${error}`)
-  }
+  return args.sha || envs.CIRCLE_SHA1
 }
 
 function _getSlug (inputs) {
@@ -38,7 +33,7 @@ function _getSlug (inputs) {
   if (envs.CIRCLE_PROJECT_REPONAME !== '') {
     slug = `${envs.CIRCLE_PROJECT_USERNAME}/${envs.CIRCLE_PROJECT_REPONAME}`
   } else {
-    slug = `${envs.CIRCLE_REPOSITORY_URL}.git`
+    slug = `${envs.CIRCLE_REPOSITORY_URL.split(":")[1].split('.git')[0]}`
   }
   return args.slug || slug
 }
@@ -71,16 +66,6 @@ function getServiceParams (inputs) {
 }
 
 module.exports = {
-  private: {
-    _getBuild,
-    _getBuildURL,
-    _getBranch,
-    _getJob,
-    _getPR,
-    _getService,
-    _getSHA,
-    _getSlug
-  },
   detect,
   getServiceName,
   getServiceParams
