@@ -376,6 +376,7 @@ jobs:
       - run:
           name: Push release tag to pubsub
           command: |
+            apt update && apt install jq
             RELEASE_TAG=v$(cat package.json | jq --raw-output
             .version)_$CIRCLE_BUILD_NUM
             echo $RELEASE_TAG
