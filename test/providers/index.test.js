@@ -13,12 +13,16 @@ describe('CI Providers', () => {
     const inputs = {
       args: {},
       envs: {
-        CIRCLE_PROJECT_USERNAME: 'testOrg',
+        CI: true,
         CIRCLE_PROJECT_REPONAME: 'testRepo',
+        CIRCLE_PROJECT_USERNAME: 'testOrg',
         CIRCLE_SHA1: 'testingSHA',
         GITHUB_ACTIONS: true,
         GITHUB_REF: 'refs/heads/test',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
+        SHIPPABLE: true,
+        TRAVIS: true,
+        TRAVIS_REPO_SLUG: 'testOrg/testRepo',
       }
     }
     describe(`${provider.getServiceName() || ''}`, () => {
