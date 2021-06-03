@@ -371,6 +371,11 @@ jobs:
             echo $RELEASE_TAG > release_tag
 
             ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
+            
+      - persist_to_workspace:
+          root: .
+          paths:
+            - release_tag
   release:
     docker:
       - image: google/cloud-sdk:342.0.0-slim
