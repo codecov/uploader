@@ -71,7 +71,7 @@ function _getPR (inputs) {
 }
 
 /**
- * The CI service name that gets sent to the Codecov uploader as part of the quesry string
+ * The CI service name that gets sent to the Codecov uploader as part of the query string
  *
  * @returns String
  */
