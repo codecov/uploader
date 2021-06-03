@@ -367,11 +367,18 @@ jobs:
             .version)_$CIRCLE_BUILD_NUM
 
             echo $RELEASE_TAG
+            
+            echo $RELEASE_TAG > release_tag
 
             ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
+            
+      - persist_to_workspace:
+          root: .
+          paths:
+            - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:342.0.0-slim
+      - image: google/cloud-sdk:343.0.0-slim
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
@@ -379,9 +386,7 @@ jobs:
       - run:
           name: Push release tag to pubsub
           command: |
-            apt update && apt install -y jq
-            RELEASE_TAG=v$(cat package.json | jq --raw-output
-            .version)_$CIRCLE_BUILD_NUM
+            RELEASE_TAG=$(cat release_tag)
             echo $RELEASE_TAG
             echo "$GCLOUD_UPLOADER_SERVICE_KEY" > service.json
             gcloud auth activate-service-account --key-file service.json
