@@ -373,9 +373,13 @@ jobs:
     docker:
       - image: google/cloud-sdk:342.0.0-slim
     steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
       - run:
           name: Push release tag to pubsub
           command: |
+            apt update && apt install jq
             RELEASE_TAG=v$(cat package.json | jq --raw-output
             .version)_$CIRCLE_BUILD_NUM
             echo $RELEASE_TAG
