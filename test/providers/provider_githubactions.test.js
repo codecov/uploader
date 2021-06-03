@@ -8,6 +8,22 @@ describe('GitHub Actions Params', () => {
     td.reset()
   })
 
+  it('does not run without GitHub Actions env variable', () => {
+    const inputs = {
+      args: {},
+      envs: {
+        GITHUB_ACTIONS: false,
+        GITHUB_REF: 'refs/heads/master',
+        GITHUB_REPOSITORY: 'testOrg/testRepo',
+        GITHUB_RUN_ID: 2,
+        GITHUB_SHA: 'testingsha',
+        GITHUB_WORKFLOW: 'testWorkflow',
+      }
+    }
+    const detected = providerGitHubactions.detect(inputs.envs)
+    expect(detected).toBe(false)
+  })
+
   it('gets correct params for a push event', () => {
     const inputs = {
       args: {},
@@ -16,7 +32,7 @@ describe('GitHub Actions Params', () => {
         GITHUB_REF: 'refs/heads/master',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: 2,
-        GITHUB_SHA: 'testingSHA',
+        GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
       }
     }
@@ -24,7 +40,7 @@ describe('GitHub Actions Params', () => {
       branch: 'master',
       build: 2 ,
       buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
-      commit: 'testingSHA',
+      commit: 'testingsha',
       job: 'testWorkflow',
       pr: '',
       service: 'github-actions',
@@ -43,7 +59,7 @@ describe('GitHub Actions Params', () => {
         GITHUB_REF: 'refs/pull/1/merge',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: 2,
-        GITHUB_SHA: 'testingSHA',
+        GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
       }
     }
@@ -51,13 +67,17 @@ describe('GitHub Actions Params', () => {
       branch: 'branch',
       build: 2 ,
       buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
-      commit: 'testingSHA',
+      commit: 'testingsha',
       job: 'testWorkflow',
       pr: '1',
       service: 'github-actions',
       slug: 'testOrg/testRepo'
     }
 
+    const execSync = td.replace(childProcess, 'execSync')
+    td.when(execSync(
+      `git show --no-patch --format="%P"`
+    )).thenReturn("testingsha")
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -71,7 +91,7 @@ describe('GitHub Actions Params', () => {
         GITHUB_REF: 'refs/pull/1/merge',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: 2,
-        GITHUB_SHA: 'testingSHA',
+        GITHUB_SHA: 'testingmergecommitsha',
         GITHUB_WORKFLOW: 'testWorkflow',
       }
     }
@@ -79,33 +99,82 @@ describe('GitHub Actions Params', () => {
       branch: 'branch',
       build: 2 ,
       buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
-      commit: 'testingMergeCommitSHA',
+      commit: 'testingmergecommitsha2345678901234567890',
       job: 'testWorkflow',
       pr: '1',
       service: 'github-actions',
       slug: 'testOrg/testRepo'
     }
 
-    jest.mock("child_process", () => {
-      return {
-        execSync: () => "testingSHA testingMergeCommitSHA"
-      }
-    })
-    const spawnSync = td.replace(childProcess, 'spawnSync')
-    td.when(spawnSync('git', [
-      'show',
-      '--no-patch',
-      '--format="%P"',
-      '2>/dev/null',
-      '||',
-      'echo ""',
-    ])).thenReturn({
-      stdout: "testingSHA testingMergeCommitSHA"
-    })
+    const execSync = td.replace(childProcess, 'execSync')
+    td.when(execSync(
+      `git show --no-patch --format="%P"`
+    )).thenReturn("testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890")
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
-  /*
-  it('gets correct params for overrides')
-  */
+
+  it('gets correct params for overrides', () => {
+    const inputs = {
+      args: {
+        branch: 'branch',
+        build: 3,
+        pr: '2',
+        sha: 'testsha',
+        slug: 'testOrg/testRepo'
+      },
+      envs: {
+        GITHUB_ACTIONS: true,
+      }
+    }
+    const expected = {
+      branch: 'branch',
+      build: 3,
+      buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F3',
+      commit: 'testsha',
+      job: 'undefined',
+      pr: '2',
+      service: 'github-actions',
+      slug: 'testOrg/testRepo'
+    }
+
+    const execSync = td.replace(childProcess, 'execSync')
+    td.when(execSync(
+      `git show --no-patch --format="%P"`
+    )).thenReturn("testsha")
+    const params = providerGitHubactions.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
+  it('gets an improper merge commit message', () => {
+    const inputs = {
+      args: {},
+      envs: {
+        GITHUB_ACTIONS: true,
+        GITHUB_HEAD_REF: 'branch',
+        GITHUB_REF: 'refs/pull/1/merge',
+        GITHUB_REPOSITORY: 'testOrg/testRepo',
+        GITHUB_RUN_ID: 2,
+        GITHUB_SHA: 'testingsha',
+        GITHUB_WORKFLOW: 'testWorkflow',
+      }
+    }
+    const expected = {
+      branch: 'branch',
+      build: 2 ,
+      buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      commit: 'testingsha',
+      job: 'testWorkflow',
+      pr: '1',
+      service: 'github-actions',
+      slug: 'testOrg/testRepo'
+    }
+
+    const execSync = td.replace(childProcess, 'execSync')
+    td.when(execSync(
+      `git show --no-patch --format="%P"`
+    )).thenReturn("")
+    const params = providerGitHubactions.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
 })
