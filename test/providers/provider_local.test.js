@@ -39,6 +39,7 @@ describe('Local Params', () => {
         'HEAD'])).thenReturn({
         stdout: 'testSHA'
       })
+      expect(provider.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from an http(s) url', () => {
@@ -60,6 +61,7 @@ describe('Local Params', () => {
         'HEAD'])).thenReturn({
         stdout: 'testSHA'
       })
+      expect(provider.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
     })
   })
 })
