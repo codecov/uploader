@@ -31,7 +31,7 @@
     "superagent": "6.1.0"
   },
   "devDependencies": {
-    "jest": "27.0.1",
+    "jest": "27.0.4",
     "nock": "13.0.11",
     "pkg": "5.1.0",
     "standard": "16.0.3",
