@@ -13,7 +13,15 @@ describe('TravisCI Params', () => {
       args: {},
       envs: {}
     }
-    const detected = providerTravisci.detect(inputs.envs)
+    let detected = providerTravisci.detect(inputs.envs)
+    expect(detected).toBeFalsy()
+
+    inputs.envs['CI'] = true
+    detected = providerTravisci.detect(inputs.envs)
+    expect(detected).toBeFalsy()
+
+    inputs.envs['TRAVIS'] = true
+    detected = providerTravisci.detect(inputs.envs)
     expect(detected).toBeFalsy()
   })
 
