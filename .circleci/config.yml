@@ -375,7 +375,9 @@ jobs:
     steps:
       - run:
           name: Push release tag to pubsub
-          command: >
+          command: |
+            RELEASE_TAG=v$(cat package.json | jq --raw-output
+            .version)_$CIRCLE_BUILD_NUM
             echo $RELEASE_TAG
             echo "$GCLOUD_UPLOADER_SERVICE_KEY" > service.json
             gcloud auth activate-service-account --key-file service.json
