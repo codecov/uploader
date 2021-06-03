@@ -66,12 +66,6 @@ describe('Uploader Core', function () {
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< ENV/))
   })
 
-  it("has it's slug property set", () => {
-    expect(serviceParams.slug).toBe(
-      provider.private._getSlug(inputs)
-    )
-  })
-
   describe('Flags', () => {
     it('can upload with flags', async () => {
       process.env.CI = 'true'

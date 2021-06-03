@@ -69,6 +69,11 @@ describe('CI Providers', () => {
             provider.private._getService(inputs)
           )
         })
+        it("has it's slug property set", () => {
+          expect(serviceParams.slug).toBe(
+            provider.private._getSlug(inputs)
+          )
+        })
       })
       it('has a getSlug() method', () => {
         expect(provider.private._getSlug).toBeInstanceOf(Function)
