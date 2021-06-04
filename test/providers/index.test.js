@@ -20,7 +20,7 @@ describe('CI Providers', () => {
         GITHUB_ACTIONS: true,
         GITHUB_REF: 'refs/heads/test',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
-        JENKINS_URL: 'https://example.om',
+        JENKINS_URL: 'https://example.com',
         SHIPPABLE: true,
         TRAVIS: true,
         TRAVIS_REPO_SLUG: 'testOrg/testRepo',
