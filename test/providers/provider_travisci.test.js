@@ -87,6 +87,37 @@ describe('TravisCI Params', () => {
     expect(params).toMatchObject(expected)
   })
 
+  it('gets correct params on PR with no pull request branch', () => {
+    const inputs = {
+      args: {},
+      envs: {
+        CI: true,
+        SHIPPABLE: true,
+        TRAVIS: true,
+        TRAVIS_BRANCH: 'branch',
+        TRAVIS_COMMIT: 'testingsha',
+        TRAVIS_JOB_ID: 2,
+        TRAVIS_JOB_NUMBER: 1,
+        TRAVIS_PULL_REQUEST: '',
+        TRAVIS_PULL_REQUEST_SHA: 'testingprsha',
+        TRAVIS_REPO_SLUG: 'testOrg/testRepo',
+        TRAVIS_TAG: 'main'
+      }
+    }
+    const expected = {
+      branch: 'branch',
+      build: 1,
+      buildURL: '',
+      commit: 'testingprsha',
+      job: 2,
+      pr: '',
+      service: 'travis',
+      slug: 'testOrg/testRepo'
+    }
+    const params = providerTravisci.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
   it('gets correct params for overrides', () => {
     const inputs = {
       args: {

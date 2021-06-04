@@ -27,6 +27,13 @@ describe('File Helpers', () => {
     expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')
   })
 
+  it('errors when it cannot fetch the git root', function () {
+    const cwd = td.replace(process, 'cwd')
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(cwd()).thenReturn({ stdout: 'fish' })
+    expect(() => { fileHelpers.fetchGitRoot() }).toThrow()
+  })
+
   it('can get a file listing', async () => {
     expect(await fileHelpers.getFileListing('.')).toMatch(
       'npm-shrinkwrap.json'
@@ -37,6 +44,11 @@ describe('File Helpers', () => {
     const readFileSync = td.replace(fs, 'readFileSync')
     td.when(readFileSync('.gitignore')).thenReturn('ignore this file\nandthisone\n# not me!\n\nand me')
     expect(fileHelpers.parseGitIgnore('.')).toStrictEqual(['ignore this file', 'andthisone', 'and me'])
+  })
+
+  it('throws error when cannot parse the .gitignore file', function () {
+    const readFileSync = td.replace(fs, 'readFileSync')
+    expect(() => { fileHelpers.parseGitIgnore('.') }).toThrow()
   })
 
   describe('Coverage report handling', () => {

@@ -1,5 +1,5 @@
 function detect (envs) {
-  return envs.JENKINS_URL && envs.JENKINS_URL != ''
+  return envs.JENKINS_URL
 }
 
 function _getBuild (inputs) {

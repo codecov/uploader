@@ -19,6 +19,36 @@ describe('Local Params', () => {
     expect(detected).toBeFalsy()
   })
 
+  it('returns errors on git command failures', () => {
+    const inputs = {
+      args: {},
+      envs: {}
+    }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    expect(() => {
+      providerLocal.getServiceParams(inputs)
+    }).toThrow()
+
+    td.when(spawnSync('git', [
+      'rev-parse',
+      '--abbrev-ref',
+      'HEAD'])).thenReturn({
+      stdout: 'main'
+    })
+    expect(() => {
+      providerLocal.getServiceParams(inputs)
+    }).toThrow()
+
+    td.when(spawnSync('git', [
+      'rev-parse',
+      'HEAD'])).thenReturn({
+      stdout: 'testSHA'
+    })
+    expect(() => {
+      providerLocal.getServiceParams(inputs)
+    }).toThrow()
+  })
+
   describe('getSlug()', () => {
     const inputs = {
       args: {},
@@ -48,6 +78,30 @@ describe('Local Params', () => {
     })
 
     it('can get the slug from an http(s) url', () => {
+      const spawnSync = td.replace(childProcess, 'spawnSync')
+      td.when(spawnSync('git', [
+        'config',
+        '--get',
+        'remote.origin.url'])).thenReturn({
+        stdout: 'notaurl'
+      })
+      td.when(spawnSync('git', [
+        'rev-parse',
+        '--abbrev-ref',
+        'HEAD'])).thenReturn({
+        stdout: 'main'
+      })
+      td.when(spawnSync('git', [
+        'rev-parse',
+        'HEAD'])).thenReturn({
+        stdout: 'testSHA'
+      })
+      expect(() => {
+        providerLocal.getServiceParams(inputs)
+      }).toThrow()
+    })
+
+    it('errors on a malformed slug', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(spawnSync('git', [
         'config',
