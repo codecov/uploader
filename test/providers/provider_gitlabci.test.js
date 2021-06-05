@@ -8,7 +8,6 @@ describe('GitLabCI Params', () => {
     td.reset()
   })
 
-  /*
   it('does not run without GitLabCI env variable', () => {
     const inputs = {
       args: {},
@@ -91,7 +90,6 @@ describe('GitLabCI Params', () => {
     const params = providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
-    */
 
   describe('getSlug()', () => {
     const inputs = {

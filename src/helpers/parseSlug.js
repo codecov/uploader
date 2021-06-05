@@ -4,6 +4,9 @@ function parseSlug (slug) {
   // origin    https://github.com/torvalds/linux.git (fetch)
 
   // git@github.com: codecov / uploader.git
+  if (typeof slug != 'string') {
+    return ''
+  }
 
   if (slug.match('http')) {
     // Type is http(s)
