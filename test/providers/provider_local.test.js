@@ -19,7 +19,42 @@ describe('Local Params', () => {
     expect(detected).toBeFalsy()
   })
 
+  it('returns errors on git command failures', () => {
+    const inputs = {
+      args: {},
+      envs: {}
+    }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    expect(() => {
+      providerLocal.getServiceParams(inputs)
+    }).toThrow()
+
+    td.when(spawnSync('git', [
+      'rev-parse',
+      '--abbrev-ref',
+      'HEAD'])).thenReturn({
+      stdout: 'main'
+    })
+    expect(() => {
+      providerLocal.getServiceParams(inputs)
+    }).toThrow()
+
+    td.when(spawnSync('git', [
+      'rev-parse',
+      'HEAD'])).thenReturn({
+      stdout: 'testSHA'
+    })
+    expect(() => {
+      providerLocal.getServiceParams(inputs)
+    }).toThrow()
+  })
+
   describe('getSlug()', () => {
+    const inputs = {
+      args: {},
+      envs: {},
+    }
+
     it('can get the slug from a git url', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(spawnSync('git', [
@@ -39,10 +74,34 @@ describe('Local Params', () => {
         'HEAD'])).thenReturn({
         stdout: 'testSHA'
       })
-      expect(provider.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
+      expect(providerLocal.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from an http(s) url', () => {
+      const spawnSync = td.replace(childProcess, 'spawnSync')
+      td.when(spawnSync('git', [
+        'config',
+        '--get',
+        'remote.origin.url'])).thenReturn({
+        stdout: 'notaurl'
+      })
+      td.when(spawnSync('git', [
+        'rev-parse',
+        '--abbrev-ref',
+        'HEAD'])).thenReturn({
+        stdout: 'main'
+      })
+      td.when(spawnSync('git', [
+        'rev-parse',
+        'HEAD'])).thenReturn({
+        stdout: 'testSHA'
+      })
+      expect(() => {
+        providerLocal.getServiceParams(inputs)
+      }).toThrow()
+    })
+
+    it('errors on a malformed slug', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(spawnSync('git', [
         'config',
@@ -61,7 +120,7 @@ describe('Local Params', () => {
         'HEAD'])).thenReturn({
         stdout: 'testSHA'
       })
-      expect(provider.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
+      expect(providerLocal.getServiceParams(inputs).slug).toBe('testOrg/testRepo')
     })
   })
 })
