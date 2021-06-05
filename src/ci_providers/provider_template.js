@@ -67,7 +67,14 @@ function _getJob (envs) {
  */
 // eslint-disable-next-line no-unused-vars
 function _getPR (inputs) {
-  return ''
+  const { args } = inputs
+  try {
+    return args.pr || ''
+  } catch (error) {
+    throw new Error(
+      `There was an error getting the branch name from git: ${error}`
+    )
+  }
 }
 
 /**

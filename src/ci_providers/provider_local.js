@@ -1,4 +1,5 @@
 const childprocess = require('child_process')
+const { parseSlug } = require('../helpers/parseSlug')
 
 function detect (envs) {
   return !envs.CI
@@ -36,7 +37,8 @@ function _getJob (envs) {
 
 // eslint-disable-next-line no-unused-vars
 function _getPR (inputs) {
-  return ''
+  const { args } = inputs
+  return args.pr || ''
 }
 
 // This is the value that gets passed to the Codecov uploader
@@ -64,25 +66,6 @@ function _getSHA (inputs) {
   }
 }
 
-function _parseSlug (slug) {
-  // origin    https://github.com/torvalds/linux.git (fetch)
-
-  // git@github.com: codecov / uploader.git
-
-  if (slug.match('http')) {
-    // Type is http(s)
-    const phaseOne = slug.split('//')[1].replace('.git', '')
-    const phaseTwo = phaseOne.split('/')
-    const cleanSlug = `${phaseTwo[1]}/${phaseTwo[2]}`
-    return cleanSlug
-  } else if (slug.match('@')) {
-    // Type is git
-    const cleanSlug = slug.split(':')[1].replace('.git', '')
-    return cleanSlug
-  }
-  throw new Error(`Unable to parse slug URL: ${slug}`)
-}
-
 function _getSlug (inputs) {
   const { args } = inputs
   try {
@@ -90,7 +73,7 @@ function _getSlug (inputs) {
       .spawnSync('git', ['config', '--get', 'remote.origin.url'])
       .stdout.toString()
       .trimRight()
-    return args.slug || _parseSlug(slug)
+    return args.slug || parseSlug(slug)
   } catch (error) {
     throw new Error(`There was an error getting the slug from git: ${error}`)
   }
