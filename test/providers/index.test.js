@@ -24,6 +24,7 @@ describe('CI Providers', () => {
         GITLAB_CI: true,
         JENKINS_URL: 'https://example.com',
         SHIPPABLE: true,
+        SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
         TRAVIS: true,
         TRAVIS_REPO_SLUG: 'testOrg/testRepo',
       }

@@ -131,6 +131,17 @@ describe('GitLabCI Params', () => {
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')
     })
+
+    it('can handle no remote origin url', () => {
+      inputs.envs['CI_BUILD_REPO'] = ''
+      const execSync = td.replace(childProcess, 'execSync')
+      td.when(execSync(
+        `git config --get remote.origin.url || hg paths default || echo ''`
+      )).thenReturn("")
+
+      const params = providerGitLabci.getServiceParams(inputs)
+      expect(params.slug).toBe('')
+    })
   })
 
   it('gets correct params for overrides', () => {
