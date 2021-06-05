@@ -22,7 +22,7 @@ function parseSlug (slug) {
 function parseSlugFromRemoteAddr (remoteAddr) {
   let slug = ""
   if (!remoteAddr) {
-    remote_addr = childProcess.execSync(
+    remoteAddr = childProcess.execSync(
       `git config --get remote.origin.url || hg paths default || echo ''`
     )
   }
