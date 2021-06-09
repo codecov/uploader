@@ -1,5 +1,5 @@
 const childprocess = require('child_process')
-const { parseSlug } = require('../helpers/parseSlug')
+const { parseSlug } = require('../helpers/git')
 
 function detect (envs) {
   return !envs.CI

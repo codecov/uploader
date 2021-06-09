@@ -8,13 +8,26 @@ describe('GitLabCI Params', () => {
     td.reset()
   })
 
-  it('does not run without GitLabCI env variable', () => {
-    const inputs = {
-      args: {},
-      envs: {}
-    }
-    const detected = providerGitLabci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+  describe('detect()', () => {
+    it('does not run without GitLabCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {}
+      }
+      const detected = providerGitLabci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+    })
+
+    it('does run with GitLabCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          GITLAB_CI: true,
+        },
+      }
+      const detected = providerGitLabci.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+    })
   })
 
   it('gets correct empty params', () => {

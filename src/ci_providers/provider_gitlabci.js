@@ -1,4 +1,4 @@
-const { parseSlugFromRemoteAddr } = require('../helpers/parseSlug')
+const { parseSlugFromRemoteAddr } = require('../helpers/git')
 
 function detect (envs) {
   return envs.GITLAB_CI

@@ -8,30 +8,66 @@ describe('AppveyorCI Params', () => {
     td.reset()
   })
 
-  it('does not run without AppveyorCI env variable', () => {
+  describe('detect()', () => {
+    it('does not run without AppveyorCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {}
+      }
+      let detected = providerAppveyorci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+
+      inputs.envs['CI'] = 'true'
+      detected = providerAppveyorci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+
+      inputs.envs['CI'] = 'True'
+      detected = providerAppveyorci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+
+      inputs.envs['CI'] = 'false'
+      inputs.envs['APPVEYOR'] = 'true'
+      detected = providerAppveyorci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+
+      inputs.envs['APPVEYOR'] = 'True'
+      detected = providerAppveyorci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+    })
+
+    it('does run with AppveyorCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          'CI': 'true',
+          'APPVEYOR': 'true',
+        }
+      }
+      const detected = providerAppveyorci.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+    })
+  })
+
+  it('gets the correct params on no env variables', () => {
     const inputs = {
       args: {},
-      envs: {}
+      envs: {
+        'CI': 'true',
+        'APPVEYOR': 'true',
+      },
     }
-    let detected = providerAppveyorci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
-
-    inputs.envs['CI'] = 'true'
-    detected = providerAppveyorci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
-
-    inputs.envs['CI'] = 'True'
-    detected = providerAppveyorci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
-
-    inputs.envs['CI'] = 'false'
-    inputs.envs['APPVEYOR'] = 'true'
-    detected = providerAppveyorci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
-
-    inputs.envs['APPVEYOR'] = 'True'
-    detected = providerAppveyorci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+    const expected = {
+      branch: '',
+      build: '',
+      buildURL: '',
+      commit: '',
+      job: '',
+      pr: '',
+      service: '',
+      slug: ''
+    }
+    const params = providerAppveyorci.getServiceParams(inputs)
+    expect(expected).toBeTruthy()
   })
 
   it('gets correct params on push', () => {

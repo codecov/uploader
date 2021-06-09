@@ -8,15 +8,28 @@ describe('Local Params', () => {
     td.reset()
   })
 
-  it('does not run with the CI env variable', () => {
-    const inputs = {
-      args: {},
-      envs: {
-        CI: true
+  describe('detect()', () => {
+    it('does not run with the CI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          CI: true
+        }
       }
-    }
-    const detected = providerLocal.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+      const detected = providerLocal.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+    })
+
+    it('does run without the CI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          CI: false
+        }
+      }
+      const detected = providerLocal.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+    })
   })
 
   it('returns errors on git command failures', () => {

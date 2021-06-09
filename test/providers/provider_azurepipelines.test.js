@@ -8,13 +8,47 @@ describe('Jenkins CI Params', () => {
     td.reset()
   })
 
-  it('does not run without AzurePipelines env variable', () => {
+  describe('detect()', () => {
+    it('does not run without AzurePipelines env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {}
+      }
+      const detected = providerAzurepipelines.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+    })
+
+    it('does run with AzurePipelines env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          SYSTEM_TEAMFOUNDATIONSERVERURI: 'true'
+        }
+      }
+      const detected = providerAzurepipelines.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+    })
+  })
+
+  it('gets the correct params on no env variables', () => {
     const inputs = {
       args: {},
-      envs: {}
+      envs: {
+        SYSTEM_TEAMFOUNDATIONSERVERURI: 'true'
+      },
     }
-    detected = providerAzurepipelines.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+    const expected = {
+      branch: '',
+      build: '',
+      buildURL: '',
+      commit: '',
+      job: '',
+      pr: '',
+      service: '',
+      slug: ''
+    }
+    const params = providerAzurepipelines.getServiceParams(inputs)
+    expect(expected).toBeTruthy()
   })
 
   it('gets correct params on pr number', () => {
