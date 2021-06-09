@@ -10,6 +10,18 @@ describe('Input Validators', function () {
     })
   })
 
+  describe('URLs', function () {
+    it('Returns true with a valid URL', function () {
+      expect(validate.validateURL('https://codecov.io')).toBe(true)
+    })
+    it('Returns false with an invalid URL', function () {
+      expect(validate.validateURL('not.a.URL.com')).toBe(false)
+    })
+    it('Returns false with an empty URL', function () {
+      expect(validate.validateURL('')).toBe(false)
+    })
+  })
+
   describe('Flags', function () {
     it('Should pass without a dash', function () {
       expect(validate.validateFlags('moo')).toBe(true)
@@ -23,15 +35,19 @@ describe('Input Validators', function () {
     })
   })
 
-  describe('URLs', function () {
-    it('Returns true with a valid URL', function () {
-      expect(validate.validateURL('https://codecov.io')).toBe(true)
+  describe('FileNamePath', function () {
+    it('Should pass with an absolute path', function () {
+      expect(validate.validateFileNamePath('/path/to/file/1.txt')).toBe(true)
     })
-    it('Returns false with an invalid URL', function () {
-      expect(validate.validateURL('not.a.URL.com')).toBe(false)
+    it('Should pass with a relative path', function () {
+      expect(validate.validateFileNamePath('./path/to/file/1.txt')).toBe(true)
     })
-    it('Returns false with an empty URL', function () {
-      expect(validate.validateURL('')).toBe(false)
+
+    it('Should fail with spaces', function () {
+      expect(validate.validateFileNamePath('/path to/file')).toBe(false)
+    })
+    it('Should fail with other characters', function () {
+      expect(validate.validateFileNamePath('/path{}to/file')).toBe(false)
     })
   })
 })

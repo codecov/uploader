@@ -8,21 +8,36 @@ describe('TravisCI Params', () => {
     td.reset()
   })
 
-  it('does not run without TravisCI env variable', () => {
-    const inputs = {
-      args: {},
-      envs: {}
-    }
-    let detected = providerTravisci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+  describe('detect()', () => {
+    it('does not run without TravisCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {}
+      }
+      let detected = providerTravisci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
 
-    inputs.envs['CI'] = true
-    detected = providerTravisci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+      inputs.envs['CI'] = true
+      detected = providerTravisci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
 
-    inputs.envs['TRAVIS'] = true
-    detected = providerTravisci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+      inputs.envs['TRAVIS'] = true
+      detected = providerTravisci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+    })
+
+    it('does run with TravisCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          CI: true,
+          SHIPPABLE: true,
+          TRAVIS: true,
+        },
+      }
+      const detected = providerTravisci.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+    })
   })
 
   it('gets correct params on push', () => {

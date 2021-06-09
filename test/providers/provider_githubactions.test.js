@@ -8,20 +8,54 @@ describe('GitHub Actions Params', () => {
     td.reset()
   })
 
-  it('does not run without GitHub Actions env variable', () => {
+  describe('detect()', () => {
+    it('does not run without GitHub Actions env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          GITHUB_ACTIONS: false,
+          GITHUB_REF: 'refs/heads/master',
+          GITHUB_REPOSITORY: 'testOrg/testRepo',
+          GITHUB_RUN_ID: 2,
+          GITHUB_SHA: 'testingsha',
+          GITHUB_WORKFLOW: 'testWorkflow',
+        }
+      }
+      const detected = providerGitHubactions.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+    })
+
+    it('does not with GitHub Actions env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          GITHUB_ACTIONS: true,
+        },
+      }
+      const detected = providerGitHubactions.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+    })
+  })
+
+  it('gets the correct params on no env variables', () => {
     const inputs = {
       args: {},
       envs: {
-        GITHUB_ACTIONS: false,
-        GITHUB_REF: 'refs/heads/master',
-        GITHUB_REPOSITORY: 'testOrg/testRepo',
-        GITHUB_RUN_ID: 2,
-        GITHUB_SHA: 'testingsha',
-        GITHUB_WORKFLOW: 'testWorkflow',
-      }
+        GITHUB_ACTIONS: true,
+      },
     }
-    const detected = providerGitHubactions.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+    const expected = {
+      branch: '',
+      build: '',
+      buildURL: '',
+      commit: '',
+      job: '',
+      pr: '',
+      service: '',
+      slug: ''
+    }
+    const params = providerGitHubactions.getServiceParams(inputs)
+    expect(expected).toBeTruthy()
   })
 
   it('gets correct params for a push event', () => {

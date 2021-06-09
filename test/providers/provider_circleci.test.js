@@ -8,13 +8,27 @@ describe('CircleCI Params', () => {
     td.reset()
   })
 
-  it('does not run without CircleCI env variable', () => {
-    const inputs = {
-      args: {},
-      envs: {}
-    }
-    const detected = providerCircleci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+  describe('detect()', () => {
+    it('does not run without CircleCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {}
+      }
+      const detected = providerCircleci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+    })
+
+    it('does run with CircleCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          CI: true,
+          CIRCLECI: true,
+        },
+      }
+      const detected = providerCircleci.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+    })
   })
 
   it('gets correct params', () => {

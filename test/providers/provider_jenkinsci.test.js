@@ -8,17 +8,51 @@ describe('Jenkins CI Params', () => {
     td.reset()
   })
 
-  it('does not run without JenkinsCI env variable', () => {
+  describe('detect()', () => {
+    it('does not run without JenkinsCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {}
+      }
+      let detected = providerJenkinsci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+
+      inputs.envs['JENKINS_URL'] = ''
+      detected = providerJenkinsci.detect(inputs.envs)
+      expect(detected).toBeFalsy()
+    })
+
+    it('does run with JenkinsCI env variable', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          JENKINS_URL: 'https://example.jenkins.com',
+        },
+      }
+      const detected = providerJenkinsci.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+    })
+  })
+
+  it('gets the correct params on no env variables', () => {
     const inputs = {
       args: {},
-      envs: {}
+      envs: {
+        JENKINS_URL: 'https://example.jenkins.com',
+      },
     }
-    detected = providerJenkinsci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
-
-    inputs.envs['JENKINS_URL'] = ''
-    detected = providerJenkinsci.detect(inputs.envs)
-    expect(detected).toBeFalsy()
+    const expected = {
+      branch: '',
+      build: '',
+      buildURL: '',
+      commit: '',
+      job: '',
+      pr: '',
+      service: '',
+      slug: ''
+    }
+    const params = providerJenkinsci.getServiceParams(inputs)
+    expect(expected).toBeTruthy()
   })
 
   it('gets correct params on push', () => {

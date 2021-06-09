@@ -89,6 +89,7 @@ describe('Uploader Core', function () {
       expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
     }, 30000)
   })
+
   it('Can upload with parent sha', async function () {
     process.env.CI = 'true'
     process.env.CIRCLECI = 'true'
@@ -162,7 +163,6 @@ describe('Uploader Core', function () {
       url: 'https://codecov.io',
       dryRun: true,
       dir: './test/fixtures/other',
-      clean: true,
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
   })
