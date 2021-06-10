@@ -63,12 +63,13 @@ async function uploadToCodecov (uploadURL, token, query, uploadFile, version) {
   try {
     const result = await superagent
       .post(
-        `${uploadURL}/upload/v4?package=uploader-${version}&token=${token}&${query}`
+        `${uploadURL}/upload/v4?package=uploader-${version}&${query}`
       )
       .retry()
       .send(uploadFile) // sends a JSON post body
       .set('X-Reduced-Redundancy', 'false')
       .set('X-Content-Type', 'application/x-gzip')
+      .set('X-Upload-Token', token)
 
     return result.res.text
   } catch (error) {
