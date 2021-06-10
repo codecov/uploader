@@ -66,6 +66,7 @@ describe('GitHub Actions Params', () => {
         GITHUB_REF: 'refs/heads/master',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: 2,
+        GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
       }
