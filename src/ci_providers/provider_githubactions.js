@@ -13,7 +13,7 @@ function _getBuild (inputs) {
 function _getBuildURL (inputs) {
   const { args, envs } = inputs
   return encodeURIComponent(
-    `https://github.com/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}`
+    `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}`
   )
 }
 

@@ -66,6 +66,7 @@ describe('GitHub Actions Params', () => {
         GITHUB_REF: 'refs/heads/master',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: 2,
+        GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
       }
@@ -93,6 +94,7 @@ describe('GitHub Actions Params', () => {
         GITHUB_REF: 'refs/pull/1/merge',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: 2,
+        GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
       }
@@ -125,6 +127,7 @@ describe('GitHub Actions Params', () => {
         GITHUB_REF: 'refs/pull/1/merge',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: 2,
+        GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingmergecommitsha',
         GITHUB_WORKFLOW: 'testWorkflow',
       }
@@ -159,6 +162,7 @@ describe('GitHub Actions Params', () => {
       },
       envs: {
         GITHUB_ACTIONS: true,
+        GITHUB_SERVER_URL: 'https://github.com',
       }
     }
     const expected = {
@@ -189,6 +193,7 @@ describe('GitHub Actions Params', () => {
         GITHUB_REF: 'refs/pull/1/merge',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: 2,
+        GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
       }
