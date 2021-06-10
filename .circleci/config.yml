@@ -437,10 +437,10 @@ workflows:
             - review
           filters:
             branches:
-              only: master
+              only: release 
       - release:
           requires:
             - deploy
           filters:
             branches:
-              only: master
+              only: release
