@@ -4,6 +4,7 @@ const td = require('testdouble')
 const fs = require('fs')
 const childProcess = require('child_process')
 const fileHelpers = require('../../src/helpers/files')
+const { notDeepEqual } = require('assert')
 
 describe('File Helpers', () => {
   afterEach(function () {
@@ -66,7 +67,20 @@ describe('File Helpers', () => {
       )
       expect(reportContents).toBe('I am test coverage data')
     })
+
     it('can return a list of coverage files', () => {
+      const results = fileHelpers.getCoverageFiles('.', fileHelpers.coverageFilePatterns())
+
+      expect(results).not.toContain(
+        'dummy.codecov.exe'
+      )
+
+      expect(results).toContain(
+        'test/fixtures/other/fake.codecov.txt'
+      )
+    })
+
+    it('can return a list of coverage files with a pattern', () => {
       expect(
         fileHelpers.getCoverageFiles('.', ['index.test.js'])
       ).toStrictEqual(['test/index.test.js', 'test/providers/index.test.js'])

@@ -22,7 +22,7 @@ function manualBlacklist () {
     '.nyc_output',
     '.circleci',
     '.nvmrc',
-    '.gitignore'
+    '.gitignore',
   ]
 }
 
@@ -133,7 +133,7 @@ function coverageFilePatterns () {
     'jacoco*.xml',
     'clover.xml',
     'report.xml',
-    '*.codecov.*',
+    '*.codecov.!(exe)',
     'codecov.*',
     'cobertura.xml',
     'excoveralls.json',
@@ -147,7 +147,7 @@ function coverageFilePatterns () {
     'cover.out',
     'gcov.info',
     '*.gcov',
-    '*.lst'
+    '*.lst',
   ]
 }
 
