@@ -26,12 +26,13 @@
   "dependencies": {
     "glob": "7.1.7",
     "line-reader": "0.4.0",
-    "yargs": "16.2.0",
+    "superagent": "6.1.0",
     "validator": "13.6.0",
-    "superagent": "6.1.0"
+    "yargs": "16.2.0"
   },
   "devDependencies": {
     "jest": "27.0.4",
+    "mock-fs": "5.0.0",
     "nock": "13.1.0",
     "pkg": "5.1.0",
     "standard": "16.0.3",
