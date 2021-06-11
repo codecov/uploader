@@ -42,7 +42,7 @@ describe('File Helpers', () => {
 
   it('can get a file listing with the project root replaced', async () => {
     mock({
-      '/root': {
+      '/beatlejuice': {
         'testDir': {
           'coverFile.txt': ''
         }
@@ -61,7 +61,7 @@ describe('File Helpers', () => {
         }
       }
     })
-    expect(await fileHelpers.getFileListing('/root')).toMatch(
+    expect(await fileHelpers.getFileListing('/beatlejuice')).toMatch(
       'testDir/coverFile.txt'
     )
 
