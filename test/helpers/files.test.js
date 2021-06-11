@@ -4,7 +4,6 @@ const td = require('testdouble')
 const fs = require('fs')
 const childProcess = require('child_process')
 const fileHelpers = require('../../src/helpers/files')
-const { notDeepEqual } = require('assert')
 
 describe('File Helpers', () => {
   afterEach(function () {
