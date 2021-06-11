@@ -134,7 +134,7 @@ function coverageFilePatterns () {
     'clover.xml',
     'report.xml',
     '*.codecov.!(exe)',
-    'codecov.*',
+    'codecov.!(exe)',
     'cobertura.xml',
     'excoveralls.json',
     'luacov.report.out',

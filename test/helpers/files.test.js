@@ -75,6 +75,10 @@ describe('File Helpers', () => {
         'dummy.codecov.exe'
       )
 
+      expect(results).not.toContain(
+        'codecov.exe'
+      )
+
       expect(results).toContain(
         'test/fixtures/other/fake.codecov.txt'
       )
