@@ -47,17 +47,9 @@ describe('File Helpers', () => {
           'coverFile.txt': ''
         }
       },
-      'C:': {
-        'Users': {
-          'circleci': {
-            'project': {
-              'test': {
-                'helpers': {
-                  'files.test.js': ''
-                }
-              }
-            }
-          }
+      'C:/Users/circleci/project/test': {
+        'helpers': {
+          'files.test.js': ''
         }
       }
     })
