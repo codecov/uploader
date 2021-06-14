@@ -224,6 +224,7 @@ function parseGitIgnore (projectRoot) {
  * @returns {string[]}
  */
 function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
+  log(`Project root: ${dirPath}`, { level: 'debug', args })
   log(`Searching for files in ${dirPath}`, { level: 'debug', args })
   const files = fs.readdirSync(dirPath)
 
@@ -241,6 +242,7 @@ function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
         arrayOfFiles
       )
     } else {
+      log(`Joining [${projectRoot}] and [${file}] `, { level: 'debug', args })
       const pathString = path.join(dirPath.replace(projectRoot, '.'), file)
       log(`Adding [${pathString}] to the file list`, { level: 'debug', args })
       arrayOfFiles.push(pathString)
