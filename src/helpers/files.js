@@ -11,7 +11,7 @@ const { log } = require('./logger')
  * @returns Promise<string>
  */
 async function getFileListing (projectRoot, args) {
-  return getAllFiles(projectRoot, projectRoot, args).join('')
+  return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
 function manualBlacklist () {
@@ -241,7 +241,7 @@ function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
         arrayOfFiles
       )
     } else {
-      const pathString = `${path.join(dirPath.replace(projectRoot, '.'), file)}\n`
+      const pathString = path.join(dirPath.replace(projectRoot, '.'), file)
       log(`Adding [${pathString}] to the file list`, { level: 'debug', args })
       arrayOfFiles.push(pathString)
     }
