@@ -242,14 +242,36 @@ function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
         arrayOfFiles
       )
     } else {
-      log(`Joining [${projectRoot}] and [${file}] `, { level: 'debug', args })
-      const pathString = path.join(dirPath.replace(projectRoot, '.'), file)
+      log(`Joining [${dirPath}] and [${file}] `, { level: 'debug', args })
+      const pathString = osJoin(projectRoot, dirPath, file, args.osPlatform)
       log(`Adding [${pathString}] to the file list`, { level: 'debug', args })
       arrayOfFiles.push(pathString)
     }
   })
   log(`Search complete for files in ${dirPath}`, { level: 'debug', args })
   return arrayOfFiles
+}
+
+/**
+ * Perform an os relevant join
+ * @param {string} projectRoot 
+ * @param {string} dirPath
+ * @param {string} file 
+ * @param {string} platform
+ * @returns {string}
+ */
+function osJoin(projectRoot, dirPath, file, platform) {
+  switch (platform) {
+    case 'linux':
+    case 'darwin':
+       return path.join(dirPath.replace(projectRoot, '.'), file)
+      break;
+    case 'win32':
+      return path.join(dirPath.replace(projectRoot, ''), file)
+    default:
+      throw new Error(`Unsupported platform: ${platform}`)
+      break;
+  }
 }
 
 /**
@@ -329,6 +351,7 @@ module.exports = {
   endEnvironmentMarker,
   fileHeader,
   fetchGitRoot,
+  osJoin,
   parseGitIgnore,
   getCoverageFiles,
   coverageFilePatterns,

@@ -35,7 +35,7 @@ describe('File Helpers', () => {
     mock({
       'coverFile1.txt': ''
     })
-    expect(await fileHelpers.getFileListing('.')).toMatch(
+    expect(await fileHelpers.getFileListing('.', {osPlatform: 'linux'})).toMatch(
       'coverFile1.txt'
     )
   })
@@ -53,11 +53,11 @@ describe('File Helpers', () => {
         }
       }
     })
-    expect(await fileHelpers.getFileListing('/beatlejuice')).toMatch(
+    expect(await fileHelpers.getFileListing('/beatlejuice', {osPlatform: 'linux'})).toMatch(
       'testDir/coverFile.txt'
     )
 
-    expect(await fileHelpers.getFileListing('C:/Users/circleci/project')).toMatch(
+    expect(await fileHelpers.getFileListing('C:/Users/circleci/project', {osPlatform: 'linux'})).toMatch(
       'test/helpers/files.test.js'
     )
   })
@@ -165,6 +165,24 @@ describe('File Helpers', () => {
       it('should return path when project root is . and filepath starts /', () => {
         expect(fileHelpers.getFilePath('.', '/usr/coverage.xml')).toEqual('/usr/coverage.xml')
       })
+    })
+  })
+
+  describe('osJoin()', () => {
+    it('should return path when platform is win32', () => {
+      expect(fileHelpers.osJoin('/usr', '/usr/testingDir', 'coverage.xml', 'win32')).toEqual('/testingDir/coverage.xml')
+    })
+
+    it('should return path when platform is darwin', () => {
+      expect(fileHelpers.osJoin('/usr', '/usr/testingDir', 'coverage.xml', 'darwin')).toEqual('testingDir/coverage.xml')
+    })
+
+    it('should return path when platform is linux', () => {
+      expect(fileHelpers.osJoin('/usr', '/usr/testingDir', 'coverage.xml', 'linux')).toEqual('testingDir/coverage.xml')
+    })
+
+    it('should throw on unsuported platform', () => {
+      expect(() => {fileHelpers.osJoin('/usr', '/usr/testingDir', 'coverage.xml', 'sun')}).toThrow(/Unsupported platform/)
     })
   })
 

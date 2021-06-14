@@ -68,6 +68,10 @@ async function main (args) {
     // == Step 1: validate and sanitize inputs
     // TODO: clean and sanitize envs and args
     const envs = process.env
+
+    // Add the platform
+    args['osPlatform'] = process.platform
+
     // args
     const inputs = { args, envs }
 
