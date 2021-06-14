@@ -170,7 +170,7 @@ describe('File Helpers', () => {
 
   describe('osJoin()', () => {
     it('should return path when platform is win32', () => {
-      expect(fileHelpers.osJoin('/usr', '/usr/testingDir', 'coverage.xml', 'win32')).toEqual('/testingDir/coverage.xml')
+      expect(fileHelpers.osJoin('C:\\Users', 'C:\\Users\\testingDir', 'coverage.xml', 'win32')).toEqual('\\testingDir/coverage.xml')
     })
 
     it('should return path when platform is darwin', () => {

@@ -11,8 +11,7 @@ const { log } = require('./logger')
  * @returns Promise<string>
  */
 async function getFileListing (projectRoot, args) {
-  const pathObj = path.parse(projectRoot)
-  return getAllFiles(pathObj.dir, pathObj.dir, args).join('\n')
+  return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
 function manualBlacklist () {
@@ -268,7 +267,9 @@ function osJoin(projectRoot, dirPath, file, platform) {
        return path.join(dirPath.replace(projectRoot, '.'), file)
       break;
     case 'win32':
-      return path.join(dirPath.replace(projectRoot, ''), file)
+      const pathObj = path.parse(projectRoot)
+      console.log(pathObj)
+      return path.join(dirPath.replace(pathObj.base, ''), file)
     default:
       throw new Error(`Unsupported platform: ${platform}`)
       break;
