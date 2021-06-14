@@ -265,14 +265,11 @@ function osJoin(projectRoot, dirPath, file, platform) {
     case 'linux':
     case 'darwin':
        return path.join(dirPath.replace(projectRoot, '.'), file)
-      break;
     case 'win32':
       const pathObj = path.parse(projectRoot)
-      console.log(pathObj)
-      return path.join(dirPath.replace(pathObj.base, ''), file)
+      return path.join(dirPath.replace(pathObj.bame, ''), file)
     default:
       throw new Error(`Unsupported platform: ${platform}`)
-      break;
   }
 }
 
