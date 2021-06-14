@@ -224,9 +224,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Run MacOS binary -f (dry-run)
+          name: Run MacOS binary -f (dry-run) (verbose)
           command: |
-            out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -e CIRCLE_BRANCH >> output_osx.txt
+            out/codecov-macos -v -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary auto-detect (dry-run)
           command: |
