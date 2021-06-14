@@ -98,7 +98,7 @@ async function main (args) {
       log('Start of network processing...', { level: 'debug', args })
       const fileListing = await fileHelpers.getFileListing(projectRoot, args)
 
-      uploadFile = uploadFile.concat(fileListing).concat(fileHelpers.endNetworkMarker())
+      uploadFile = uploadFile.concat(fileListing).concat('\n', fileHelpers.endNetworkMarker())
     }
 
     // == Step 4: select coverage files (search or specify)
