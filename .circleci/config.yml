@@ -267,6 +267,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      # FIXME: Why are we passing -e CIRCLE_BRANCH here? This should auto-detect
       - run:
           name: Run Windows binary -f (dry-run)
           command: |
@@ -277,7 +278,12 @@ jobs:
       - run:
           name: Run Windows binary auto-detect (dry-run) (verbose)
           command: |
-            .\out\codecov.exe -v -F windows -d -Z -e CIRCLE_BRANCH >> output_win.txt
+            .\out\codecov.exe -v -F windows -d -Z -e CIRCLE_BRANCH
+          shell: cmd.exe
+      - run:
+          name: Run Windows binary auto-detect (dry-run) (artifact)
+          command: |
+            .\out\codecov.exe -F windows -d -Z -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
