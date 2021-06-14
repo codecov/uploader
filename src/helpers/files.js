@@ -241,9 +241,9 @@ function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
         arrayOfFiles
       )
     } else {
-      arrayOfFiles.push(
-          `${path.join(dirPath.replace(projectRoot, '.'), file)}\n`
-      )
+      const pathString = `${path.join(dirPath.replace(projectRoot, '.'), file)}\n`
+      log(`Adding [${pathString}] to the file list`, { level: 'debug', args })
+      arrayOfFiles.push(pathString)
     }
   })
   log(`Search complete for files in ${dirPath}`, { level: 'debug', args })
