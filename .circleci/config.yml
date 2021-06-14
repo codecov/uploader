@@ -275,9 +275,9 @@ jobs:
             .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
-          name: Run Windows binary auto-detect (dry-run)
+          name: Run Windows binary auto-detect (dry-run) (verbose)
           command: |
-            .\out\codecov.exe -F windows -d -Z -e CIRCLE_BRANCH >> output_win.txt
+            .\out\codecov.exe -v -F windows -d -Z -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
