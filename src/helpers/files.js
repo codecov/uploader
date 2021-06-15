@@ -267,7 +267,7 @@ function osJoin(projectRoot, dirPath, file, platform) {
        return path.join(dirPath.replace(projectRoot, '.'), file)
     case 'win32':
       const pathObj = path.parse(projectRoot)
-      return path.join(dirPath.replace(pathObj.bame, ''), file)
+      return path.join(dirPath.replace(pathObj.base, ''), file)
     default:
       throw new Error(`Unsupported platform: ${platform}`)
   }
