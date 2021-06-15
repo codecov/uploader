@@ -4,7 +4,7 @@ const childProcess = require('child_process')
 const providerGitLabci = require('../../src/ci_providers//provider_gitlabci')
 
 describe('GitLabCI Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -22,8 +22,8 @@ describe('GitLabCI Params', () => {
       const inputs = {
         args: {},
         envs: {
-          GITLAB_CI: true,
-        },
+          GITLAB_CI: true
+        }
       }
       const detected = providerGitLabci.detect(inputs.envs)
       expect(detected).toBeTruthy()
@@ -34,7 +34,7 @@ describe('GitLabCI Params', () => {
     const inputs = {
       args: {},
       envs: {
-        GITLAB_CI: true,
+        GITLAB_CI: true
       }
     }
     const expected = {
@@ -62,12 +62,12 @@ describe('GitLabCI Params', () => {
         CI_COMMIT_SHA: 'testsha',
         CI_JOB_ID: 2,
         CI_PROJECT_PATH: 'testOrg/testRepo',
-        GITLAB_CI: true,
+        GITLAB_CI: true
       }
     }
     const expected = {
       branch: 'main',
-      build: 1 ,
+      build: 1,
       buildURL: '',
       commit: 'testingsha',
       job: '',
@@ -87,12 +87,12 @@ describe('GitLabCI Params', () => {
         CI_COMMIT_SHA: 'testsha',
         CI_JOB_ID: 2,
         CI_PROJECT_PATH: 'testOrg/testRepo',
-        GITLAB_CI: true,
+        GITLAB_CI: true
       }
     }
     const expected = {
       branch: 'master',
-      build: 2 ,
+      build: 2,
       buildURL: '',
       commit: 'testsha',
       job: '',
@@ -113,32 +113,32 @@ describe('GitLabCI Params', () => {
     }
 
     it('can get the slug from http', () => {
-      inputs.envs['CI_BUILD_REPO'] = 'https://gitlab.com/testOrg/testRepo.git'
+      inputs.envs.CI_BUILD_REPO = 'https://gitlab.com/testOrg/testRepo.git'
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from girl url', () => {
-      inputs.envs['CI_BUILD_REPO'] = 'git@gitlab.com:testOrg/testRepo.git'
+      inputs.envs.CI_BUILD_REPO = 'git@gitlab.com:testOrg/testRepo.git'
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from git config', () => {
-      inputs.envs['CI_BUILD_REPO'] = ''
+      inputs.envs.CI_BUILD_REPO = ''
       const execSync = td.replace(childProcess, 'execSync')
       td.when(execSync(
-        `git config --get remote.origin.url || hg paths default || echo ''`
-      )).thenReturn("https://gitlab.com/testOrg/testRepo.git")
+        'git config --get remote.origin.url || hg paths default || echo \'\''
+      )).thenReturn('https://gitlab.com/testOrg/testRepo.git')
 
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from git config as /', () => {
-      inputs.envs['CI_BUILD_REPO'] = ''
+      inputs.envs.CI_BUILD_REPO = ''
       const execSync = td.replace(childProcess, 'execSync')
-      td.when(execSync(`git config --get remote.origin.url || hg paths default || echo ''`)
+      td.when(execSync('git config --get remote.origin.url || hg paths default || echo \'\'')
       ).thenReturn('git@gitlab.com:/')
 
       const params = providerGitLabci.getServiceParams(inputs)
@@ -146,11 +146,11 @@ describe('GitLabCI Params', () => {
     })
 
     it('can handle no remote origin url', () => {
-      inputs.envs['CI_BUILD_REPO'] = ''
+      inputs.envs.CI_BUILD_REPO = ''
       const execSync = td.replace(childProcess, 'execSync')
       td.when(execSync(
-        `git config --get remote.origin.url || hg paths default || echo ''`
-      )).thenReturn("")
+        'git config --get remote.origin.url || hg paths default || echo \'\''
+      )).thenReturn('')
 
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')
@@ -167,7 +167,7 @@ describe('GitLabCI Params', () => {
         slug: 'testOrg/testRepo'
       },
       envs: {
-        GITLAB_CI: true,
+        GITLAB_CI: true
       }
     }
     const expected = {

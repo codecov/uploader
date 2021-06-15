@@ -1,10 +1,9 @@
 const td = require('testdouble')
-const childProcess = require('child_process')
 
 const providerCircleci = require('../../src/ci_providers//provider_circleci')
 
 describe('CircleCI Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -23,8 +22,8 @@ describe('CircleCI Params', () => {
         args: {},
         envs: {
           CI: true,
-          CIRCLECI: true,
-        },
+          CIRCLECI: true
+        }
       }
       const detected = providerCircleci.detect(inputs.envs)
       expect(detected).toBeTruthy()
@@ -49,7 +48,7 @@ describe('CircleCI Params', () => {
     }
     const expected = {
       branch: 'master',
-      build: 2 ,
+      build: 2,
       buildURL: '',
       commit: 'testingsha',
       job: 3,
@@ -78,7 +77,7 @@ describe('CircleCI Params', () => {
     }
     const expected = {
       branch: 'master',
-      build: 2 ,
+      build: 2,
       buildURL: '',
       commit: 'testingsha',
       job: 3,

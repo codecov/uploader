@@ -2,13 +2,13 @@ const nock = require('nock')
 
 const webHelper = require('../../src/helpers/web')
 
-describe('Web Helpers', function () {
+describe('Web Helpers', () => {
   let uploadURL
   let token
   let uploadFile
   let version
   let query
-  beforeEach(function () {
+  beforeEach(() => {
     token = '123-abc-890-xyz'
     uploadFile = 'some content'
     query = 'hello'
@@ -21,12 +21,12 @@ describe('Web Helpers', function () {
       .reply(200, 'testPUT')
   })
 
-  afterEach(function () {
+  afterEach(() => {
     uploadURL = ''
     jest.restoreAllMocks()
   })
 
-  it('Can POST to the uploader endpoint (HTTP)', async function () {
+  it('Can POST to the uploader endpoint (HTTP)', async () => {
     uploadURL = 'http://codecov.io'
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
     nock('http://codecov.io')
@@ -48,7 +48,7 @@ describe('Web Helpers', function () {
     }
   })
 
-  it('Can POST to the uploader endpoint (HTTPS)', async function () {
+  it('Can POST to the uploader endpoint (HTTPS)', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {})
     uploadURL = 'https://codecov.io'
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
@@ -67,7 +67,7 @@ describe('Web Helpers', function () {
     expect(response).toBe('testPOSTHTTPS')
   })
 
-  it('Can PUT to the storage endpoint', async function () {
+  it('Can PUT to the storage endpoint', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {})
     uploadURL = 'https://results.codecov.io\nhttps://codecov.io'
     const response = await webHelper.uploadToCodecovPUT(
@@ -77,7 +77,7 @@ describe('Web Helpers', function () {
     expect(response.resultURL).toBe('https://results.codecov.io')
   })
 
-  it('Can generate query URL', function () {
+  it('Can generate query URL', () => {
     const queryParams = {}
     queryParams.branch = 'testBranch'
     queryParams.commit = 'commitSHA'
@@ -95,7 +95,7 @@ describe('Web Helpers', function () {
     )
   })
 
-  it('can populateBuildParams() from args', function () {
+  it('can populateBuildParams() from args', () => {
     const result = webHelper.populateBuildParams(
       { args: { flags: 'testFlag', tag: 'testTag' }, envs: {} },
       { name: '', tag: ', flags: []' }

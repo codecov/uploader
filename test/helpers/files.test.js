@@ -6,7 +6,7 @@ const childProcess = require('child_process')
 const fileHelpers = require('../../src/helpers/files')
 
 describe('File Helpers', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -18,18 +18,18 @@ describe('File Helpers', () => {
     expect(fileHelpers.endFileMarker()).toBe('<<<<<< EOF\n')
   })
 
-  it('can fetch the git root', function () {
+  it('can fetch the git root', () => {
     const cwd = td.replace(process, 'cwd')
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn({ stdout: 'fish' })
-    td.when(spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding:'utf-8' })).thenReturn({ stdout: 'gitRoot' })
+    td.when(spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf-8' })).thenReturn({ stdout: 'gitRoot' })
 
     expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')
   })
 
-  it('errors when it cannot fetch the git root', function () {
+  it('errors when it cannot fetch the git root', () => {
     const cwd = td.replace(process, 'cwd')
-    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn({ stdout: 'fish' })
     expect(() => { fileHelpers.fetchGitRoot() }).toThrow()
   })
@@ -40,14 +40,14 @@ describe('File Helpers', () => {
     )
   })
 
-  it('can parse the .gitignore file', function () {
+  it('can parse the .gitignore file', () => {
     const readFileSync = td.replace(fs, 'readFileSync')
     td.when(readFileSync('.gitignore')).thenReturn('ignore this file\nandthisone\n# not me!\n\nand me')
     expect(fileHelpers.parseGitIgnore('.')).toStrictEqual(['ignore this file', 'andthisone', 'and me'])
   })
 
-  it('throws error when cannot parse the .gitignore file', function () {
-    const readFileSync = td.replace(fs, 'readFileSync')
+  it('throws error when cannot parse the .gitignore file', () => {
+    td.replace(fs, 'readFileSync')
     expect(() => { fileHelpers.parseGitIgnore('.') }).toThrow()
   })
 
@@ -59,7 +59,7 @@ describe('File Helpers', () => {
     })
     it('can read a coverage report file', async () => {
       const readFileSync = td.replace(fs, 'readFileSync')
-      td.when(readFileSync('test-coverage-file.xml', { encoding:'utf-8' })).thenReturn('I am test coverage data')
+      td.when(readFileSync('test-coverage-file.xml', { encoding: 'utf-8' })).thenReturn('I am test coverage data')
       const reportContents = fileHelpers.readCoverageFile(
         '.',
         'test-coverage-file.xml'
@@ -88,8 +88,8 @@ describe('File Helpers', () => {
         fileHelpers.getCoverageFiles('.', ['index.test.js'])
       ).toStrictEqual(['test/index.test.js', 'test/providers/index.test.js'])
     })
-    describe('coverage file patterns', function () {
-      it('contains `jacoco*.xml`', function () {
+    describe('coverage file patterns', () => {
+      it('contains `jacoco*.xml`', () => {
         expect(fileHelpers.coverageFilePatterns()).toContain('jacoco*.xml')
       })
     })
@@ -112,7 +112,7 @@ describe('File Helpers', () => {
     })
   })
 
-  it('can remove a file', function () {
+  it('can remove a file', () => {
     const fn = jest.spyOn(fs, 'unlink').mockImplementation(() => null)
     fileHelpers.removeFile('.', 'coverage.xml')
     expect(fn).toHaveBeenCalledWith('coverage.xml', expect.any(Function))

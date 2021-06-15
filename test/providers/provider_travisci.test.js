@@ -1,10 +1,9 @@
 const td = require('testdouble')
-const childProcess = require('child_process')
 
-const providerTravisci = require('../../src/ci_providers//provider_travisci')
+const providerTravisci = require('../../src/ci_providers/provider_travisci')
 
 describe('TravisCI Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -17,11 +16,11 @@ describe('TravisCI Params', () => {
       let detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = true
+      inputs.envs.CI = true
       detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['TRAVIS'] = true
+      inputs.envs.TRAVIS = true
       detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
@@ -32,8 +31,8 @@ describe('TravisCI Params', () => {
         envs: {
           CI: true,
           SHIPPABLE: true,
-          TRAVIS: true,
-        },
+          TRAVIS: true
+        }
       }
       const detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeTruthy()

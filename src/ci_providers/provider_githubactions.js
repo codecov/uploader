@@ -1,5 +1,5 @@
-var childProcess = require('child_process')
-var { log } = require('../helpers/logger')
+const childProcess = require('child_process')
+const { log } = require('../helpers/logger')
 
 function detect (envs) {
   return envs.GITHUB_ACTIONS
@@ -7,11 +7,11 @@ function detect (envs) {
 
 function _getBuild (inputs) {
   const { args, envs } = inputs
-  return args.build || envs.GITHUB_RUN_ID || '';
+  return args.build || envs.GITHUB_RUN_ID || ''
 }
 
 function _getBuildURL (inputs) {
-  const { args, envs } = inputs
+  const { envs } = inputs
   return encodeURIComponent(
     `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}`
   )
@@ -26,7 +26,7 @@ function _getBranch (inputs) {
     branch = branchMatches[1]
   }
 
-  if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF != '') {
+  if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
     branch = envs.GITHUB_HEAD_REF
   }
   return args.branch || branch
@@ -39,12 +39,12 @@ function _getJob (envs) {
 function _getPR (inputs) {
   const { args, envs } = inputs
   let match
-  if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF != '') {
+  if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
     const prRegex = /refs\/pull\/([0-9]+)\/merge/
     const matches = prRegex.exec(envs.GITHUB_REF)
     match = matches[1]
   }
-  return args.pr || match || '';
+  return args.pr || match || ''
 }
 
 function _getService () {
@@ -60,18 +60,17 @@ function _getSHA (inputs) {
   const pr = _getPR(inputs)
 
   let commit = envs.GITHUB_SHA
-  if (pr && pr != false && !args.sha) {
+  if (pr && pr !== false && !args.sha) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
     const mergeCommitMessage = childProcess.execSync(
-      `git show --no-patch --format="%P"`
+      'git show --no-patch --format="%P"'
     )
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
-      const mergeCommit = mergeCommitMessage.split(" ")[1]
+      const mergeCommit = mergeCommitMessage.split(' ')[1]
       log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
       commit = mergeCommit
-    }
-    else if (mergeCommitMessage == "") {
-      log(`->  Issue detecting commit SHA. Please run actions/checkout with fetch-depth > 1 or set to 0`)
+    } else if (mergeCommitMessage === '') {
+      log('->  Issue detecting commit SHA. Please run actions/checkout with fetch-depth > 1 or set to 0')
     }
   }
 

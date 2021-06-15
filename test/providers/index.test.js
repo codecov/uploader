@@ -1,10 +1,9 @@
 const td = require('testdouble')
-const childProcess = require('child_process')
 
 const providers = require('../../src/ci_providers')
 
 describe('CI Providers', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 

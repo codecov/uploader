@@ -16,7 +16,7 @@ const providers = [
   providerGitLabci,
   providerJenkinsci,
   providerTravisci,
-  providerLocal,
+  providerLocal
 ]
 
 module.exports = providers

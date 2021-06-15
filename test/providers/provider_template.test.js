@@ -7,7 +7,7 @@ const providerTravisci = require('../../src/ci_providers//provider_travisci')
 */
 
 describe('<Ci> Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -40,7 +40,7 @@ describe('<Ci> Params', () => {
     const inputs = {
       args: {},
       envs: {
-      },
+      }
     }
     const expected = {
       branch: '',
@@ -63,7 +63,7 @@ describe('<Ci> Params', () => {
     const inputs = {
       args: {},
       envs: {
-      },
+      }
     }
     const expected = {
       branch: '',
@@ -86,7 +86,7 @@ describe('<Ci> Params', () => {
     const inputs = {
       args: {},
       envs: {
-      },
+      }
     }
     const expected = {
       branch: '',
@@ -109,7 +109,7 @@ describe('<Ci> Params', () => {
     const inputs = {
       args: {},
       envs: {
-      },
+      }
     }
     const expected = {
       branch: '',

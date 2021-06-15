@@ -10,7 +10,8 @@
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
-    "build-windows": "pkg . --targets win --output out/codecov.exe"
+    "build-windows": "pkg . --targets win --output out/codecov.exe",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
     "superagent": "6.1.0"
   },
   "devDependencies": {
+    "husky": "6.0.0",
     "jest": "27.0.4",
     "nock": "13.1.0",
     "pkg": "5.1.0",
@@ -74,6 +76,9 @@
       "beforeEach",
       "afterEach",
       "jest"
+    ],
+    "ignore": [
+      "test/providers/provider_template.test.js"
     ]
   }
 }

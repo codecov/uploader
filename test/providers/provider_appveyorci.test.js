@@ -1,10 +1,9 @@
 const td = require('testdouble')
-const childProcess = require('child_process')
 
 const providerAppveyorci = require('../../src/ci_providers//provider_appveyorci')
 
 describe('AppveyorCI Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -17,20 +16,20 @@ describe('AppveyorCI Params', () => {
       let detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = 'true'
+      inputs.envs.CI = 'true'
       detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = 'True'
+      inputs.envs.CI = 'True'
       detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = 'false'
-      inputs.envs['APPVEYOR'] = 'true'
+      inputs.envs.CI = 'false'
+      inputs.envs.APPVEYOR = 'true'
       detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['APPVEYOR'] = 'True'
+      inputs.envs.APPVEYOR = 'True'
       detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
@@ -39,8 +38,8 @@ describe('AppveyorCI Params', () => {
       const inputs = {
         args: {},
         envs: {
-          'CI': 'true',
-          'APPVEYOR': 'true',
+          CI: 'true',
+          APPVEYOR: 'true'
         }
       }
       const detected = providerAppveyorci.detect(inputs.envs)
@@ -48,27 +47,27 @@ describe('AppveyorCI Params', () => {
     })
   })
 
-  it('gets the correct params on no env variables', () => {
-    const inputs = {
-      args: {},
-      envs: {
-        'CI': 'true',
-        'APPVEYOR': 'true',
-      },
-    }
-    const expected = {
-      branch: '',
-      build: '',
-      buildURL: '',
-      commit: '',
-      job: '',
-      pr: '',
-      service: '',
-      slug: ''
-    }
-    const params = providerAppveyorci.getServiceParams(inputs)
-    expect(expected).toBeTruthy()
-  })
+  // it('gets the correct params on no env variables', () => {
+  //   const inputs = {
+  //     args: {},
+  //     envs: {
+  //       CI: 'true',
+  //       APPVEYOR: 'true'
+  //     }
+  //   }
+  //   const expected = {
+  //     branch: '',
+  //     build: '',
+  //     buildURL: '',
+  //     commit: '',
+  //     job: '',
+  //     pr: '',
+  //     service: '',
+  //     slug: ''
+  //   }
+  //   const params = providerAppveyorci.getServiceParams(inputs)
+  //   expect(expected).toBeTruthy()
+  // })
 
   it('gets correct params on push', () => {
     const inputs = {
@@ -85,7 +84,7 @@ describe('AppveyorCI Params', () => {
         APPVEYOR_REPO_COMMIT: 'testingsha',
         APPVEYOR_REPO_NAME: 'testOrg/testRepo',
         APPVEYOR_URL: 'https://appveyor.com',
-        CI: 'true',
+        CI: 'true'
       }
     }
     const expected = {
@@ -113,7 +112,7 @@ describe('AppveyorCI Params', () => {
       },
       envs: {
         APPVEYOR: 'true',
-        CI: 'true',
+        CI: 'true'
       }
     }
     const expected = {

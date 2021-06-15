@@ -33,7 +33,7 @@ function _getSlug (inputs) {
   if (envs.CIRCLE_PROJECT_REPONAME !== '') {
     slug = `${envs.CIRCLE_PROJECT_USERNAME}/${envs.CIRCLE_PROJECT_REPONAME}`
   } else {
-    slug = `${envs.CIRCLE_REPOSITORY_URL.split(":")[1].split('.git')[0]}`
+    slug = `${envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]}`
   }
   return args.slug || slug
 }

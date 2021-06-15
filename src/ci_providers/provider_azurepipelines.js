@@ -1,5 +1,5 @@
-var childProcess = require('child_process')
-var { log } = require('../helpers/logger')
+const childProcess = require('child_process')
+const { log } = require('../helpers/logger')
 
 function detect (envs) {
   return !!envs.SYSTEM_TEAMFOUNDATIONSERVERURI
@@ -11,7 +11,7 @@ function _getBuild (inputs) {
 }
 
 function _getBuildURL (inputs) {
-  const { args, envs } = inputs
+  const { envs } = inputs
   if (envs.SYSTEM_TEAMPROJECT && envs.BUILD_BUILDID) {
     return encodeURIComponent(`${envs.SYSTEM_TEAMFOUNDATIONSERVERURI}${envs.SYSTEM_TEAMPROJECT}/_build/results?buildId=${envs.BUILD_BUILDID}`)
   }
@@ -51,10 +51,10 @@ function _getSHA (inputs) {
   if (_getPR(inputs)) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
     const mergeCommitMessage = childProcess.execSync(
-      `git show --no-patch --format="%P"`
+      'git show --no-patch --format="%P"'
     )
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
-      const mergeCommit = mergeCommitMessage.split(" ")[1]
+      const mergeCommit = mergeCommitMessage.split(' ')[1]
       log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
       commit = mergeCommit
     }

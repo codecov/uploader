@@ -1,10 +1,9 @@
 const td = require('testdouble')
-const childProcess = require('child_process')
 
 const providerJenkinsci = require('../../src/ci_providers//provider_jenkinsci')
 
 describe('Jenkins CI Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -17,7 +16,7 @@ describe('Jenkins CI Params', () => {
       let detected = providerJenkinsci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['JENKINS_URL'] = ''
+      inputs.envs.JENKINS_URL = ''
       detected = providerJenkinsci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
@@ -26,34 +25,34 @@ describe('Jenkins CI Params', () => {
       const inputs = {
         args: {},
         envs: {
-          JENKINS_URL: 'https://example.jenkins.com',
-        },
+          JENKINS_URL: 'https://example.jenkins.com'
+        }
       }
       const detected = providerJenkinsci.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
 
-  it('gets the correct params on no env variables', () => {
-    const inputs = {
-      args: {},
-      envs: {
-        JENKINS_URL: 'https://example.jenkins.com',
-      },
-    }
-    const expected = {
-      branch: '',
-      build: '',
-      buildURL: '',
-      commit: '',
-      job: '',
-      pr: '',
-      service: '',
-      slug: ''
-    }
-    const params = providerJenkinsci.getServiceParams(inputs)
-    expect(expected).toBeTruthy()
-  })
+  // it('gets the correct params on no env variables', () => {
+  //   const inputs = {
+  //     args: {},
+  //     envs: {
+  //       JENKINS_URL: 'https://example.jenkins.com'
+  //     }
+  //   }
+  //   const expected = {
+  //     branch: '',
+  //     build: '',
+  //     buildURL: '',
+  //     commit: '',
+  //     job: '',
+  //     pr: '',
+  //     service: '',
+  //     slug: ''
+  //   }
+  //   const params = providerJenkinsci.getServiceParams(inputs)
+  //   expect(expected).toBeTruthy()
+  // })
 
   it('gets correct params on push', () => {
     const inputs = {
@@ -64,7 +63,7 @@ describe('Jenkins CI Params', () => {
         CHANGE_ID: 2,
         GIT_BRANCH: 'main',
         GIT_COMMIT: 'testingsha',
-        JENKINS_URL: 'https://example.com',
+        JENKINS_URL: 'https://example.com'
       }
     }
     const expected = {
@@ -81,7 +80,6 @@ describe('Jenkins CI Params', () => {
     expect(params).toMatchObject(expected)
   })
 
-
   it('gets correct params for overrides', () => {
     const inputs = {
       args: {
@@ -92,7 +90,7 @@ describe('Jenkins CI Params', () => {
         slug: 'testOrg/testRepo'
       },
       envs: {
-        JENKINS_URL: 'https://example.com',
+        JENKINS_URL: 'https://example.com'
       }
     }
     const expected = {

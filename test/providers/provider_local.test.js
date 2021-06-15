@@ -4,7 +4,7 @@ const childProcess = require('child_process')
 const providerLocal = require('../../src/ci_providers//provider_local')
 
 describe('Local Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -65,7 +65,7 @@ describe('Local Params', () => {
   describe('getSlug()', () => {
     const inputs = {
       args: {},
-      envs: {},
+      envs: {}
     }
 
     it('can get the slug from a git url', () => {

@@ -23,6 +23,7 @@ function manualBlacklist () {
     '.circleci',
     '.nvmrc',
     '.gitignore',
+    '.DS_Store'
   ]
 }
 
@@ -147,7 +148,7 @@ function coverageFilePatterns () {
     'cover.out',
     'gcov.info',
     '*.gcov',
-    '*.lst',
+    '*.lst'
   ]
 }
 
@@ -270,7 +271,7 @@ function readAllLines (filePath) {
  */
 function readCoverageFile (projectRoot, filePath) {
   try {
-    return fs.readFileSync(getFilePath(projectRoot, filePath), { encoding:'utf-8' })
+    return fs.readFileSync(getFilePath(projectRoot, filePath), { encoding: 'utf-8' })
   } catch (error) {
     throw new Error(`There was an error reading the coverage file: ${error}`)
   }

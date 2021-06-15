@@ -1,5 +1,5 @@
 function detect (envs) {
-  return (envs.CI == 'true' || envs.CI == 'True') && (envs.APPVEYOR == 'true' || envs.APPVEYOR == 'True')
+  return (envs.CI === 'true' || envs.CI === 'True') && (envs.APPVEYOR === 'true' || envs.APPVEYOR === 'True')
 }
 
 function _getBuild (inputs) {

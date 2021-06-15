@@ -137,7 +137,7 @@ async function main (args) {
     // TODO: capture envs
 
     // Get coverage report contents
-    for (let coverageFile of coverageFilePaths) {
+    for (const coverageFile of coverageFilePaths) {
       const fileContents = await fileHelpers.readCoverageFile(
         args.dir || projectRoot,
         coverageFile
@@ -149,7 +149,7 @@ async function main (args) {
 
     // Cleanup
     if (args.clean) {
-      for (let coverageFile of coverageFilePaths) {
+      for (const coverageFile of coverageFilePaths) {
         fileHelpers.removeFile(args.dir || projectRoot, coverageFile)
       }
     }
