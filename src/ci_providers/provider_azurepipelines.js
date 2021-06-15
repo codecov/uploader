@@ -1,24 +1,26 @@
-var childProcess = require('child_process')
-var { log } = require('../helpers/logger')
+const childProcess = require('child_process')
+const { log } = require('../helpers/logger')
 
-function detect (envs) {
+function detect(envs) {
   return !!envs.SYSTEM_TEAMFOUNDATIONSERVERURI
 }
 
-function _getBuild (inputs) {
+function _getBuild(inputs) {
   const { args, envs } = inputs
   return args.build || envs.BUILD_BUILDNUMBER || ''
 }
 
-function _getBuildURL (inputs) {
-  const { args, envs } = inputs
+function _getBuildURL(inputs) {
+  const { envs } = inputs
   if (envs.SYSTEM_TEAMPROJECT && envs.BUILD_BUILDID) {
-    return encodeURIComponent(`${envs.SYSTEM_TEAMFOUNDATIONSERVERURI}${envs.SYSTEM_TEAMPROJECT}/_build/results?buildId=${envs.BUILD_BUILDID}`)
+    return encodeURIComponent(
+      `${envs.SYSTEM_TEAMFOUNDATIONSERVERURI}${envs.SYSTEM_TEAMPROJECT}/_build/results?buildId=${envs.BUILD_BUILDID}`,
+    )
   }
   return ''
 }
 
-function _getBranch (inputs) {
+function _getBranch(inputs) {
   const { args, envs } = inputs
   let branch = ''
   if (envs.BUILD_SOURCEBRANCH) {
@@ -27,34 +29,39 @@ function _getBranch (inputs) {
   return args.branch || branch
 }
 
-function _getJob (envs) {
+function _getJob(envs) {
   return envs.BUILD_BUILDID || ''
 }
 
-function _getPR (inputs) {
+function _getPR(inputs) {
   const { args, envs } = inputs
-  return args.pr || envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER || envs.SYSTEM_PULLREQUEST_PULLREQUESTID || ''
+  return (
+    args.pr ||
+    envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER ||
+    envs.SYSTEM_PULLREQUEST_PULLREQUESTID ||
+    ''
+  )
 }
 
-function _getService () {
+function _getService() {
   return 'azure_pipelines'
 }
 
-function getServiceName () {
+function getServiceName() {
   return 'Azure Pipelines'
 }
 
-function _getSHA (inputs) {
+function _getSHA(inputs) {
   const { args, envs } = inputs
   let commit = envs.BUILD_SOURCEVERSION
 
   if (_getPR(inputs)) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
     const mergeCommitMessage = childProcess.execSync(
-      `git show --no-patch --format="%P"`
+      'git show --no-patch --format="%P"',
     )
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
-      const mergeCommit = mergeCommitMessage.split(" ")[1]
+      const mergeCommit = mergeCommitMessage.split(' ')[1]
       log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
       commit = mergeCommit
     }
@@ -63,17 +70,17 @@ function _getSHA (inputs) {
   return args.sha || commit || ''
 }
 
-function _getProject (inputs) {
+function _getProject(inputs) {
   const { envs } = inputs
   return envs.SYSTEM_TEAMPROJECT || ''
 }
 
-function _getServerURI (inputs) {
+function _getServerURI(inputs) {
   const { envs } = inputs
   return envs.SYSTEM_TEAMFOUNDATIONSERVERURI
 }
 
-function _getSlug (inputs) {
+function _getSlug(inputs) {
   const { args } = inputs
   return args.slug || ''
 }
@@ -83,7 +90,7 @@ function _getSlug (inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns { branch: String, build: String, buildURL: String, commit: String, job: String, pr: String, service: String, slug: String}
  */
-function getServiceParams (inputs) {
+function getServiceParams(inputs) {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
@@ -94,12 +101,12 @@ function getServiceParams (inputs) {
     project: _getProject(inputs),
     server_uri: _getServerURI(inputs),
     service: _getService(),
-    slug: _getSlug(inputs)
+    slug: _getSlug(inputs),
   }
 }
 
 module.exports = {
   detect,
   getServiceName,
-  getServiceParams
+  getServiceParams,
 }

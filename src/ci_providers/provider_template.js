@@ -5,7 +5,7 @@
  * @returns boolean
  */
 // eslint-disable-next-line no-unused-vars
-function detect (envs) {
+function detect(envs) {
   return false
 }
 
@@ -15,7 +15,7 @@ function detect (envs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns String
  */
-function _getBuild (inputs) {
+function _getBuild(inputs) {
   const { args } = inputs
   return args.build || ''
 }
@@ -27,7 +27,7 @@ function _getBuild (inputs) {
  * @returns String
  */
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL (inputs) {
+function _getBuildURL(inputs) {
   return ''
 }
 
@@ -37,13 +37,13 @@ function _getBuildURL (inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns String
  */
-function _getBranch (inputs) {
+function _getBranch(inputs) {
   const { args } = inputs
   try {
     return args.branch || ''
   } catch (error) {
     throw new Error(
-      `There was an error getting the branch name from git: ${error}`
+      `There was an error getting the branch name from git: ${error}`,
     )
   }
 }
@@ -55,7 +55,7 @@ function _getBranch (inputs) {
  * @returns String
  */
 // eslint-disable-next-line no-unused-vars
-function _getJob (envs) {
+function _getJob(envs) {
   return ''
 }
 
@@ -66,13 +66,13 @@ function _getJob (envs) {
  * @returns String
  */
 // eslint-disable-next-line no-unused-vars
-function _getPR (inputs) {
+function _getPR(inputs) {
   const { args } = inputs
   try {
     return args.pr || ''
   } catch (error) {
     throw new Error(
-      `There was an error getting the branch name from git: ${error}`
+      `There was an error getting the branch name from git: ${error}`,
     )
   }
 }
@@ -82,7 +82,7 @@ function _getPR (inputs) {
  *
  * @returns String
  */
-function _getService () {
+function _getService() {
   return ''
 }
 
@@ -91,7 +91,7 @@ function _getService () {
  *
  * @returns
  */
-function getServiceName () {
+function getServiceName() {
   return ''
 }
 /**
@@ -100,13 +100,13 @@ function getServiceName () {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns String
  */
-function _getSHA (inputs) {
+function _getSHA(inputs) {
   const { args } = inputs
   try {
     return args.sha || ''
   } catch (error) {
     throw new Error(
-      `There was an error getting the commit SHA from git: ${error}`
+      `There was an error getting the commit SHA from git: ${error}`,
     )
   }
 }
@@ -116,7 +116,7 @@ function _getSHA (inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns String
  */
-function _getSlug (inputs) {
+function _getSlug(inputs) {
   const { args } = inputs
   try {
     return args.slug || ''
@@ -130,7 +130,7 @@ function _getSlug (inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns { branch: String, build: String, buildURL: String, commit: String, job: String, pr: String, service: String, slug: String}
  */
-function getServiceParams (inputs) {
+function getServiceParams(inputs) {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
@@ -139,12 +139,12 @@ function getServiceParams (inputs) {
     job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
-    slug: _getSlug(inputs)
+    slug: _getSlug(inputs),
   }
 }
 
 module.exports = {
   detect,
   getServiceName,
-  getServiceParams
+  getServiceParams,
 }

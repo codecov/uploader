@@ -1,10 +1,9 @@
 const td = require('testdouble')
-const childProcess = require('child_process')
 
 const providerAppveyorci = require('../../src/ci_providers//provider_appveyorci')
 
 describe('AppveyorCI Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -12,25 +11,25 @@ describe('AppveyorCI Params', () => {
     it('does not run without AppveyorCI env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       let detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = 'true'
+      inputs.envs.CI = 'true'
       detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = 'True'
+      inputs.envs.CI = 'True'
       detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = 'false'
-      inputs.envs['APPVEYOR'] = 'true'
+      inputs.envs.CI = 'false'
+      inputs.envs.APPVEYOR = 'true'
       detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['APPVEYOR'] = 'True'
+      inputs.envs.APPVEYOR = 'True'
       detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
@@ -39,36 +38,36 @@ describe('AppveyorCI Params', () => {
       const inputs = {
         args: {},
         envs: {
-          'CI': 'true',
-          'APPVEYOR': 'true',
-        }
+          CI: 'true',
+          APPVEYOR: 'true',
+        },
       }
       const detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
 
-  it('gets the correct params on no env variables', () => {
-    const inputs = {
-      args: {},
-      envs: {
-        'CI': 'true',
-        'APPVEYOR': 'true',
-      },
-    }
-    const expected = {
-      branch: '',
-      build: '',
-      buildURL: '',
-      commit: '',
-      job: '',
-      pr: '',
-      service: '',
-      slug: ''
-    }
-    const params = providerAppveyorci.getServiceParams(inputs)
-    expect(expected).toBeTruthy()
-  })
+  // it('gets the correct params on no env variables', () => {
+  //   const inputs = {
+  //     args: {},
+  //     envs: {
+  //       CI: 'true',
+  //       APPVEYOR: 'true'
+  //     }
+  //   }
+  //   const expected = {
+  //     branch: '',
+  //     build: '',
+  //     buildURL: '',
+  //     commit: '',
+  //     job: '',
+  //     pr: '',
+  //     service: '',
+  //     slug: ''
+  //   }
+  //   const params = providerAppveyorci.getServiceParams(inputs)
+  //   expect(expected).toBeTruthy()
+  // })
 
   it('gets correct params on push', () => {
     const inputs = {
@@ -86,17 +85,18 @@ describe('AppveyorCI Params', () => {
         APPVEYOR_REPO_NAME: 'testOrg/testRepo',
         APPVEYOR_URL: 'https://appveyor.com',
         CI: 'true',
-      }
+      },
     }
     const expected = {
       branch: 'main',
       build: '1',
-      buildURL: 'https%3A%2F%2Fappveyor.com%2Fproject%2FtestOrg%2FtestRepo%2Fbuilds%2F2%2Fjob%2F1',
+      buildURL:
+        'https%3A%2F%2Fappveyor.com%2Fproject%2FtestOrg%2FtestRepo%2Fbuilds%2F2%2Fjob%2F1',
       commit: 'testingsha',
       job: 'testOrg%2FtestRepo%2F3',
       pr: 4,
       service: 'appveyor',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerAppveyorci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -109,12 +109,12 @@ describe('AppveyorCI Params', () => {
         build: 3,
         pr: '2',
         sha: 'testsha',
-        slug: 'testOrg/testRepo'
+        slug: 'testOrg/testRepo',
       },
       envs: {
         APPVEYOR: 'true',
         CI: 'true',
-      }
+      },
     }
     const expected = {
       branch: 'branch',
@@ -124,7 +124,7 @@ describe('AppveyorCI Params', () => {
       job: '',
       pr: '2',
       service: 'appveyor',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const params = providerAppveyorci.getServiceParams(inputs)

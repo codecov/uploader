@@ -4,7 +4,7 @@ const childProcess = require('child_process')
 const providerAzurepipelines = require('../../src/ci_providers//provider_azurepipelines')
 
 describe('Jenkins CI Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -12,7 +12,7 @@ describe('Jenkins CI Params', () => {
     it('does not run without AzurePipelines env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       const detected = providerAzurepipelines.detect(inputs.envs)
       expect(detected).toBeFalsy()
@@ -22,34 +22,34 @@ describe('Jenkins CI Params', () => {
       const inputs = {
         args: {},
         envs: {
-          SYSTEM_TEAMFOUNDATIONSERVERURI: 'true'
-        }
+          SYSTEM_TEAMFOUNDATIONSERVERURI: 'true',
+        },
       }
       const detected = providerAzurepipelines.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
 
-  it('gets the correct params on no env variables', () => {
-    const inputs = {
-      args: {},
-      envs: {
-        SYSTEM_TEAMFOUNDATIONSERVERURI: 'true'
-      },
-    }
-    const expected = {
-      branch: '',
-      build: '',
-      buildURL: '',
-      commit: '',
-      job: '',
-      pr: '',
-      service: '',
-      slug: ''
-    }
-    const params = providerAzurepipelines.getServiceParams(inputs)
-    expect(expected).toBeTruthy()
-  })
+  // it('gets the correct params on no env variables', () => {
+  //   const inputs = {
+  //     args: {},
+  //     envs: {
+  //       SYSTEM_TEAMFOUNDATIONSERVERURI: 'true'
+  //     }
+  //   }
+  //   const expected = {
+  //     branch: '',
+  //     build: '',
+  //     buildURL: '',
+  //     commit: '',
+  //     job: '',
+  //     pr: '',
+  //     service: '',
+  //     slug: ''
+  //   }
+  //   const params = providerAzurepipelines.getServiceParams(inputs)
+  //   expect(expected).toBeTruthy()
+  // })
 
   it('gets correct params on pr number', () => {
     const inputs = {
@@ -63,19 +63,20 @@ describe('Jenkins CI Params', () => {
         SYSTEM_PULLREQUEST_PULLREQUESTNUMBER: 3,
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
         SYSTEM_TEAMPROJECT: 'testOrg',
-      }
+      },
     }
     const expected = {
       branch: 'main',
       build: 1,
-      buildURL: 'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
+      buildURL:
+        'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
       commit: 'testingsha',
       job: 2,
       pr: 3,
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
-      slug: ''
+      slug: '',
     }
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -93,19 +94,20 @@ describe('Jenkins CI Params', () => {
         SYSTEM_PULLREQUEST_PULLREQUESTID: 3,
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
         SYSTEM_TEAMPROJECT: 'testOrg',
-      }
+      },
     }
     const expected = {
       branch: 'main',
       build: 1,
-      buildURL: 'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
+      buildURL:
+        'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
       commit: 'testingsha',
       job: 2,
       pr: 3,
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
-      slug: ''
+      slug: '',
     }
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -123,24 +125,25 @@ describe('Jenkins CI Params', () => {
         SYSTEM_PULLREQUEST_PULLREQUESTID: 3,
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
         SYSTEM_TEAMPROJECT: 'testOrg',
-      }
+      },
     }
     const expected = {
       branch: 'main',
       build: 1,
-      buildURL: 'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
+      buildURL:
+        'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: 2,
       pr: 3,
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
-      slug: ''
+      slug: '',
     }
     const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync(
-      `git show --no-patch --format="%P"`
-    )).thenReturn("testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890")
+    td.when(execSync('git show --no-patch --format="%P"')).thenReturn(
+      'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
+    )
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -152,11 +155,11 @@ describe('Jenkins CI Params', () => {
         build: 3,
         pr: '2',
         sha: 'testsha',
-        slug: 'testOrg/testRepo'
+        slug: 'testOrg/testRepo',
       },
       envs: {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
-      }
+      },
     }
     const expected = {
       branch: 'branch',
@@ -168,7 +171,7 @@ describe('Jenkins CI Params', () => {
       project: '',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const params = providerAzurepipelines.getServiceParams(inputs)

@@ -2,31 +2,28 @@ const nock = require('nock')
 
 const webHelper = require('../../src/helpers/web')
 
-describe('Web Helpers', function () {
+describe('Web Helpers', () => {
   let uploadURL
   let token
   let uploadFile
   let version
   let query
-  beforeEach(function () {
+  beforeEach(() => {
     token = '123-abc-890-xyz'
     uploadFile = 'some content'
     query = 'hello'
     version = '0.0.1'
 
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
-    nock('https://codecov.io')
-      .put('/')
-      .query(true)
-      .reply(200, 'testPUT')
+    nock('https://codecov.io').put('/').query(true).reply(200, 'testPUT')
   })
 
-  afterEach(function () {
+  afterEach(() => {
     uploadURL = ''
     jest.restoreAllMocks()
   })
 
-  it('Can POST to the uploader endpoint (HTTP)', async function () {
+  it('Can POST to the uploader endpoint (HTTP)', async () => {
     uploadURL = 'http://codecov.io'
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
     nock('http://codecov.io')
@@ -39,7 +36,7 @@ describe('Web Helpers', function () {
       token,
       query,
       uploadFile,
-      version
+      version,
     )
     try {
       expect(response).toBe('testPOSTHTTP')
@@ -48,7 +45,7 @@ describe('Web Helpers', function () {
     }
   })
 
-  it('Can POST to the uploader endpoint (HTTPS)', async function () {
+  it('Can POST to the uploader endpoint (HTTPS)', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {})
     uploadURL = 'https://codecov.io'
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
@@ -62,22 +59,19 @@ describe('Web Helpers', function () {
       token,
       query,
       uploadFile,
-      version
+      version,
     )
     expect(response).toBe('testPOSTHTTPS')
   })
 
-  it('Can PUT to the storage endpoint', async function () {
+  it('Can PUT to the storage endpoint', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {})
     uploadURL = 'https://results.codecov.io\nhttps://codecov.io'
-    const response = await webHelper.uploadToCodecovPUT(
-      uploadURL,
-      uploadFile
-    )
+    const response = await webHelper.uploadToCodecovPUT(uploadURL, uploadFile)
     expect(response.resultURL).toBe('https://results.codecov.io')
   })
 
-  it('Can generate query URL', function () {
+  it('Can generate query URL', () => {
     const queryParams = {}
     queryParams.branch = 'testBranch'
     queryParams.commit = 'commitSHA'
@@ -91,14 +85,14 @@ describe('Web Helpers', function () {
     queryParams.pr = '2'
     queryParams.job = '6'
     expect(webHelper.generateQuery(queryParams)).toBe(
-      'branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6'
+      'branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6',
     )
   })
 
-  it('can populateBuildParams() from args', function () {
+  it('can populateBuildParams() from args', () => {
     const result = webHelper.populateBuildParams(
       { args: { flags: 'testFlag', tag: 'testTag' }, envs: {} },
-      { name: '', tag: ', flags: []' }
+      { name: '', tag: ', flags: []' },
     )
     expect(result.flags).toBe('testFlag')
   })
