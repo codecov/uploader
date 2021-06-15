@@ -5,12 +5,13 @@
   "private": true,
   "bin": "bin/codecov",
   "scripts": {
-    "lint": "standard --fix",
+    "lint": "eslint --fix",
     "test": "jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
-    "build-windows": "pkg . --targets win --output out/codecov.exe"
+    "build-windows": "pkg . --targets win --output out/codecov.exe",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -31,10 +32,14 @@
     "superagent": "6.1.0"
   },
   "devDependencies": {
+    "eslint": "7.28.0",
+    "eslint-config-prettier": "8.3.0",
+    "husky": "6.0.0",
     "jest": "27.0.4",
+    "lint-staged": "11.0.0",
     "nock": "13.1.0",
     "pkg": "5.1.0",
-    "standard": "16.0.3",
+    "prettier": "2.3.1",
     "testdouble": "3.16.1",
     "testdouble-jest": "2.0.0"
   },
@@ -66,14 +71,13 @@
       "<rootDir>/test/test_helpers.js"
     ]
   },
-  "standard": {
-    "globals": [
-      "expect",
-      "it",
-      "describe",
-      "beforeEach",
-      "afterEach",
-      "jest"
+  "lint-staged": {
+    "**/*.js": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "**/*.{json,md,yml,yaml,html}": [
+      "prettier --write"
     ]
   }
 }

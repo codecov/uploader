@@ -8,7 +8,7 @@
  * @param {Object} [options.args]
  * @returns void
  */
-function log (message, options) {
+function log(message, options) {
   if (!options || !options.level) {
     return console.log(message)
   }
@@ -29,5 +29,5 @@ function log (message, options) {
 }
 
 module.exports = {
-  log
+  log,
 }

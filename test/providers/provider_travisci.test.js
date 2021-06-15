@@ -1,10 +1,9 @@
 const td = require('testdouble')
-const childProcess = require('child_process')
 
-const providerTravisci = require('../../src/ci_providers//provider_travisci')
+const providerTravisci = require('../../src/ci_providers/provider_travisci')
 
 describe('TravisCI Params', () => {
-  afterEach(function () {
+  afterEach(() => {
     td.reset()
   })
 
@@ -12,16 +11,16 @@ describe('TravisCI Params', () => {
     it('does not run without TravisCI env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       let detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = true
+      inputs.envs.CI = true
       detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.envs['TRAVIS'] = true
+      inputs.envs.TRAVIS = true
       detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
@@ -53,8 +52,8 @@ describe('TravisCI Params', () => {
         TRAVIS_JOB_ID: 2,
         TRAVIS_PULL_REQUEST: '',
         TRAVIS_COMMIT: 'testingsha',
-        TRAVIS_REPO_SLUG: 'testOrg/testRepo'
-      }
+        TRAVIS_REPO_SLUG: 'testOrg/testRepo',
+      },
     }
     const expected = {
       branch: '',
@@ -64,7 +63,7 @@ describe('TravisCI Params', () => {
       job: 2,
       pr: '',
       service: 'travis',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerTravisci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -85,8 +84,8 @@ describe('TravisCI Params', () => {
         TRAVIS_PULL_REQUEST_BRANCH: 'branch',
         TRAVIS_PULL_REQUEST_SHA: 'testingprsha',
         TRAVIS_REPO_SLUG: 'testOrg/testRepo',
-        TRAVIS_TAG: 'main'
-      }
+        TRAVIS_TAG: 'main',
+      },
     }
     const expected = {
       branch: 'branch',
@@ -96,7 +95,7 @@ describe('TravisCI Params', () => {
       job: 2,
       pr: '',
       service: 'travis',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerTravisci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -116,8 +115,8 @@ describe('TravisCI Params', () => {
         TRAVIS_PULL_REQUEST: '',
         TRAVIS_PULL_REQUEST_SHA: 'testingprsha',
         TRAVIS_REPO_SLUG: 'testOrg/testRepo',
-        TRAVIS_TAG: 'main'
-      }
+        TRAVIS_TAG: 'main',
+      },
     }
     const expected = {
       branch: 'branch',
@@ -127,7 +126,7 @@ describe('TravisCI Params', () => {
       job: 2,
       pr: '',
       service: 'travis',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerTravisci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -140,13 +139,13 @@ describe('TravisCI Params', () => {
         build: 3,
         pr: '2',
         sha: 'testsha',
-        slug: 'testOrg/testRepo'
+        slug: 'testOrg/testRepo',
       },
       envs: {
         CI: true,
         SHIPPABLE: true,
-        TRAVIS: true
-      }
+        TRAVIS: true,
+      },
     }
     const expected = {
       branch: 'branch',
@@ -156,7 +155,7 @@ describe('TravisCI Params', () => {
       job: undefined,
       pr: '2',
       service: 'travis',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const params = providerTravisci.getServiceParams(inputs)

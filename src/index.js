@@ -16,10 +16,10 @@ const providers = require('./ci_providers')
  * @param {Object} args
  * @param {number} start
  */
-function dryRun (uploadHost, token, query, uploadFile, args, start) {
+function dryRun(uploadHost, token, query, uploadFile, args, start) {
   log('==> Dumping upload file (no upload)')
   log(
-    `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`
+    `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`,
   )
   log(uploadFile)
   const end = Date.now()
@@ -51,7 +51,7 @@ function dryRun (uploadHost, token, query, uploadFile, args, start) {
  * @param {boolean} args.clean Move discovered coverage reports to the trash
  * @param {string} args.feature Toggle features
  */
-async function main (args) {
+async function main(args) {
   const start = Date.now()
   log(`Start of uploader: ${start}...`, { level: 'debug', args })
   try {
@@ -85,7 +85,7 @@ async function main (args) {
     const projectRoot = args.rootDir || fileHelpers.fetchGitRoot()
     if (projectRoot === '') {
       log(
-        '=> No git repo detected. Please use the -R flag if the below detected directory is not correct.'
+        '=> No git repo detected. Please use the -R flag if the below detected directory is not correct.',
       )
     }
 
@@ -94,11 +94,16 @@ async function main (args) {
     // == Step 3: get network
     let uploadFile = ''
 
-    if (!args.feature || args.feature.split(',').includes('network') === false) {
+    if (
+      !args.feature ||
+      args.feature.split(',').includes('network') === false
+    ) {
       log('Start of network processing...', { level: 'debug', args })
       const fileListing = await fileHelpers.getFileListing(projectRoot, args)
 
-      uploadFile = uploadFile.concat(fileListing).concat(fileHelpers.endNetworkMarker())
+      uploadFile = uploadFile
+        .concat(fileListing)
+        .concat(fileHelpers.endNetworkMarker())
     }
 
     // == Step 4: select coverage files (search or specify)
@@ -109,16 +114,15 @@ async function main (args) {
       coverageFilePaths = fileHelpers.getCoverageFiles(
         args.dir || projectRoot,
         // TODO: Determine why this is so slow (I suspect it's walking paths it should not)
-        fileHelpers.coverageFilePatterns()
+        fileHelpers.coverageFilePatterns(),
       )
       if (coverageFilePaths.length > 0) {
-        log(
-          `=> Found ${coverageFilePaths.length} possible coverage files:`
-        )
+        log(`=> Found ${coverageFilePaths.length} possible coverage files:`)
         log(coverageFilePaths.join('\n'))
       } else {
         log(
-          'No coverage files located, please try use `-f`, or change the project root with `-R`', { level: 'error' }
+          'No coverage files located, please try use `-f`, or change the project root with `-R`',
+          { level: 'error' },
         )
         process.exit(args.nonZero ? -1 : 0)
       }
@@ -137,10 +141,10 @@ async function main (args) {
     // TODO: capture envs
 
     // Get coverage report contents
-    for (let coverageFile of coverageFilePaths) {
+    for (const coverageFile of coverageFilePaths) {
       const fileContents = await fileHelpers.readCoverageFile(
         args.dir || projectRoot,
-        coverageFile
+        coverageFile,
       )
       uploadFile = uploadFile.concat(fileHelpers.fileHeader(coverageFile))
       uploadFile = uploadFile.concat(fileContents)
@@ -149,7 +153,7 @@ async function main (args) {
 
     // Cleanup
     if (args.clean) {
-      for (let coverageFile of coverageFilePaths) {
+      for (const coverageFile of coverageFilePaths) {
         fileHelpers.removeFile(args.dir || projectRoot, coverageFile)
       }
     }
@@ -174,42 +178,39 @@ async function main (args) {
     let serviceParams
     for (const provider of providers) {
       if (provider.detect(envs)) {
-        log(
-          `Detected ${provider.getServiceName()} as the CI provider.`
-        )
+        log(`Detected ${provider.getServiceName()} as the CI provider.`)
         serviceParams = provider.getServiceParams(inputs)
         break
       }
     }
 
     if (serviceParams === undefined) {
-      log('Unable to detect service, please specify manually.', { level: 'error' })
+      log('Unable to detect service, please specify manually.', {
+        level: 'error',
+      })
       process.exit(args.nonZero ? -1 : 0)
     }
 
     // == Step 7: either upload or dry-run
 
     const query = webHelpers.generateQuery(
-      webHelpers.populateBuildParams(inputs, serviceParams)
+      webHelpers.populateBuildParams(inputs, serviceParams),
     )
 
     if (args.dryRun) {
       dryRun(uploadHost, token, query, uploadFile, args, start)
     } else {
       log(
-        `Pinging Codecov: ${uploadHost}/v4?package=uploader-${version}&token=*******&${query}`
+        `Pinging Codecov: ${uploadHost}/v4?package=uploader-${version}&token=*******&${query}`,
       )
       const uploadURL = await webHelpers.uploadToCodecov(
         uploadHost,
         token,
         query,
         gzippedFile,
-        version
+        version,
       )
-      const result = await webHelpers.uploadToCodecovPUT(
-        uploadURL,
-        gzippedFile
-      )
+      const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
       log(result)
       return result
     }
@@ -217,7 +218,10 @@ async function main (args) {
     // Output any exceptions and exit
     log(error.message, { level: 'error' })
     const end = Date.now()
-    log(`End of uploader: ${end - start} milliseconds`, { level: 'debug', args })
+    log(`End of uploader: ${end - start} milliseconds`, {
+      level: 'debug',
+      args,
+    })
     process.exit(args.nonZero ? -1 : 0)
   }
   const end = Date.now()
@@ -229,7 +233,7 @@ async function main (args) {
  * @param {string} version
  * @returns string
  */
-function generateHeader (version) {
+function generateHeader(version) {
   return `
      _____          _
     / ____|        | |
@@ -241,12 +245,12 @@ function generateHeader (version) {
   Codecov report uploader ${version}`
 }
 
-function getVersion () {
+function getVersion() {
   return version
 }
 
 module.exports = {
   main,
   getVersion,
-  generateHeader
+  generateHeader,
 }

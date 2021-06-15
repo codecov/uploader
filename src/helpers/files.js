@@ -10,11 +10,11 @@ const { log } = require('./logger')
  * @param {string} projectRoot
  * @returns Promise<string>
  */
-async function getFileListing (projectRoot, args) {
+async function getFileListing(projectRoot, args) {
   return getAllFiles(projectRoot, projectRoot, args).join('')
 }
 
-function manualBlacklist () {
+function manualBlacklist() {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     'node_modules',
@@ -23,10 +23,11 @@ function manualBlacklist () {
     '.circleci',
     '.nvmrc',
     '.gitignore',
+    '.DS_Store',
   ]
 }
 
-function globBlacklist () {
+function globBlacklist() {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     'node_modules/**/*',
@@ -122,11 +123,11 @@ function globBlacklist () {
     'remapInstanbul.coverage*.json',
     'scoverage.measurements.*',
     'test_*_coverage.txt',
-    'testrunner-coverage*'
+    'testrunner-coverage*',
   ]
 }
 
-function coverageFilePatterns () {
+function coverageFilePatterns() {
   return [
     '*coverage*.*',
     'nosetests.xml',
@@ -157,11 +158,11 @@ function coverageFilePatterns () {
  * @param {string[]} coverageFilePatterns
  * @returns string[]
  */
-function getCoverageFiles (projectRoot, coverageFilePatterns) {
+function getCoverageFiles(projectRoot, coverageFilePatterns) {
   return coverageFilePatterns.flatMap(pattern => {
     return glob.sync(`**/${pattern}`, {
       cwd: projectRoot,
-      ignore: globBlacklist()
+      ignore: globBlacklist(),
     })
   })
 }
@@ -173,20 +174,18 @@ function getCoverageFiles (projectRoot, coverageFilePatterns) {
  * @param {string[]} manualBlacklist
  * @returns boolean
  */
-function isBlacklisted (projectRoot, file, manualBlacklist) {
+function isBlacklisted(projectRoot, file, manualBlacklist) {
   const blacklist = manualBlacklist
   return blacklist.includes(file)
 }
 
-function fetchGitRoot () {
+function fetchGitRoot() {
   try {
     return (
-      childProcess
-        .spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf-8' })
-        .stdout ||
-      childProcess
-        .spawnSync('hg', ['root'], { encoding: 'utf-8' })
-        .stdout ||
+      childProcess.spawnSync('git', ['rev-parse', '--show-toplevel'], {
+        encoding: 'utf-8',
+      }).stdout ||
+      childProcess.spawnSync('hg', ['root'], { encoding: 'utf-8' }).stdout ||
       process.cwd()
     ).trimRight()
   } catch (error) {
@@ -199,7 +198,7 @@ function fetchGitRoot () {
  * @param {string} projectRoot
  * @returns string[]
  */
-function parseGitIgnore (projectRoot) {
+function parseGitIgnore(projectRoot) {
   const gitIgnorePath = path.join(projectRoot, '.gitignore')
   let lines
   try {
@@ -223,7 +222,7 @@ function parseGitIgnore (projectRoot) {
  * @param {string[]} arrayOfFiles
  * @returns {string[]}
  */
-function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
+function getAllFiles(projectRoot, dirPath, args, arrayOfFiles = []) {
   log(`Searching for files in ${dirPath}`, { level: 'debug', args })
   const files = fs.readdirSync(dirPath)
 
@@ -231,18 +230,16 @@ function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
     if (isBlacklisted(projectRoot, file, manualBlacklist())) {
       return
     }
-    if (
-      fs.statSync(path.join(dirPath, file)).isDirectory()
-    ) {
+    if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
       arrayOfFiles = getAllFiles(
         projectRoot,
         path.join(dirPath, file),
         args,
-        arrayOfFiles
+        arrayOfFiles,
       )
     } else {
       arrayOfFiles.push(
-          `${path.join(dirPath.replace(projectRoot, '.'), file)}\n`
+        `${path.join(dirPath.replace(projectRoot, '.'), file)}\n`,
       )
     }
   })
@@ -255,7 +252,7 @@ function getAllFiles (projectRoot, dirPath, args, arrayOfFiles = []) {
  * @param {string} filePath
  * @returns string[]
  */
-function readAllLines (filePath) {
+function readAllLines(filePath) {
   const fileContents = fs.readFileSync(filePath)
 
   const lines = fileContents.toString().split('\n') || []
@@ -268,27 +265,29 @@ function readAllLines (filePath) {
  * @param {string} filePath
  * @returns string
  */
-function readCoverageFile (projectRoot, filePath) {
+function readCoverageFile(projectRoot, filePath) {
   try {
-    return fs.readFileSync(getFilePath(projectRoot, filePath), { encoding:'utf-8' })
+    return fs.readFileSync(getFilePath(projectRoot, filePath), {
+      encoding: 'utf-8',
+    })
   } catch (error) {
     throw new Error(`There was an error reading the coverage file: ${error}`)
   }
 }
 
-function endNetworkMarker () {
+function endNetworkMarker() {
   return '<<<<<< network\n'
 }
 
-function endFileMarker () {
+function endFileMarker() {
   return '<<<<<< EOF\n'
 }
 
-function fileHeader (filePath) {
+function fileHeader(filePath) {
   return `# path=${filePath}\n`
 }
 
-function endEnvironmentMarker () {
+function endEnvironmentMarker() {
   return '<<<<<< ENV\n'
 }
 
@@ -298,11 +297,13 @@ function endEnvironmentMarker () {
  * @param {string} filePath
  * @returns string
  */
-function getFilePath (projectRoot, filePath) {
-  if (filePath.startsWith('./') ||
-      filePath.startsWith('/') ||
-      filePath.startsWith('.\\') ||
-      filePath.startsWith('.\\')) {
+function getFilePath(projectRoot, filePath) {
+  if (
+    filePath.startsWith('./') ||
+    filePath.startsWith('/') ||
+    filePath.startsWith('.\\') ||
+    filePath.startsWith('.\\')
+  ) {
     return filePath
   }
   if (projectRoot === '.') {
@@ -311,8 +312,8 @@ function getFilePath (projectRoot, filePath) {
   return path.join(projectRoot, filePath)
 }
 
-function removeFile (projectRoot, filePath) {
-  fs.unlink(getFilePath(projectRoot, filePath), (err) => {
+function removeFile(projectRoot, filePath) {
+  fs.unlink(getFilePath(projectRoot, filePath), err => {
     if (err) {
       log(`Error removing ${filePath} coverage file`)
     }
@@ -331,5 +332,5 @@ module.exports = {
   getCoverageFiles,
   coverageFilePatterns,
   getFilePath,
-  removeFile
+  removeFile,
 }
