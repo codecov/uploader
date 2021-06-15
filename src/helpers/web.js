@@ -9,7 +9,7 @@ const { log } = require('./logger')
  * @param {Object} serviceParams
  * @returns Object
  */
-function populateBuildParams (inputs, serviceParams) {
+function populateBuildParams(inputs, serviceParams) {
   const { args, envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
@@ -26,7 +26,7 @@ function populateBuildParams (inputs, serviceParams) {
  * @param {Buffer} uploadFile
  * @returns {Promise<{ status: string, resultURL: string }>}
  */
-async function uploadToCodecovPUT (uploadURL, uploadFile) {
+async function uploadToCodecovPUT(uploadURL, uploadFile) {
   log('Uploading...')
 
   const parts = uploadURL.split('\n')
@@ -59,12 +59,10 @@ async function uploadToCodecovPUT (uploadURL, uploadFile) {
  * @param {string} version uploader version number
  * @returns {Promise<string>}
  */
-async function uploadToCodecov (uploadURL, token, query, uploadFile, version) {
+async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
   try {
     const result = await superagent
-      .post(
-        `${uploadURL}/upload/v4?package=uploader-${version}&${query}`
-      )
+      .post(`${uploadURL}/upload/v4?package=uploader-${version}&${query}`)
       .retry()
       .send(uploadFile) // sends a JSON post body
       .set('X-Reduced-Redundancy', 'false')
@@ -82,10 +80,16 @@ async function uploadToCodecov (uploadURL, token, query, uploadFile, version) {
  * @param {string} str
  * @returns string
  */
-function camelToSnake (str) {
-  return str && str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
-    .map(s => s.toLowerCase())
-    .join('_')
+function camelToSnake(str) {
+  return (
+    str &&
+    str
+      .match(
+        /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g,
+      )
+      .map(s => s.toLowerCase())
+      .join('_')
+  )
 }
 
 /**
@@ -93,9 +97,8 @@ function camelToSnake (str) {
  * @param {Object} queryParams
  * @returns string
  */
-function generateQuery (queryParams) {
-  const query = Object
-    .entries(queryParams)
+function generateQuery(queryParams) {
+  const query = Object.entries(queryParams)
     .map(([key, value]) => `${camelToSnake(key)}=${value}`)
     .join('&')
   return query
@@ -105,5 +108,5 @@ module.exports = {
   populateBuildParams,
   uploadToCodecov,
   uploadToCodecovPUT,
-  generateQuery
+  generateQuery,
 }

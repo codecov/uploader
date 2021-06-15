@@ -38,16 +38,17 @@ describe('Uploader Core', () => {
       .query(actualQueryObject => actualQueryObject.name === 'customname')
       .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
-    nock('https://codecov.io')
-      .put('/')
-      .reply(200, 'success')
+    nock('https://codecov.io').put('/').reply(200, 'success')
 
     const result = await app.main({
       name: 'customname',
       token: 'abcdefg',
-      url: 'https://codecov.io'
+      url: 'https://codecov.io',
     })
-    expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
+    expect(result).toEqual({
+      status: 'success',
+      resultURL: 'https://results.codecov.io',
+    })
   }, 30000)
 
   it('Can parse environment variables', async () => {
@@ -60,7 +61,7 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       dryRun: true,
-      env: 'SOMETHING,ANOTHER'
+      env: 'SOMETHING,ANOTHER',
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/SOMETHING=red/))
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/ANOTHER=blue/))
@@ -77,16 +78,17 @@ describe('Uploader Core', () => {
         .query(actualQueryObject => actualQueryObject.flags === 'a-flag')
         .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
-      nock('https://codecov.io')
-        .put('/')
-        .reply(200, 'success')
+      nock('https://codecov.io').put('/').reply(200, 'success')
 
       const result = await app.main({
         flags: 'a-flag',
         token: 'abcdefg',
-        url: 'https://codecov.io'
+        url: 'https://codecov.io',
       })
-      expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
+      expect(result).toEqual({
+        status: 'success',
+        resultURL: 'https://results.codecov.io',
+      })
     }, 30000)
   })
 
@@ -101,16 +103,17 @@ describe('Uploader Core', () => {
       .query(actualQueryObject => actualQueryObject.parent === parent)
       .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
-    nock('https://codecov.io')
-      .put('/')
-      .reply(200, 'success')
+    nock('https://codecov.io').put('/').reply(200, 'success')
 
     const result = await app.main({
       token: 'abcdefg',
       url: 'https://codecov.io',
-      parent
+      parent,
     })
-    expect(result).toEqual({ status: 'success', resultURL: 'https://results.codecov.io' })
+    expect(result).toEqual({
+      status: 'success',
+      resultURL: 'https://results.codecov.io',
+    })
   }, 30000)
 
   it('Can find all coverage from root dir', async () => {
@@ -120,10 +123,14 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: true
+      dryRun: true,
     })
-    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
-    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/An example coverage root file/),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/An example coverage other file/),
+    )
   })
 
   it('Can find only coverage from custom dir', async () => {
@@ -134,10 +141,14 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       dryRun: true,
-      dir: './test/fixtures/other'
+      dir: './test/fixtures/other',
     })
-    expect(log).toHaveBeenCalledWith(expect.stringMatching(/An example coverage other file/))
-    expect(log).not.toHaveBeenCalledWith(expect.stringMatching(/An example coverage root file/))
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/An example coverage other file/),
+    )
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringMatching(/An example coverage root file/),
+    )
   })
 
   it('Can remove coverage files', async () => {
@@ -149,9 +160,12 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       dryRun: true,
       dir: './test/fixtures/other',
-      clean: true
+      clean: true,
     })
-    expect(unlink).toHaveBeenCalledWith('test/fixtures/other/coverage.txt', expect.any(Function))
+    expect(unlink).toHaveBeenCalledWith(
+      'test/fixtures/other/coverage.txt',
+      expect.any(Function),
+    )
   })
 
   it('Can include the network', async () => {
@@ -162,7 +176,7 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       dryRun: true,
-      dir: './test/fixtures/other'
+      dir: './test/fixtures/other',
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
   })
@@ -175,8 +189,10 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       dryRun: true,
-      feature: 'network'
+      feature: 'network',
     })
-    expect(log).not.toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringMatching(/<<<<<< network/),
+    )
   })
 })

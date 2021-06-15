@@ -11,7 +11,7 @@ describe('CircleCI Params', () => {
     it('does not run without CircleCI env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       const detected = providerCircleci.detect(inputs.envs)
       expect(detected).toBeFalsy()
@@ -22,8 +22,8 @@ describe('CircleCI Params', () => {
         args: {},
         envs: {
           CI: true,
-          CIRCLECI: true
-        }
+          CIRCLECI: true,
+        },
       }
       const detected = providerCircleci.detect(inputs.envs)
       expect(detected).toBeTruthy()
@@ -43,8 +43,8 @@ describe('CircleCI Params', () => {
         CIRCLE_REPOSITORY_URL: 'git@github.com:testOrg/testRepo.git',
         CIRCLE_BUILD_NUM: 2,
         CIRCLE_PR_NUMBER: 1,
-        CIRCLE_NODE_INDEX: 3
-      }
+        CIRCLE_NODE_INDEX: 3,
+      },
     }
     const expected = {
       branch: 'master',
@@ -54,7 +54,7 @@ describe('CircleCI Params', () => {
       job: 3,
       pr: 1,
       service: 'circleci',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerCircleci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -72,8 +72,8 @@ describe('CircleCI Params', () => {
         CIRCLE_REPOSITORY_URL: 'git@github.com:testOrg/testRepo.git',
         CIRCLE_BUILD_NUM: 2,
         CIRCLE_PR_NUMBER: 1,
-        CIRCLE_NODE_INDEX: 3
-      }
+        CIRCLE_NODE_INDEX: 3,
+      },
     }
     const expected = {
       branch: 'master',
@@ -83,7 +83,7 @@ describe('CircleCI Params', () => {
       job: 3,
       pr: 1,
       service: 'circleci',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerCircleci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)

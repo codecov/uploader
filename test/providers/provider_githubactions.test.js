@@ -18,8 +18,8 @@ describe('GitHub Actions Params', () => {
           GITHUB_REPOSITORY: 'testOrg/testRepo',
           GITHUB_RUN_ID: 2,
           GITHUB_SHA: 'testingsha',
-          GITHUB_WORKFLOW: 'testWorkflow'
-        }
+          GITHUB_WORKFLOW: 'testWorkflow',
+        },
       }
       const detected = providerGitHubactions.detect(inputs.envs)
       expect(detected).toBeFalsy()
@@ -29,8 +29,8 @@ describe('GitHub Actions Params', () => {
       const inputs = {
         args: {},
         envs: {
-          GITHUB_ACTIONS: true
-        }
+          GITHUB_ACTIONS: true,
+        },
       }
       const detected = providerGitHubactions.detect(inputs.envs)
       expect(detected).toBeTruthy()
@@ -68,18 +68,19 @@ describe('GitHub Actions Params', () => {
         GITHUB_RUN_ID: 2,
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
-        GITHUB_WORKFLOW: 'testWorkflow'
-      }
+        GITHUB_WORKFLOW: 'testWorkflow',
+      },
     }
     const expected = {
       branch: 'master',
       build: 2,
-      buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      buildURL:
+        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: '',
       service: 'github-actions',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -96,24 +97,25 @@ describe('GitHub Actions Params', () => {
         GITHUB_RUN_ID: 2,
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
-        GITHUB_WORKFLOW: 'testWorkflow'
-      }
+        GITHUB_WORKFLOW: 'testWorkflow',
+      },
     }
     const expected = {
       branch: 'branch',
       build: 2,
-      buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      buildURL:
+        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: '1',
       service: 'github-actions',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync(
-      'git show --no-patch --format="%P"'
-    )).thenReturn('testingsha')
+    td.when(execSync('git show --no-patch --format="%P"')).thenReturn(
+      'testingsha',
+    )
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -129,24 +131,25 @@ describe('GitHub Actions Params', () => {
         GITHUB_RUN_ID: 2,
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingmergecommitsha',
-        GITHUB_WORKFLOW: 'testWorkflow'
-      }
+        GITHUB_WORKFLOW: 'testWorkflow',
+      },
     }
     const expected = {
       branch: 'branch',
       build: 2,
-      buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      buildURL:
+        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: 'testWorkflow',
       pr: '1',
       service: 'github-actions',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync(
-      'git show --no-patch --format="%P"'
-    )).thenReturn('testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890')
+    td.when(execSync('git show --no-patch --format="%P"')).thenReturn(
+      'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
+    )
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -158,28 +161,27 @@ describe('GitHub Actions Params', () => {
         build: 3,
         pr: '2',
         sha: 'testsha',
-        slug: 'testOrg/testRepo'
+        slug: 'testOrg/testRepo',
       },
       envs: {
         GITHUB_ACTIONS: true,
-        GITHUB_SERVER_URL: 'https://github.com'
-      }
+        GITHUB_SERVER_URL: 'https://github.com',
+      },
     }
     const expected = {
       branch: 'branch',
       build: 3,
-      buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F3',
+      buildURL:
+        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F3',
       commit: 'testsha',
       job: 'undefined',
       pr: '2',
       service: 'github-actions',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync(
-      'git show --no-patch --format="%P"'
-    )).thenReturn('testsha')
+    td.when(execSync('git show --no-patch --format="%P"')).thenReturn('testsha')
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -195,24 +197,23 @@ describe('GitHub Actions Params', () => {
         GITHUB_RUN_ID: 2,
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
-        GITHUB_WORKFLOW: 'testWorkflow'
-      }
+        GITHUB_WORKFLOW: 'testWorkflow',
+      },
     }
     const expected = {
       branch: 'branch',
       build: 2,
-      buildURL: 'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      buildURL:
+        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: '1',
       service: 'github-actions',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync(
-      'git show --no-patch --format="%P"'
-    )).thenReturn('')
+    td.when(execSync('git show --no-patch --format="%P"')).thenReturn('')
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })

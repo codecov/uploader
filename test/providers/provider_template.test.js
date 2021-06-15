@@ -15,7 +15,7 @@ describe('<Ci> Params', () => {
     it('does not run without <Ci> env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       /*
       const detected = provider<Ci>.detect(inputs.envs)
@@ -26,7 +26,7 @@ describe('<Ci> Params', () => {
     it('does not run without <Ci> env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       /*
       const detected = provider<Ci>.detect(inputs.envs)
@@ -39,8 +39,7 @@ describe('<Ci> Params', () => {
   it('gets the correct params on no env variables', () => {
     const inputs = {
       args: {},
-      envs: {
-      }
+      envs: {},
     }
     const expected = {
       branch: '',
@@ -50,7 +49,7 @@ describe('<Ci> Params', () => {
       job: '',
       pr: '',
       service: '',
-      slug: ''
+      slug: '',
     }
     /*
     const params = provider<Ci>.getServiceParams(inputs)
@@ -62,8 +61,7 @@ describe('<Ci> Params', () => {
   it('gets the correct params on push', () => {
     const inputs = {
       args: {},
-      envs: {
-      }
+      envs: {},
     }
     const expected = {
       branch: '',
@@ -73,7 +71,7 @@ describe('<Ci> Params', () => {
       job: '',
       pr: '',
       service: '',
-      slug: ''
+      slug: '',
     }
     /*
     const params = provider<Ci>.getServiceParams(inputs)
@@ -85,8 +83,7 @@ describe('<Ci> Params', () => {
   it('gets the correct params on pr', () => {
     const inputs = {
       args: {},
-      envs: {
-      }
+      envs: {},
     }
     const expected = {
       branch: '',
@@ -96,7 +93,7 @@ describe('<Ci> Params', () => {
       job: '',
       pr: '',
       service: '',
-      slug: ''
+      slug: '',
     }
     /*
     const params = provider<Ci>.getServiceParams(inputs)
@@ -108,8 +105,7 @@ describe('<Ci> Params', () => {
   it('gets the correct params on overrides', () => {
     const inputs = {
       args: {},
-      envs: {
-      }
+      envs: {},
     }
     const expected = {
       branch: '',
@@ -119,7 +115,7 @@ describe('<Ci> Params', () => {
       job: '',
       pr: '',
       service: '',
-      slug: ''
+      slug: '',
     }
     /*
     const params = provider<Ci>.getServiceParams(inputs)

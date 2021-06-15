@@ -1,6 +1,6 @@
 const childProcess = require('child_process')
 
-function parseSlug (slug) {
+function parseSlug(slug) {
   // origin    https://github.com/torvalds/linux.git (fetch)
   // git@github.com: codecov / uploader.git
   if (typeof slug !== 'string') {
@@ -21,11 +21,11 @@ function parseSlug (slug) {
   throw new Error(`Unable to parse slug URL: ${slug}`)
 }
 
-function parseSlugFromRemoteAddr (remoteAddr) {
+function parseSlugFromRemoteAddr(remoteAddr) {
   let slug = ''
   if (!remoteAddr) {
     remoteAddr = childProcess.execSync(
-      'git config --get remote.origin.url || hg paths default || echo \'\''
+      "git config --get remote.origin.url || hg paths default || echo ''",
     )
   }
   if (remoteAddr) {
@@ -39,5 +39,5 @@ function parseSlugFromRemoteAddr (remoteAddr) {
 
 module.exports = {
   parseSlug,
-  parseSlugFromRemoteAddr
+  parseSlugFromRemoteAddr,
 }

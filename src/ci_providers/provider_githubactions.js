@@ -1,23 +1,25 @@
 const childProcess = require('child_process')
 const { log } = require('../helpers/logger')
 
-function detect (envs) {
+function detect(envs) {
   return envs.GITHUB_ACTIONS
 }
 
-function _getBuild (inputs) {
+function _getBuild(inputs) {
   const { args, envs } = inputs
   return args.build || envs.GITHUB_RUN_ID || ''
 }
 
-function _getBuildURL (inputs) {
+function _getBuildURL(inputs) {
   const { envs } = inputs
   return encodeURIComponent(
-    `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}`
+    `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(
+      inputs,
+    )}`,
   )
 }
 
-function _getBranch (inputs) {
+function _getBranch(inputs) {
   const { args, envs } = inputs
   const branchRegex = /refs\/heads\/(.*)/
   const branchMatches = branchRegex.exec(envs.GITHUB_REF)
@@ -32,11 +34,11 @@ function _getBranch (inputs) {
   return args.branch || branch
 }
 
-function _getJob (envs) {
+function _getJob(envs) {
   return encodeURIComponent(envs.GITHUB_WORKFLOW)
 }
 
-function _getPR (inputs) {
+function _getPR(inputs) {
   const { args, envs } = inputs
   let match
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
@@ -47,15 +49,15 @@ function _getPR (inputs) {
   return args.pr || match || ''
 }
 
-function _getService () {
+function _getService() {
   return 'github-actions'
 }
 
-function getServiceName () {
+function getServiceName() {
   return 'GitHub Actions'
 }
 
-function _getSHA (inputs) {
+function _getSHA(inputs) {
   const { args, envs } = inputs
   const pr = _getPR(inputs)
 
@@ -63,26 +65,28 @@ function _getSHA (inputs) {
   if (pr && pr !== false && !args.sha) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
     const mergeCommitMessage = childProcess.execSync(
-      'git show --no-patch --format="%P"'
+      'git show --no-patch --format="%P"',
     )
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
       log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
       commit = mergeCommit
     } else if (mergeCommitMessage === '') {
-      log('->  Issue detecting commit SHA. Please run actions/checkout with fetch-depth > 1 or set to 0')
+      log(
+        '->  Issue detecting commit SHA. Please run actions/checkout with fetch-depth > 1 or set to 0',
+      )
     }
   }
 
   return args.sha || commit
 }
 
-function _getSlug (inputs) {
+function _getSlug(inputs) {
   const { args, envs } = inputs
   return args.slug || envs.GITHUB_REPOSITORY
 }
 
-function getServiceParams (inputs) {
+function getServiceParams(inputs) {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
@@ -91,12 +95,12 @@ function getServiceParams (inputs) {
     job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
-    slug: _getSlug(inputs)
+    slug: _getSlug(inputs),
   }
 }
 
 module.exports = {
   detect,
   getServiceName,
-  getServiceParams
+  getServiceParams,
 }

@@ -12,7 +12,7 @@ describe('GitLabCI Params', () => {
     it('does not run without GitLabCI env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       const detected = providerGitLabci.detect(inputs.envs)
       expect(detected).toBeFalsy()
@@ -22,8 +22,8 @@ describe('GitLabCI Params', () => {
       const inputs = {
         args: {},
         envs: {
-          GITLAB_CI: true
-        }
+          GITLAB_CI: true,
+        },
       }
       const detected = providerGitLabci.detect(inputs.envs)
       expect(detected).toBeTruthy()
@@ -34,8 +34,8 @@ describe('GitLabCI Params', () => {
     const inputs = {
       args: {},
       envs: {
-        GITLAB_CI: true
-      }
+        GITLAB_CI: true,
+      },
     }
     const expected = {
       branch: '',
@@ -45,7 +45,7 @@ describe('GitLabCI Params', () => {
       job: '',
       pr: '',
       service: 'gitlab',
-      slug: ''
+      slug: '',
     }
     const params = providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -62,8 +62,8 @@ describe('GitLabCI Params', () => {
         CI_COMMIT_SHA: 'testsha',
         CI_JOB_ID: 2,
         CI_PROJECT_PATH: 'testOrg/testRepo',
-        GITLAB_CI: true
-      }
+        GITLAB_CI: true,
+      },
     }
     const expected = {
       branch: 'main',
@@ -73,7 +73,7 @@ describe('GitLabCI Params', () => {
       job: '',
       pr: '',
       service: 'gitlab',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -87,8 +87,8 @@ describe('GitLabCI Params', () => {
         CI_COMMIT_SHA: 'testsha',
         CI_JOB_ID: 2,
         CI_PROJECT_PATH: 'testOrg/testRepo',
-        GITLAB_CI: true
-      }
+        GITLAB_CI: true,
+      },
     }
     const expected = {
       branch: 'master',
@@ -98,7 +98,7 @@ describe('GitLabCI Params', () => {
       job: '',
       pr: '',
       service: 'gitlab',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -108,8 +108,8 @@ describe('GitLabCI Params', () => {
     const inputs = {
       args: {},
       envs: {
-        GITLAB_CI: true
-      }
+        GITLAB_CI: true,
+      },
     }
 
     it('can get the slug from http', () => {
@@ -127,9 +127,11 @@ describe('GitLabCI Params', () => {
     it('can get the slug from git config', () => {
       inputs.envs.CI_BUILD_REPO = ''
       const execSync = td.replace(childProcess, 'execSync')
-      td.when(execSync(
-        'git config --get remote.origin.url || hg paths default || echo \'\''
-      )).thenReturn('https://gitlab.com/testOrg/testRepo.git')
+      td.when(
+        execSync(
+          "git config --get remote.origin.url || hg paths default || echo ''",
+        ),
+      ).thenReturn('https://gitlab.com/testOrg/testRepo.git')
 
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
@@ -138,7 +140,10 @@ describe('GitLabCI Params', () => {
     it('can get the slug from git config as /', () => {
       inputs.envs.CI_BUILD_REPO = ''
       const execSync = td.replace(childProcess, 'execSync')
-      td.when(execSync('git config --get remote.origin.url || hg paths default || echo \'\'')
+      td.when(
+        execSync(
+          "git config --get remote.origin.url || hg paths default || echo ''",
+        ),
       ).thenReturn('git@gitlab.com:/')
 
       const params = providerGitLabci.getServiceParams(inputs)
@@ -148,9 +153,11 @@ describe('GitLabCI Params', () => {
     it('can handle no remote origin url', () => {
       inputs.envs.CI_BUILD_REPO = ''
       const execSync = td.replace(childProcess, 'execSync')
-      td.when(execSync(
-        'git config --get remote.origin.url || hg paths default || echo \'\''
-      )).thenReturn('')
+      td.when(
+        execSync(
+          "git config --get remote.origin.url || hg paths default || echo ''",
+        ),
+      ).thenReturn('')
 
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')
@@ -164,11 +171,11 @@ describe('GitLabCI Params', () => {
         build: 3,
         pr: '2',
         sha: 'testsha',
-        slug: 'testOrg/testRepo'
+        slug: 'testOrg/testRepo',
       },
       envs: {
-        GITLAB_CI: true
-      }
+        GITLAB_CI: true,
+      },
     }
     const expected = {
       branch: 'branch',
@@ -178,7 +185,7 @@ describe('GitLabCI Params', () => {
       job: '',
       pr: '2',
       service: 'gitlab',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const params = providerGitLabci.getServiceParams(inputs)

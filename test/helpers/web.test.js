@@ -15,10 +15,7 @@ describe('Web Helpers', () => {
     version = '0.0.1'
 
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
-    nock('https://codecov.io')
-      .put('/')
-      .query(true)
-      .reply(200, 'testPUT')
+    nock('https://codecov.io').put('/').query(true).reply(200, 'testPUT')
   })
 
   afterEach(() => {
@@ -39,7 +36,7 @@ describe('Web Helpers', () => {
       token,
       query,
       uploadFile,
-      version
+      version,
     )
     try {
       expect(response).toBe('testPOSTHTTP')
@@ -62,7 +59,7 @@ describe('Web Helpers', () => {
       token,
       query,
       uploadFile,
-      version
+      version,
     )
     expect(response).toBe('testPOSTHTTPS')
   })
@@ -70,10 +67,7 @@ describe('Web Helpers', () => {
   it('Can PUT to the storage endpoint', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {})
     uploadURL = 'https://results.codecov.io\nhttps://codecov.io'
-    const response = await webHelper.uploadToCodecovPUT(
-      uploadURL,
-      uploadFile
-    )
+    const response = await webHelper.uploadToCodecovPUT(uploadURL, uploadFile)
     expect(response.resultURL).toBe('https://results.codecov.io')
   })
 
@@ -91,14 +85,14 @@ describe('Web Helpers', () => {
     queryParams.pr = '2'
     queryParams.job = '6'
     expect(webHelper.generateQuery(queryParams)).toBe(
-      'branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6'
+      'branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6',
     )
   })
 
   it('can populateBuildParams() from args', () => {
     const result = webHelper.populateBuildParams(
       { args: { flags: 'testFlag', tag: 'testTag' }, envs: {} },
-      { name: '', tag: ', flags: []' }
+      { name: '', tag: ', flags: []' },
     )
     expect(result.flags).toBe('testFlag')
   })

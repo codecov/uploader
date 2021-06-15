@@ -1,33 +1,33 @@
-function detect (envs) {
+function detect(envs) {
   return envs.CI && envs.CIRCLECI
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL (inputs) {
+function _getBuildURL(inputs) {
   return ''
 }
 
 // This is the value that gets passed to the Codecov uploader
-function _getService () {
+function _getService() {
   return 'circleci'
 }
 
 // This is the name that gets printed
-function getServiceName () {
+function getServiceName() {
   return 'CircleCI'
 }
 
-function _getBranch (inputs) {
+function _getBranch(inputs) {
   const { args, envs } = inputs
   return args.branch || envs.CIRCLE_BRANCH
 }
 
-function _getSHA (inputs) {
+function _getSHA(inputs) {
   const { args, envs } = inputs
   return args.sha || envs.CIRCLE_SHA1
 }
 
-function _getSlug (inputs) {
+function _getSlug(inputs) {
   const { args, envs } = inputs
   let slug
   if (envs.CIRCLE_PROJECT_REPONAME !== '') {
@@ -38,21 +38,21 @@ function _getSlug (inputs) {
   return args.slug || slug
 }
 
-function _getBuild (inputs) {
+function _getBuild(inputs) {
   const { args, envs } = inputs
   return args.build || envs.CIRCLE_BUILD_NUM || ''
 }
 
-function _getPR (inputs) {
+function _getPR(inputs) {
   const { args, envs } = inputs
   return args.pr || envs.CIRCLE_PR_NUMBER || ''
 }
 
-function _getJob (envs) {
+function _getJob(envs) {
   return envs.CIRCLE_NODE_INDEX || ''
 }
 
-function getServiceParams (inputs) {
+function getServiceParams(inputs) {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
@@ -61,12 +61,12 @@ function getServiceParams (inputs) {
     job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
-    slug: _getSlug(inputs)
+    slug: _getSlug(inputs),
   }
 }
 
 module.exports = {
   detect,
   getServiceName,
-  getServiceParams
+  getServiceParams,
 }

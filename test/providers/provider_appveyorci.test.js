@@ -11,7 +11,7 @@ describe('AppveyorCI Params', () => {
     it('does not run without AppveyorCI env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       let detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeFalsy()
@@ -39,8 +39,8 @@ describe('AppveyorCI Params', () => {
         args: {},
         envs: {
           CI: 'true',
-          APPVEYOR: 'true'
-        }
+          APPVEYOR: 'true',
+        },
       }
       const detected = providerAppveyorci.detect(inputs.envs)
       expect(detected).toBeTruthy()
@@ -84,18 +84,19 @@ describe('AppveyorCI Params', () => {
         APPVEYOR_REPO_COMMIT: 'testingsha',
         APPVEYOR_REPO_NAME: 'testOrg/testRepo',
         APPVEYOR_URL: 'https://appveyor.com',
-        CI: 'true'
-      }
+        CI: 'true',
+      },
     }
     const expected = {
       branch: 'main',
       build: '1',
-      buildURL: 'https%3A%2F%2Fappveyor.com%2Fproject%2FtestOrg%2FtestRepo%2Fbuilds%2F2%2Fjob%2F1',
+      buildURL:
+        'https%3A%2F%2Fappveyor.com%2Fproject%2FtestOrg%2FtestRepo%2Fbuilds%2F2%2Fjob%2F1',
       commit: 'testingsha',
       job: 'testOrg%2FtestRepo%2F3',
       pr: 4,
       service: 'appveyor',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
     const params = providerAppveyorci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -108,12 +109,12 @@ describe('AppveyorCI Params', () => {
         build: 3,
         pr: '2',
         sha: 'testsha',
-        slug: 'testOrg/testRepo'
+        slug: 'testOrg/testRepo',
       },
       envs: {
         APPVEYOR: 'true',
-        CI: 'true'
-      }
+        CI: 'true',
+      },
     }
     const expected = {
       branch: 'branch',
@@ -123,7 +124,7 @@ describe('AppveyorCI Params', () => {
       job: '',
       pr: '2',
       service: 'appveyor',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const params = providerAppveyorci.getServiceParams(inputs)

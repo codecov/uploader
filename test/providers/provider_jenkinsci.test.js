@@ -11,7 +11,7 @@ describe('Jenkins CI Params', () => {
     it('does not run without JenkinsCI env variable', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       let detected = providerJenkinsci.detect(inputs.envs)
       expect(detected).toBeFalsy()
@@ -25,8 +25,8 @@ describe('Jenkins CI Params', () => {
       const inputs = {
         args: {},
         envs: {
-          JENKINS_URL: 'https://example.jenkins.com'
-        }
+          JENKINS_URL: 'https://example.jenkins.com',
+        },
       }
       const detected = providerJenkinsci.detect(inputs.envs)
       expect(detected).toBeTruthy()
@@ -63,8 +63,8 @@ describe('Jenkins CI Params', () => {
         CHANGE_ID: 2,
         GIT_BRANCH: 'main',
         GIT_COMMIT: 'testingsha',
-        JENKINS_URL: 'https://example.com'
-      }
+        JENKINS_URL: 'https://example.com',
+      },
     }
     const expected = {
       branch: 'main',
@@ -74,7 +74,7 @@ describe('Jenkins CI Params', () => {
       job: '',
       pr: 2,
       service: 'jenkins',
-      slug: ''
+      slug: '',
     }
     const params = providerJenkinsci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -87,11 +87,11 @@ describe('Jenkins CI Params', () => {
         build: 3,
         pr: '2',
         sha: 'testsha',
-        slug: 'testOrg/testRepo'
+        slug: 'testOrg/testRepo',
       },
       envs: {
-        JENKINS_URL: 'https://example.com'
-      }
+        JENKINS_URL: 'https://example.com',
+      },
     }
     const expected = {
       branch: 'branch',
@@ -101,7 +101,7 @@ describe('Jenkins CI Params', () => {
       job: '',
       pr: '2',
       service: 'jenkins',
-      slug: 'testOrg/testRepo'
+      slug: 'testOrg/testRepo',
     }
 
     const params = providerJenkinsci.getServiceParams(inputs)
