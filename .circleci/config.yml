@@ -67,9 +67,9 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-         # Must be absolute path or relative path from working_directory
+          # Must be absolute path or relative path from working_directory
           at: .
-          
+
       - run:
           name: Download prebuilt static node binary
           command: |
@@ -160,6 +160,7 @@ jobs:
           name: Build Windows Binary
           command: |
             npm ci
+            npm test
             npm run build-windows
 
       - persist_to_workspace:
@@ -218,7 +219,7 @@ jobs:
 
   test-macos:
     macos:
-      xcode: "10.0.0"
+      xcode: '10.0.0'
     steps:
       - checkout
       - attach_workspace:
@@ -243,7 +244,7 @@ jobs:
 
   test-macos-without-git:
     macos:
-      xcode: "10.0.0"
+      xcode: '10.0.0'
     steps:
       - attach_workspace:
           at: .
@@ -341,8 +342,8 @@ jobs:
       - store_artifacts:
           path: output_win_without_git.txt
 
-# TODO: add test runs for each binary outside of a git project
-  
+  # TODO: add test runs for each binary outside of a git project
+
   deploy:
     docker:
       - image: circleci/node:16.3.0
@@ -367,11 +368,11 @@ jobs:
             .version)_$CIRCLE_BUILD_NUM
 
             echo $RELEASE_TAG
-            
+
             echo $RELEASE_TAG > release_tag
 
             ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
-            
+
       - persist_to_workspace:
           root: .
           paths:
@@ -396,7 +397,7 @@ jobs:
 workflows:
   version: 2
 
-  "Build and Test":
+  'Build and Test':
     jobs:
       - build-linux-and-osx
       - build-alpine:
@@ -437,7 +438,7 @@ workflows:
             - review
           filters:
             branches:
-              only: release 
+              only: release
       - release:
           requires:
             - deploy
