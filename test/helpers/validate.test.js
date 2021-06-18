@@ -30,6 +30,10 @@ describe('Input Validators', () => {
       expect(validate.validateFlags('moo-foor')).toBe(true)
     })
 
+    it('Should pass with a period in the middle', () => {
+      expect(validate.validateFlags('moo.foor')).toBe(true)
+    })
+    
     it('Should fail with a dash at the start', () => {
       expect(validate.validateFlags('-moo-foor')).toBe(false)
     })
