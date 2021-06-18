@@ -38,7 +38,7 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
       .put(`${putURL}`)
       .retry()
       .send(uploadFile) // sends a JSON post body
-      .set('Content-Type', 'application/x-gzip')
+      .set('Content-Type', 'text/plain')
       .set('Content-Encoding', 'gzip')
 
     if (result.status === 200) {
@@ -66,7 +66,8 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
       .retry()
       .send(uploadFile) // sends a JSON post body
       .set('X-Reduced-Redundancy', 'false')
-      .set('X-Content-Type', 'application/x-gzip')
+      .set('X-Content-Type', 'text/plain')
+      .set('X-Content-Encoding', 'gzip')
       .set('X-Upload-Token', token)
 
     return result.res.text
