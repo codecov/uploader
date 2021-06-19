@@ -9,7 +9,7 @@ function validateURL(url) {
 }
 
 function validateFlags(flags) {
-  const mask = /^(?!-.)[\w,\.-]+$/
+  const mask = /^[a-z0-9_\.\-]{1,45}$/
   return mask.test(flags)
 }
 
