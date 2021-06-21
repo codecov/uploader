@@ -156,20 +156,32 @@ function coverageFilePatterns() {
  *
  * @param {string} projectRoot
  * @param {string[]} coverageFilePatterns
- * @returns {string[]}
+ * @returns {Promise<string[]>}
  */
-function getCoverageFiles(projectRoot, coverageFilePatterns) {
+async function getCoverageFiles(projectRoot, coverageFilePatterns) {
   const __glob = pattern =>
-    glob.sync(pattern, {
-      cwd: projectRoot,
-      ignore: globBlacklist(),
+    new Promise((resolve, err) => {
+      glob(
+        pattern,
+        {
+          cwd: projectRoot,
+          ignore: globBlacklist(),
+        },
+        (reason, matches) => {
+          if (reason) {
+            err(reason)
+          } else {
+            resolve(matches)
+          }
+        },
+      )
     })
 
-  return coverageFilePatterns
-    .map(pattern => {
+  return Promise.all(
+    coverageFilePatterns.map(pattern => {
       return __glob(`**/${pattern}`)
-    })
-    .flat()
+    }),
+  ).then(arr => arr.flat())
 }
 
 /**
