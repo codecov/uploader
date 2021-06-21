@@ -156,7 +156,7 @@ function coverageFilePatterns() {
  *
  * @param {string} projectRoot
  * @param {string[]} coverageFilePatterns
- * @returns string[]
+ * @returns {string[]}
  */
 function getCoverageFiles(projectRoot, coverageFilePatterns) {
   return coverageFilePatterns.flatMap(pattern => {
