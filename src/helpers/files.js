@@ -159,11 +159,14 @@ function coverageFilePatterns() {
  * @returns {string[]}
  */
 function getCoverageFiles(projectRoot, coverageFilePatterns) {
-  return coverageFilePatterns.flatMap(pattern => {
-    return glob.sync(`**/${pattern}`, {
+  const __glob = pattern =>
+    glob.sync(pattern, {
       cwd: projectRoot,
       ignore: globBlacklist(),
     })
+
+  return coverageFilePatterns.flatMap(pattern => {
+    return __glob(`**/${pattern}`)
   })
 }
 
