@@ -165,9 +165,11 @@ function getCoverageFiles(projectRoot, coverageFilePatterns) {
       ignore: globBlacklist(),
     })
 
-  return coverageFilePatterns.flatMap(pattern => {
-    return __glob(`**/${pattern}`)
-  })
+  return coverageFilePatterns
+    .map(pattern => {
+      return __glob(`**/${pattern}`)
+    })
+    .flat()
 }
 
 /**
