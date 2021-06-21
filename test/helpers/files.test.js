@@ -90,7 +90,7 @@ describe('File Helpers', () => {
       expect(results).not.toContain('codecov.exe')
 
       expect(results).toContain('test/fixtures/other/fake.codecov.txt')
-    })
+    }, 10000)
 
     it('can return a list of coverage files with a pattern', async () => {
       expect(
