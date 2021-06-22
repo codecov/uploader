@@ -55,7 +55,7 @@ describe('Uploader Core', () => {
     process.env.SOMETHING = 'red'
     process.env.ANOTHER = 'blue'
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    jest.spyOn(process, 'exit').mockImplementationOnce(() => {})
     await app.main({
       name: 'customname',
       token: 'abcdefg',
