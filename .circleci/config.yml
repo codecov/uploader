@@ -190,6 +190,7 @@ jobs:
           name: Run Linux binary (upload)
           command: |
             out/codecov-linux -F linux -Z -e CIRCLE_BRANCH
+            out/codecov-linux -F "-linux" -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
