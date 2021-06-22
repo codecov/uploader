@@ -6,6 +6,10 @@ const fs = require('fs')
 
 describe('Uploader Core', () => {
   const env = process.env
+  
+  beforeEach(() => {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+  })
 
   afterEach(() => {
     process.env = env
@@ -54,7 +58,6 @@ describe('Uploader Core', () => {
   it('Can parse environment variables', async () => {
     process.env.SOMETHING = 'red'
     process.env.ANOTHER = 'blue'
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
@@ -117,7 +120,6 @@ describe('Uploader Core', () => {
   }, 30000)
 
   it('Can find all coverage from root dir', async () => {
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
@@ -134,7 +136,6 @@ describe('Uploader Core', () => {
   })
 
   it('Can find only coverage from custom dir', async () => {
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
@@ -152,7 +153,6 @@ describe('Uploader Core', () => {
   })
 
   it('Can remove coverage files', async () => {
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
     const unlink = jest.spyOn(fs, 'unlink').mockImplementation(() => {})
     await app.main({
       name: 'customname',
@@ -169,7 +169,6 @@ describe('Uploader Core', () => {
   })
 
   it('Can include the network', async () => {
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
@@ -182,7 +181,6 @@ describe('Uploader Core', () => {
   })
 
   it('Can ignore the network', async () => {
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
