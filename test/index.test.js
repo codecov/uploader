@@ -7,10 +7,6 @@ const fs = require('fs')
 describe('Uploader Core', () => {
   const env = process.env
   
-  beforeEach(() => {
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
-  })
-
   afterEach(() => {
     process.env = env
     jest.restoreAllMocks()
