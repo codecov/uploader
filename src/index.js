@@ -219,7 +219,7 @@ async function main(args) {
 /**
  *
  * @param {string} version
- * @returns string
+ * @returns {string}
  */
 function generateHeader(version) {
   return `

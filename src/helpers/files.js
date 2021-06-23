@@ -8,7 +8,7 @@ const { log } = require('./logger')
 /**
  *
  * @param {string} projectRoot
- * @returns Promise<string>
+ * @returns {Promise<string>}
  */
 async function getFileListing(projectRoot, args) {
   return getAllFiles(projectRoot, projectRoot, args).join('')
@@ -156,7 +156,7 @@ function coverageFilePatterns() {
  *
  * @param {string} projectRoot
  * @param {string[]} coverageFilePatterns
- * @returns string[]
+ * @returns {string[]}
  */
 function getCoverageFiles(projectRoot, coverageFilePatterns) {
   return coverageFilePatterns.flatMap(pattern => {
@@ -196,7 +196,7 @@ function fetchGitRoot() {
 /**
  *
  * @param {string} projectRoot
- * @returns string[]
+ * @returns {string[]}
  */
 function parseGitIgnore(projectRoot) {
   const gitIgnorePath = path.join(projectRoot, '.gitignore')
@@ -250,7 +250,7 @@ function getAllFiles(projectRoot, dirPath, args, arrayOfFiles = []) {
 /**
  *
  * @param {string} filePath
- * @returns string[]
+ * @returns {string[]}
  */
 function readAllLines(filePath) {
   const fileContents = fs.readFileSync(filePath)
@@ -263,7 +263,7 @@ function readAllLines(filePath) {
  *
  * @param {string} projectRoot
  * @param {string} filePath
- * @returns string
+ * @returns {string}
  */
 function readCoverageFile(projectRoot, filePath) {
   try {
@@ -295,7 +295,7 @@ function endEnvironmentMarker() {
  *
  * @param {string} projectRoot
  * @param {string} filePath
- * @returns string
+ * @returns {string}
  */
 function getFilePath(projectRoot, filePath) {
   if (
