@@ -88,7 +88,7 @@ function _getSlug(inputs) {
  * Generates and return the serviceParams object
  *
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns { branch: String, build: String, buildURL: String, commit: String, job: String, pr: String, service: String, slug: String}
+ * @returns { branch: String, build: {String}, buildURL: {String}, commit: {String}, job: {String}, pr: {String}, service: {String}, slug: {String}}
  */
 function getServiceParams(inputs) {
   return {
