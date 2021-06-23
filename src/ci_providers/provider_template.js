@@ -13,7 +13,7 @@ function detect(envs) {
  * Determine the build number, based on args and envs
  *
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns {String}
+ * @returns {string}
  */
 function _getBuild(inputs) {
   const { args } = inputs
@@ -24,7 +24,7 @@ function _getBuild(inputs) {
  * Determine the build URL for use in the Codecov UI
  *
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns {String}
+ * @returns {string}
  */
 // eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs) {
@@ -35,7 +35,7 @@ function _getBuildURL(inputs) {
  * Determine the branch of the repository, based on args and envs
  *
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns {String}
+ * @returns {string}
  */
 function _getBranch(inputs) {
   const { args } = inputs
@@ -52,7 +52,7 @@ function _getBranch(inputs) {
  * Determine the job number, based on args or envs
  *
  * @param {*} envs an object of enviromental variable key/value pairs
- * @returns {String}
+ * @returns {string}
  */
 // eslint-disable-next-line no-unused-vars
 function _getJob(envs) {
@@ -63,7 +63,7 @@ function _getJob(envs) {
  * Determine the PR number, based on args and envs
  *
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns {String}
+ * @returns {string}
  */
 // eslint-disable-next-line no-unused-vars
 function _getPR(inputs) {
@@ -80,7 +80,7 @@ function _getPR(inputs) {
 /**
  * The CI service name that gets sent to the Codecov uploader as part of the query string
  *
- * @returns {String}
+ * @returns {string}
  */
 function _getService() {
   return ''
@@ -98,7 +98,7 @@ function getServiceName() {
  * Determine the commit SHA that is being uploaded, based on args or envs
  *
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns {String}
+ * @returns {string}
  */
 function _getSHA(inputs) {
   const { args } = inputs
@@ -114,7 +114,7 @@ function _getSHA(inputs) {
  * Determine the slug (org/repo) based on  args or envs
  *
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns {String}
+ * @returns {string}
  */
 function _getSlug(inputs) {
   const { args } = inputs
@@ -128,7 +128,7 @@ function _getSlug(inputs) {
  * Generates and return the serviceParams object
  *
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
- * @returns { branch: {String}, build: {String}, buildURL: {String}, commit: {String}, job: {String}, pr: {String}, service: {String}, slug: {String}}
+ * @returns {{ branch: string, build: string, buildURL: string, commit: string, job: string, pr: string, service: string, slug: string }}
  */
 function getServiceParams(inputs) {
   return {
