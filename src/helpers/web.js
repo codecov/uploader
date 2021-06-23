@@ -37,8 +37,8 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
     const result = await superagent
       .put(`${putURL}`)
       .retry()
-      .send(uploadFile) // sends a JSON post body
-      .set('Content-Type', 'application/x-gzip')
+      .send(uploadFile)
+      .set('Content-Type', 'text/plain')
       .set('Content-Encoding', 'gzip')
 
     if (result.status === 200) {
@@ -64,10 +64,11 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
     const result = await superagent
       .post(`${uploadURL}/upload/v4?package=uploader-${version}&${query}`)
       .retry()
-      .send(uploadFile) // sends a JSON post body
-      .set('X-Reduced-Redundancy', 'false')
-      .set('X-Content-Type', 'application/x-gzip')
+      .send(uploadFile)
+      .set('Content-Type', 'text/plain')
+      .set('Content-Encoding', 'gzip')
       .set('X-Upload-Token', token)
+      .set('X-Reduced-Redundancy', 'false')
 
     return result.res.text
   } catch (error) {
