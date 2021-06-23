@@ -65,10 +65,10 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
       .post(`${uploadURL}/upload/v4?package=uploader-${version}&${query}`)
       .retry()
       .send(uploadFile)
-      .set('X-Reduced-Redundancy', 'false')
-      .set('X-Content-Type', 'text/plain')
-      .set('X-Content-Encoding', 'gzip')
+      .set('Content-Type', 'text/plain')
+      .set('Content-Encoding', 'gzip')
       .set('X-Upload-Token', token)
+      .set('X-Reduced-Redundancy', 'false')
 
     return result.res.text
   } catch (error) {
