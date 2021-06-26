@@ -39,7 +39,7 @@
     "lint-staged": "11.0.0",
     "nock": "13.1.0",
     "pkg": "5.1.0",
-    "prettier": "2.3.1",
+    "prettier": "2.3.2",
     "testdouble": "3.16.1",
     "testdouble-jest": "2.0.0"
   },
