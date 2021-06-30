@@ -79,7 +79,7 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
 /**
  *
  * @param {string} str
- * @returns string
+ * @returns {string}
  */
 function camelToSnake(str) {
   return (
@@ -96,7 +96,7 @@ function camelToSnake(str) {
 /**
  *
  * @param {Object} queryParams
- * @returns string
+ * @returns {string}
  */
 function generateQuery(queryParams) {
   const query = Object.entries(queryParams)
