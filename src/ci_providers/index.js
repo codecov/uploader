@@ -1,6 +1,5 @@
 const providerAppveyorci = require('./provider_appveyorci')
 const providerAzurepipelines = require('./provider_azurepipelines')
-const providerBitbucket = require('./provider_bitbucket')
 const providerCircleci = require('./provider_circleci')
 const providerGitHubactions = require('./provider_githubactions')
 const providerGitLabci = require('./provider_gitlabci')
@@ -12,7 +11,6 @@ const providerTravisci = require('./provider_travisci')
 const providers = [
   providerAppveyorci,
   providerAzurepipelines,
-  providerBitbucket,
   providerCircleci,
   providerGitHubactions,
   providerGitLabci,
