@@ -41,8 +41,8 @@ function _getSHA(inputs) {
 }
 
 function _getSlug(inputs) {
-  const { args } = inputs
-  return args.slug || ''
+  const { args, envs } = inputs
+  return args.slug || envs.DRONE_REPO_LINK || ''
 }
 
 function getServiceParams(inputs) {

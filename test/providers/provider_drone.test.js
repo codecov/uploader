@@ -41,6 +41,7 @@ describe('Drone Params', () => {
         DRONE_BUILD_NUMBER: 2,
         DRONE_PULL_REQUEST: 1,
         DRONE_BUILD_URL: 'https://www.drone.io/',
+        DRONE_REPO_LINK: 'https:/example.com/repo',
       },
     }
     const expected = {
@@ -51,34 +52,7 @@ describe('Drone Params', () => {
       job: '',
       pr: 1,
       service: 'drone',
-      slug: '',
-    }
-    const params = providerDrone.getServiceParams(inputs)
-    expect(params).toMatchObject(expected)
-  })
-
-  it('gets correct slug when empty reponame', () => {
-    const inputs = {
-      args: {},
-      envs: {
-        CI: true,
-        DRONE: true,
-        DRONE_BRANCH: 'master',
-        DRONE_COMMIT_SHA: 'testingsha',
-        DRONE_BUILD_NUMBER: 2,
-        DRONE_PULL_REQUEST: 1,
-        DRONE_BUILD_URL: 'https://www.drone.io/',
-      },
-    }
-    const expected = {
-      branch: 'master',
-      build: 2,
-      buildURL: 'https://www.drone.io/',
-      commit: 'testingsha',
-      job: '',
-      pr: 1,
-      service: 'drone',
-      slug: '',
+      slug: 'https:/example.com/repo',
     }
     const params = providerDrone.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
