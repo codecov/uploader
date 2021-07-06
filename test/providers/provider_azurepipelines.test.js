@@ -140,10 +140,13 @@ describe('Jenkins CI Params', () => {
       service: 'azure_pipelines',
       slug: '',
     }
-    const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync('git show --no-patch --format="%P"')).thenReturn(
-      'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
-    )
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+    ).thenReturn({
+      stdout:
+        'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
+    })
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
