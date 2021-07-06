@@ -217,6 +217,8 @@ async function main(args) {
       version,
     )
 
+    log(uploadURL, { level: 'debug', args })
+
     log(
       `${uploadURL.split('\n')[1]}
         Content-Type: 'text/plain'
