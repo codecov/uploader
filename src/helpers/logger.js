@@ -4,7 +4,7 @@
  *
  * @param {string|Object} message
  * @param {Object} [options]
- * @param {string} [options.level]
+ * @param {'debug'|'error'} [options.level]
  * @param {Object} [options.args]
  * @returns void
  */
