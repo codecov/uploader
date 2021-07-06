@@ -1,3 +1,4 @@
+// https://buildkite.com/docs/guides/environment-variables
 /**
  * Detects if this CI provider is being used
  *
@@ -47,9 +48,8 @@ function _getBranch(inputs) {
  * @param {*} envs an object of enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
 function _getJob(envs) {
-  return ''
+  return envs.BUILDKITE_JOB_ID || ''
 }
 
 /**
