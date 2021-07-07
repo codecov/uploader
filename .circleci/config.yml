@@ -220,7 +220,7 @@ jobs:
 
   test-macos:
     macos:
-      xcode: '10.0.0'
+      xcode: '12.5.1'
     steps:
       - checkout
       - attach_workspace:
@@ -245,7 +245,7 @@ jobs:
 
   test-macos-without-git:
     macos:
-      xcode: '10.0.0'
+      xcode: '12.5.1'
     steps:
       - attach_workspace:
           at: .
