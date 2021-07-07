@@ -205,7 +205,6 @@ async function main(args) {
       `${uploadHost}/upload/v4?package=uploader-${version}&${query}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
-        X-Upload-Token: ${token}
         X-Reduced-Redundancy: 'false'`,
       { level: 'debug', args },
     )
