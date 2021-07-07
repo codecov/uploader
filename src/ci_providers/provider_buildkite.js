@@ -1,4 +1,3 @@
-// https://buildkite.com/docs/guides/environment-variables
 /**
  * Detects if this CI provider is being used
  *
