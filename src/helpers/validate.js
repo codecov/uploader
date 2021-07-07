@@ -25,7 +25,9 @@ function validateFileNamePath(path) {
  * @param {number} requestedLength
  * @returns {boolean}
  */
-function validateSHA(commitSHA, requestedLength) {
+const GIT_SHA_LENGTH = 40;
+
+function validateSHA(commitSHA, requestedLength = GIT_SHA_LENGTH) {
   return (
     commitSHA.length === requestedLength && validator.isAlphanumeric(commitSHA)
   )
