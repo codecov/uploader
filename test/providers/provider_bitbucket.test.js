@@ -133,8 +133,10 @@ describe('Bitbucket Params', () => {
       slug: 'testOwner/testSlug',
     }
 
-    const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync('git rev-parse testingsha12')).thenReturn('newtestsha')
+    const execFileSync = td.replace(childProcess, 'execFileSync')
+    td.when(execFileSync('git', ['rev-parse', 'testingsha12'])).thenReturn(
+      'newtestsha',
+    )
     const params = providerBitbucket.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })

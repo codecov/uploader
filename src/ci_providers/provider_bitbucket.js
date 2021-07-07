@@ -42,7 +42,7 @@ function _getSHA(inputs) {
   let commit = envs.BITBUCKET_COMMIT
 
   if (commit && validateSHA(commit, 12)) {
-    commit = childProcess.execSync(`git rev-parse ${commit}`)
+    commit = childProcess.execFileSync('git', ['rev-parse', commit])
   }
 
   return args.sha || commit
