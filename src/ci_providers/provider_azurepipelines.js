@@ -57,9 +57,10 @@ function _getSHA(inputs) {
 
   if (_getPR(inputs)) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
-    const mergeCommitMessage = childProcess.execSync(
-      'git show --no-patch --format="%P"',
-    )
+    const mergeCommitMessage = childProcess
+      .execFileSync('git', ['show', '--no-patch', '--format="%P"'])
+      .toString()
+      .trimRight()
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
       log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)

@@ -118,7 +118,7 @@ describe('GitLabCI Params', () => {
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
-    it('can get the slug from girl url', () => {
+    it('can get the slug from git url', () => {
       inputs.envs.CI_BUILD_REPO = 'git@gitlab.com:testOrg/testRepo.git'
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
@@ -126,12 +126,21 @@ describe('GitLabCI Params', () => {
 
     it('can get the slug from git config', () => {
       inputs.envs.CI_BUILD_REPO = ''
-      const execSync = td.replace(childProcess, 'execSync')
+      const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        execSync(
-          "git config --get remote.origin.url || hg paths default || echo ''",
-        ),
-      ).thenReturn('https://gitlab.com/testOrg/testRepo.git')
+        spawnSync('git', [
+          'config',
+          '--get',
+          'remote.origin.url',
+          '||',
+          'hg',
+          'paths',
+          'default',
+          '||',
+          'echo',
+          "''",
+        ]),
+      ).thenReturn({ stdout: 'https://gitlab.com/testOrg/testRepo.git' })
 
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
@@ -139,12 +148,21 @@ describe('GitLabCI Params', () => {
 
     it('can get the slug from git config as /', () => {
       inputs.envs.CI_BUILD_REPO = ''
-      const execSync = td.replace(childProcess, 'execSync')
+      const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        execSync(
-          "git config --get remote.origin.url || hg paths default || echo ''",
-        ),
-      ).thenReturn('git@gitlab.com:/')
+        spawnSync('git', [
+          'config',
+          '--get',
+          'remote.origin.url',
+          '||',
+          'hg',
+          'paths',
+          'default',
+          '||',
+          'echo',
+          "''",
+        ]),
+      ).thenReturn({ stdout: 'git@gitlab.com:/' })
 
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')
@@ -152,12 +170,21 @@ describe('GitLabCI Params', () => {
 
     it('can handle no remote origin url', () => {
       inputs.envs.CI_BUILD_REPO = ''
-      const execSync = td.replace(childProcess, 'execSync')
+      const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        execSync(
-          "git config --get remote.origin.url || hg paths default || echo ''",
-        ),
-      ).thenReturn('')
+        spawnSync('git', [
+          'config',
+          '--get',
+          'remote.origin.url',
+          '||',
+          'hg',
+          'paths',
+          'default',
+          '||',
+          'echo',
+          "''",
+        ]),
+      ).thenReturn({ stdout: '' })
 
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')
