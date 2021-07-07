@@ -112,10 +112,12 @@ describe('GitHub Actions Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync('git show --no-patch --format="%P"')).thenReturn(
-      'testingsha',
-    )
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+    ).thenReturn({
+      stdout: 'testingsha',
+    })
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -146,10 +148,13 @@ describe('GitHub Actions Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync('git show --no-patch --format="%P"')).thenReturn(
-      'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
-    )
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+    ).thenReturn({
+      stdout:
+        'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
+    })
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -180,8 +185,10 @@ describe('GitHub Actions Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync('git show --no-patch --format="%P"')).thenReturn('testsha')
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+    ).thenReturn({ stdout: 'testsha' })
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -212,8 +219,10 @@ describe('GitHub Actions Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const execSync = td.replace(childProcess, 'execSync')
-    td.when(execSync('git show --no-patch --format="%P"')).thenReturn('')
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+    ).thenReturn({ stdout: '' })
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })

@@ -32,14 +32,14 @@
     "superagent": "6.1.0"
   },
   "devDependencies": {
-    "eslint": "7.29.0",
+    "eslint": "7.30.0",
     "eslint-config-prettier": "8.3.0",
-    "husky": "6.0.0",
-    "jest": "27.0.5",
+    "husky": "7.0.1",
+    "jest": "27.0.6",
     "lint-staged": "11.0.0",
-    "nock": "13.1.0",
+    "nock": "13.1.1",
     "pkg": "5.1.0",
-    "prettier": "2.3.1",
+    "prettier": "2.3.2",
     "testdouble": "3.16.1",
     "testdouble-jest": "2.0.0"
   },

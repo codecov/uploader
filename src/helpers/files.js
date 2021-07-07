@@ -24,6 +24,7 @@ function manualBlacklist() {
     '.nvmrc',
     '.gitignore',
     '.DS_Store',
+    'vendor',
   ]
 }
 
@@ -31,6 +32,7 @@ function globBlacklist() {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     'node_modules/**/*',
+    'vendor',
     '.git',
     '.nyc_output',
     '.circleci',
