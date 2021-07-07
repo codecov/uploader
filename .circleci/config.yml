@@ -100,7 +100,7 @@ jobs:
             npm ci
             npm test
             mkdir -p coverage-alpine
-            cp -r coverage/ coverage-alpine/
+            cp -r coverage/* coverage-alpine/
 
       - run:
           name: Build uploader binary on alpine
