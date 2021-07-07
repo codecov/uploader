@@ -47,7 +47,8 @@
     "all": true,
     "reporter": [
       "text",
-      "cobertura"
+      "cobertura",
+      "html"
     ],
     "exclude": [
       "src/ci_providers/provider_template.js",
