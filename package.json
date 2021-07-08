@@ -43,18 +43,6 @@
     "testdouble": "3.16.1",
     "testdouble-jest": "2.0.0"
   },
-  "nyc": {
-    "all": true,
-    "reporter": [
-      "text",
-      "cobertura"
-    ],
-    "exclude": [
-      "src/ci_providers/provider_template.js",
-      "rollup.config.js",
-      "test/**/*"
-    ]
-  },
   "jest": {
     "collectCoverage": true,
     "collectCoverageFrom": [
@@ -65,7 +53,8 @@
     ],
     "coverageReporters": [
       "text",
-      "cobertura"
+      "cobertura",
+      "html"
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/test/test_helpers.js"

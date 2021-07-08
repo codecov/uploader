@@ -33,7 +33,7 @@ describe('Input Validators', () => {
     it('Should pass with a period in the middle', () => {
       expect(validate.validateFlags('moo.foor')).toBe(true)
     })
-    
+
     it('Should pass with a dash at the start', () => {
       expect(validate.validateFlags('-moo-foor')).toBe(true)
     })
@@ -52,6 +52,18 @@ describe('Input Validators', () => {
     })
     it('Should fail with other characters', () => {
       expect(validate.validateFileNamePath('/path{}to/file')).toBe(false)
+    })
+  })
+
+  describe('validateSHA()', () => {
+    it('should fail with invalid characters', () => {
+      expect(validate.validateSHA('abc 123', 7)).toBe(false)
+    })
+    it('should fail with incorrect length', () => {
+      expect(validate.validateSHA('abc123', 7)).toBe(false)
+    })
+    it('should pass with correct content and length', () => {
+      expect(validate.validateSHA('abc123', 6)).toBe(true)
     })
   })
 })
