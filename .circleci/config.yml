@@ -11,7 +11,7 @@ jobs:
   build-linux-and-osx:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.3.0
+      - image: circleci/node:16.4.2
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -100,7 +100,7 @@ jobs:
             npm ci
             npm test
             mkdir -p coverage-alpine
-            cp coverage/* coverage-alpine/
+            cp -r coverage/* coverage-alpine/
 
       - run:
           name: Build uploader binary on alpine
@@ -172,7 +172,7 @@ jobs:
   test-linux:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.3.0
+      - image: circleci/node:16.4.2
     steps:
       - checkout
       - attach_workspace:
@@ -199,7 +199,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: circleci/node:16.3.0
+      - image: circleci/node:16.4.2
     steps:
       - attach_workspace:
           # TODO: Determine why we use the cwd on Linex and not on other operating systems.
@@ -220,7 +220,7 @@ jobs:
 
   test-macos:
     macos:
-      xcode: '10.0.0'
+      xcode: '12.5.1'
     steps:
       - checkout
       - attach_workspace:
@@ -245,7 +245,7 @@ jobs:
 
   test-macos-without-git:
     macos:
-      xcode: '10.0.0'
+      xcode: '12.5.1'
     steps:
       - attach_workspace:
           at: .
@@ -316,7 +316,7 @@ jobs:
 
   review:
     docker:
-      - image: circleci/node:16.3.0
+      - image: circleci/node:16.4.2
     steps:
       - attach_workspace:
           at: .
@@ -347,7 +347,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:16.3.0
+      - image: circleci/node:16.4.2
     steps:
       - attach_workspace:
           at: .
@@ -380,7 +380,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:346.0.0-slim
+      - image: google/cloud-sdk:347.0.0-slim
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory

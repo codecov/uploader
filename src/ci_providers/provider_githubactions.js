@@ -64,9 +64,10 @@ function _getSHA(inputs) {
   let commit = envs.GITHUB_SHA
   if (pr && pr !== false && !args.sha) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
-    const mergeCommitMessage = childProcess.execSync(
-      'git show --no-patch --format="%P"',
-    )
+    const mergeCommitMessage = childProcess
+      .spawnSync('git', ['show', '--no-patch', '--format="%P"'])
+      .stdout.toString()
+      .trimRight()
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
       log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
