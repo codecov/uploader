@@ -13,8 +13,6 @@ const providers = require('./ci_providers')
  * @param {string} token
  * @param {string} query
  * @param {string} uploadFile
- * @param {Object} args
- * @param {number} start
  */
 function dryRun(uploadHost, token, query, uploadFile) {
   log('==> Dumping upload file (no upload)')
@@ -145,9 +143,10 @@ async function main(args) {
       throw new Error(`Error reading coverage file (${coverageFile}): ${error}`)
     }
 
-    uploadFile = uploadFile.concat(fileHelpers.fileHeader(coverageFile))
-    uploadFile = uploadFile.concat(fileContents)
-    uploadFile = uploadFile.concat(fileHelpers.endFileMarker())
+    uploadFile = uploadFile
+      .concat(fileHelpers.fileHeader(coverageFile))
+      .concat(fileContents)
+      .concat(fileHelpers.endFileMarker())
   }
 
   // Cleanup
@@ -165,8 +164,9 @@ async function main(args) {
       .filter(Boolean)
       .map(evar => `${evar}=${process.env[evar] || ''}\n`)
       .join('')
-    uploadFile = uploadFile.concat(vars)
-    uploadFile = uploadFile.concat(fileHelpers.endEnvironmentMarker())
+    uploadFile = uploadFile
+      .concat(vars)
+      .concat(fileHelpers.endEnvironmentMarker())
   }
 
   const gzippedFile = zlib.gzipSync(uploadFile)
@@ -195,24 +195,40 @@ async function main(args) {
 
   if (args.dryRun) {
     return dryRun(uploadHost, token, query, uploadFile)
-  } else {
+  }
+
+  log(
+    `Pinging Codecov: ${uploadHost}/upload/v4?package=uploader-${version}&token=*******&${query}`,
+  )
+  try {
     log(
-      `Pinging Codecov: ${uploadHost}/v4?package=uploader-${version}&token=*******&${query}`,
+      `${uploadHost}/upload/v4?package=uploader-${version}&${query}
+        Content-Type: 'text/plain'
+        Content-Encoding: 'gzip'
+        X-Reduced-Redundancy: 'false'`,
+      { level: 'debug', args },
     )
-    try {
-      const uploadURL = await webHelpers.uploadToCodecov(
-        uploadHost,
-        token,
-        query,
-        gzippedFile,
-        version,
-      )
-      const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
-      log(result)
-      return result
-    } catch (error) {
-      throw new Error(`Error uploading to ${uploadHost}: ${error}`)
-    }
+    const uploadURL = await webHelpers.uploadToCodecov(
+      uploadHost,
+      token,
+      query,
+      gzippedFile,
+      version,
+    )
+
+    log(uploadURL, { level: 'debug', args })
+
+    log(
+      `${uploadURL.split('\n')[1]}
+        Content-Type: 'text/plain'
+        Content-Encoding: 'gzip'`,
+      { level: 'debug', args },
+    )
+    const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
+    log(result)
+    return result
+  } catch (error) {
+    throw new Error(`Error uploading to ${uploadHost}: ${error}`)
   }
 }
 

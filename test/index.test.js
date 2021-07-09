@@ -35,7 +35,7 @@ describe('Uploader Core', () => {
 
     nock('https://codecov.io')
       .post('/upload/v4')
-      .query(actualQueryObject => actualQueryObject.name === 'customname')
+      .query(parsedObj => parsedObj.name === 'customname')
       .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
     nock('https://codecov.io').put('/').reply(200, 'success')
