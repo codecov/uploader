@@ -30,10 +30,6 @@ function parseSlugFromRemoteAddr(remoteAddr) {
         '--get',
         'remote.origin.url',
         '||',
-        'hg',
-        'paths',
-        'default',
-        '||',
         'echo',
         "''",
       ])
