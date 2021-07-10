@@ -14,7 +14,7 @@ function _getBuildURL(inputs) {
 
 function _getBranch(inputs) {
   const { args, envs } = inputs
-  return args.branch || envs.CIRRUS_BRANCH || ''
+  return args.branch || envs.CIRRUS_BRANCH
 }
 
 function _getJob(envs) {
@@ -23,7 +23,7 @@ function _getJob(envs) {
 
 function _getPR(inputs) {
   const { args, envs } = inputs
-  return args.pr || envs.CIRRUS_PR || ''
+  return args.pr || envs.CIRRUS_PR
 }
 
 function _getService() {
@@ -36,12 +36,12 @@ function getServiceName() {
 
 function _getSHA(inputs) {
   const { args, envs } = inputs
-  return args.sha || envs.CIRRUS_CHANGE_IN_REPO || ''
+  return args.sha || envs.CIRRUS_CHANGE_IN_REPO
 }
 
 function _getSlug(inputs) {
   const { args, envs } = inputs
-  return args.slug || envs.CIRRUS_REPO_FULL_NAME || ''
+  return args.slug || envs.CIRRUS_REPO_FULL_NAME
 }
 
 function getServiceParams(inputs) {
