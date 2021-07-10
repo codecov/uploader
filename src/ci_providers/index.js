@@ -9,6 +9,7 @@ const providerGitLabci = require('./provider_gitlabci')
 const providerJenkinsci = require('./provider_jenkinsci')
 const providerLocal = require('./provider_local')
 const providerTravisci = require('./provider_travisci')
+const providerWercker = require('./provider_wercker')
 
 // Please make sure provider_local is last
 const providers = [
@@ -22,6 +23,7 @@ const providers = [
   providerGitLabci,
   providerJenkinsci,
   providerTravisci,
+  providerWercker,
   providerLocal,
 ]
 
