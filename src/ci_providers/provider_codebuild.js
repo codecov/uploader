@@ -14,9 +14,12 @@ function _getBuildURL(inputs) {
 
 function _getBranch(inputs) {
   const { args, envs } = inputs
-  return args.branch || envs.CODEBUILD_WEBHOOK_HEAD_REF
-    ? envs.CODEBUILD_WEBHOOK_HEAD_REF.replace(/^refs\/heads\//, '')
-    : ''
+  return (
+    args.branch ||
+    (envs.CODEBUILD_WEBHOOK_HEAD_REF
+      ? envs.CODEBUILD_WEBHOOK_HEAD_REF.replace(/^refs\/heads\//, '')
+      : '')
+  )
 }
 
 function _getJob(envs) {
@@ -25,11 +28,13 @@ function _getJob(envs) {
 
 function _getPR(inputs) {
   const { args, envs } = inputs
-  return args.pr ||
+  return (
+    args.pr ||
     (envs.CODEBUILD_WEBHOOK_HEAD_REF &&
-      envs.CODEBUILD_SOURCE_VERSION.startsWith('pr/'))
-    ? envs.CODEBUILD_SOURCE_VERSION.replace(/^pr\//, '')
-    : ''
+    envs.CODEBUILD_SOURCE_VERSION.startsWith('pr/')
+      ? envs.CODEBUILD_SOURCE_VERSION.replace(/^pr\//, '')
+      : '')
+  )
 }
 
 function _getService() {
@@ -47,12 +52,15 @@ function _getSHA(inputs) {
 
 function _getSlug(inputs) {
   const { args, envs } = inputs
-  return args.slug || envs.CODEBUILD_SOURCE_REPO_URL
-    ? envs.CODEBUILD_SOURCE_REPO_URL.replace(/^.*github.com\//, '').replace(
-        /\.git$/,
-        '',
-      )
-    : ''
+  return (
+    args.slug ||
+    (envs.CODEBUILD_SOURCE_REPO_URL
+      ? envs.CODEBUILD_SOURCE_REPO_URL.replace(/^.*github.com\//, '').replace(
+          /\.git$/,
+          '',
+        )
+      : '')
+  )
 }
 
 function getServiceParams(inputs) {
