@@ -3,6 +3,7 @@ const providerAzurepipelines = require('./provider_azurepipelines')
 const providerBitbucket = require('./provider_bitbucket')
 const providerBuildkite = require('./provider_buildkite')
 const providerCircleci = require('./provider_circleci')
+const providerCirrus = require('./provider_cirrus')
 const providerCodeBuild = require('./provider_codebuild')
 const providerDrone = require('./provider_drone')
 const providerGitHubactions = require('./provider_githubactions')
@@ -18,6 +19,7 @@ const providers = [
   providerBitbucket,
   providerBuildkite,
   providerCircleci,
+  providerCirrus,
   providerCodeBuild,
   providerDrone,
   providerGitHubactions,
