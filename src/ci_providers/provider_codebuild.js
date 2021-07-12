@@ -30,7 +30,7 @@ function _getPR(inputs) {
   const { args, envs } = inputs
   return (
     args.pr ||
-    (envs.CODEBUILD_WEBHOOK_HEAD_REF &&
+    (envs.CODEBUILD_SOURCE_VERSION &&
     envs.CODEBUILD_SOURCE_VERSION.startsWith('pr/')
       ? envs.CODEBUILD_SOURCE_VERSION.replace(/^pr\//, '')
       : '')
