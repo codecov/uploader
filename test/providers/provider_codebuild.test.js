@@ -1,5 +1,4 @@
 const td = require('testdouble')
-const { describe } = require('yargs')
 
 const providerCodeBuild = require('../../src/ci_providers/provider_codebuild')
 
