@@ -1,4 +1,5 @@
 const td = require('testdouble')
+const { describe } = require('yargs')
 
 const providerCodeBuild = require('../../src/ci_providers/provider_codebuild')
 
@@ -30,64 +31,66 @@ describe('CodeBuild Params', () => {
     })
   })
 
-  it('gets correct params', () => {
-    const inputs = {
-      args: {},
-      envs: {
-        CI: true,
-        CODEBUILD_CI: true,
-        CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
-        CODEBUILD_RESOLVED_SOURCE_VERSION: 'testingsha',
-        CODEBUILD_BUILD_ID: 2,
-        CODEBUILD_SOURCE_VERSION: 'pr/1',
-        CODEBUILD_SOURCE_REPO_URL: 'https://github.com/repo.git',
-      },
-    }
-    const expected = {
-      branch: 'master',
-      build: 2,
-      buildURL: '',
-      commit: 'testingsha',
-      job: 2,
-      pr: '1',
-      service: 'codebuild',
-      slug: 'repo',
-    }
-    const params = providerCodeBuild.getServiceParams(inputs)
-    expect(params).toMatchObject(expected)
-  })
+  describe('getServiceParams()', () => {
+    it('gets correct params', () => {
+      const inputs = {
+        args: {},
+        envs: {
+          CI: true,
+          CODEBUILD_CI: true,
+          CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
+          CODEBUILD_RESOLVED_SOURCE_VERSION: 'testingsha',
+          CODEBUILD_BUILD_ID: 2,
+          CODEBUILD_SOURCE_VERSION: 'pr/1',
+          CODEBUILD_SOURCE_REPO_URL: 'https://github.com/repo.git',
+        },
+      }
+      const expected = {
+        branch: 'master',
+        build: 2,
+        buildURL: '',
+        commit: 'testingsha',
+        job: 2,
+        pr: '1',
+        service: 'codebuild',
+        slug: 'repo',
+      }
+      const params = providerCodeBuild.getServiceParams(inputs)
+      expect(params).toMatchObject(expected)
+    })
 
-  it('gets correct params for overrides', () => {
-    const inputs = {
-      args: {
+    it('gets correct params for overrides', () => {
+      const inputs = {
+        args: {
+          branch: 'branch',
+          build: 3,
+          pr: '7',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
+        envs: {
+          CI: true,
+          CODEBUILD_CI: true,
+          CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
+          CODEBUILD_RESOLVED_SOURCE_VERSION: 'testingsha',
+          CODEBUILD_BUILD_ID: 2,
+          CODEBUILD_SOURCE_VERSION: 'pr/1',
+          CODEBUILD_SOURCE_REPO_URL: 'https://github.com/repo.git',
+        },
+      }
+      const expected = {
         branch: 'branch',
         build: 3,
+        buildURL: '',
+        commit: 'testsha',
+        job: 2,
         pr: '7',
-        sha: 'testsha',
+        service: 'codebuild',
         slug: 'testOrg/testRepo',
-      },
-      envs: {
-        CI: true,
-        CODEBUILD_CI: true,
-        CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
-        CODEBUILD_RESOLVED_SOURCE_VERSION: 'testingsha',
-        CODEBUILD_BUILD_ID: 2,
-        CODEBUILD_SOURCE_VERSION: 'pr/1',
-        CODEBUILD_SOURCE_REPO_URL: 'https://github.com/repo.git',
-      },
-    }
-    const expected = {
-      branch: 'branch',
-      build: 3,
-      buildURL: '',
-      commit: 'testsha',
-      job: 2,
-      pr: '7',
-      service: 'codebuild',
-      slug: 'testOrg/testRepo',
-    }
+      }
 
-    const params = providerCodeBuild.getServiceParams(inputs)
-    expect(params).toMatchObject(expected)
+      const params = providerCodeBuild.getServiceParams(inputs)
+      expect(params).toMatchObject(expected)
+    })
   })
 })
