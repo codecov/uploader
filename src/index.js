@@ -119,9 +119,15 @@ async function main(args) {
       )
     }
   } else {
-    coverageFilePaths[0] = validateHelpers.validateFileNamePath(args.file)
-      ? args.file
-      : ''
+    if (typeof(args.file) === 'object') {
+      for (const file of args.file) {
+        coverageFilePaths.push(validateHelpers.validateFileNamePath(file) ? file : '')
+      }
+    } else {
+      coverageFilePaths[0] = validateHelpers.validateFileNamePath(args.file)
+        ? args.file
+        : ''
+    }
     if (coverageFilePaths.length === 0) {
       throw new Error('Not coverage file found, exiting.')
     }
