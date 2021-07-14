@@ -133,6 +133,45 @@ describe('Uploader Core', () => {
     )
   })
 
+  it('Can find a single specified file', async () => {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      dryRun: true,
+      file: 'test/fixtures/coverage.txt',
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching("Processing test/fixtures/coverage.txt..."),
+    )
+  })
+
+  it('Can find multiple specified files', async () => {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      dryRun: true,
+      file: ['test/fixtures/coverage.txt', 'test/fixtures/other/coverage.txt', 'test/does/not/exist.txt'],
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching("Processing test/fixtures/coverage.txt..."),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching("Processing test/fixtures/coverage.txt..."),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching("Processing test/does/not/exist.txt..."),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining("Could not read coverage file (test/does/not/exist.txt):"),
+    )
+  })
+
   it('Can find only coverage from custom dir', async () => {
     jest.spyOn(process, 'exit').mockImplementation(() => {})
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})

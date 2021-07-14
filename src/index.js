@@ -105,6 +105,7 @@ async function main(args) {
   // Look for files
   let coverageFilePaths = []
   if (!args.file) {
+    log('Searching for coverage files...')
     coverageFilePaths = fileHelpers.getCoverageFiles(
       args.dir || projectRoot,
       // TODO: Determine why this is so slow (I suspect it's walking paths it should not)
@@ -119,11 +120,17 @@ async function main(args) {
       )
     }
   } else {
-    coverageFilePaths[0] = validateHelpers.validateFileNamePath(args.file)
-      ? args.file
-      : ''
+    if (typeof(args.file) === 'string') {
+      coverageFilePaths = [args.file]
+    } else {
+      coverageFilePaths = args.file
+    }
+
+    coverageFilePaths.filter((file) => {
+      return validateHelpers.validateFileNamePath(file);
+    })
     if (coverageFilePaths.length === 0) {
-      throw new Error('Not coverage file found, exiting.')
+      throw new Error('No coverage files found, exiting.')
     }
   }
   log('End of network processing', { level: 'debug', args })
@@ -135,12 +142,14 @@ async function main(args) {
   for (const coverageFile of coverageFilePaths) {
     let fileContents
     try {
+      log(`Processing ${coverageFile}...`),
       fileContents = await fileHelpers.readCoverageFile(
         args.dir || projectRoot,
         coverageFile,
       )
     } catch (error) {
-      throw new Error(`Error reading coverage file (${coverageFile}): ${error}`)
+      log(`Could not read coverage file (${coverageFile}): ${error}`)
+      continue;
     }
 
     uploadFile = uploadFile
