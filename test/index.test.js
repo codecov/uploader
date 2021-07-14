@@ -35,7 +35,7 @@ describe('Uploader Core', () => {
 
     nock('https://codecov.io')
       .post('/upload/v4')
-      .query(actualQueryObject => actualQueryObject.name === 'customname')
+      .query(parsedObj => parsedObj.name === 'customname')
       .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
     nock('https://codecov.io').put('/').reply(200, 'success')
@@ -130,6 +130,45 @@ describe('Uploader Core', () => {
     )
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/An example coverage other file/),
+    )
+  })
+
+  it('Can find a single specified file', async () => {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      dryRun: true,
+      file: 'test/fixtures/coverage.txt',
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching("Processing test/fixtures/coverage.txt..."),
+    )
+  })
+
+  it('Can find multiple specified files', async () => {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      dryRun: true,
+      file: ['test/fixtures/coverage.txt', 'test/fixtures/other/coverage.txt', 'test/does/not/exist.txt'],
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching("Processing test/fixtures/coverage.txt..."),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching("Processing test/fixtures/coverage.txt..."),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching("Processing test/does/not/exist.txt..."),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringContaining("Could not read coverage file (test/does/not/exist.txt):"),
     )
   })
 

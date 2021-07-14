@@ -99,10 +99,9 @@ function camelToSnake(str) {
  * @returns {string}
  */
 function generateQuery(queryParams) {
-  const query = Object.entries(queryParams)
+  return Object.entries(queryParams)
     .map(([key, value]) => `${camelToSnake(key)}=${value}`)
     .join('&')
-  return query
 }
 
 module.exports = {
