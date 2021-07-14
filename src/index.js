@@ -130,7 +130,7 @@ async function main(args) {
       return validateHelpers.validateFileNamePath(file);
     })
     if (coverageFilePaths.length === 0) {
-      throw new Error('Not coverage file found, exiting.')
+      throw new Error('No coverage files found, exiting.')
     }
   }
   log('End of network processing', { level: 'debug', args })
