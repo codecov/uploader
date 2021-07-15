@@ -1,4 +1,5 @@
 const superagent = require('superagent')
+const { version } = require('../../package.json')
 const validateHelpers = require('./validate')
 const { log } = require('./logger')
 
@@ -18,6 +19,14 @@ function populateBuildParams(inputs, serviceParams) {
     : ''
   serviceParams.parent = args.parent || ''
   return serviceParams
+}
+
+function getPackage(source) {
+  if (source) {
+    return `${source}-uploader-${version}`
+  } else {
+    return `uploader-${version}`
+  }
 }
 
 /**
@@ -59,10 +68,10 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
  * @param {string} version uploader version number
  * @returns {Promise<string>}
  */
-async function uploadToCodecov(uploadURL, token, query, uploadFile, version) {
+async function uploadToCodecov(uploadURL, token, query, uploadFile, source) {
   try {
     const result = await superagent
-      .post(`${uploadURL}/upload/v4?package=uploader-${version}&${query}`)
+      .post(`${uploadURL}/upload/v4?package=${getPackage(source)}&${query}`)
       .retry()
       .send(uploadFile)
       .set('Content-Type', 'text/plain')
@@ -105,8 +114,9 @@ function generateQuery(queryParams) {
 }
 
 module.exports = {
+  generateQuery,
+  getPackage,
   populateBuildParams,
   uploadToCodecov,
   uploadToCodecovPUT,
-  generateQuery,
 }
