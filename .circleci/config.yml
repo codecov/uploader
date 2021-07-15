@@ -302,6 +302,7 @@ jobs:
   test-windows-without-git:
     executor: win/default
     steps:
+      - checkout
       - run:
           name: Remove .git directory
           command: del -R .git
