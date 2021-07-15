@@ -1,18 +1,19 @@
 const nock = require('nock')
 
+const { version } = require('../../package.json')
 const webHelper = require('../../src/helpers/web')
 
 describe('Web Helpers', () => {
   let uploadURL
   let token
   let uploadFile
-  let version
   let query
+  let source
   beforeEach(() => {
     token = '123-abc-890-xyz'
     uploadFile = 'some content'
     query = 'hello'
-    version = '0.0.1'
+    source = ''
 
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
     nock('https://codecov.io').put('/').query(true).reply(200, 'testPUT')
@@ -36,7 +37,7 @@ describe('Web Helpers', () => {
       token,
       query,
       uploadFile,
-      version,
+      source,
     )
     try {
       expect(response).toBe('testPOSTHTTP')
@@ -59,7 +60,7 @@ describe('Web Helpers', () => {
       token,
       query,
       uploadFile,
-      version,
+      source,
     )
     expect(response).toBe('testPOSTHTTPS')
   })
@@ -95,5 +96,15 @@ describe('Web Helpers', () => {
       { name: '', tag: ', flags: []' },
     )
     expect(result.flags).toBe('testFlag')
+  })
+
+  it('can getPackage() from source', () => {
+    const result = webHelper.getPackage('github-actions-2.0.0')
+    expect(result).toBe(`github-actions-2.0.0-uploader-${version}`)
+  })
+
+  it('can getPackage() from no source', () => {
+    const result = webHelper.getPackage('')
+    expect(result).toBe(`uploader-${version}`)
   })
 })
