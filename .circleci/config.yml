@@ -251,6 +251,7 @@ jobs:
     macos:
       xcode: '12.5.1'
     steps:
+      - checkout
       - run:
           name: Remove .git directory
           command: rm -rf .git
