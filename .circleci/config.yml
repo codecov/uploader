@@ -201,9 +201,13 @@ jobs:
     docker:
       - image: circleci/node:16.4.2
     steps:
+      - checkout
       - attach_workspace:
           # TODO: Determine why we use the cwd on Linex and not on other operating systems.
           at: .
+      - run:
+          name: Remove .git directory
+          command: rm -rf .git
       - run:
           name: Run Linux binary (dry run)
           command: |
@@ -216,7 +220,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - output_linux.txt
+            - output_linux_without_git.txt
 
   test-macos:
     macos:
@@ -247,6 +251,10 @@ jobs:
     macos:
       xcode: '12.5.1'
     steps:
+      - checkout
+      - run:
+          name: Remove .git directory
+          command: rm -rf .git
       - attach_workspace:
           at: .
       - run:
@@ -261,7 +269,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - output_osx.txt
+            - output_osx_without_git.txt
 
   test-windows:
     executor: win/default
@@ -295,6 +303,10 @@ jobs:
   test-windows-without-git:
     executor: win/default
     steps:
+      - checkout
+      - run:
+          name: Remove .git directory
+          command: del -Recurse -Force .git
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
