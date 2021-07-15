@@ -14,10 +14,10 @@ const providers = require('./ci_providers')
  * @param {string} query
  * @param {string} uploadFile
  */
-function dryRun(uploadHost, token, query, uploadFile) {
+function dryRun(uploadHost, token, query, uploadFile, source) {
   log('==> Dumping upload file (no upload)')
   log(
-    `${uploadHost}/upload/v4?package=uploader-${version}&token=${token}&${query}`,
+    `${uploadHost}/upload/v4?package=${webHelpers.getPackage(source)}&token=${token}&${query}`,
   )
   log(uploadFile)
 }
@@ -203,15 +203,15 @@ async function main(args) {
   )
 
   if (args.dryRun) {
-    return dryRun(uploadHost, token, query, uploadFile)
+    return dryRun(uploadHost, token, query, uploadFile, args.source)
   }
 
   log(
-    `Pinging Codecov: ${uploadHost}/upload/v4?package=uploader-${version}&token=*******&${query}`,
+    `Pinging Codecov: ${uploadHost}/upload/v4?package=${webHelpers.getPackage(args.source)}&token=*******&${query}`,
   )
   try {
     log(
-      `${uploadHost}/upload/v4?package=uploader-${version}&${query}
+      `${uploadHost}/upload/v4?package=${webHelpers.getPackage(args.source)}&${query}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
         X-Reduced-Redundancy: 'false'`,
@@ -222,7 +222,7 @@ async function main(args) {
       token,
       query,
       gzippedFile,
-      version,
+      args.source,
     )
 
     log(uploadURL, { level: 'debug', args })
