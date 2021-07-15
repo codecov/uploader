@@ -220,7 +220,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - output_linux.txt
+            - output_linux_without_git.txt
 
   test-macos:
     macos:
@@ -268,7 +268,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - output_osx.txt
+            - output_osx_without_git.txt
 
   test-windows:
     executor: win/default
