@@ -98,6 +98,14 @@ describe('Web Helpers', () => {
     expect(result.flags).toBe('testFlag')
   })
 
+  it('can populateBuildParams() from args with multiple flags', () => {
+    const result = webHelper.populateBuildParams(
+      { args: { flags: ['testFlag1', 'testFlag2'], tag: 'testTag' }, envs: {} },
+      { name: '', tag: ', flags: []' },
+    )
+    expect(result.flags).toBe('testFlag1,testFlag2')
+  })
+
   it('can getPackage() from source', () => {
     const result = webHelper.getPackage('github-actions-2.0.0')
     expect(result).toBe(`github-actions-2.0.0-uploader-${version}`)
