@@ -305,7 +305,7 @@ jobs:
       - checkout
       - run:
           name: Remove .git directory
-          command: del -R -F .git
+          command: del -Recurse -Force .git
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
