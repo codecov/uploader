@@ -71,7 +71,7 @@ async function main(args) {
   let token = validateHelpers.validateToken(args.token) ? args.token : ''
   if (token === '') {
     token = process.env.CODECOV_TOKEN || ''
-    token = validateHelpers.validateToken(process.env.CODECOV_TOKEN)
+    token = validateHelpers.validateToken(token)
       ? process.env.CODECOV_TOKEN
       : ''
   }
