@@ -17,7 +17,9 @@ const providers = require('./ci_providers')
 function dryRun(uploadHost, token, query, uploadFile, source) {
   log('==> Dumping upload file (no upload)')
   log(
-    `${uploadHost}/upload/v4?package=${webHelpers.getPackage(source)}&token=${token}&${query}`,
+    `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
+      source,
+    )}&token=${token}&${query}`,
   )
   log(uploadFile)
 }
@@ -69,8 +71,11 @@ async function main(args) {
   let token = validateHelpers.validateToken(args.token) ? args.token : ''
   if (token === '') {
     token = process.env.CODECOV_TOKEN || ''
+    token = validateHelpers.validateToken(process.env.CODECOV_TOKEN)
+      ? process.env.CODECOV_TOKEN
+      : ''
   }
-  token = args.token || process.env.CODECOV_TOKEN || ''
+
   log(generateHeader(getVersion()))
 
   // == Step 2: detect if we are in a git repo
@@ -120,14 +125,14 @@ async function main(args) {
       )
     }
   } else {
-    if (typeof(args.file) === 'string') {
+    if (typeof args.file === 'string') {
       coverageFilePaths = [args.file]
     } else {
       coverageFilePaths = args.file
     }
 
-    coverageFilePaths.filter((file) => {
-      return validateHelpers.validateFileNamePath(file);
+    coverageFilePaths.filter(file => {
+      return validateHelpers.validateFileNamePath(file)
     })
     if (coverageFilePaths.length === 0) {
       throw new Error('No coverage files found, exiting.')
@@ -143,13 +148,13 @@ async function main(args) {
     let fileContents
     try {
       log(`Processing ${coverageFile}...`),
-      fileContents = await fileHelpers.readCoverageFile(
-        args.dir || projectRoot,
-        coverageFile,
-      )
+        (fileContents = await fileHelpers.readCoverageFile(
+          args.dir || projectRoot,
+          coverageFile,
+        ))
     } catch (error) {
       log(`Could not read coverage file (${coverageFile}): ${error}`)
-      continue;
+      continue
     }
 
     uploadFile = uploadFile
@@ -207,11 +212,15 @@ async function main(args) {
   }
 
   log(
-    `Pinging Codecov: ${uploadHost}/upload/v4?package=${webHelpers.getPackage(args.source)}&token=*******&${query}`,
+    `Pinging Codecov: ${uploadHost}/upload/v4?package=${webHelpers.getPackage(
+      args.source,
+    )}&token=*******&${query}`,
   )
   try {
     log(
-      `${uploadHost}/upload/v4?package=${webHelpers.getPackage(args.source)}&${query}
+      `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
+        args.source,
+      )}&${query}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
         X-Reduced-Redundancy: 'false'`,
