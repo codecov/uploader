@@ -14,9 +14,13 @@ function populateBuildParams(inputs, serviceParams) {
   const { args, envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
-  serviceParams.flags = validateHelpers.validateFlags(args.flags)
-    ? args.flags
-    : ''
+  let flags
+  if (typeof(args.flags) === 'object') {
+    flags = [...args.flags]
+  } else {
+    flags = [args.flags]
+  }
+  serviceParams.flags = flags.filter((flag) => validateHelpers.validateFlags(flag)).join(',')
   serviceParams.parent = args.parent || ''
   return serviceParams
 }
