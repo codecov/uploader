@@ -3,6 +3,7 @@
     "checkJs": true,
     "composite": true,
     "outDir": "dist/",
+    "resolveJsonModule": true,
     "rootDir": "src/",
     "strict": true
   },
