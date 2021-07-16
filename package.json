@@ -7,10 +7,12 @@
   "scripts": {
     "lint": "eslint --fix",
     "test": "jest",
+    "build": "tsc --build",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
     "build-windows": "pkg . --targets win --output out/codecov.exe",
+    "clean": "tsc --build --clean",
     "prepare": "husky install"
   },
   "repository": {
