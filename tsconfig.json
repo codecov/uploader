@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "composite": true,
+    "outDir": "dist/",
+    "rootDir": "src/",
+    "strict": true
+  },
+  "include": ["src/**/*.js"]
+}
