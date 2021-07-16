@@ -85,6 +85,7 @@ var argv = require('yargs') // eslint-disable-line
       description: 'Specify the slug manually (Enterprise use)',
     },
     url: {
+      alias: 'u',
       type: 'string',
       description: 'Change the upload host (Enterprise use)',
       default: 'https://codecov.io',
