@@ -75,7 +75,7 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
 async function uploadToCodecov(uploadURL, token, query, uploadFile, source) {
   try {
     const result = await superagent
-      .post(`${uploadURL}/upload/v4?package=${getPackage(source)}&${query}`)
+      .post(`${uploadURL}/upload/v4?package=${getPackage(source)}&token=${token}&${query}`)
       .retry()
       .send(uploadFile)
       .set('Content-Type', 'text/plain')
