@@ -1,3 +1,5 @@
+const { parseSlugFromRemoteAddr } = require('../helpers/git')
+
 function detect(envs) {
   return envs.JENKINS_URL
 }
@@ -47,8 +49,8 @@ function _getSHA(inputs) {
 }
 
 function _getSlug(inputs) {
-  const { args, envs } = inputs
-  return args.slug || envs.VCS_SLUG || ''
+  const { args } = inputs
+  return args.slug || parseSlugFromRemoteAddr('') || ''
 }
 
 function getServiceParams(inputs) {

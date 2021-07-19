@@ -1,4 +1,5 @@
 const td = require('testdouble')
+const childProcess = require('child_process')
 
 const providerJenkinsci = require('../../src/ci_providers//provider_jenkinsci')
 
@@ -78,6 +79,34 @@ describe('Jenkins CI Params', () => {
     }
     const params = providerJenkinsci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
+  })
+
+  it('can get the slug from git config', () => {
+    const inputs = {
+      args: {},
+      envs: {
+        BUILD_NUMBER: 1,
+        BUILD_URL: 'https://example.jenkins.com',
+        CHANGE_ID: 2,
+        GIT_BRANCH: 'main',
+        GIT_COMMIT: 'testingsha',
+        JENKINS_URL: 'https://example.com',
+      },
+    }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', [
+        'config',
+        '--get',
+        'remote.origin.url',
+        '||',
+        'echo',
+        "''",
+      ]),
+    ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
+
+    const params = providerJenkinsci.getServiceParams(inputs)
+    expect(params.slug).toBe('testOrg/testRepo')
   })
 
   it('gets correct params for overrides', () => {
