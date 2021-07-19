@@ -2,10 +2,11 @@
 
 /**
  *
- * @param {string|Object} message
+ * @param {string} message
  * @param {Object} [options]
- * @param {'debug'|'error'} [options.level]
+ * @param {string} [options.level]
  * @param {Object} [options.args]
+ * @param {boolean} [options.args.verbose]
  * @returns void
  */
 function log(message, options) {

@@ -1,5 +1,8 @@
 const validate = require('../../src/helpers/validate')
 
+// Backup the env
+const realEnv = { ...process.env }
+
 describe('Input Validators', () => {
   describe('Tokens', () => {
     it('Returns true with a valid token', () => {
@@ -64,6 +67,41 @@ describe('Input Validators', () => {
     })
     it('should pass with correct content and length', () => {
       expect(validate.validateSHA('abc123', 6)).toBe(true)
+    })
+
+    it('should pass with correct content and default length', () => {
+      expect(
+        validate.validateSHA('1732d84b7ef2425e979d6034a3e3bb5633da344a'),
+      ).toBe(true)
+    })
+  })
+
+  describe('getToken()', () => {
+    beforeEach(() => {
+      delete process.env.CODECOV_TOKEN
+    })
+
+    afterEach(() => {
+      process.env = realEnv
+    })
+
+    it('should return an empty string if neither args or env are set', () => {
+      const args = {}
+      expect(validate.getToken(args)).toEqual('')
+    })
+
+    it('should return the value of the env if env is set, and args are not set', () => {
+      process.env.CODECOV_TOKEN = 'testingEnvToken'
+      const args = {}
+      expect(validate.getToken(args)).toEqual('testingEnvToken')
+    })
+
+    it('should return the value of the arg if env is set, and args are set', () => {
+      process.env.CODECOV_TOKEN = 'testingEnvToken'
+      const args = {
+        token: 'testingArgToken',
+      }
+      expect(validate.getToken(args)).toEqual('testingArgToken')
     })
   })
 })
