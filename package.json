@@ -7,10 +7,12 @@
   "scripts": {
     "lint": "eslint --fix",
     "test": "jest",
+    "build": "tsc --build",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
     "build-windows": "pkg . --targets win --output out/codecov.exe",
+    "clean": "tsc --build --clean",
     "prepare": "husky install"
   },
   "repository": {
@@ -41,7 +43,8 @@
     "pkg": "5.1.0",
     "prettier": "2.3.2",
     "testdouble": "3.16.1",
-    "testdouble-jest": "2.0.0"
+    "testdouble-jest": "2.0.0",
+    "typescript": "^4.3.5"
   },
   "jest": {
     "collectCoverage": true,
