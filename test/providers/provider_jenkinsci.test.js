@@ -99,9 +99,6 @@ describe('Jenkins CI Params', () => {
         'config',
         '--get',
         'remote.origin.url',
-        '||',
-        'echo',
-        "''",
       ]),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
 
