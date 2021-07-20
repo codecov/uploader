@@ -37,6 +37,7 @@
   "devDependencies": {
     "@types/glob": "7.1.4",
     "@types/jest": "26.0.24",
+    "@types/mock-fs": "4.13.1",
     "@types/node": "16.3.3",
     "@typescript-eslint/eslint-plugin": "4.28.4",
     "@typescript-eslint/parser": "4.28.4",
@@ -45,6 +46,7 @@
     "husky": "7.0.1",
     "jest": "27.0.6",
     "lint-staged": "11.0.1",
+    "mock-fs": "5.0.0",
     "nock": "13.1.1",
     "pkg": "5.1.0",
     "prettier": "2.3.2",

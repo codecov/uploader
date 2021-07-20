@@ -1,8 +1,0 @@
-2e3228a04bc8d14562d30098e4857dbdcd8270c5
-
-test/helpers/files.test.js
-
-Test Suites: 1 passed, 1 total
-Tests:       18 passed, 18 total
-Snapshots:   0 total
-Time:        19 s

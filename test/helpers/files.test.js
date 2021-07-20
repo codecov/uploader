@@ -4,10 +4,43 @@ const td = require('testdouble')
 const fs = require('fs')
 const childProcess = require('child_process')
 const fileHelpers = require('../../src/helpers/files')
+const mock = require('mock-fs')
 
 describe('File Helpers', () => {
+  beforeEach(() => {
+    mock({
+      'npm-shrinkwrap.json': '',
+      'test-coverage-file.xml': 'I am test coverage data',
+      dummyDir: {
+        'some-file.txt': 'file content here',
+        'empty-dir': {
+          /** empty directory */
+        },
+      },
+      test: {
+        'index.test.js': '',
+        providers: {
+          'index.test.js': '',
+        },
+        fixtures: {
+          other: {
+            'fake.codecov.txt': Buffer.from([8, 6, 7, 5, 3, 0, 9]),
+          },
+        },
+        some: {
+          other: {
+            path: {
+              /** another empty directory */
+            },
+          },
+        },
+      },
+    })
+  })
+
   afterEach(() => {
     td.reset()
+    mock.restore()
   })
 
   it('can generate network end marker', () => {
@@ -30,9 +63,7 @@ describe('File Helpers', () => {
   })
 
   it('errors when it cannot fetch the git root', () => {
-    const cwd = td.replace(process, 'cwd')
     td.replace(childProcess, 'spawnSync')
-    td.when(cwd()).thenReturn({ stdout: 'fish' })
     expect(() => {
       fileHelpers.fetchGitRoot()
     }).toThrow()
@@ -68,10 +99,6 @@ describe('File Helpers', () => {
       )
     })
     it('can read a coverage report file', async () => {
-      const readFileSync = td.replace(fs, 'readFileSync')
-      td.when(
-        readFileSync('test-coverage-file.xml', { encoding: 'utf-8' }),
-      ).thenReturn('I am test coverage data')
       const reportContents = fileHelpers.readCoverageFile(
         '.',
         'test-coverage-file.xml',
