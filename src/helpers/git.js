@@ -24,16 +24,13 @@ function parseSlug(slug) {
 function parseSlugFromRemoteAddr(remoteAddr) {
   let slug = ''
   if (!remoteAddr) {
-    remoteAddr = childProcess
+    remoteAddr = (childProcess
       .spawnSync('git', [
         'config',
         '--get',
         'remote.origin.url',
-        '||',
-        'echo',
-        "''",
-      ])
-      .stdout.toString()
+      ]).stdout || '')
+      .toString()
       .trimRight()
   }
   if (remoteAddr) {

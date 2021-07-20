@@ -77,6 +77,14 @@ describe('Jenkins CI Params', () => {
       service: 'jenkins',
       slug: '',
     }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', [
+        'config',
+        '--get',
+        'remote.origin.url',
+      ]),
+    ).thenReturn({ stdout: '' })
     const params = providerJenkinsci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
