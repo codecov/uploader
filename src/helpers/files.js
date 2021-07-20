@@ -8,6 +8,7 @@ const { log } = require('./logger')
 /**
  *
  * @param {string} projectRoot
+ * @param {Object} args
  * @returns {Promise<string>}
  */
 async function getFileListing(projectRoot, args) {
@@ -161,12 +162,14 @@ function coverageFilePatterns() {
  * @returns {string[]}
  */
 function getCoverageFiles(projectRoot, coverageFilePatterns) {
-  return coverageFilePatterns.flatMap(pattern => {
-    return glob.sync(`**/${pattern}`, {
-      cwd: projectRoot,
-      ignore: globBlacklist(),
-    })
-  })
+  return coverageFilePatterns.flatMap(
+    /** @type {string} */ pattern => {
+      return glob.sync(`**/${pattern}`, {
+        cwd: projectRoot,
+        ignore: globBlacklist(),
+      })
+    },
+  )
 }
 
 /**
@@ -221,6 +224,7 @@ function parseGitIgnore(projectRoot) {
  *
  * @param {string} projectRoot Root of the project
  * @param {string} dirPath Directory to search in
+ * @param {Object} args
  * @param {string[]} arrayOfFiles
  * @returns {string[]}
  */
@@ -285,6 +289,11 @@ function endFileMarker() {
   return '<<<<<< EOF\n'
 }
 
+/**
+ *
+ * @param {string} filePath
+ * @returns string
+ */
 function fileHeader(filePath) {
   return `# path=${filePath}\n`
 }
@@ -314,6 +323,11 @@ function getFilePath(projectRoot, filePath) {
   return path.join(projectRoot, filePath)
 }
 
+/**
+ *
+ * @param {string} projectRoot
+ * @param {string} filePath
+ */
 function removeFile(projectRoot, filePath) {
   fs.unlink(getFilePath(projectRoot, filePath), err => {
     if (err) {
