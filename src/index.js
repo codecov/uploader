@@ -3,6 +3,7 @@ const zlib = require('zlib')
 const { version } = require('../package.json')
 const fileHelpers = require('./helpers/files')
 const validateHelpers = require('./helpers/validate')
+const tokenHelpers = require('./helpers/token')
 const webHelpers = require('./helpers/web')
 const { log } = require('./helpers/logger')
 const providers = require('./ci_providers')
@@ -71,7 +72,6 @@ async function main(args) {
     ? args.url
     : 'https://codecov.io'
 
-  const token = validateHelpers.getToken(args)
   log(generateHeader(getVersion()))
 
   // == Step 2: detect if we are in a git repo
@@ -84,7 +84,10 @@ async function main(args) {
 
   log(`=> Project root located at: ${projectRoot}`)
 
-  // == Step 3: get network
+  // == Step 3: sanitize and set token
+  const token = await tokenHelpers.getToken(inputs, projectRoot)
+
+  // == Step 4: get network
   let uploadFile = ''
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
@@ -101,7 +104,7 @@ async function main(args) {
       .concat(fileHelpers.endNetworkMarker())
   }
 
-  // == Step 4: select coverage files (search or specify)
+  // == Step 5: select coverage files (search or specify)
 
   // Look for files
   let coverageFilePaths = []
@@ -136,7 +139,7 @@ async function main(args) {
   }
   log('End of network processing', { level: 'debug', args })
 
-  // == Step 5: generate upload file
+  // == Step 6: generate upload file
   // TODO: capture envs
 
   // Get coverage report contents
@@ -181,7 +184,7 @@ async function main(args) {
 
   const gzippedFile = zlib.gzipSync(uploadFile)
 
-  // == Step 6: determine CI provider
+  // == Step 7: determine CI provider
 
   // Determine CI provider
   let serviceParams
@@ -197,7 +200,7 @@ async function main(args) {
     throw new Error('Unable to detect service, please specify manually.')
   }
 
-  // == Step 7: either upload or dry-run
+  // == Step 8: either upload or dry-run
 
   const query = webHelpers.generateQuery(
     webHelpers.populateBuildParams(inputs, serviceParams),

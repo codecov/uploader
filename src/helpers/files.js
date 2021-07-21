@@ -1,8 +1,9 @@
 // @ts-check
 const childProcess = require('child_process')
 const fs = require('fs')
-const path = require('path').posix
 const glob = require('glob')
+const path = require('path').posix
+
 const { log } = require('./logger')
 
 /**
@@ -337,16 +338,16 @@ function removeFile(projectRoot, filePath) {
 }
 
 module.exports = {
-  readCoverageFile,
-  getFileListing,
+  coverageFilePatterns,
+  endEnvironmentMarker,
   endFileMarker,
   endNetworkMarker,
-  endEnvironmentMarker,
-  fileHeader,
   fetchGitRoot,
-  parseGitIgnore,
+  fileHeader,
   getCoverageFiles,
-  coverageFilePatterns,
+  getFileListing,
   getFilePath,
+  parseGitIgnore,
+  readCoverageFile,
   removeFile,
 }
