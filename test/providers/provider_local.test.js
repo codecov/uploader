@@ -32,6 +32,30 @@ describe('Local Params', () => {
     })
   })
 
+  it('returns on override args', () => {
+    const inputs = {
+      args: {
+        branch: 'main',
+        pr: '1',
+        sha: 'testingsha',
+        slug: 'owner/repo',
+      },
+      envs: {},
+    }
+    const expected = {
+      branch: 'main',
+      build: '',
+      buildURL: '',
+      commit: 'testingsha',
+      job: '',
+      pr: '1',
+      service: '',
+      slug: 'owner/repo',
+    }
+    const params = providerLocal.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
   it('returns errors on git command failures', () => {
     const inputs = {
       args: {},
