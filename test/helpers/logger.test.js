@@ -1,5 +1,6 @@
 // @ts-check
 const logger = require('../../src/helpers/logger')
+const { expect, it } = require('@jest/globals')
 
 describe('Logger Helper', () => {
   afterEach(() => {
@@ -23,7 +24,9 @@ describe('Logger Helper', () => {
   })
 
   it('Should call logger with options.level = debug and verbose set', () => {
-    jest.spyOn(console, 'debug').mockImplementation(() => {})
+    jest.spyOn(console, 'debug').mockImplementation(() => {
+      // Intentionally empty
+    })
     logger.log('message with debug level and verbose', {
       level: 'debug',
       args: { verbose: true },
@@ -34,7 +37,9 @@ describe('Logger Helper', () => {
   })
 
   it('Should call logger with options.level = error', () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => {
+      // Intentionally empty
+    })
     logger.log('message with error level', { level: 'error' })
     expect(console.error).toHaveBeenCalledWith(
       expect.stringMatching(/error level/),
@@ -42,7 +47,9 @@ describe('Logger Helper', () => {
   })
 
   it('Should call logger with unsupported options.level ', () => {
-    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {
+      // Intentionally empty
+    })
     logger.log('message with error level of foobar', { level: 'foobar' })
     expect(console.log).toHaveBeenCalledWith(expect.stringMatching(/of foobar/))
   })

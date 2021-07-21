@@ -13,6 +13,7 @@ const providers = require('./ci_providers')
  * @param {string} token
  * @param {string} query
  * @param {string} uploadFile
+ * @param {string} source
  */
 function dryRun(uploadHost, token, query, uploadFile, source) {
   log('==> Dumping upload file (no upload)')
@@ -47,6 +48,7 @@ function dryRun(uploadHost, token, query, uploadFile, source) {
  * @param {string} args.url Change the upload host (Enterprise use)
  * @param {boolean} args.clean Move discovered coverage reports to the trash
  * @param {string} args.feature Toggle features
+ * @param {string} args.source Track wrappers of the uploader
  */
 async function main(args) {
   /*
@@ -68,14 +70,8 @@ async function main(args) {
   const uploadHost = validateHelpers.validateURL(args.url)
     ? args.url
     : 'https://codecov.io'
-  let token = validateHelpers.validateToken(args.token) ? args.token : ''
-  if (token === '') {
-    token = process.env.CODECOV_TOKEN || ''
-    token = validateHelpers.validateToken(token)
-      ? process.env.CODECOV_TOKEN
-      : ''
-  }
 
+  const token = validateHelpers.getToken(args)
   log(generateHeader(getVersion()))
 
   // == Step 2: detect if we are in a git repo
@@ -172,7 +168,7 @@ async function main(args) {
 
   // Environment variables
   if (args.env || envs.CODECOV_ENV) {
-    const environmentVars = args.env || envs.CODECOV_ENV
+    const environmentVars = args.env || envs.CODECOV_ENV || ''
     const vars = environmentVars
       .split(',')
       .filter(Boolean)
@@ -243,7 +239,7 @@ async function main(args) {
       { level: 'debug', args },
     )
     const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
-    log(result)
+    log(JSON.stringify(result))
     return result
   } catch (error) {
     throw new Error(`Error uploading to ${uploadHost}: ${error}`)

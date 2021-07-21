@@ -5,13 +5,15 @@
   "private": true,
   "bin": "bin/codecov",
   "scripts": {
-    "lint": "eslint --fix",
+    "lint": "eslint \"src/**/*.{js,ts}\"",
     "test": "jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
     "build-windows": "pkg . --targets win --output out/codecov.exe",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch"
   },
   "repository": {
     "type": "git",
@@ -27,12 +29,18 @@
   "dependencies": {
     "glob": "7.1.7",
     "line-reader": "0.4.0",
-    "yargs": "16.2.0",
+    "superagent": "6.1.0",
+    "typescript": "4.3.5",
     "validator": "13.6.0",
-    "superagent": "6.1.0"
+    "yargs": "16.2.0"
   },
   "devDependencies": {
-    "eslint": "7.30.0",
+    "@types/glob": "7.1.4",
+    "@types/jest": "26.0.24",
+    "@types/node": "16.3.3",
+    "@typescript-eslint/eslint-plugin": "4.28.4",
+    "@typescript-eslint/parser": "4.28.4",
+    "eslint": "7.31.0",
     "eslint-config-prettier": "8.3.0",
     "husky": "7.0.1",
     "jest": "27.0.6",

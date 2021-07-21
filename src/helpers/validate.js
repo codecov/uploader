@@ -1,5 +1,10 @@
 const validator = require('validator')
 
+/**
+ *
+ * @param {string} token
+ * @returns boolean
+ */
 function validateToken(token) {
   return validator.isAlphanumeric(token)
 }
@@ -25,7 +30,7 @@ function validateFileNamePath(path) {
  * @param {number} requestedLength
  * @returns {boolean}
  */
-const GIT_SHA_LENGTH = 40;
+const GIT_SHA_LENGTH = 40
 
 function validateSHA(commitSHA, requestedLength = GIT_SHA_LENGTH) {
   return (
@@ -33,7 +38,25 @@ function validateSHA(commitSHA, requestedLength = GIT_SHA_LENGTH) {
   )
 }
 
+function getToken(args) {
+  // Token gets set in the following order:
+  // * args.token
+  // * process.env.CODECOV_TOKEN
+  // * ''
+  let token = ''
+  if (args.token && validateToken(args.token)) {
+    token = args.token
+  } else if (
+    process.env.CODECOV_TOKEN &&
+    validateToken(process.env.CODECOV_TOKEN)
+  ) {
+    token = process.env.CODECOV_TOKEN
+  }
+  return token
+}
+
 module.exports = {
+  getToken,
   validateToken,
   validateURL,
   validateFlags,
