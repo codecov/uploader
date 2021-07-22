@@ -143,6 +143,9 @@ jobs:
           command: |
             out/codecov-alpine -F alpine -Z -e CIRCLE_BRANCH
 
+      - store_artifacts:
+          path: output_alpine.txt
+
       - persist_to_workspace:
           root: .
           paths:
