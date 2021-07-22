@@ -275,6 +275,7 @@ function getVersion() {
 }
 
 module.exports = {
+  error,
   main,
   getVersion,
   generateHeader,
