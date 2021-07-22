@@ -68,6 +68,18 @@ describe('Uploader Core', () => {
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< ENV/))
   })
 
+  it('Can upload without token', async () => {
+    jest.spyOn(process, 'exit').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      name: 'customname',
+      url: 'https://codecov.io',
+      dryRun: true,
+      env: 'SOMETHING,ANOTHER',
+    })
+    expect(log).toHaveBeenCalledWith(expect.stringMatching('-> No token specified or token is empty'))
+  })
+
   describe('Flags', () => {
     it('can upload with flags', async () => {
       process.env.CI = 'true'
