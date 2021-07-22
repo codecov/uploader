@@ -93,7 +93,7 @@ async function main(args) {
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
     verbose('Start of network processing...', args.verbose)
-    let fileListing
+    let fileListing = ''
     try {
       fileListing = await fileHelpers.getFileListing(projectRoot, args)
     } catch (error) {
@@ -199,6 +199,7 @@ async function main(args) {
 
   if (serviceParams === undefined) {
     logAndThrow('Unable to detect service, please specify manually.')
+    process.exit(args.nonZero ? -1 : 0)
   }
 
   // == Step 8: either upload or dry-run
@@ -218,14 +219,14 @@ async function main(args) {
   )
   verbose(`Passed token was ${token.length} characters long`, args.verbose)
   try {
-    info(
+    verbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
         args.source,
       )}&${query}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
         X-Reduced-Redundancy: 'false'`,
-      { level: 'debug', args },
+      args.verbose,
     )
 
     const uploadURL = await webHelpers.uploadToCodecov(

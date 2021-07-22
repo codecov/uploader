@@ -196,6 +196,7 @@ function fetchGitRoot() {
     ).trimRight()
   } catch (error) {
     logAndThrow('Error fetching git root. Please try using the -R flag.')
+    return '.'
   }
 }
 
@@ -206,7 +207,8 @@ function fetchGitRoot() {
  */
 function parseGitIgnore(projectRoot) {
   const gitIgnorePath = path.join(projectRoot, '.gitignore')
-  let lines
+  /** @type {string[]} */
+  let lines = []
   try {
     lines = readAllLines(gitIgnorePath) || []
   } catch (error) {
@@ -226,6 +228,7 @@ function parseGitIgnore(projectRoot) {
  * @param {string} projectRoot Root of the project
  * @param {string} dirPath Directory to search in
  * @param {Object} args
+ * @param {boolean} [args.verbose]
  * @param {string[]} arrayOfFiles
  * @returns {string[]}
  */
@@ -280,6 +283,7 @@ function readCoverageFile(projectRoot, filePath) {
   } catch (error) {
     logAndThrow(`There was an error reading the coverage file: ${error}`)
   }
+  return ''
 }
 
 function endNetworkMarker() {
