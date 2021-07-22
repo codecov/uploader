@@ -1,4 +1,5 @@
 const td = require('testdouble')
+const childProcess = require('child_process')
 
 const providerTeamCity = require('../../src/ci_providers/provider_teamcity')
 
@@ -51,6 +52,47 @@ describe('TeamCity Params', () => {
       service: 'teamcity',
       slug: '',
     }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', [
+        'config',
+        '--get',
+        'remote.origin.url',
+      ]),
+    ).thenReturn({ stdout: '' })
+    const params = providerTeamCity.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
+  it('gets correct params and remote slug', () => {
+    const inputs = {
+      args: {},
+      envs: {
+        CI: true,
+        TEAMCITY_VERSION: true,
+        BRANCH_NAME: 'main',
+        BUILD_VCS_NUMBER: 'testingsha',
+        BUILD_NUMBER: 1,
+      },
+    }
+    const expected = {
+      branch: 'main',
+      build: 1,
+      buildURL: '',
+      commit: 'testingsha',
+      job: '',
+      pr: '',
+      service: 'teamcity',
+      slug: 'testOrg/testRepo',
+    }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', [
+        'config',
+        '--get',
+        'remote.origin.url',
+      ]),
+    ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
     const params = providerTeamCity.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -72,6 +114,14 @@ describe('TeamCity Params', () => {
         BUILD_NUMBER: 1,
       },
     }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', [
+        'config',
+        '--get',
+        'remote.origin.url',
+      ]),
+    ).thenReturn({ stdout: '' })
     const expected = {
       branch: 'branch',
       build: 3,
