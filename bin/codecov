@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const app = require('../src')
+const { error, main, verbose} = require('../src')
 
 var argv = require('yargs') // eslint-disable-line
   .usage('Usage: $0 <command> [options]')
@@ -115,16 +115,15 @@ var argv = require('yargs') // eslint-disable-line
 
 const start = Date.now()
 
-app.verbose(`Start of uploader: ${start}...`, argv.verbose)
-app
-  .main(argv)
+verbose(`Start of uploader: ${start}...`, argv.verbose)
+main(argv)
   .then(() => {
     const end = Date.now()
-    app.verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
+    verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
   })
   .catch(err => {
-    app.error(`Error!: ${err}`)
+    error(`Error!: ${err}`)
     const end = Date.now()
-    app.verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
+    verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
     process.exit(argv.nonZero ? -1 : 0)
   })
