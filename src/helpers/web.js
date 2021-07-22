@@ -71,31 +71,34 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
 /**
  *
  * @param {string} uploadURL The upload url
- * @param {string} token Covecov token
+ * @param {string} token Codecov token
  * @param {string} query Query parameters
  * @param {Buffer} uploadFile Coverage file to upload
  * @param {string} version uploader version number
  * @returns {Promise<string>}
  */
 async function uploadToCodecov(uploadURL, token, query, uploadFile, source) {
-  try {
-    const result = await superagent
-      .post(
-        `${uploadURL}/upload/v4?package=${getPackage(
-          source,
-        )}&token=${token}&${query}`,
+  const result = await superagent
+    .post(
+      `${uploadURL}/upload/v4?package=${getPackage(
+        source,
+      )}&token=${token}&${query}`,
+    )
+    .retry()
+    .send(uploadFile)
+    .set('Content-Type', 'text/plain')
+    .set('Content-Encoding', 'gzip')
+    .set('X-Upload-Token', token)
+    .set('X-Reduced-Redundancy', 'false')
+    .on('error', err => {
+      error(
+        `Error uploading to Codecov when fetching PUT (inner): ${err.status} ${err.response.text}`,
       )
-      .retry()
-      .send(uploadFile)
-      .set('Content-Type', 'text/plain')
-      .set('Content-Encoding', 'gzip')
-      .set('X-Upload-Token', token)
-      .set('X-Reduced-Redundancy', 'false')
-
-    return result.res.text
-  } catch (error) {
-    logAndThrow(`Error uploading to Codecov when fetching PUT: ${error}`)
-  }
+    })
+    .ok(res => res.status === 200)
+    .then(res => {
+      return result.res.text
+    })
 }
 
 /**
