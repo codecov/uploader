@@ -5,6 +5,12 @@ const yaml = require('js-yaml')
 const { error, info, verbose } = require('./logger')
 const validateHelpers = require('./validate')
 
+/**
+ *
+ * @param {object} inputs
+ * @param {strinh} projectRoot
+ * @returns string
+ */
 function getToken(inputs, projectRoot) {
   const { args, envs } = inputs
   const options = [
