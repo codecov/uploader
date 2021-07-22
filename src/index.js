@@ -276,4 +276,5 @@ module.exports = {
   main,
   getVersion,
   generateHeader,
+  verbose,
 }

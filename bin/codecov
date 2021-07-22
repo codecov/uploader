@@ -115,22 +115,16 @@ var argv = require('yargs') // eslint-disable-line
 
 const start = Date.now()
 
-app.log(`Start of uploader: ${start}...`, { level: 'debug', argv })
+app.verbose(`Start of uploader: ${start}...`, argv.verbose)
 app
   .main(argv)
   .then(() => {
     const end = Date.now()
-    app.log(`End of uploader: ${end - start} milliseconds`, {
-      level: 'debug',
-      argv,
-    })
+    app.verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
   })
   .catch(error => {
     app.log(`Error!: ${error}`, { level: 'error', argv })
     const end = Date.now()
-    app.log(`End of uploader: ${end - start} milliseconds`, {
-      level: 'debug',
-      argv,
-    })
+    app.verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
     process.exit(argv.nonZero ? -1 : 0)
   })
