@@ -237,7 +237,7 @@ async function main(args) {
       args.source,
     )
 
-    verbose(uploadURL, args.verbose)
+    verbose(`Returned upload url: ${uploadURL}`, args.verbose)
 
     verbose(
       `${uploadURL.split('\n')[1]}
