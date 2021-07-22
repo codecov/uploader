@@ -96,9 +96,8 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, source) {
       )
     })
     .ok(res => res.status === 200)
-    .then(res => {
-      return result.res.text
-    })
+
+  return result.res.text
 }
 
 /**
