@@ -122,8 +122,8 @@ app
     const end = Date.now()
     app.verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
   })
-  .catch(error => {
-    app.error(`Error!: ${error}`)
+  .catch(err => {
+    app.error(`Error!: ${err}`)
     const end = Date.now()
     app.verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
     process.exit(argv.nonZero ? -1 : 0)
