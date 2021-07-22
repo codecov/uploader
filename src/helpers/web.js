@@ -2,6 +2,7 @@ const superagent = require('superagent')
 const { version } = require('../../package.json')
 const validateHelpers = require('./validate')
 const { error, info, verbose } = require('./logger')
+const { logAndThrow } = require('./util')
 
 /**
  *
@@ -59,9 +60,11 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
     if (result.status === 200) {
       return { status: 'success', resultURL: codecovResultURL }
     }
-    throw new Error(`Error uploading: ${result.status}, ${result.body}`)
+    logAndThrow(
+      `Error uploading during PUT (inner): ${result.status}, ${result.body}`,
+    )
   } catch (error) {
-    throw new Error(`Error uploading: ${error}`)
+    logAndThrow(`Error uploading during PUT (outer): ${error}`)
   }
 }
 
@@ -91,7 +94,7 @@ async function uploadToCodecov(uploadURL, token, query, uploadFile, source) {
 
     return result.res.text
   } catch (error) {
-    throw new Error(`Error uploading to Codecov: ${error}`)
+    logAndThrow(`Error uploading to Codecov when fetching PUT: ${error}`)
   }
 }
 

@@ -1,5 +1,6 @@
 const childprocess = require('child_process')
 const { parseSlug } = require('../helpers/git')
+const { logAndThrow } = require('../helpers/util')
 
 function detect(envs) {
   return !envs.CI
@@ -24,9 +25,7 @@ function _getBranch(inputs) {
       .trimRight()
     return args.branch || branchName
   } catch (error) {
-    throw new Error(
-      `There was an error getting the branch name from git: ${error}`,
-    )
+    logAndThrow(`There was an error getting the branch name from git: ${error}`)
   }
 }
 
@@ -60,9 +59,7 @@ function _getSHA(inputs) {
       .trimRight()
     return args.sha || sha
   } catch (error) {
-    throw new Error(
-      `There was an error getting the commit SHA from git: ${error}`,
-    )
+    logAndThrow(`There was an error getting the commit SHA from git: ${error}`)
   }
 }
 
@@ -75,7 +72,7 @@ function _getSlug(inputs) {
       .trimRight()
     return args.slug || parseSlug(slug)
   } catch (error) {
-    throw new Error(`There was an error getting the slug from git: ${error}`)
+    logAndThrow(`There was an error getting the slug from git: ${error}`)
   }
 }
 

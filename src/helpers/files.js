@@ -3,7 +3,7 @@ const childProcess = require('child_process')
 const fs = require('fs')
 const glob = require('glob')
 const path = require('path').posix
-
+const { logAndThrow } = require('./util')
 const { error, info, verbose } = require('./logger')
 
 /**
@@ -195,7 +195,7 @@ function fetchGitRoot() {
       process.cwd()
     ).trimRight()
   } catch (error) {
-    throw new Error('Error fetching git root. Please try using the -R flag.')
+    logAndThrow('Error fetching git root. Please try using the -R flag.')
   }
 }
 
@@ -210,7 +210,7 @@ function parseGitIgnore(projectRoot) {
   try {
     lines = readAllLines(gitIgnorePath) || []
   } catch (error) {
-    throw new Error(`Unable to open ${gitIgnorePath}: ${error}`)
+    logAndThrow(`Unable to open ${gitIgnorePath}: ${error}`)
   }
 
   return lines.filter(line => {
@@ -278,7 +278,7 @@ function readCoverageFile(projectRoot, filePath) {
       encoding: 'utf-8',
     })
   } catch (error) {
-    throw new Error(`There was an error reading the coverage file: ${error}`)
+    logAndThrow(`There was an error reading the coverage file: ${error}`)
   }
 }
 

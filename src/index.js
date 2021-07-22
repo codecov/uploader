@@ -7,6 +7,7 @@ const tokenHelpers = require('./helpers/token')
 const webHelpers = require('./helpers/web')
 const { error, info, verbose } = require('./helpers/logger')
 const providers = require('./ci_providers')
+const { logAndThrow } = require('./helpers/util')
 
 /**
  *
@@ -96,7 +97,7 @@ async function main(args) {
     try {
       fileListing = await fileHelpers.getFileListing(projectRoot, args)
     } catch (error) {
-      throw new Error(`Error getting file listing: ${error}`)
+      logAndThrow(`Error getting file listing: ${error}`)
     }
 
     uploadFile = uploadFile
@@ -119,7 +120,7 @@ async function main(args) {
       info(`=> Found ${coverageFilePaths.length} possible coverage files:`)
       info(coverageFilePaths.join('\n'))
     } else {
-      throw new Error(
+      logAndThrow(
         'No coverage files located, please try use `-f`, or change the project root with `-R`',
       )
     }
@@ -134,7 +135,7 @@ async function main(args) {
       return validateHelpers.validateFileNamePath(file)
     })
     if (coverageFilePaths.length === 0) {
-      throw new Error('No coverage files found, exiting.')
+      logAndThrow('No coverage files found, exiting.')
     }
   }
   verbose('End of network processing', args.verbose)
@@ -197,7 +198,7 @@ async function main(args) {
   }
 
   if (serviceParams === undefined) {
-    throw new Error('Unable to detect service, please specify manually.')
+    logAndThrow('Unable to detect service, please specify manually.')
   }
 
   // == Step 8: either upload or dry-run
@@ -247,7 +248,7 @@ async function main(args) {
     info(JSON.stringify(result))
     return result
   } catch (error) {
-    throw new Error(`Error uploading to ${uploadHost}: ${error}`)
+    logAndThrow(`Error uploading to ${uploadHost}: ${error}`)
   }
 }
 
