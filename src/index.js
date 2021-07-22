@@ -87,6 +87,9 @@ async function main(args) {
 
   // == Step 3: sanitize and set token
   const token = await tokenHelpers.getToken(inputs, projectRoot)
+  if (token === '') {
+    log('-> No token specified or token is empty')
+  }
 
   // == Step 4: get network
   let uploadFile = ''

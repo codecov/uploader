@@ -1,3 +1,5 @@
+const { parseSlugFromRemoteAddr } = require('../helpers/git')
+
 function detect(envs) {
   return !!envs.TEAMCITY_VERSION
 }
@@ -29,7 +31,7 @@ function _getSHA(inputs) {
 
 function _getSlug(inputs) {
   const { args } = inputs
-  return args.slug || ''
+  return args.slug || parseSlugFromRemoteAddr('') || ''
 }
 
 function _getBuild(inputs) {
