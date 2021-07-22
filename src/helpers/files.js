@@ -4,7 +4,7 @@ const fs = require('fs')
 const glob = require('glob')
 const path = require('path').posix
 
-const { log } = require('./logger')
+const { error, info, verbose } = require('./logger')
 
 /**
  *
@@ -230,7 +230,7 @@ function parseGitIgnore(projectRoot) {
  * @returns {string[]}
  */
 function getAllFiles(projectRoot, dirPath, args, arrayOfFiles = []) {
-  log(`Searching for files in ${dirPath}`, { level: 'debug', args })
+  verbose(`Searching for files in ${dirPath}`, args.verbose)
   const files = fs.readdirSync(dirPath)
 
   files.forEach(function (file) {
@@ -250,7 +250,7 @@ function getAllFiles(projectRoot, dirPath, args, arrayOfFiles = []) {
       )
     }
   })
-  log(`Search complete for files in ${dirPath}`, { level: 'debug', args })
+  verbose(`Search complete for files in ${dirPath}`, args.verbose)
   return arrayOfFiles
 }
 
@@ -332,7 +332,7 @@ function getFilePath(projectRoot, filePath) {
 function removeFile(projectRoot, filePath) {
   fs.unlink(getFilePath(projectRoot, filePath), err => {
     if (err) {
-      log(`Error removing ${filePath} coverage file`)
+      error(`Error removing ${filePath} coverage file`)
     }
   })
 }

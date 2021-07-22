@@ -1,7 +1,7 @@
 const superagent = require('superagent')
 const { version } = require('../../package.json')
 const validateHelpers = require('./validate')
-const { log } = require('./logger')
+const { error, info, verbose } = require('./logger')
 
 /**
  *
@@ -15,12 +15,14 @@ function populateBuildParams(inputs, serviceParams) {
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
   let flags
-  if (typeof(args.flags) === 'object') {
+  if (typeof args.flags === 'object') {
     flags = [...args.flags]
   } else {
     flags = [args.flags]
   }
-  serviceParams.flags = flags.filter((flag) => validateHelpers.validateFlags(flag)).join(',')
+  serviceParams.flags = flags
+    .filter(flag => validateHelpers.validateFlags(flag))
+    .join(',')
   serviceParams.parent = args.parent || ''
   return serviceParams
 }
@@ -40,7 +42,7 @@ function getPackage(source) {
  * @returns {Promise<{ status: string, resultURL: string }>}
  */
 async function uploadToCodecovPUT(uploadURL, uploadFile) {
-  log('Uploading...')
+  info('Uploading...')
 
   const parts = uploadURL.split('\n')
   const putURL = parts[1]
@@ -75,7 +77,11 @@ async function uploadToCodecovPUT(uploadURL, uploadFile) {
 async function uploadToCodecov(uploadURL, token, query, uploadFile, source) {
   try {
     const result = await superagent
-      .post(`${uploadURL}/upload/v4?package=${getPackage(source)}&token=${token}&${query}`)
+      .post(
+        `${uploadURL}/upload/v4?package=${getPackage(
+          source,
+        )}&token=${token}&${query}`,
+      )
       .retry()
       .send(uploadFile)
       .set('Content-Type', 'text/plain')
