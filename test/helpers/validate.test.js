@@ -5,8 +5,12 @@ const realEnv = { ...process.env }
 
 describe('Input Validators', () => {
   describe('Tokens', () => {
-    it('Returns true with a valid token', () => {
+    it('Returns true with a valid alphanumeric token', () => {
       expect(validate.validateToken('1bc123')).toBe(true)
+    })
+    it('Returns true with a valid UUID token', () => {
+      // Use a randomly generated UUIDv4
+      expect(validate.validateToken('5becd1a9-efa8-4bd8-8f94-e9f8613820c3')).toBe(true)
     })
     it('Returns false with an invalid token', () => {
       expect(validate.validateToken('1bc1 23')).toBe(false)

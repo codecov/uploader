@@ -6,7 +6,7 @@ const validator = require('validator')
  * @returns boolean
  */
 function validateToken(token) {
-  return validator.isAlphanumeric(token)
+  return validator.isAlphanumeric(token) || validator.isUUID(token)
 }
 
 function validateURL(url) {

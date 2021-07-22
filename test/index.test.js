@@ -4,6 +4,9 @@ const { version } = require('../package.json')
 const nock = require('nock')
 const fs = require('fs')
 
+// Backup the env
+const realEnv = { ...process.env }
+
 describe('Uploader Core', () => {
   const env = process.env
 
@@ -68,16 +71,26 @@ describe('Uploader Core', () => {
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< ENV/))
   })
 
-  it('Can upload without token', async () => {
-    jest.spyOn(process, 'exit').mockImplementation(() => {})
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
-    await app.main({
-      name: 'customname',
-      url: 'https://codecov.io',
-      dryRun: true,
-      env: 'SOMETHING,ANOTHER',
+  describe('Token', () => {
+    beforeEach(() => {
+      delete process.env.CODECOV_TOKEN
     })
-    expect(log).toHaveBeenCalledWith(expect.stringMatching('-> No token specified or token is empty'))
+
+    afterEach(() => {
+      process.env = realEnv
+    })
+
+    it('Can upload without token', async () => {
+      jest.spyOn(process, 'exit').mockImplementation(() => {})
+      const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+      await app.main({
+        name: 'customname',
+        url: 'https://codecov.io',
+        dryRun: true,
+        env: 'SOMETHING,ANOTHER',
+      })
+      expect(log).toHaveBeenCalledWith(expect.stringMatching('-> No token specified or token is empty'))
+    })
   })
 
   describe('Flags', () => {
