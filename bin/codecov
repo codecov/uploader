@@ -2,7 +2,7 @@
 
 const { error, main, verbose} = require('../src')
 
-var argv = require('yargs') // eslint-disable-line
+const args = require('yargs')
   .usage('Usage: $0 <command> [options]')
   .options({
     build: {
