@@ -116,7 +116,7 @@ var argv = require('yargs') // eslint-disable-line
 
 const start = Date.now()
 
-app.log(`Start of uploader: ${start}...`, { level: 'debug', argv })
+logVerbose(`Start of uploader: ${start}...`, argv.verbose)
 main(argv)
   .then(() => {
     const end = Date.now()

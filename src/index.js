@@ -283,10 +283,10 @@ function getVersion() {
 }
 
 module.exports = {
-  error: logError,
+  logError,
   log,
   main,
   getVersion,
   generateHeader,
-  verbose: logVerbose,
+  logVerbose,
 }
