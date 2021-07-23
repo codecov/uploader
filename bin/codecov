@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const app = require('../src')
-const { logVerbose, main } = require('../src')
+const { logError, logVerbose, main } = require('../src')
 
 var argv = require('yargs') // eslint-disable-line
   .usage('Usage: $0 <command> [options]')
