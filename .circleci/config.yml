@@ -106,10 +106,6 @@ jobs:
           name: Build uploader binary on alpine
           command: npm run build-alpine
 
-      - run:
-          name: Test the binary with debug
-          command: DEBUG_PKG=1 out/codecov-alpine -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -v -e CIRCLE_BRANCH
-
       - store_artifacts:
           path: out/codecov-alpine
 
