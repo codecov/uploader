@@ -5,7 +5,12 @@ const fileHelpers = require('./helpers/files')
 const validateHelpers = require('./helpers/validate')
 const tokenHelpers = require('./helpers/token')
 const webHelpers = require('./helpers/web')
-const { error, info, verbose, log } = require('./helpers/logger')
+const {
+  error: logError,
+  info,
+  verbose: logVerbose,
+  log,
+} = require('./helpers/logger')
 const providers = require('./ci_providers')
 const { logAndThrow } = require('./helpers/util')
 
@@ -95,7 +100,7 @@ async function main(args) {
   let uploadFile = ''
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
-    verbose('Start of network processing...', args.verbose)
+    logVerbose('Start of network processing...', args.verbose)
     let fileListing = ''
     try {
       fileListing = await fileHelpers.getFileListing(projectRoot, args)
@@ -141,7 +146,7 @@ async function main(args) {
       logAndThrow('No coverage files found, exiting.')
     }
   }
-  verbose('End of network processing', args.verbose)
+  logVerbose('End of network processing', args.verbose)
 
   // == Step 6: generate upload file
   // TODO: capture envs
@@ -220,9 +225,9 @@ async function main(args) {
       args.source,
     )}&token=*******&${query}`,
   )
-  verbose(`Passed token was ${token.length} characters long`, args.verbose)
+  logVerbose(`Passed token was ${token.length} characters long`, args.verbose)
   try {
-    verbose(
+    logVerbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
         args.source,
       )}&${query}
@@ -240,9 +245,9 @@ async function main(args) {
       args.source,
     )
 
-    verbose(`Returned upload url: ${uploadURL}`, args.verbose)
+    logVerbose(`Returned upload url: ${uploadURL}`, args.verbose)
 
-    verbose(
+    logVerbose(
       `${uploadURL.split('\n')[1]}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'`,
@@ -278,10 +283,10 @@ function getVersion() {
 }
 
 module.exports = {
-  error,
+  error: logError,
   log,
   main,
   getVersion,
   generateHeader,
-  verbose,
+  verbose: logVerbose,
 }
