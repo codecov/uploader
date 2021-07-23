@@ -1,5 +1,6 @@
 const childprocess = require('child_process')
 const { parseSlug } = require('../helpers/git')
+const { logAndThrow } = require('../helpers/util')
 
 function detect(envs) {
   return !envs.CI
@@ -17,16 +18,17 @@ function _getBuildURL(inputs) {
 
 function _getBranch(inputs) {
   const { args } = inputs
+  if (args.branch) {
+    return args.branch
+  }
   try {
     const branchName = childprocess
       .spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
       .stdout.toString()
       .trimRight()
-    return args.branch || branchName
+    return branchName
   } catch (error) {
-    throw new Error(
-      `There was an error getting the branch name from git: ${error}`,
-    )
+    logAndThrow(`There was an error getting the branch name from git: ${error}`)
   }
 }
 
@@ -53,29 +55,33 @@ function getServiceName() {
 
 function _getSHA(inputs) {
   const { args } = inputs
+  if (args.sha) {
+    return args.sha
+  }
   try {
     const sha = childprocess
       .spawnSync('git', ['rev-parse', 'HEAD'])
       .stdout.toString()
       .trimRight()
-    return args.sha || sha
+    return sha
   } catch (error) {
-    throw new Error(
-      `There was an error getting the commit SHA from git: ${error}`,
-    )
+    logAndThrow(`There was an error getting the commit SHA from git: ${error}`)
   }
 }
 
 function _getSlug(inputs) {
   const { args } = inputs
+  if (args.slug) {
+    return args.slug
+  }
   try {
     const slug = childprocess
       .spawnSync('git', ['config', '--get', 'remote.origin.url'])
       .stdout.toString()
       .trimRight()
-    return args.slug || parseSlug(slug)
+    return parseSlug(slug)
   } catch (error) {
-    throw new Error(`There was an error getting the slug from git: ${error}`)
+    logAndThrow(`There was an error getting the slug from git: ${error}`)
   }
 }
 

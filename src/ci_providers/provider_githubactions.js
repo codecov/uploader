@@ -1,5 +1,5 @@
 const childProcess = require('child_process')
-const { log } = require('../helpers/logger')
+const { error, info, verbose } = require('../helpers/logger')
 
 function detect(envs) {
   return envs.GITHUB_ACTIONS
@@ -70,10 +70,10 @@ function _getSHA(inputs) {
       .trimRight()
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
-      log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
+      info(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
       commit = mergeCommit
     } else if (mergeCommitMessage === '') {
-      log(
+      info(
         '->  Issue detecting commit SHA. Please run actions/checkout with fetch-depth > 1 or set to 0',
       )
     }

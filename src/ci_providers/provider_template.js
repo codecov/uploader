@@ -4,6 +4,9 @@
  * @param {*} envs an object of enviromental variable key/value pairs
  * @returns boolean
  */
+
+const { logAndThrow } = require('../helpers/util')
+
 // eslint-disable-next-line no-unused-vars
 function detect(envs) {
   return false
@@ -42,9 +45,7 @@ function _getBranch(inputs) {
   try {
     return args.branch || ''
   } catch (error) {
-    throw new Error(
-      `There was an error getting the branch name from git: ${error}`,
-    )
+    logAndThrow(`There was an error getting the branch name from git: ${error}`)
   }
 }
 
@@ -71,9 +72,7 @@ function _getPR(inputs) {
   try {
     return args.pr || ''
   } catch (error) {
-    throw new Error(
-      `There was an error getting the branch name from git: ${error}`,
-    )
+    logAndThrow(`There was an error getting the pr number: ${error}`)
   }
 }
 
@@ -105,9 +104,7 @@ function _getSHA(inputs) {
   try {
     return args.sha || ''
   } catch (error) {
-    throw new Error(
-      `There was an error getting the commit SHA from git: ${error}`,
-    )
+    logAndThrow(`There was an error getting the commit SHA from git: ${error}`)
   }
 }
 /**
@@ -121,7 +118,7 @@ function _getSlug(inputs) {
   try {
     return args.slug || ''
   } catch (error) {
-    throw new Error(`There was an error getting the slug from git: ${error}`)
+    logAndThrow(`There was an error getting the slug from git: ${error}`)
   }
 }
 /**

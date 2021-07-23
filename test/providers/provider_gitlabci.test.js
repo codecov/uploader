@@ -47,6 +47,14 @@ describe('GitLabCI Params', () => {
       service: 'gitlab',
       slug: '',
     }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', [
+        'config',
+        '--get',
+        'remote.origin.url',
+      ]),
+    ).thenReturn({ stdout: '' })
     const params = providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -132,9 +140,6 @@ describe('GitLabCI Params', () => {
           'config',
           '--get',
           'remote.origin.url',
-          '||',
-          'echo',
-          "''",
         ]),
       ).thenReturn({ stdout: 'https://gitlab.com/testOrg/testRepo.git' })
 
@@ -150,9 +155,6 @@ describe('GitLabCI Params', () => {
           'config',
           '--get',
           'remote.origin.url',
-          '||',
-          'echo',
-          "''",
         ]),
       ).thenReturn({ stdout: 'git@gitlab.com:/' })
 
@@ -168,9 +170,6 @@ describe('GitLabCI Params', () => {
           'config',
           '--get',
           'remote.origin.url',
-          '||',
-          'echo',
-          "''",
         ]),
       ).thenReturn({ stdout: '' })
 

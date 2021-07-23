@@ -1,4 +1,5 @@
 const childProcess = require('child_process')
+const { logAndThrow } = require('./util')
 
 function parseSlug(slug) {
   // origin    https://github.com/torvalds/linux.git (fetch)
@@ -18,22 +19,17 @@ function parseSlug(slug) {
     const cleanSlug = slug.split(':')[1].replace('.git', '')
     return cleanSlug
   }
-  throw new Error(`Unable to parse slug URL: ${slug}`)
+  logAndThrow(`Unable to parse slug URL: ${slug}`)
 }
 
 function parseSlugFromRemoteAddr(remoteAddr) {
   let slug = ''
   if (!remoteAddr) {
-    remoteAddr = childProcess
-      .spawnSync('git', [
-        'config',
-        '--get',
-        'remote.origin.url',
-        '||',
-        'echo',
-        "''",
-      ])
-      .stdout.toString()
+    remoteAddr = (
+      childProcess.spawnSync('git', ['config', '--get', 'remote.origin.url'])
+        .stdout || ''
+    )
+      .toString()
       .trimRight()
   }
   if (remoteAddr) {
