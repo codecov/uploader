@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const app = require('../src')
-const { logVerbose } = require('../src')
+const { logVerbose, main } = require('../src')
 
 var argv = require('yargs') // eslint-disable-line
   .usage('Usage: $0 <command> [options]')
@@ -117,8 +117,7 @@ var argv = require('yargs') // eslint-disable-line
 const start = Date.now()
 
 app.log(`Start of uploader: ${start}...`, { level: 'debug', argv })
-app
-  .main(argv)
+main(argv)
   .then(() => {
     const end = Date.now()
     app.log(`End of uploader: ${end - start} milliseconds`, {
