@@ -120,17 +120,11 @@ logVerbose(`Start of uploader: ${start}...`, argv.verbose)
 main(argv)
   .then(() => {
     const end = Date.now()
-    app.log(`End of uploader: ${end - start} milliseconds`, {
-      level: 'debug',
-      argv,
-    })
+    logVerbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
   })
   .catch(error => {
     app.logError(`Error!: ${error}`)
     const end = Date.now()
-    app.log(`End of uploader: ${end - start} milliseconds`, {
-      level: 'debug',
-      argv,
-    })
+    logVerbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
     process.exit(argv.nonZero ? -1 : 0)
   })
