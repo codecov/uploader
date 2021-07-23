@@ -2,8 +2,8 @@ const childProcess = require('child_process')
 const fs = require('fs')
 const glob = require('glob')
 const path = require('path').posix
-
-const { log } = require('./logger')
+const { logAndThrow } = require('./util')
+const { error, info, verbose } = require('./logger')
 
 /**
  *
@@ -194,7 +194,8 @@ function fetchGitRoot() {
       process.cwd()
     ).trimRight()
   } catch (error) {
-    throw new Error('Error fetching git root. Please try using the -R flag.')
+    logAndThrow('Error fetching git root. Please try using the -R flag.')
+    return '.'
   }
 }
 
@@ -205,11 +206,12 @@ function fetchGitRoot() {
  */
 function parseGitIgnore(projectRoot) {
   const gitIgnorePath = path.join(projectRoot, '.gitignore')
-  let lines
+  /** @type {string[]} */
+  let lines = []
   try {
     lines = readAllLines(gitIgnorePath) || []
   } catch (error) {
-    throw new Error(`Unable to open ${gitIgnorePath}: ${error}`)
+    logAndThrow(`Unable to open ${gitIgnorePath}: ${error}`)
   }
 
   return lines.filter(line => {
@@ -225,11 +227,12 @@ function parseGitIgnore(projectRoot) {
  * @param {string} projectRoot Root of the project
  * @param {string} dirPath Directory to search in
  * @param {Object} args
+ * @param {boolean} [args.verbose]
  * @param {string[]} arrayOfFiles
  * @returns {string[]}
  */
 function getAllFiles(projectRoot, dirPath, args, arrayOfFiles = []) {
-  log(`Searching for files in ${dirPath}`, { level: 'debug', args })
+  verbose(`Searching for files in ${dirPath}`, args.verbose)
   const files = fs.readdirSync(dirPath)
 
   files.forEach(function (file) {
@@ -249,7 +252,7 @@ function getAllFiles(projectRoot, dirPath, args, arrayOfFiles = []) {
       )
     }
   })
-  log(`Search complete for files in ${dirPath}`, { level: 'debug', args })
+  verbose(`Search complete for files in ${dirPath}`, args.verbose)
   return arrayOfFiles
 }
 
@@ -277,8 +280,9 @@ function readCoverageFile(projectRoot, filePath) {
       encoding: 'utf-8',
     })
   } catch (error) {
-    throw new Error(`There was an error reading the coverage file: ${error}`)
+    logAndThrow(`There was an error reading the coverage file: ${error}`)
   }
+  return ''
 }
 
 function endNetworkMarker() {
@@ -331,7 +335,7 @@ function getFilePath(projectRoot, filePath) {
 function removeFile(projectRoot, filePath) {
   fs.unlink(getFilePath(projectRoot, filePath), err => {
     if (err) {
-      log(`Error removing ${filePath} coverage file`)
+      error(`Error removing ${filePath} coverage file`)
     }
   })
 }
