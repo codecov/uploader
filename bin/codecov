@@ -126,7 +126,7 @@ main(argv)
     })
   })
   .catch(error => {
-    app.log(`Error!: ${error}`, { level: 'error', argv })
+    app.logError(`Error!: ${error}`)
     const end = Date.now()
     app.log(`End of uploader: ${end - start} milliseconds`, {
       level: 'debug',
