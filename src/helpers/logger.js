@@ -25,19 +25,19 @@ function _getTimestamp() {
  */
 function log(message, options) {
   if (!options || !options.level) {
-    return info(message)
+    return logInfo(message)
   }
   switch (options.level) {
     case 'debug':
       if (options.args && options.args.verbose) {
-        return verbose(message, true)
+        return logVerbose(message, true)
       }
 
       break
     case 'error':
-      return error(message)
+      return logError(message)
     default:
-      return info(message)
+      return logInfo(message)
   }
 }
 
@@ -47,7 +47,7 @@ function log(message, options) {
  * @param {boolean} shouldVerbose - pass the value of the verbose flag
  * @return void
  */
-function verbose(message, shouldVerbose = false) {
+function logVerbose(message, shouldVerbose = false) {
   if (shouldVerbose === true) {
     console.debug(`[${_getTimestamp()}] ['verbose'] ${message}`)
   }
@@ -58,7 +58,7 @@ function verbose(message, shouldVerbose = false) {
  * @param {string} message - message to log
  * @return void
  */
-function error(message) {
+function logError(message) {
   console.error(`[${_getTimestamp()}] ['error'] ${message}`)
 }
 
@@ -67,14 +67,13 @@ function error(message) {
  * @param {string} message - message to log
  * @return void
  */
-function info(message) {
+function logInfo(message) {
   console.log(`[${_getTimestamp()}] ['info'] ${message}`)
 }
 
 module.exports = {
-  debug: verbose,
-  error,
-  info,
+  logError: logError,
+  logInfo: logInfo,
   log,
-  verbose,
+  logVerbose: logVerbose,
 }

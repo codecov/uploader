@@ -1,5 +1,9 @@
 const childProcess = require('child_process')
-const { error, info, verbose } = require('../helpers/logger')
+const {
+  logError: error,
+  logInfo: info,
+  logVerbose: verbose,
+} = require('../helpers/logger')
 
 function detect(envs) {
   return !!envs.SYSTEM_TEAMFOUNDATIONSERVERURI

@@ -1,4 +1,4 @@
-const { error } = require('./logger')
+const { logError: error } = require('./logger')
 
 /**
  * Log the error and throw it

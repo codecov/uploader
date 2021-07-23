@@ -5,7 +5,11 @@ const fileHelpers = require('./helpers/files')
 const validateHelpers = require('./helpers/validate')
 const tokenHelpers = require('./helpers/token')
 const webHelpers = require('./helpers/web')
-const { error, info, verbose } = require('./helpers/logger')
+const {
+  logError: error,
+  logInfo: info,
+  logVerbose: verbose,
+} = require('./helpers/logger')
 const providers = require('./ci_providers')
 const { logAndThrow } = require('./helpers/util')
 

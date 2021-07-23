@@ -2,7 +2,11 @@ const fs = require('fs')
 const path = require('path')
 const yaml = require('js-yaml')
 
-const { error, info, verbose } = require('./logger')
+const {
+  logError: error,
+  logInfo: info,
+  logVerbose: verbose,
+} = require('./logger')
 const validateHelpers = require('./validate')
 
 /**

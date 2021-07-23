@@ -1,5 +1,10 @@
 // @ts-check
-const { error, info, verbose, log } = require('../../src/helpers/logger')
+const {
+  logError: error,
+  logInfo: info,
+  logVerbose: verbose,
+  log,
+} = require('../../src/helpers/logger')
 const { expect, it } = require('@jest/globals')
 
 describe('Logger Helper - Legacy log() tests', () => {

@@ -1,7 +1,11 @@
 const superagent = require('superagent')
 const { version } = require('../../package.json')
 const validateHelpers = require('./validate')
-const { error, info, verbose } = require('./logger')
+const {
+  logError: error,
+  logInfo: info,
+  logVerbose: verbose,
+} = require('./logger')
 const { logAndThrow } = require('./util')
 
 /**

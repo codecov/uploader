@@ -4,7 +4,11 @@ const fs = require('fs')
 const glob = require('glob')
 const path = require('path').posix
 const { logAndThrow } = require('./util')
-const { error, info, verbose } = require('./logger')
+const {
+  logError: error,
+  logInfo: info,
+  logVerbose: verbose,
+} = require('./logger')
 
 /**
  *
