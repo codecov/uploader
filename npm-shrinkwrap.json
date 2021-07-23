@@ -9,7 +9,7 @@
       "version": "0.1.0",
       "license": "ISC",
       "dependencies": {
-        "fast-glob": "^3.2.7",
+        "fast-glob": "3.2.7",
         "glob": "7.1.7",
         "js-yaml": "4.1.0",
         "line-reader": "0.4.0",
@@ -3274,7 +3274,9 @@
       "integrity": "sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==",
       "dev": true,
       "optional": true,
-      "os": ["darwin"],
+      "os": [
+        "darwin"
+      ],
       "engines": {
         "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
       }
