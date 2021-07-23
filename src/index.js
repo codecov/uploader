@@ -5,7 +5,7 @@ const fileHelpers = require('./helpers/files')
 const validateHelpers = require('./helpers/validate')
 const tokenHelpers = require('./helpers/token')
 const webHelpers = require('./helpers/web')
-const { error, info, verbose, log } = require('./helpers/logger')
+const { error, info, verbose } = require('./helpers/logger')
 const providers = require('./ci_providers')
 const { logAndThrow } = require('./helpers/util')
 
@@ -279,7 +279,6 @@ function getVersion() {
 
 module.exports = {
   error,
-  log,
   main,
   getVersion,
   generateHeader,
