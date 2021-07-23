@@ -113,17 +113,21 @@ var argv = require('yargs') // eslint-disable-line
   .help('help')
   .alias('help', 'h').argv
 
-const start = Date.now()
+void (async () => {
+  const start = Date.now()
 
-verbose(`Start of uploader: ${start}...`, argv.verbose)
-main(argv)
-  .then(() => {
+  verbose(`Start of uploader: ${start}...`, args.verbose)
+
+  try {
+    await main(args)
+  } catch (reason) {
+    error(`Error!: ${reason}`)
+
+    // Exit gracefully
+    process.exitCode = args.nonZero ? -1 : 0
+  } finally {
     const end = Date.now()
-    verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
-  })
-  .catch(err => {
-    error(`Error!: ${err}`)
-    const end = Date.now()
-    verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
-    process.exit(argv.nonZero ? -1 : 0)
-  })
+
+    verbose(`End of uploader: ${end - start} milliseconds`, args.verbose)
+  }
+})()
