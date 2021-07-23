@@ -1,4 +1,3 @@
-// @ts-check
 const logger = require('../../src/helpers/logger')
 const { expect, it } = require('@jest/globals')
 

@@ -1,4 +1,3 @@
-// @ts-check
 const childProcess = require('child_process')
 const fs = require('fs')
 const glob = require('glob')
