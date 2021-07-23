@@ -7,9 +7,9 @@
   "scripts": {
     "lint": "eslint \"src/**/*.{js,ts}\"",
     "test": "jest",
-    "build-linux": "pkg . --targets linux --output out/codecov-linux",
+    "build-linux": "pkg package.json --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
-    "build-alpine": "pkg . ----no-bytecode --targets node14-alpine-x64 --output out/codecov-alpine",
+    "build-alpine": "pkg . --debug --targets node14-alpine-x64 --output out/codecov-alpine",
     "build-windows": "pkg . --targets win --output out/codecov.exe",
     "prepare": "husky install",
     "type-check": "tsc --noEmit",
