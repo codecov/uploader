@@ -1,5 +1,3 @@
-// @ts-check
-
 /**
  *  We really only need three log levels
  * * Error

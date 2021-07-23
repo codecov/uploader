@@ -1,4 +1,4 @@
-// @ts-check
+
 const { error, info, verbose, log } = require('../../src/helpers/logger')
 const { expect, it } = require('@jest/globals')
 

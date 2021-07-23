@@ -1,4 +1,3 @@
-// @ts-check
 const zlib = require('zlib')
 const { version } = require('../package.json')
 const fileHelpers = require('./helpers/files')
