@@ -8,7 +8,7 @@ const validateHelpers = require('./validate')
 /**
  *
  * @param {object} inputs
- * @param {string} projectRoot
+ * @param {strinh} projectRoot
  * @returns string
  */
 function getToken(inputs, projectRoot) {
