@@ -133,7 +133,7 @@ jobs:
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
-            NODE_DEBUG=vm out/codecov-alpine -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
+            NODE_DEBUG=vm out/codecov-alpine -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -v -e CIRCLE_BRANCH >> output_alpine.txt
       - run:
           name: Run Alpine binary auto-detect (dry run)
           command: |
