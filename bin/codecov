@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const { error, main, verbose} = require('../src')
+const app = require('../src')
 
 var argv = require('yargs') // eslint-disable-line
   .usage('Usage: $0 <command> [options]')
@@ -106,7 +106,7 @@ var argv = require('yargs') // eslint-disable-line
       alias: 'Q',
       type: 'string',
       description: `Used internally by Codecov, this argument helps track wrappers
-        of the uploader (e.g. GitHub Action, CircleCI Orb)`
+        of the uploader (e.g. GitHub Action, CircleCI Orb)`,
     },
   })
   .version()
@@ -115,15 +115,22 @@ var argv = require('yargs') // eslint-disable-line
 
 const start = Date.now()
 
-verbose(`Start of uploader: ${start}...`, argv.verbose)
-main(argv)
+app.log(`Start of uploader: ${start}...`, { level: 'debug', argv })
+app
+  .main(argv)
   .then(() => {
     const end = Date.now()
-    verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
+    app.log(`End of uploader: ${end - start} milliseconds`, {
+      level: 'debug',
+      argv,
+    })
   })
-  .catch(err => {
-    error(`Error!: ${err}`)
+  .catch(error => {
+    app.log(`Error!: ${error}`, { level: 'error', argv })
     const end = Date.now()
-    verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
+    app.log(`End of uploader: ${end - start} milliseconds`, {
+      level: 'debug',
+      argv,
+    })
     process.exit(argv.nonZero ? -1 : 0)
   })
