@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const app = require('../src')
 const { logError, logVerbose, main } = require('../src')
 
 var argv = require('yargs') // eslint-disable-line
@@ -123,7 +122,7 @@ main(argv)
     logVerbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
   })
   .catch(error => {
-    app.logError(`Error!: ${error}`)
+    logError(`Error!: ${error}`)
     const end = Date.now()
     logVerbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
     process.exit(argv.nonZero ? -1 : 0)
