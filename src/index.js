@@ -114,7 +114,7 @@ async function main(args) {
   let coverageFilePaths = []
   if (!args.file) {
     info('Searching for coverage files...')
-    coverageFilePaths = fileHelpers.getCoverageFiles(
+    coverageFilePaths = await fileHelpers.getCoverageFiles(
       args.dir || projectRoot,
       // TODO: Determine why this is so slow (I suspect it's walking paths it should not)
       fileHelpers.coverageFilePatterns(),
