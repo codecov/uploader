@@ -1,6 +1,6 @@
 const childProcess = require('child_process')
+const glob = require('fast-glob')
 const fs = require('fs')
-const glob = require('glob')
 const path = require('path').posix
 const { logAndThrow } = require('./util')
 const { error, info, verbose } = require('./logger')
@@ -159,17 +159,15 @@ function coverageFilePatterns() {
  *
  * @param {string} projectRoot
  * @param {string[]} coverageFilePatterns
- * @returns {string[]}
+ * @returns {Promise<string[]>}
  */
-function getCoverageFiles(projectRoot, coverageFilePatterns) {
-  return coverageFilePatterns.flatMap(
-    /** @type {string} */ pattern => {
-      return glob.sync(`**/${pattern}`, {
-        cwd: projectRoot,
-        ignore: globBlacklist(),
-      })
-    },
-  )
+async function getCoverageFiles(projectRoot, coverageFilePatterns) {
+  const globstar = (/** @type {string} */ pattern) => `**/${pattern}`
+
+  return glob(coverageFilePatterns.map(globstar), {
+    cwd: projectRoot,
+    ignore: globBlacklist(),
+  })
 }
 
 /**
