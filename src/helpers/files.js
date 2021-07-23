@@ -163,13 +163,12 @@ function coverageFilePatterns() {
  * @returns {Promise<string[]>}
  */
 async function getCoverageFiles(projectRoot, coverageFilePatterns) {
-  return glob(
-    coverageFilePatterns.map(pattern => `**/${pattern}`),
-    {
-      cwd: projectRoot,
-      ignore: globBlacklist(),
-    },
-  )
+  const globstar = (/** @type {string} */ pattern) => `**/${pattern}`
+
+  return glob(coverageFilePatterns.map(globstar), {
+    cwd: projectRoot,
+    ignore: globBlacklist(),
+  })
 }
 
 /**
