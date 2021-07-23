@@ -2,20 +2,26 @@ const fs = require('fs')
 const path = require('path')
 const yaml = require('js-yaml')
 
-const { log } = require('./logger')
+const { error, info, verbose } = require('./logger')
 const validateHelpers = require('./validate')
 
+/**
+ *
+ * @param {object} inputs
+ * @param {string} projectRoot
+ * @returns string
+ */
 function getToken(inputs, projectRoot) {
   const { args, envs } = inputs
   const options = [
     [args.token, 'arguments'],
     [envs.CODECOV_TOKEN, 'environment variables'],
-    [getTokenFromYaml(projectRoot), 'Codecov yaml config'],
+    [getTokenFromYaml(projectRoot, args), 'Codecov yaml config'],
   ]
 
   for (const option of options) {
     if (option[0] && validateHelpers.validateToken(option[0])) {
-      log(`->  Token set by ${option[1]}`)
+      info(`->  Token set by ${option[1]}`)
       return option[0]
     }
   }
@@ -23,12 +29,8 @@ function getToken(inputs, projectRoot) {
   return ''
 }
 
-function getTokenFromYaml(projectRoot) {
-  const dirNames = [
-    '',
-    '.github',
-    'dev',
-  ]
+function getTokenFromYaml(projectRoot, args) {
+  const dirNames = ['', '.github', 'dev']
 
   const yamlNames = [
     '.codecov.yaml',
@@ -39,29 +41,31 @@ function getTokenFromYaml(projectRoot) {
 
   for (const dir of dirNames) {
     for (const name of yamlNames) {
-      const filePath = path.join(projectRoot, dir, name);
+      const filePath = path.join(projectRoot, dir, name)
 
       try {
         if (fs.existsSync(filePath)) {
           const fileContents = fs.readFileSync(filePath, {
-              encoding: 'utf-8',
-          });
-          const yamlConfig = yaml.load(fileContents);
+            encoding: 'utf-8',
+          })
+          const yamlConfig = yaml.load(fileContents)
           if (
-              yamlConfig['codecov_token'] &&
-              validateHelpers.validateToken(yamlConfig['codecov_token'])
+            yamlConfig['codecov_token'] &&
+            validateHelpers.validateToken(yamlConfig['codecov_token'])
           ) {
             return yamlConfig['codecov_token']
           }
         }
-      } catch(err) {
-        log(`Error searching for upload token in ${filePath}: ${err}`, { level: 'debug' })
+      } catch (err) {
+        verbose(
+          `Error searching for upload token in ${filePath}: ${err}`,
+          args.verbose,
+        )
       }
     }
   }
   return ''
 }
-
 
 module.exports = {
   getToken,

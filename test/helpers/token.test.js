@@ -4,7 +4,10 @@ const fileHelpers = require('../../src/helpers/files')
 const tokenHelpers = require('../../src/helpers/token')
 
 describe('Get tokens', () => {
-  const fixturesDir = path.join(fileHelpers.fetchGitRoot(), 'test/fixtures/yaml')
+  const fixturesDir = path.join(
+    fileHelpers.fetchGitRoot(),
+    'test/fixtures/yaml',
+  )
   console.log(fixturesDir)
   describe('From yaml', () => {
     it('Returns empty with no yaml file', () => {
@@ -12,7 +15,9 @@ describe('Get tokens', () => {
     })
 
     it('Returns the correct token from file', () => {
-      expect(tokenHelpers.getTokenFromYaml(fixturesDir)).toBe('faketoken')
+      expect(
+        tokenHelpers.getTokenFromYaml(fixturesDir, { verbose: true }),
+      ).toBe('faketoken')
     })
   })
 
@@ -20,7 +25,7 @@ describe('Get tokens', () => {
     it('Returns from args', () => {
       const inputs = {
         args: { token: 'argtoken' },
-        envs: { CODECOV_TOKEN: 'envtoken' }
+        envs: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('argtoken')
     })
@@ -28,7 +33,7 @@ describe('Get tokens', () => {
     it('Returns from env', () => {
       const inputs = {
         args: {},
-        envs: { CODECOV_TOKEN: 'envtoken' }
+        envs: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('envtoken')
     })
@@ -36,7 +41,7 @@ describe('Get tokens', () => {
     it('Returns from env', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('faketoken')
     })
@@ -44,7 +49,7 @@ describe('Get tokens', () => {
     it('Returns from no source', () => {
       const inputs = {
         args: {},
-        envs: {}
+        envs: {},
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')
     })

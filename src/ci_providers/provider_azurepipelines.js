@@ -1,5 +1,5 @@
 const childProcess = require('child_process')
-const { log } = require('../helpers/logger')
+const { error, info, verbose } = require('../helpers/logger')
 
 function detect(envs) {
   return !!envs.SYSTEM_TEAMFOUNDATIONSERVERURI
@@ -63,7 +63,7 @@ function _getSHA(inputs) {
       .trimRight()
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
-      log(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
+      info(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
       commit = mergeCommit
     }
   }

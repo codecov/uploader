@@ -39,7 +39,9 @@ describe('File Helpers', () => {
   })
 
   it('can get a file listing', async () => {
-    expect(await fileHelpers.getFileListing('.')).toMatch('npm-shrinkwrap.json')
+    expect(await fileHelpers.getFileListing('.', { verbose: true })).toMatch(
+      'npm-shrinkwrap.json',
+    )
   })
 
   it('can parse the .gitignore file', () => {

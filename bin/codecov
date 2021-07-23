@@ -106,7 +106,7 @@ var argv = require('yargs') // eslint-disable-line
       alias: 'Q',
       type: 'string',
       description: `Used internally by Codecov, this argument helps track wrappers
-        of the uploader (e.g. GitHub Action, CircleCI Orb)`
+        of the uploader (e.g. GitHub Action, CircleCI Orb)`,
     },
   })
   .version()
