@@ -27,6 +27,7 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
+    "fast-glob": "3.2.7",
     "glob": "7.1.7",
     "js-yaml": "4.1.0",
     "line-reader": "0.4.0",
@@ -45,7 +46,7 @@
     "eslint-config-prettier": "8.3.0",
     "husky": "7.0.1",
     "jest": "27.0.6",
-    "lint-staged": "11.0.1",
+    "lint-staged": "11.1.1",
     "nock": "13.1.1",
     "pkg": "5.1.0",
     "prettier": "2.3.2",

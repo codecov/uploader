@@ -1,12 +1,12 @@
-// @ts-check
 const zlib = require('zlib')
 const { version } = require('../package.json')
 const fileHelpers = require('./helpers/files')
 const validateHelpers = require('./helpers/validate')
 const tokenHelpers = require('./helpers/token')
 const webHelpers = require('./helpers/web')
-const { log } = require('./helpers/logger')
+const { error, info, verbose, log } = require('./helpers/logger')
 const providers = require('./ci_providers')
+const { logAndThrow } = require('./helpers/util')
 
 /**
  *
@@ -17,13 +17,13 @@ const providers = require('./ci_providers')
  * @param {string} source
  */
 function dryRun(uploadHost, token, query, uploadFile, source) {
-  log('==> Dumping upload file (no upload)')
-  log(
+  info('==> Dumping upload file (no upload)')
+  info(
     `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
       source,
     )}&token=${token}&${query}`,
   )
-  log(uploadFile)
+  info(uploadFile)
 }
 
 /**
@@ -72,34 +72,34 @@ async function main(args) {
     ? args.url
     : 'https://codecov.io'
 
-  log(generateHeader(getVersion()))
+  info(generateHeader(getVersion()))
 
   // == Step 2: detect if we are in a git repo
   const projectRoot = args.rootDir || fileHelpers.fetchGitRoot()
   if (projectRoot === '') {
-    log(
+    info(
       '=> No git repo detected. Please use the -R flag if the below detected directory is not correct.',
     )
   }
 
-  log(`=> Project root located at: ${projectRoot}`)
+  info(`=> Project root located at: ${projectRoot}`)
 
   // == Step 3: sanitize and set token
   const token = await tokenHelpers.getToken(inputs, projectRoot)
   if (token === '') {
-    log('-> No token specified or token is empty')
+    info('-> No token specified or token is empty')
   }
 
   // == Step 4: get network
   let uploadFile = ''
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
-    log('Start of network processing...', { level: 'debug', args })
-    let fileListing
+    verbose('Start of network processing...', args.verbose)
+    let fileListing = ''
     try {
       fileListing = await fileHelpers.getFileListing(projectRoot, args)
     } catch (error) {
-      throw new Error(`Error getting file listing: ${error}`)
+      logAndThrow(`Error getting file listing: ${error}`)
     }
 
     uploadFile = uploadFile
@@ -112,17 +112,16 @@ async function main(args) {
   // Look for files
   let coverageFilePaths = []
   if (!args.file) {
-    log('Searching for coverage files...')
-    coverageFilePaths = fileHelpers.getCoverageFiles(
+    info('Searching for coverage files...')
+    coverageFilePaths = await fileHelpers.getCoverageFiles(
       args.dir || projectRoot,
-      // TODO: Determine why this is so slow (I suspect it's walking paths it should not)
       fileHelpers.coverageFilePatterns(),
     )
     if (coverageFilePaths.length > 0) {
-      log(`=> Found ${coverageFilePaths.length} possible coverage files:`)
-      log(coverageFilePaths.join('\n'))
+      info(`=> Found ${coverageFilePaths.length} possible coverage files:`)
+      info(coverageFilePaths.join('\n'))
     } else {
-      throw new Error(
+      logAndThrow(
         'No coverage files located, please try use `-f`, or change the project root with `-R`',
       )
     }
@@ -137,10 +136,10 @@ async function main(args) {
       return validateHelpers.validateFileNamePath(file)
     })
     if (coverageFilePaths.length === 0) {
-      throw new Error('No coverage files found, exiting.')
+      logAndThrow('No coverage files found, exiting.')
     }
   }
-  log('End of network processing', { level: 'debug', args })
+  verbose('End of network processing', args.verbose)
 
   // == Step 6: generate upload file
   // TODO: capture envs
@@ -149,13 +148,13 @@ async function main(args) {
   for (const coverageFile of coverageFilePaths) {
     let fileContents
     try {
-      log(`Processing ${coverageFile}...`),
+      info(`Processing ${coverageFile}...`),
         (fileContents = await fileHelpers.readCoverageFile(
           args.dir || projectRoot,
           coverageFile,
         ))
-    } catch (error) {
-      log(`Could not read coverage file (${coverageFile}): ${error}`)
+    } catch (err) {
+      info(`Could not read coverage file (${coverageFile}): ${err}`)
       continue
     }
 
@@ -193,14 +192,15 @@ async function main(args) {
   let serviceParams
   for (const provider of providers) {
     if (provider.detect(envs)) {
-      log(`Detected ${provider.getServiceName()} as the CI provider.`)
+      info(`Detected ${provider.getServiceName()} as the CI provider.`)
       serviceParams = provider.getServiceParams(inputs)
       break
     }
   }
 
   if (serviceParams === undefined) {
-    throw new Error('Unable to detect service, please specify manually.')
+    logAndThrow('Unable to detect service, please specify manually.')
+    process.exit(args.nonZero ? -1 : 0)
   }
 
   // == Step 8: either upload or dry-run
@@ -213,21 +213,23 @@ async function main(args) {
     return dryRun(uploadHost, token, query, uploadFile, args.source)
   }
 
-  log(
+  info(
     `Pinging Codecov: ${uploadHost}/upload/v4?package=${webHelpers.getPackage(
       args.source,
     )}&token=*******&${query}`,
   )
+  verbose(`Passed token was ${token.length} characters long`, args.verbose)
   try {
-    log(
+    verbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
         args.source,
       )}&${query}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
         X-Reduced-Redundancy: 'false'`,
-      { level: 'debug', args },
+      args.verbose,
     )
+
     const uploadURL = await webHelpers.uploadToCodecov(
       uploadHost,
       token,
@@ -236,19 +238,19 @@ async function main(args) {
       args.source,
     )
 
-    log(uploadURL, { level: 'debug', args })
+    verbose(`Returned upload url: ${uploadURL}`, args.verbose)
 
-    log(
+    verbose(
       `${uploadURL.split('\n')[1]}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'`,
-      { level: 'debug', args },
+      args.verbose,
     )
     const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
-    log(JSON.stringify(result))
+    info(JSON.stringify(result))
     return result
   } catch (error) {
-    throw new Error(`Error uploading to ${uploadHost}: ${error}`)
+    logAndThrow(`Error uploading to ${uploadHost}: ${error}`)
   }
 }
 
@@ -274,8 +276,10 @@ function getVersion() {
 }
 
 module.exports = {
+  error,
   log,
   main,
   getVersion,
   generateHeader,
+  verbose,
 }
