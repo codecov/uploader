@@ -1,1 +1,2 @@
-codecov_token: anotherfaketoken
+codecov:
+  token: anotherfaketoken

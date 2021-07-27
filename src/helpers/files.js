@@ -237,7 +237,7 @@ function getAllFiles(projectRoot, dirPath, args, arrayOfFiles = []) {
     if (isBlacklisted(projectRoot, file, manualBlacklist())) {
       return
     }
-    if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
+    if (fs.lstatSync(path.join(dirPath, file)).isDirectory()) {
       arrayOfFiles = getAllFiles(
         projectRoot,
         path.join(dirPath, file),
