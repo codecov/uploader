@@ -6,7 +6,7 @@
   "bin": "bin/codecov",
   "scripts": {
     "lint": "eslint \"src/**/*.{js,ts}\"",
-    "test": "jest",
+    "test": "npm run lint && jest",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
@@ -38,7 +38,9 @@
   "devDependencies": {
     "@types/glob": "7.1.4",
     "@types/jest": "26.0.24",
+    "@types/nock": "11.1.0",
     "@types/node": "16.3.3",
+    "@types/superagent": "4.1.12",
     "@typescript-eslint/eslint-plugin": "4.28.4",
     "@typescript-eslint/parser": "4.28.4",
     "eslint": "7.31.0",
@@ -50,9 +52,11 @@
     "pkg": "5.1.0",
     "prettier": "2.3.2",
     "testdouble": "3.16.1",
-    "testdouble-jest": "2.0.0"
+    "testdouble-jest": "2.0.0",
+    "ts-jest": "27.0.4"
   },
   "jest": {
+    "preset": "ts-jest",
     "collectCoverage": true,
     "collectCoverageFrom": [
       "src/**/*.js",

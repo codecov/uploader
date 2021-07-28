@@ -1,15 +1,15 @@
+import { logAndThrow } from '../helpers/util'
+import { UploaderInputs, IServiceParams, UploaderEnvs } from '../types'
+
 /**
  * Detects if this CI provider is being used
  *
  * @param {*} envs an object of enviromental variable key/value pairs
  * @returns boolean
  */
-
-const { logAndThrow } = require('../helpers/util')
-
-// eslint-disable-next-line no-unused-vars
-function detect(envs) {
-  return false
+export function detect(envs: UploaderEnvs
+) {
+  return !!envs.BUILDKITE
 }
 
 /**
@@ -18,9 +18,9 @@ function detect(envs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getBuild(inputs) {
-  const { args } = inputs
-  return args.build || ''
+function _getBuild(inputs: UploaderInputs): string {
+  const { args, envs } = inputs
+  return args.build || envs.BUILDKITE_BUILD_NUMBER || ''
 }
 
 /**
@@ -30,8 +30,8 @@ function _getBuild(inputs) {
  * @returns {string}
  */
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs) {
-  return ''
+function _getBuildURL(inputs: UploaderInputs): string {
+  return inputs.envs.BUILDKITE_BUILD_URL || ''
 }
 
 /**
@@ -40,13 +40,9 @@ function _getBuildURL(inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getBranch(inputs) {
-  const { args } = inputs
-  try {
-    return args.branch || ''
-  } catch (error) {
-    logAndThrow(`There was an error getting the branch name from git: ${error}`)
-  }
+function _getBranch(inputs: UploaderInputs): string {
+  const { args, envs } = inputs
+  return args.branch || envs.BUILDKITE_BRANCH || ''
 }
 
 /**
@@ -55,9 +51,9 @@ function _getBranch(inputs) {
  * @param {*} envs an object of enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
-function _getJob(envs) {
-  return ''
+function _getJob(envs: UploaderEnvs
+): string {
+  return envs.BUILDKITE_JOB_ID || ''
 }
 
 /**
@@ -66,14 +62,9 @@ function _getJob(envs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
-function _getPR(inputs) {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
-  try {
-    return args.pr || ''
-  } catch (error) {
-    logAndThrow(`There was an error getting the pr number: ${error}`)
-  }
+  return args.pr || ''
 }
 
 /**
@@ -81,8 +72,8 @@ function _getPR(inputs) {
  *
  * @returns {string}
  */
-function _getService() {
-  return ''
+export function _getService(): string {
+  return 'buildkite'
 }
 
 /**
@@ -90,8 +81,8 @@ function _getService() {
  *
  * @returns
  */
-function getServiceName() {
-  return ''
+export function getServiceName(): string {
+  return 'Buildkite'
 }
 /**
  * Determine the commit SHA that is being uploaded, based on args or envs
@@ -99,13 +90,15 @@ function getServiceName() {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getSHA(inputs) {
-  const { args } = inputs
-  try {
-    return args.sha || ''
-  } catch (error) {
-    logAndThrow(`There was an error getting the commit SHA from git: ${error}`)
+function _getSHA(inputs: UploaderInputs): string{
+  const { args, envs } = inputs
+  if (!!args.sha || !!envs.BUILDKITE_COMMIT)  {
+    return args.sha || envs.BUILDKITE_COMMIT || ''
   }
+  logAndThrow(
+    'Unable to detect sha, please set manually with the -C flag',
+  )
+  return ''
 }
 /**
  * Determine the slug (org/repo) based on  args or envs
@@ -113,13 +106,15 @@ function _getSHA(inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getSlug(inputs) {
-  const { args } = inputs
-  try {
-    return args.slug || ''
-  } catch (error) {
-    logAndThrow(`There was an error getting the slug from git: ${error}`)
+function _getSlug(inputs: UploaderInputs): string {
+  const { args, envs } = inputs
+  if (args.slug || envs.BUILDKITE_PROJECT_SLUG) {
+    return args.slug || envs.BUILDKITE_PROJECT_SLUG || ''
   }
+  logAndThrow(
+    'Unable to detect sluh, please set manually with the -r flag',
+  )
+  return ''
 }
 /**
  * Generates and return the serviceParams object
@@ -127,7 +122,7 @@ function _getSlug(inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {{ branch: string, build: string, buildURL: string, commit: string, job: string, pr: string, service: string, slug: string }}
  */
-function getServiceParams(inputs) {
+export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
