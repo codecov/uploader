@@ -2,52 +2,45 @@ import childProcess from 'child_process'
 import { validateSHA } from '../helpers/validate'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-export function detect(envs: UploaderEnvs
-) {
-  return envs.CI && envs.BITBUCKET_BUILD_NUMBER
+export function detect(envs: UploaderEnvs): boolean {
+  return Boolean(envs.CI) && Boolean(envs.BITBUCKET_BUILD_NUMBER)   || false
 }
 
-function _getBuild(inputs: UploaderInputs
-) {
+function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.BITBUCKET_BUILD_NUMBER || ''
+  return args.build || envs.BITBUCKET_BUILD_NUMBER?.toString() || ''
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs
-) {
+function _getBuildURL(inputs: UploaderInputs) : string{
   return ''
 }
 
-function _getBranch(inputs: UploaderInputs
-) {
+function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.BITBUCKET_BRANCH || ''
+  return args.branch || envs.BITBUCKET_BRANCH?.toString() || ''
 }
 
-function _getJob(envs: UploaderEnvs
-) {
-  return envs.BITBUCKET_BUILD_NUMBER || ''
+function _getJob(envs: UploaderEnvs): string {
+  return envs.BITBUCKET_BUILD_NUMBER ?.toString()|| ''
 }
 
-function _getPR(inputs: UploaderInputs
-) {
+function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.pr || envs.BITBUCKET_PR_ID || ''
+  return args.pr || envs.BITBUCKET_PR_ID?.toString() || ''
 }
 
-function _getService() {
+function _getService(): string {
   return 'bitbucket'
 }
 
-export function getServiceName() {
+export function getServiceName() : string{
   return 'Bitbucket'
 }
 
-function _getSHA(inputs: UploaderInputs
-) {
+function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  let commit = envs.BITBUCKET_COMMIT
+  let commit = envs.BITBUCKET_COMMIT?.toString() || ''
 
   if (commit && validateSHA(commit, 12)) {
     commit = childProcess.execFileSync('git', ['rev-parse', commit])
@@ -56,8 +49,7 @@ function _getSHA(inputs: UploaderInputs
   return args.sha || commit || ''
 }
 
-function _getSlug(inputs: UploaderInputs
-) {
+function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
 
   let slug = ''
@@ -67,8 +59,7 @@ function _getSlug(inputs: UploaderInputs
   return args.slug || slug
 }
 
-export function getServiceParams(inputs: UploaderInputs
-): IServiceParams {
+export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

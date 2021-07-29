@@ -1,23 +1,23 @@
 import childprocess from 'child_process'
 import { parseSlug } from '../helpers/git'
 import { logAndThrow } from '../helpers/util'
-import { IServiceParams, UploaderInputs } from '../types'
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-export function detect(envs: NodeJS.ProcessEnv) {
+export function detect(envs: UploaderEnvs): boolean {
   return !envs.CI
 }
 
-function _getBuild(inputs: UploaderInputs) {
+function _getBuild(inputs: UploaderInputs): string {
   const { args } = inputs
   return args.build || ''
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs) {
+function _getBuildURL(inputs: UploaderInputs): string {
   return ''
 }
 
-function _getBranch(inputs: UploaderInputs) {
+function _getBranch(inputs: UploaderInputs): string {
   const { args } = inputs
   if (args.branch) {
     return args.branch
@@ -35,23 +35,23 @@ function _getBranch(inputs: UploaderInputs) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getJob(env: NodeJS.ProcessEnv) {
+function _getJob(env: UploaderEnvs): string {
   return ''
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getPR(inputs: UploaderInputs) {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
   return args.pr || ''
 }
 
 // This is the value that gets passed to the Codecov uploader
-function _getService() {
+function _getService(): string {
   return ''
 }
 
 // This is the name that gets printed
-export function getServiceName() {
+export function getServiceName(): string {
   return 'Local'
 }
 
@@ -72,7 +72,7 @@ function _getSHA(inputs: UploaderInputs) {
   }
 }
 
-function _getSlug(inputs: UploaderInputs) {
+function _getSlug(inputs: UploaderInputs) : string{
   const { args } = inputs
   if (args.slug) {
     return args.slug

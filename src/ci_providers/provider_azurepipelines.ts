@@ -1,19 +1,17 @@
 import childProcess from 'child_process'
 import { info } from '../helpers/logger'
-import { IServiceParams, UploaderInputs } from '../types'
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-export function detect(envs: UploaderEnvs
-) {
-  return !!envs.SYSTEM_TEAMFOUNDATIONSERVERURI
+export function detect(envs: UploaderEnvs): boolean {
+  return Boolean(envs.SYSTEM_TEAMFOUNDATIONSERVERURI)
 }
 
-function _getBuild(inputs: UploaderInputs) {
+function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.BUILD_BUILDNUMBER || ''
+  return args.build || envs.BUILD_BUILDNUMBER?.toString() || ''
 }
 
-function _getBuildURL(inputs: UploaderInputs
-) {
+function _getBuildURL(inputs: UploaderInputs): string {
   const { envs } = inputs
   if (envs.SYSTEM_TEAMPROJECT && envs.BUILD_BUILDID) {
     return encodeURIComponent(
@@ -23,44 +21,40 @@ function _getBuildURL(inputs: UploaderInputs
   return ''
 }
 
-function _getBranch(inputs: UploaderInputs
-) {
+function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   let branch = ''
   if (envs.BUILD_SOURCEBRANCH) {
-    branch = envs.BUILD_SOURCEBRANCH.replace('refs/heads/', '')
+    branch = envs.BUILD_SOURCEBRANCH.toString().replace('refs/heads/', '')
   }
   return args.branch || branch
 }
 
-function _getJob(envs: UploaderEnvs
-) {
-  return envs.BUILD_BUILDID || ''
+function _getJob(envs: UploaderEnvs): string {
+  return envs.BUILD_BUILDID?.toString() || ''
 }
 
-function _getPR(inputs: UploaderInputs
-) {
+function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   return (
     args.pr ||
-    envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER ||
-    envs.SYSTEM_PULLREQUEST_PULLREQUESTID ||
+    envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER?.toString() ||
+    envs.SYSTEM_PULLREQUEST_PULLREQUESTID?.toString() ||
     ''
   )
 }
 
-function _getService() {
+function _getService(): string {
   return 'azure_pipelines'
 }
 
-export function getServiceName() {
+export function getServiceName(): string {
   return 'Azure Pipelines'
 }
 
-function _getSHA(inputs: UploaderInputs
-) {
+function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  let commit = envs.BUILD_SOURCEVERSION
+  let commit = envs.BUILD_SOURCEVERSION?.toString() || ''
 
   if (_getPR(inputs)) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
@@ -78,20 +72,17 @@ function _getSHA(inputs: UploaderInputs
   return args.sha || commit || ''
 }
 
-function _getProject(inputs: UploaderInputs
-) {
+function _getProject(inputs: UploaderInputs): string {
   const { envs } = inputs
-  return envs.SYSTEM_TEAMPROJECT || ''
+  return envs.SYSTEM_TEAMPROJECT?.toString() || ''
 }
 
-function _getServerURI(inputs: UploaderInputs
-) {
+function _getServerURI(inputs: UploaderInputs): string {
   const { envs } = inputs
-  return envs.SYSTEM_TEAMFOUNDATIONSERVERURI
+  return envs.SYSTEM_TEAMFOUNDATIONSERVERURI?.toString() || ''
 }
 
-function _getSlug(inputs: UploaderInputs
-) {
+function _getSlug(inputs: UploaderInputs): string {
   const { args } = inputs
   return args.slug || ''
 }
@@ -101,8 +92,7 @@ function _getSlug(inputs: UploaderInputs
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {{ branch: string, build: string, buildURL: string, commit: string, job: string, pr: string, service: string, slug: string }}
  */
-export function getServiceParams(inputs: UploaderInputs
-): IServiceParams {
+export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

@@ -8,13 +8,16 @@ import { IServiceParams, UploaderInputs } from '../types'
 /**
  *
  * @param {Object} inputs
- * @param {NodeJS.ProcessEnv} inputs.envs
+ * @param {UploaderEnvs} inputs.envs
  * @param {Object} serviceParams
  * @returns Object
  */
-export function populateBuildParams(inputs: UploaderInputs, serviceParams: IServiceParams) {
+export function populateBuildParams(
+  inputs: UploaderInputs,
+  serviceParams: IServiceParams,
+) {
   const { args, envs } = inputs
-  serviceParams.name = args.name || envs.CODECOV_NAME || ''
+  serviceParams.name = args.name || envs.CODECOV_NAME?.toString() || ''
   serviceParams.tag = args.tag || ''
   let flags: string[]
   if (typeof args.flags === 'object') {
@@ -43,7 +46,10 @@ export function getPackage(source: string) {
  * @param {Buffer} uploadFile
  * @returns {Promise<{ status: string, resultURL: string }>}
  */
-export async function uploadToCodecovPUT(uploadURL: string, uploadFile: Buffer) {
+export async function uploadToCodecovPUT(
+  uploadURL: string,
+  uploadFile: Buffer,
+) {
   info('Uploading...')
 
   const parts = uploadURL.split('\n')
@@ -78,7 +84,13 @@ export async function uploadToCodecovPUT(uploadURL: string, uploadFile: Buffer) 
  * @param {string} version uploader version number
  * @returns {Promise<string>}
  */
-export async function uploadToCodecov(uploadURL: string, token: string, query: string, uploadFile: Buffer, source: string) {
+export async function uploadToCodecov(
+  uploadURL: string,
+  token: string,
+  query: string,
+  uploadFile: Buffer,
+  source: string,
+) {
   const result = await superagent
     .post(
       `${uploadURL}/upload/v4?package=${getPackage(
@@ -107,15 +119,15 @@ export async function uploadToCodecov(uploadURL: string, token: string, query: s
  * @returns {string}
  */
 export function camelToSnake(str: string): string {
-  const snakeCase = str.match(/[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g)
+  const snakeCase = str.match(
+    /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g,
+  )
 
   if (snakeCase) {
-    return snakeCase.map(s => s.toLowerCase())
-      .join('_')
+    return snakeCase.map(s => s.toLowerCase()).join('_')
   }
 
   return str
-
 }
 
 /**
@@ -128,4 +140,3 @@ export function generateQuery(queryParams: IServiceParams) {
     .map(([key, value]) => `${camelToSnake(key)}=${value}`)
     .join('&')
 }
-

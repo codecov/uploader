@@ -1,59 +1,52 @@
-import { IServiceParams, UploaderInputs } from "../types"
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-export function detect(envs: NodeJS.ProcessEnv) {
+export function detect(envs: UploaderEnvs): boolean {
   return !!envs.CIRRUS_CI
 }
 
-function _getBuild(inputs: UploaderInputs
-) {
+function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.CIRRUS_BUILD_ID || ''
+  return args.build || envs.CIRRUS_BUILD_ID?.toString() || ''
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs
-) {
+function _getBuildURL(inputs: UploaderInputs): string {
   return ''
 }
 
-function _getBranch(inputs: UploaderInputs
-) {
+function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.CIRRUS_BRANCH || ''
+  return args.branch || envs.CIRRUS_BRANCH?.toString() || ''
 }
 
-function _getJob(envs: NodeJS.ProcessEnv) {
-  return envs.CIRRUS_TASK_ID || ''
+function _getJob(envs: UploaderEnvs): string {
+  return envs.CIRRUS_TASK_ID?.toString() || ''
 }
 
-function _getPR(inputs: UploaderInputs
-) {
+function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.pr || envs.CIRRUS_PR || ''
+  return args.pr || envs.CIRRUS_PR?.toString() || ''
 }
 
-function _getService() {
+function _getService(): string {
   return 'cirrus-ci'
 }
 
-export function getServiceName() {
+export function getServiceName(): string {
   return 'Cirrus CI'
 }
 
-function _getSHA(inputs: UploaderInputs
-) {
+function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.CIRRUS_CHANGE_IN_REPO || ''
+  return args.sha || envs.CIRRUS_CHANGE_IN_REPO?.toString() || ''
 }
 
-function _getSlug(inputs: UploaderInputs
-) {
+function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.slug || envs.CIRRUS_REPO_FULL_NAME || ''
+  return args.slug || envs.CIRRUS_REPO_FULL_NAME?.toString() || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs
-): IServiceParams{
+export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

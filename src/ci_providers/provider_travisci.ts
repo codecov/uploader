@@ -1,54 +1,62 @@
-import { IServiceParams, UploaderInputs } from '../types'
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-export function detect(envs: NodeJS.ProcessEnv) {
-  return envs.CI && envs.TRAVIS && envs.SHIPPABLE
+export function detect(envs: UploaderEnvs): boolean {
+  return Boolean(envs.CI) && Boolean(envs.TRAVIS) && Boolean(envs.SHIPPABLE)
 }
 
-function _getBuild(inputs: UploaderInputs) {
+function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.TRAVIS_JOB_NUMBER || ''
+  return args.build || envs.TRAVIS_JOB_NUMBER?.toString() || ''
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs) {
+function _getBuildURL(inputs: UploaderInputs): string {
   return ''
 }
 
-function _getBranch(inputs: UploaderInputs) {
+function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
 
   let branch = ''
   if (envs.TRAVIS_BRANCH !== envs.TRAVIS_TAG) {
-    branch = envs.TRAVIS_PULL_REQUEST_BRANCH || envs.TRAVIS_BRANCH || ''
+    branch =
+      envs.TRAVIS_PULL_REQUEST_BRANCH?.toString() ||
+      envs.TRAVIS_BRANCH?.toString() ||
+      ''
   }
   return args.branch || branch
 }
 
-function _getJob(envs: NodeJS.ProcessEnv) {
-  return envs.TRAVIS_JOB_ID || ''
+function _getJob(envs: UploaderEnvs): string {
+  return envs.TRAVIS_JOB_ID?.toString() || ''
 }
 
-function _getPR(inputs: UploaderInputs) {
+function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.pr || envs.TRAVIS_PULL_REQUEST || ''
+  return args.pr || envs.TRAVIS_PULL_REQUEST?.toString() || ''
 }
 
-function _getService() {
+function _getService(): string {
   return 'travis'
 }
 
-export function getServiceName() {
+export function getServiceName(): string {
   return 'Travis CI'
 }
 
-function _getSHA(inputs: UploaderInputs) {
+function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.TRAVIS_PULL_REQUEST_SHA || envs.TRAVIS_COMMIT || ''
+  return (
+    args.sha ||
+    envs.TRAVIS_PULL_REQUEST_SHA?.toString() ||
+    envs.TRAVIS_COMMIT?.toString() ||
+    ''
+  )
 }
 
-function _getSlug(inputs: UploaderInputs) {
+function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.slug || envs.TRAVIS_REPO_SLUG || ''
+  return args.slug || envs.TRAVIS_REPO_SLUG?.toString() || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {

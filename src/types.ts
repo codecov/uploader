@@ -25,23 +25,17 @@ export interface UploaderArgs {
   source?: string // Track wrappers of the uploader
 }
 
-export type UploaderEnvs = {
-  CI?: boolean
-  CI_BUILD_REPO?: string
-  SHIPPABLE?: boolean
-  TRAVIS_COMMIT?: string
-  TRAVIS_JOB_ID?: string
-  WERCKER_BUILD_URL?: string
-  WERCKER_GIT_BRANCH?: string
-  WERCKER_GIT_COMMIT?: string
-  WERCKER_GIT_OWNER?: string
-  WERCKER_GIT_REPOSITORY?: string
-  WERCKER_MAIN_PIPELINE_STARTED?: string
-}
+export type UploaderEnvs = NodeJS.Dict<boolean | string | number | undefined>
 
 export interface UploaderInputs {
   envs: UploaderEnvs
   args: UploaderArgs
+}
+
+export interface IProvider {
+  detect: (arg0: UploaderEnvs) => boolean
+  getServiceName: () => string
+  getServiceParams: (arg0: UploaderInputs) => IServiceParams
 }
 
 export interface IServiceParams {

@@ -1,20 +1,18 @@
-import { IServiceParams, UploaderInputs } from "../types"
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 const childProcess = require('child_process')
 const { error, info, verbose } = require('../helpers/logger')
 
-export function detect(envs: NodeJS.ProcessEnv) {
-  return envs.GITHUB_ACTIONS
+export function detect(envs: UploaderEnvs): boolean {
+  return Boolean(envs.GITHUB_ACTIONS)
 }
 
-function _getBuild(inputs: UploaderInputs
-) {
+function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.GITHUB_RUN_ID || ''
+  return args.build || envs.GITHUB_RUN_ID?.toString() || ''
 }
 
-function _getBuildURL(inputs: UploaderInputs
-) {
+function _getBuildURL(inputs: UploaderInputs): string {
   const { envs } = inputs
   return encodeURIComponent(
     `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(
@@ -23,54 +21,51 @@ function _getBuildURL(inputs: UploaderInputs
   )
 }
 
-function _getBranch(inputs: UploaderInputs
-) {
+function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   const branchRegex = /refs\/heads\/(.*)/
-  const branchMatches = branchRegex.exec(envs.GITHUB_REF || '')
+  const branchMatches = branchRegex.exec(envs.GITHUB_REF?.toString() || '')
   let branch
   if (branchMatches) {
     branch = branchMatches[1]
   }
 
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
-    branch = envs.GITHUB_HEAD_REF
+    branch = envs.GITHUB_HEAD_REF.toString()
   }
   return args.branch || branch || ''
 }
 
-function _getJob(envs: NodeJS.ProcessEnv) {
+function _getJob(envs: UploaderEnvs): string {
   return encodeURIComponent(envs.GITHUB_WORKFLOW || '')
 }
 
-function _getPR(inputs: UploaderInputs
-) {
+function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   let match
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
     const prRegex = /refs\/pull\/([0-9]+)\/merge/
-    const matches = prRegex.exec(envs.GITHUB_REF || '')
+    const matches = prRegex.exec(envs.GITHUB_REF?.toString() || '')
     if (matches) {
       match = matches[1]
-    } 
+    }
   }
   return args.pr || match || ''
 }
 
-function _getService() {
+function _getService(): string {
   return 'github-actions'
 }
 
-export function getServiceName() {
+export function getServiceName(): string {
   return 'GitHub Actions'
 }
 
-function _getSHA(inputs: UploaderInputs
-) {
+function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   const pr = _getPR(inputs)
 
-  let commit = envs.GITHUB_SHA
+  let commit = envs.GITHUB_SHA?.toString()
   if (pr && pr.toLowerCase() !== 'false' && !args.sha) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
     const mergeCommitMessage = childProcess
@@ -91,14 +86,12 @@ function _getSHA(inputs: UploaderInputs
   return args.sha || commit || ''
 }
 
-function _getSlug(inputs: UploaderInputs
-) {
+function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.slug || envs.GITHUB_REPOSITORY || ''
+  return args.slug || envs.GITHUB_REPOSITORY?.toString() || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs
-) : IServiceParams{
+export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
@@ -110,4 +103,3 @@ export function getServiceParams(inputs: UploaderInputs
     slug: _getSlug(inputs),
   }
 }
-

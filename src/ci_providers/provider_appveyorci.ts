@@ -30,7 +30,7 @@ function _getBuildURL(inputs: UploaderInputs) {
 
 function _getBranch(inputs: UploaderInputs) {
   const { args, envs } = inputs
-  return args.branch || envs.APPVEYOR_REPO_BRANCH || ''
+  return args.branch || envs.APPVEYOR_REPO_BRANCH?.toString() || ''
 }
 
 function _getJob(envs: UploaderEnvs
@@ -47,7 +47,7 @@ function _getJob(envs: UploaderEnvs
 
 function _getPR(inputs: UploaderInputs) {
   const { args, envs } = inputs
-  return args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER || ''
+  return args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER?.toString() || ''
 }
 
 function _getService() {
@@ -60,12 +60,12 @@ export function getServiceName() {
 
 function _getSHA(inputs: UploaderInputs) {
   const { args, envs } = inputs
-  return args.sha || envs.APPVEYOR_REPO_COMMIT || ''
+  return args.sha || envs.APPVEYOR_REPO_COMMIT?.toString() || ''
 }
 
 function _getSlug(inputs: UploaderInputs) {
   const { args, envs } = inputs
-  return args.slug || envs.APPVEYOR_REPO_NAME || ''
+  return args.slug || envs.APPVEYOR_REPO_NAME?.toString() || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams

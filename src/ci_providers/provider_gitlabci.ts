@@ -1,68 +1,61 @@
-import { IServiceParams, UploaderInputs } from "../types"
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-const { parseSlugFromRemoteAddr } = require('../helpers/git')
+import { parseSlugFromRemoteAddr } from '../helpers/git'
 
-export function detect(envs: NodeJS.ProcessEnv) {
-  return envs.GITLAB_CI
+export function detect(envs: UploaderEnvs): boolean {
+  return Boolean(envs.GITLAB_CI)
 }
 
-function _getBuild(inputs: UploaderInputs
-) {
+function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.CI_BUILD_ID || envs.CI_JOB_ID || ''
+  return args.build || envs.CI_BUILD_ID?.toString() || envs.CI_JOB_ID?.toString() || ''
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs
-) {
+function _getBuildURL(inputs: UploaderInputs): string {
   return ''
 }
 
-function _getBranch(inputs: UploaderInputs
-) {
+function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.CI_BUILD_REF_NAME || envs.CI_COMMIT_REF_NAME || ''
+  return args.branch || envs.CI_BUILD_REF_NAME?.toString() || envs.CI_COMMIT_REF_NAME?.toString() || ''
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getJob(envs: NodeJS.ProcessEnv) {
+function _getJob(envs: UploaderEnvs): string {
   return ''
 }
 
-function _getPR(inputs: UploaderInputs
-) {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
   return args.pr || ''
 }
 
-function _getService() {
+function _getService(): string {
   return 'gitlab'
 }
 
-export function getServiceName() {
+export function getServiceName(): string {
   return 'GitLab CI'
 }
 
-function _getSHA(inputs: UploaderInputs
-) {
+function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.CI_BUILD_REF || envs.CI_COMMIT_SHA || ''
+  return args.sha || envs.CI_BUILD_REF?.toString() || envs.CI_COMMIT_SHA?.toString() || ''
 }
 
-function _getSlug(inputs: UploaderInputs
-) {
+function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  const remoteAddr = envs.CI_BUILD_REPO || envs.CI_REPOSITORY_URL
+  const remoteAddr = envs.CI_BUILD_REPO?.toString() || envs.CI_REPOSITORY_URL?.toString() || ''
   return (
     args.slug ||
-    envs.CI_PROJECT_PATH ||
+    envs.CI_PROJECT_PATH?.toString() ||
     parseSlugFromRemoteAddr(remoteAddr) ||
     ''
   )
 }
 
-export function getServiceParams(inputs: UploaderInputs
-): IServiceParams {
+export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

@@ -1,3 +1,5 @@
+import { IProvider } from '../types'
+
 import * as providerAppveyorci from './provider_appveyorci'
 import * as providerAzurepipelines from './provider_azurepipelines'
 import * as providerBitbucket from './provider_bitbucket'
@@ -15,7 +17,7 @@ import * as providerTravisci from './provider_travisci'
 import * as providerWercker from './provider_wercker'
 
 // Please make sure provider_local is last
-export default [
+const providerList: IProvider[] = [
   providerAppveyorci,
   providerAzurepipelines,
   providerBitbucket,
@@ -32,3 +34,5 @@ export default [
   providerWercker,
   providerLocal,
 ]
+
+export default providerList
