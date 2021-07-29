@@ -1,1 +1,2 @@
-codecov_token: invalid token
+codecov:
+  token: invalid token

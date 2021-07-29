@@ -2,7 +2,7 @@ import { UploaderArgs } from "../types"
 
 import childProcess from 'child_process'
 import fs from 'fs'
-import glob from 'glob'
+import glob from 'fast-glob'
 const path = require('path').posix
 import { logAndThrow } from './util'
 import { logError, info, verbose } from './logger'
@@ -161,17 +161,15 @@ export function coverageFilePatterns() {
  *
  * @param {string} projectRoot
  * @param {string[]} coverageFilePatterns
- * @returns {string[]}
+ * @returns {Promise<string[]>}
  */
-export function getCoverageFiles(projectRoot: string, coverageFilePatterns: string[]): string[] {
-  return coverageFilePatterns.flatMap(
-    /** @type {string} */ pattern => {
-      return glob.sync(`**/${pattern}`, {
-        cwd: projectRoot,
-        ignore: globBlacklist(),
-      })
-    },
-  )
+export async function getCoverageFiles(projectRoot: string, coverageFilePatterns: string[]): Promise<string[]> {
+  const globstar = (pattern: string) => `**/${pattern}`
+
+  return glob(coverageFilePatterns.map(globstar), {
+    cwd: projectRoot,
+    ignore: globBlacklist(),
+  })
 }
 
 /**
@@ -241,7 +239,7 @@ export function getAllFiles(projectRoot: string, dirPath: string, args: Uploader
     if (isBlacklisted(projectRoot, file, manualBlacklist())) {
       return
     }
-    if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
+    if (fs.lstatSync(path.join(dirPath, file)).isDirectory()) {
       arrayOfFiles = getAllFiles(
         projectRoot,
         path.join(dirPath, file),

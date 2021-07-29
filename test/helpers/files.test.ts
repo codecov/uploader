@@ -79,8 +79,8 @@ describe('File Helpers', () => {
       expect(reportContents).toBe('I am test coverage data')
     })
 
-    it('can return a list of coverage files', () => {
-      const results = fileHelpers.getCoverageFiles(
+    it('can return a list of coverage files', async () => {
+      const results = await fileHelpers.getCoverageFiles(
         '.',
         fileHelpers.coverageFilePatterns(),
       )
@@ -92,10 +92,10 @@ describe('File Helpers', () => {
       expect(results).toContain('test/fixtures/other/fake.codecov.txt')
     })
 
-    it('can return a list of coverage files with a pattern', () => {
+    it('can return a list of coverage files with a pattern', async () => {
       expect(
-        fileHelpers.getCoverageFiles('.', ['index.test.ts']),
-      ).toStrictEqual(['test/index.test.ts', 'test/providers/index.test.ts'])
+        await fileHelpers.getCoverageFiles('.', ['index.test.js']),
+      ).toStrictEqual(['test/index.test.js', 'test/providers/index.test.js'])
     })
     describe('coverage file patterns', () => {
       it('contains `jacoco*.xml`', () => {

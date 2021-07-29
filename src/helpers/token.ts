@@ -52,10 +52,18 @@ export function getTokenFromYaml(projectRoot: string, args: UploaderArgs) {
           })
           const yamlConfig = yaml.load(fileContents)
           if (
-            yamlConfig['codecov_token'] &&
-            validateHelpers.validateToken(yamlConfig['codecov_token'])
+            yamlConfig['codecov'] &&
+            yamlConfig['codecov']['token'] &&
+            validateHelpers.validateToken(yamlConfig['codecov']['token'])
           ) {
-            return yamlConfig['codecov_token']
+            return yamlConfig['codecov']['token']
+          }
+
+          if (yamlConfig['codecov_token']) {
+            error(
+              `'codecov_token' is a deprecated field. Please switch to 'codecov.token' ` +
+              '(https://docs.codecov.com/docs/codecovyml-reference#codecovtoken)'
+            )
           }
         }
       } catch (err) {
