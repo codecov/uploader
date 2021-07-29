@@ -13,9 +13,10 @@ describe('Jenkins CI Params', () => {
     it('does not run without JenkinsCI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-                                  tag: '',
-        url: '',
-        source: ''
+          tag: '',
+          url: '',
+          source: '',
+          flags: '',
         },
         envs: {},
       }
@@ -39,14 +40,13 @@ describe('Jenkins CI Params', () => {
     })
   })
 
-
-
   it('gets correct params on push', () => {
     const inputs: UploaderInputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         BUILD_NUMBER: '1',
@@ -69,11 +69,7 @@ describe('Jenkins CI Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', [
-        'config',
-        '--get',
-        'remote.origin.url',
-      ]),
+      spawnSync('git', ['config', '--get', 'remote.origin.url']),
     ).thenReturn({ stdout: '' })
     const params = providerJenkinsci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -82,9 +78,10 @@ describe('Jenkins CI Params', () => {
   it('can get the slug from git config', () => {
     const inputs: UploaderInputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         BUILD_NUMBER: '1',
@@ -97,11 +94,7 @@ describe('Jenkins CI Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', [
-        'config',
-        '--get',
-        'remote.origin.url',
-      ]),
+      spawnSync('git', ['config', '--get', 'remote.origin.url']),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
 
     const params = providerJenkinsci.getServiceParams(inputs)
@@ -116,9 +109,10 @@ describe('Jenkins CI Params', () => {
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         JENKINS_URL: 'https://example.com',

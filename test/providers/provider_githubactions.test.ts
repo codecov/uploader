@@ -11,10 +11,11 @@ describe('GitHub Actions Params', () => {
 
   describe('detect()', () => {
     it('does not run without GitHub Actions env variable', () => {
-      const inputs = {
-        args: {},
+      const inputs: UploaderInputs = {
+        args: {
+          flags: '',
+        },
         envs: {
-          GITHUB_ACTIONS: 'false',
           GITHUB_REF: 'refs/heads/master',
           GITHUB_REPOSITORY: 'testOrg/testRepo',
           GITHUB_RUN_ID: '2',
@@ -44,6 +45,7 @@ describe('GitHub Actions Params', () => {
         tag: '',
         url: '',
         source: '',
+        flags: ''
       },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -75,7 +77,8 @@ describe('GitHub Actions Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -115,7 +118,8 @@ describe('GitHub Actions Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -161,7 +165,8 @@ describe('GitHub Actions Params', () => {
         slug: 'testOrg/testRepo',
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -174,7 +179,7 @@ describe('GitHub Actions Params', () => {
       buildURL:
         'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F3',
       commit: 'testsha',
-      job: 'undefined',
+      job: '',
       pr: '2',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
@@ -193,7 +198,8 @@ describe('GitHub Actions Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         GITHUB_ACTIONS: 'true',

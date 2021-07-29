@@ -14,16 +14,16 @@ describe('TeamCity Params', () => {
         args: {},
         envs: {},
       }
-      let detected = providerTeamCity.detect(inputs.envs)
+      const detected = providerTeamCity.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with TeamCity env variable', () => {
       const inputs = {
         args: {
-                                  tag: '',
-        url: '',
-        source: ''
+          tag: '',
+          url: '',
+          source: '',
         },
         envs: {
           CI: 'true',
@@ -38,9 +38,10 @@ describe('TeamCity Params', () => {
   it('gets correct params', () => {
     const inputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         CI: 'true',
@@ -62,11 +63,7 @@ describe('TeamCity Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', [
-        'config',
-        '--get',
-        'remote.origin.url',
-      ]),
+      spawnSync('git', ['config', '--get', 'remote.origin.url']),
     ).thenReturn({ stdout: '' })
     const params = providerTeamCity.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -75,9 +72,10 @@ describe('TeamCity Params', () => {
   it('gets correct params and remote slug', () => {
     const inputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         CI: 'true',
@@ -99,11 +97,7 @@ describe('TeamCity Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', [
-        'config',
-        '--get',
-        'remote.origin.url',
-      ]),
+      spawnSync('git', ['config', '--get', 'remote.origin.url']),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
     const params = providerTeamCity.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -117,9 +111,10 @@ describe('TeamCity Params', () => {
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         CI: 'true',
@@ -131,11 +126,7 @@ describe('TeamCity Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', [
-        'config',
-        '--get',
-        'remote.origin.url',
-      ]),
+      spawnSync('git', ['config', '--get', 'remote.origin.url']),
     ).thenReturn({ stdout: '' })
     const expected = {
       branch: 'branch',

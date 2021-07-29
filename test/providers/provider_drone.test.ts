@@ -33,9 +33,10 @@ describe('Drone Params', () => {
   it('gets correct params', () => {
     const inputs = {
       args: {
-                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         CI: 'true',

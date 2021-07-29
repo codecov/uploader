@@ -14,7 +14,7 @@ describe('Wercker CI Params', () => {
         args: {},
         envs: {},
       }
-      let detected = providerWercker.detect(inputs.envs)
+      const detected = providerWercker.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
@@ -36,7 +36,8 @@ describe('Wercker CI Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         CI: true,
@@ -73,6 +74,7 @@ describe('Wercker CI Params', () => {
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
+        flags: ''
       },
       envs: {
         CI: true,

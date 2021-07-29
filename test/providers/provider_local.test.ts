@@ -13,9 +13,10 @@ describe('Local Params', () => {
     it('does not run with the CI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-                                  tag: '',
-        url: '',
-        source: ''
+          tag: '',
+          url: '',
+          source: '',
+          flags: '',
         },
         envs: {
           CI: 'true',
@@ -28,13 +29,12 @@ describe('Local Params', () => {
     it('does run without the CI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-                                  tag: '',
-        url: '',
-        source: ''
+          tag: '',
+          url: '',
+          source: '',
+          flags: '',
         },
-        envs: {
-          CI: 'false',
-        },
+        envs: {},
       }
       const detected = providerLocal.detect(inputs.envs)
       expect(detected).toBeTruthy()
@@ -48,9 +48,10 @@ describe('Local Params', () => {
         pr: '1',
         sha: 'testingsha',
         slug: 'owner/repo',
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {},
     }
@@ -71,9 +72,10 @@ describe('Local Params', () => {
   it('returns errors on git command failures', () => {
     const inputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {},
     }
@@ -102,9 +104,10 @@ describe('Local Params', () => {
   describe('getSlug()', () => {
     const inputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {},
     }

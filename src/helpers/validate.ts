@@ -40,7 +40,7 @@ export function validateSHA(commitSHA: string, requestedLength = GIT_SHA_LENGTH)
   )
 }
 
-function getToken(args: UploaderArgs) {
+export function getToken(args: UploaderArgs) {
   // Token gets set in the following order:
   // * args.token
   // * process.env.CODECOV_TOKEN

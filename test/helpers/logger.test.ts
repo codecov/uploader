@@ -1,6 +1,5 @@
 
-const { error, info, verbose, log } = require('../../src/helpers/logger')
-const { expect, it } = require('@jest/globals')
+import { logError, info, verbose, } from '../../src/helpers/logger'
 
 describe('Logger Helper - Legacy log() tests', () => {
   afterEach(() => {
@@ -10,16 +9,17 @@ describe('Logger Helper - Legacy log() tests', () => {
   it('Should call logger with default options', () => {
     // eslint-disable-next-line
     jest.spyOn(console, 'log').mockImplementation(() => {})
-    log('message with no options')
+    info('message with no options')
     expect(console.log).toHaveBeenCalledWith(
       expect.stringMatching(/no options/),
     )
   })
 
   it('Should not call logger with default options.level = debug and verbose not set', () => {
+
     // eslint-disable-next-line
     jest.spyOn(console, 'debug').mockImplementation(() => {})
-    log('message with debug level', { level: 'debug' })
+    verbose('message with debug level', undefined )
     expect(console.debug).not.toHaveBeenCalled()
   })
 
@@ -27,10 +27,7 @@ describe('Logger Helper - Legacy log() tests', () => {
     jest.spyOn(console, 'debug').mockImplementation(() => {
       // Intentionally empty
     })
-    log('message with debug level and verbose', {
-      level: 'debug',
-      args: { verbose: true },
-    })
+    verbose('message with debug level and verbose', true)
     expect(console.debug).toHaveBeenCalledWith(
       expect.stringMatching(/debug level and verbose/),
     )
@@ -40,18 +37,10 @@ describe('Logger Helper - Legacy log() tests', () => {
     jest.spyOn(console, 'error').mockImplementation(() => {
       // Intentionally empty
     })
-    log('message with error level', { level: 'error' })
+    logError('message with error level')
     expect(console.error).toHaveBeenCalledWith(
       expect.stringMatching(/error level/),
     )
-  })
-
-  it('Should call logger with unsupported options.level ', () => {
-    jest.spyOn(console, 'log').mockImplementation(() => {
-      // Intentionally empty
-    })
-    log('message with error level of foobar', { level: 'foobar' })
-    expect(console.log).toHaveBeenCalledWith(expect.stringMatching(/of foobar/))
   })
 })
 
@@ -64,7 +53,7 @@ describe('Logging methods', () => {
     jest.spyOn(console, 'error').mockImplementation(() => {
       // Intentionally empty
     })
-    error('this is a test error')
+    logError('this is a test error')
     expect(console.error).toHaveBeenCalledWith(
       expect.stringMatching(/\['error'\]/),
     )

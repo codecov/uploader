@@ -3,10 +3,11 @@
   "version": "0.1.0",
   "description": "Codecov Report Uploader",
   "private": true,
-  "bin": "bin/codecov",
+  "bin": "dist/bin/codecov.js",
   "scripts": {
-    "lint": "eslint \"src/**/*.{js,ts}\"",
+    "lint": "eslint \"src/**/*.ts\"",
     "test": "npm run lint && jest",
+    "build": "tsc",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",

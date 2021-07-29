@@ -34,9 +34,10 @@ describe('Cirrus Params', () => {
   it('gets correct params', () => {
     const inputs: UploaderInputs = {
       args: {
-                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         CI: 'true',
@@ -70,9 +71,10 @@ describe('Cirrus Params', () => {
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
-                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         CI: 'true',

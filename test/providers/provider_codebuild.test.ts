@@ -24,6 +24,7 @@ describe('CodeBuild Params', () => {
           tag: '',
           source: '',
           url: '',
+          flags: ''
         },
         envs: {
           CI: 'true',
@@ -42,6 +43,7 @@ describe('CodeBuild Params', () => {
           tag: '',
           source: '',
           url: '',
+          flags: '',
         },
         envs: {
           CI: 'true',
@@ -75,9 +77,10 @@ describe('CodeBuild Params', () => {
           pr: '7',
           sha: 'testsha',
           slug: 'testOrg/testRepo',
-                    tag: '',
+          tag: '',
           source: '',
-          url: ''
+          url: '',
+          flags: '',
         },
         envs: {
           CI: 'true',

@@ -15,7 +15,8 @@ describe('Jenkins CI Params', () => {
         args: {
           tag: '',
           url: '',
-          source: ''
+          source: '',
+          flags: ''
         },
         envs: {},
       }
@@ -28,7 +29,8 @@ describe('Jenkins CI Params', () => {
         args: {
           tag: '',
           url: '',
-          source: ''
+          source: '',
+          flags: ''
         },
         envs: {
           SYSTEM_TEAMFOUNDATIONSERVERURI: 'true',
@@ -46,7 +48,8 @@ describe('Jenkins CI Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         BUILD_BUILDNUMBER: '1',
@@ -61,12 +64,12 @@ describe('Jenkins CI Params', () => {
     }
     const expected = {
       branch: 'main',
-      build: 1,
+      build: '1',
       buildURL:
         'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
       commit: 'testingsha',
-      job: 2,
-      pr: 3,
+      job: '2',
+      pr: '3',
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
@@ -81,7 +84,8 @@ describe('Jenkins CI Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         BUILD_BUILDNUMBER: '1',
@@ -116,7 +120,8 @@ describe('Jenkins CI Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         BUILD_BUILDNUMBER: '1',
@@ -160,7 +165,8 @@ describe('Jenkins CI Params', () => {
         slug: 'testOrg/testRepo',
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',

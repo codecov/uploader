@@ -53,7 +53,7 @@ function dryRun(uploadHost: string, token: string, query: string, uploadFile: st
  * @param {string} args.feature Toggle features
  * @param {string} args.source Track wrappers of the uploader
  */
-export async function main(args: UploaderArgs): Promise<void | string> {
+export async function main(args: UploaderArgs): Promise<void | Record<string, unknown>> {
   /*
   Step 1: validate and sanitize inputs
   Step 2: detect if we are in a git repo
@@ -147,7 +147,6 @@ export async function main(args: UploaderArgs): Promise<void | string> {
     }
   }
   verbose('End of network processing', args.verbose)
-
   // == Step 6: generate upload file
   // TODO: capture envs
 
@@ -255,7 +254,7 @@ export async function main(args: UploaderArgs): Promise<void | string> {
     )
     const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
     info(JSON.stringify(result))
-    return result?.resultURL || ''
+    return result
   } catch (error) {
     logAndThrow(`Error uploading to ${uploadHost}: ${error}`)
   }
@@ -266,7 +265,7 @@ export async function main(args: UploaderArgs): Promise<void | string> {
  * @param {string} version
  * @returns {string}
  */
-export function generateHeader(version: string) {
+export function generateHeader(version: string): string {
   return `
      _____          _
     / ____|        | |
@@ -278,7 +277,7 @@ export function generateHeader(version: string) {
   Codecov report uploader ${version}`
 }
 
-export function getVersion() {
+export function getVersion(): string {
   return version
 }
 

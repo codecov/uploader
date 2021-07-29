@@ -39,9 +39,7 @@ describe('<Ci> Params', () => {
   // This should test that the provider outputs proper default values
   it('gets the correct params on no env variables', () => {
     const inputs: UploaderInputs = {
-      args: {                        tag: '',
-        url: '',
-        source: ''},
+      args: { tag: '', url: '', source: '', flags: '' },
       envs: {},
     }
     const expected = {
@@ -63,9 +61,7 @@ describe('<Ci> Params', () => {
   // This should test that the provider outputs proper parameters when a push event is created
   it('gets the correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: {                        tag: '',
-        url: '',
-        source: ''},
+      args: { tag: '', url: '', source: '', flags: '' },
       envs: {},
     }
     const expected = {
@@ -88,9 +84,10 @@ describe('<Ci> Params', () => {
   it('gets the correct params on pr', () => {
     const inputs: UploaderInputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {},
     }
@@ -114,9 +111,10 @@ describe('<Ci> Params', () => {
   it('gets the correct params on overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {},
     }

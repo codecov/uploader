@@ -1,8 +1,7 @@
-const path = require('path')
-const { expect, it } = require('@jest/globals')
+import path from 'path'
 
-const fileHelpers = require('../../src/helpers/files')
-const tokenHelpers = require('../../src/helpers/token')
+import * as fileHelpers from '../../src/helpers/files'
+import * as tokenHelpers from '../../src/helpers/token'
 
 describe('Get tokens', () => {
   const fixturesDir = path.join(
@@ -20,21 +19,33 @@ describe('Get tokens', () => {
 
   describe('From yaml', () => {
     it('Returns empty with no yaml file', () => {
-      expect(tokenHelpers.getTokenFromYaml('.')).toBe('')
+      const args = {
+        flags: '',
+        verbose: true
+      }
+      expect(tokenHelpers.getTokenFromYaml('.', args)).toBe('')
     })
 
     it('Returns the correct token from file', () => {
+      const args = {
+        flags: '',
+        verbose: true
+      }
       expect(
-        tokenHelpers.getTokenFromYaml(fixturesDir, { verbose: true }),
+        tokenHelpers.getTokenFromYaml(fixturesDir, args),
       ).toBe('faketoken')
     })
 
     it('Returns deprecation error from codecov_token', () => {
+      const args = {
+        flags: '',
+        verbose: true
+      }
       jest.spyOn(console, 'error').mockImplementation(() => {
         // Intentionally empty
       })
       expect(
-        tokenHelpers.getTokenFromYaml(invalidFixturesDir, { verbose: true }),
+        tokenHelpers.getTokenFromYaml(invalidFixturesDir, args),
       ).toBe('')
 
       expect(console.error).toHaveBeenCalledWith(
@@ -46,7 +57,7 @@ describe('Get tokens', () => {
   describe('From right source', () => {
     it('Returns from args', () => {
       const inputs = {
-        args: { token: 'argtoken' },
+        args: { token: 'argtoken', flags: '' },
         envs: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('argtoken')
@@ -54,7 +65,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs = {
-        args: {},
+        args: {flags: ''},
         envs: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('envtoken')
@@ -62,7 +73,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs = {
-        args: {},
+        args: {flags: ''},
         envs: {},
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('faketoken')
@@ -70,7 +81,7 @@ describe('Get tokens', () => {
 
     it('Returns from no source', () => {
       const inputs = {
-        args: {},
+        args: { flags: ''},
         envs: {},
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')

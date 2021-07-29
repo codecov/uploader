@@ -1,4 +1,5 @@
 import { UploaderArgs, UploaderInputs } from "../types"
+import { logError } from "./logger"
 
 const fs = require('fs')
 const path = require('path')
@@ -60,7 +61,7 @@ export function getTokenFromYaml(projectRoot: string, args: UploaderArgs) {
           }
 
           if (yamlConfig['codecov_token']) {
-            error(
+            logError(
               `'codecov_token' is a deprecated field. Please switch to 'codecov.token' ` +
               '(https://docs.codecov.com/docs/codecovyml-reference#codecovtoken)'
             )

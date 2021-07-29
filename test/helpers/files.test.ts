@@ -37,9 +37,9 @@ describe('File Helpers', () => {
   })
 
   it('can get a file listing', async () => {
-    expect(await fileHelpers.getFileListing('.', { verbose: true })).toMatch(
-      'npm-shrinkwrap.json',
-    )
+    expect(
+      await fileHelpers.getFileListing('.', { flags: '', verbose: true }),
+    ).toMatch('npm-shrinkwrap.json')
   })
 
   it('can parse the .gitignore file', () => {
@@ -94,8 +94,8 @@ describe('File Helpers', () => {
 
     it('can return a list of coverage files with a pattern', async () => {
       expect(
-        await fileHelpers.getCoverageFiles('.', ['index.test.js']),
-      ).toStrictEqual(['test/index.test.js', 'test/providers/index.test.js'])
+        await fileHelpers.getCoverageFiles('.', ['index.test.ts']),
+      ).toStrictEqual(['test/index.test.ts', 'test/providers/index.test.ts'])
     })
     describe('coverage file patterns', () => {
       it('contains `jacoco*.xml`', () => {

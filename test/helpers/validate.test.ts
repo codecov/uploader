@@ -1,4 +1,4 @@
-const validate = require('../../src/helpers/validate')
+import * as validate from '../../src/helpers/validate'
 
 // Backup the env
 const realEnv = { ...process.env }
@@ -90,13 +90,13 @@ describe('Input Validators', () => {
     })
 
     it('should return an empty string if neither args or env are set', () => {
-      const args = {}
+      const args = {flags: ''}
       expect(validate.getToken(args)).toEqual('')
     })
 
     it('should return the value of the env if env is set, and args are not set', () => {
       process.env.CODECOV_TOKEN = 'testingEnvToken'
-      const args = {}
+      const args = {flags: ''}
       expect(validate.getToken(args)).toEqual('testingEnvToken')
     })
 
@@ -104,6 +104,7 @@ describe('Input Validators', () => {
       process.env.CODECOV_TOKEN = 'testingEnvToken'
       const args = {
         token: 'testingArgToken',
+        flags: ''
       }
       expect(validate.getToken(args)).toEqual('testingArgToken')
     })

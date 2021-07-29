@@ -14,7 +14,8 @@ describe('AppveyorCI Params', () => {
         args: {
           tag: '',
           url: '',
-          source: ''
+          source: '',
+          flags: ''
         },
         envs: {},
       }
@@ -59,7 +60,8 @@ describe('AppveyorCI Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         APPVEYOR: 'true',
@@ -99,9 +101,7 @@ describe('AppveyorCI Params', () => {
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: ''
+        flags: ''
       },
       envs: {
         APPVEYOR: 'true',
@@ -110,7 +110,7 @@ describe('AppveyorCI Params', () => {
     }
     const expected = {
       branch: 'branch',
-      build: 3,
+      build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',

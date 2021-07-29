@@ -1,14 +1,15 @@
-const nock = require('nock')
+import nock from 'nock'
 
-const { version } = require('../../package.json')
-const webHelper = require('../../src/helpers/web')
+import { version } from '../../package.json'
+import * as webHelper from '../../src/helpers/web'
+import { IServiceParams } from '../../src/types'
 
 describe('Web Helpers', () => {
-  let uploadURL
-  let token
-  let uploadFile
-  let query
-  let source
+  let uploadURL: string
+  let token: string
+  let uploadFile: string
+  let query: string
+  let source: string
   beforeEach(() => {
     token = '123-abc-890-xyz'
     uploadFile = 'some content'
@@ -73,18 +74,19 @@ describe('Web Helpers', () => {
   })
 
   it('Can generate query URL', () => {
-    const queryParams = {}
-    queryParams.branch = 'testBranch'
-    queryParams.commit = 'commitSHA'
-    queryParams.build = '4'
-    queryParams.buildURL = 'https://ci-providor.local/job/xyz'
-    queryParams.name = 'testName'
-    queryParams.tag = 'tagV1'
-    queryParams.slug = 'testOrg/testRepo'
-    queryParams.service = 'testingCI'
-    queryParams.flags = 'unit,uploader'
-    queryParams.pr = '2'
-    queryParams.job = '6'
+    const queryParams = {
+      branch: 'testBranch',
+      commit: 'commitSHA',
+      build: '4',
+      buildURL: 'https://ci-providor.local/job/xyz',
+      name: 'testName',
+      tag: 'tagV1',
+      slug: 'testOrg/testRepo',
+      service: 'testingCI',
+      flags: 'unit,uploader',
+      pr: '2',
+      job: '6',
+    }
     expect(webHelper.generateQuery(queryParams)).toBe(
       'branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6',
     )
@@ -93,7 +95,7 @@ describe('Web Helpers', () => {
   it('can populateBuildParams() from args', () => {
     const result = webHelper.populateBuildParams(
       { args: { flags: 'testFlag', tag: 'testTag' }, envs: {} },
-      { name: '', tag: ', flags: []' },
+      { name: '', tag: ', flags: []', branch: '', build: '', buildURL: '', commit: '', job: '', service: 'Testing', slug: '', pr: '' },
     )
     expect(result.flags).toBe('testFlag')
   })
@@ -101,7 +103,7 @@ describe('Web Helpers', () => {
   it('can populateBuildParams() from args with multiple flags', () => {
     const result = webHelper.populateBuildParams(
       { args: { flags: ['testFlag1', 'testFlag2'], tag: 'testTag' }, envs: {} },
-      { name: '', tag: ', flags: []' },
+      { name: '', tag: ', flags: []', branch: '', build: '', buildURL: '', commit: '', job: '', service: 'Testing', slug: '', pr: ''  },
     )
     expect(result.flags).toBe('testFlag1,testFlag2')
   })

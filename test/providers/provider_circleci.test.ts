@@ -21,8 +21,8 @@ describe('CircleCI Params', () => {
       const inputs = {
         args: {},
         envs: {
-          CI: true,
-          CIRCLECI: true,
+          CI: 'true',
+          CIRCLECI: 'true',
         },
       }
       const detected = providerCircleci.detect(inputs.envs)
@@ -32,27 +32,29 @@ describe('CircleCI Params', () => {
 
   it('gets correct params', () => {
     const inputs = {
-      args: {},
+      args: {
+        flags: '',
+      },
       envs: {
-        CI: true,
-        CIRCLECI: true,
+        CI: 'true',
+        CIRCLECI: 'true',
         CIRCLE_BRANCH: 'master',
         CIRCLE_SHA1: 'testingsha',
         CIRCLE_PROJECT_REPONAME: 'testRepo',
         CIRCLE_PROJECT_USERNAME: 'testOrg',
         CIRCLE_REPOSITORY_URL: 'git@github.com:testOrg/testRepo.git',
-        CIRCLE_BUILD_NUM: 2,
-        CIRCLE_PR_NUMBER: 1,
-        CIRCLE_NODE_INDEX: 3,
+        CIRCLE_BUILD_NUM: '2',
+        CIRCLE_PR_NUMBER: '1',
+        CIRCLE_NODE_INDEX: '3',
       },
     }
     const expected = {
       branch: 'master',
-      build: 2,
+      build: '2',
       buildURL: '',
       commit: 'testingsha',
-      job: 3,
-      pr: 1,
+      job: '3',
+      pr: '1',
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }
@@ -62,26 +64,28 @@ describe('CircleCI Params', () => {
 
   it('gets correct slug when empty reponame', () => {
     const inputs = {
-      args: {},
+      args: {
+        flags: '',
+      },
       envs: {
-        CI: true,
-        CIRCLECI: true,
+        CI: 'true',
+        CIRCLECI: 'true',
         CIRCLE_BRANCH: 'master',
         CIRCLE_SHA1: 'testingsha',
         CIRCLE_PROJECT_REPONAME: '',
         CIRCLE_REPOSITORY_URL: 'git@github.com:testOrg/testRepo.git',
-        CIRCLE_BUILD_NUM: 2,
-        CIRCLE_PR_NUMBER: 1,
-        CIRCLE_NODE_INDEX: 3,
+        CIRCLE_BUILD_NUM: '2',
+        CIRCLE_PR_NUMBER: '1',
+        CIRCLE_NODE_INDEX: '3',
       },
     }
     const expected = {
       branch: 'master',
-      build: 2,
+      build: '2',
       buildURL: '',
       commit: 'testingsha',
-      job: 3,
-      pr: 1,
+      job: '3',
+      pr: '1',
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }

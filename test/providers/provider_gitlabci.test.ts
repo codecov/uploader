@@ -21,7 +21,9 @@ describe('GitLabCI Params', () => {
 
     it('does run with GitLabCI env variable', () => {
       const inputs = {
-        args: {},
+        args: {
+          flags: '',
+        },
         envs: {
           GITLAB_CI: 'true',
         },
@@ -37,6 +39,7 @@ describe('GitLabCI Params', () => {
         tag: '',
         url: '',
         source: '',
+        flags: '',
       },
       envs: {
         GITLAB_CI: 'true',
@@ -66,6 +69,7 @@ describe('GitLabCI Params', () => {
         tag: '',
         url: '',
         source: '',
+        flags: '',
       },
       envs: {
         CI_BUILD_ID: '1',
@@ -98,6 +102,7 @@ describe('GitLabCI Params', () => {
         tag: '',
         url: '',
         source: '',
+        flags: '',
       },
       envs: {
         CI_COMMIT_REF_NAME: 'master',
@@ -127,6 +132,7 @@ describe('GitLabCI Params', () => {
         tag: '',
         url: '',
         source: '',
+        flags: '',
       },
       envs: {
         GITLAB_CI: 'true',
@@ -190,6 +196,7 @@ describe('GitLabCI Params', () => {
         tag: '',
         url: '',
         source: '',
+        flags: '',
       },
       envs: {
         GITLAB_CI: 'true',

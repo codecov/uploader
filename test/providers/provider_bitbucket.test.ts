@@ -15,6 +15,7 @@ describe('Bitbucket Params', () => {
           tag: '',
           url: '',
           source: '',
+          flags: '',
         },
         envs: {},
       }
@@ -44,7 +45,8 @@ describe('Bitbucket Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         BITBUCKET_BUILD_NUMBER: '1',
@@ -70,7 +72,8 @@ describe('Bitbucket Params', () => {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         BITBUCKET_BRANCH: 'main',
@@ -99,9 +102,10 @@ describe('Bitbucket Params', () => {
   it('gets the correct params on push', () => {
     const inputs: UploaderInputs = {
       args: {
-                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         BITBUCKET_BRANCH: 'main',
@@ -129,9 +133,10 @@ describe('Bitbucket Params', () => {
   it('gets the correct params with short SHA', () => {
     const inputs: UploaderInputs = {
       args: {
-                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         BITBUCKET_BRANCH: 'main',
@@ -169,9 +174,10 @@ describe('Bitbucket Params', () => {
         pr: '4',
         sha: 'overwriteSha',
         slug: 'overwriteOwner/overwriteRepo',
-                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         BITBUCKET_BRANCH: 'main',

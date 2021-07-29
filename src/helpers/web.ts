@@ -1,32 +1,30 @@
-import superagent from 'superagent'
+import { IServiceParams, UploaderInputs } from "../types"
+
+import superagent, { SuperAgent } from 'superagent'
 import { version } from '../../package.json'
 import * as validateHelpers from './validate'
-import { logError, info, verbose } from './logger'
+import { info , logError} from './logger'
 import { logAndThrow } from './util'
-import { IServiceParams, UploaderInputs } from '../types'
 
 /**
  *
  * @param {Object} inputs
- * @param {UploaderEnvs} inputs.envs
+ * @param {NodeJS.ProcessEnv} inputs.envs
  * @param {Object} serviceParams
  * @returns Object
  */
-export function populateBuildParams(
-  inputs: UploaderInputs,
-  serviceParams: IServiceParams,
-) {
+export function populateBuildParams(inputs: UploaderInputs, serviceParams: IServiceParams) {
   const { args, envs } = inputs
-  serviceParams.name = args.name || envs.CODECOV_NAME?.toString() || ''
+  serviceParams.name = args.name || envs.CODECOV_NAME ?.toString() || ''
   serviceParams.tag = args.tag || ''
   let flags: string[]
   if (typeof args.flags === 'object') {
     flags = [...args.flags]
   } else {
-    flags = [args.flags || '']
+    flags = [args.flags]
   }
   serviceParams.flags = flags
-    .filter((flag: string) => validateHelpers.validateFlags(flag))
+    .filter(flag => validateHelpers.validateFlags(flag))
     .join(',')
   serviceParams.parent = args.parent || ''
   return serviceParams
@@ -40,16 +38,8 @@ export function getPackage(source: string) {
   }
 }
 
-/**
- *
- * @param {string} uploadURL
- * @param {Buffer} uploadFile
- * @returns {Promise<{ status: string, resultURL: string }>}
- */
-export async function uploadToCodecovPUT(
-  uploadURL: string,
-  uploadFile: Buffer,
-) {
+
+export async function uploadToCodecovPUT(uploadURL: string, uploadFile: string | Buffer) {
   info('Uploading...')
 
   const parts = uploadURL.split('\n')
@@ -75,23 +65,16 @@ export async function uploadToCodecovPUT(
   }
 }
 
-/**
- *
- * @param {string} uploadURL The upload url
- * @param {string} token Codecov token
- * @param {string} query Query parameters
- * @param {Buffer} uploadFile Coverage file to upload
- * @param {string} version uploader version number
- * @returns {Promise<string>}
- */
-export async function uploadToCodecov(
-  uploadURL: string,
-  token: string,
-  query: string,
-  uploadFile: Buffer,
-  source: string,
-) {
-  const result = await superagent
+interface SuperAgentResponse extends superagent.Response {
+    res?: {
+      text: string
+    }
+  
+}
+
+
+export async function uploadToCodecov(uploadURL: string, token: string, query: string, uploadFile: string | Buffer, source: string): Promise<string> {
+  const result: SuperAgentResponse = await superagent
     .post(
       `${uploadURL}/upload/v4?package=${getPackage(
         source,
@@ -104,13 +87,13 @@ export async function uploadToCodecov(
     .set('X-Upload-Token', token)
     .set('X-Reduced-Redundancy', 'false')
     .on('error', err => {
-      logAndThrow(
+      logError(
         `Error uploading to Codecov when fetching PUT (inner): ${err.status} ${err.response.text}`,
       )
     })
     .ok(res => res.status === 200)
 
-  return result.text
+  return result.res!.text
 }
 
 /**
@@ -118,16 +101,16 @@ export async function uploadToCodecov(
  * @param {string} str
  * @returns {string}
  */
-export function camelToSnake(str: string): string {
-  const snakeCase = str.match(
-    /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g,
+function camelToSnake(str: string): string {
+  return (
+    str &&
+    (str
+      .match(
+        /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g,
+      ) || [])
+      .map((s: string) => s.toLowerCase())
+      .join('_')
   )
-
-  if (snakeCase) {
-    return snakeCase.map(s => s.toLowerCase()).join('_')
-  }
-
-  return str
 }
 
 /**

@@ -1,5 +1,6 @@
 import td from 'testdouble'
 import * as providerBuildkite from '../../src/ci_providers/provider_buildkite'
+import { UploaderInputs } from '../../src/types'
 
 describe('Buildkite Params', () => {
   afterEach(() => {
@@ -29,11 +30,12 @@ describe('Buildkite Params', () => {
   })
 
   it('gets correct params on push', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         BUILDKITE: 'true',
@@ -61,16 +63,17 @@ describe('Buildkite Params', () => {
   })
 
   it('gets correct params for overrides', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         branch: 'branch',
         build: '3',
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
-                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: '',
       },
       envs: {
         BUILDKITE: 'true',

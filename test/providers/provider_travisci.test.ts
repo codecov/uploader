@@ -12,9 +12,10 @@ describe('TravisCI Params', () => {
     it('does not run without TravisCI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-                                  tag: '',
-        url: '',
-        source: ''
+          tag: '',
+          url: '',
+          source: '',
+          flags: ''
         },
         envs: {},
       }
@@ -47,9 +48,10 @@ describe('TravisCI Params', () => {
   it('gets correct params on push', () => {
     const inputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         CI: 'true',
@@ -81,9 +83,10 @@ describe('TravisCI Params', () => {
   it('gets correct params on PR', () => {
     const inputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         CI: 'true',
@@ -117,9 +120,10 @@ describe('TravisCI Params', () => {
   it('gets correct params on PR with no pull request branch', () => {
     const inputs = {
       args: {
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         CI: 'true',
@@ -157,9 +161,10 @@ describe('TravisCI Params', () => {
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
-                                tag: '',
+        tag: '',
         url: '',
-        source: ''
+        source: '',
+        flags: ''
       },
       envs: {
         CI: 'true',
