@@ -1,6 +1,6 @@
 import { IServiceParams, UploaderInputs } from "../types"
 
-import superagent, { SuperAgent } from 'superagent'
+import superagent from 'superagent'
 import { version } from '../../package.json'
 import * as validateHelpers from './validate'
 import { info , logError} from './logger'
@@ -13,7 +13,7 @@ import { logAndThrow } from './util'
  * @param {Object} serviceParams
  * @returns Object
  */
-export function populateBuildParams(inputs: UploaderInputs, serviceParams: IServiceParams) {
+export function populateBuildParams(inputs: UploaderInputs, serviceParams: IServiceParams): IServiceParams {
   const { args, envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME ?.toString() || ''
   serviceParams.tag = args.tag || ''
@@ -30,7 +30,7 @@ export function populateBuildParams(inputs: UploaderInputs, serviceParams: IServ
   return serviceParams
 }
 
-export function getPackage(source: string) {
+export function getPackage(source: string): string {
   if (source) {
     return `${source}-uploader-${version}`
   } else {
@@ -39,7 +39,7 @@ export function getPackage(source: string) {
 }
 
 
-export async function uploadToCodecovPUT(uploadURL: string, uploadFile: string | Buffer) {
+export async function uploadToCodecovPUT(uploadURL: string, uploadFile: string | Buffer): Promise<{status: string, resultURL: string}> {
   info('Uploading...')
 
   const parts = uploadURL.split('\n')
@@ -93,7 +93,10 @@ export async function uploadToCodecov(uploadURL: string, token: string, query: s
     })
     .ok(res => res.status === 200)
 
-  return result.res!.text
+    if (result.res) {
+      return result.res.text
+    }
+  logAndThrow(`We don't have a PUT URL`)
 }
 
 /**
@@ -118,7 +121,7 @@ function camelToSnake(str: string): string {
  * @param {Object} queryParams
  * @returns {string}
  */
-export function generateQuery(queryParams: IServiceParams) {
+export function generateQuery(queryParams: IServiceParams): string {
   return Object.entries(queryParams)
     .map(([key, value]) => `${camelToSnake(key)}=${value}`)
     .join('&')
