@@ -6,8 +6,8 @@
   "bin": "dist/bin/codecov.js",
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
-    "test": "npm run lint && jest",
-    "build": "tsc",
+    "test": "npm run lint && jest --runInBand",
+    "build": "tsc  --build",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
