@@ -8,7 +8,7 @@ export function detect(envs: UploaderEnvs): boolean {
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.BUILD_BUILDNUMBER?.toString() || ''
+  return args.build || envs.BUILD_BUILDNUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
@@ -31,15 +31,15 @@ function _getBranch(inputs: UploaderInputs): string {
 }
 
 function _getJob(envs: UploaderEnvs): string {
-  return envs.BUILD_BUILDID?.toString() || ''
+  return envs.BUILD_BUILDID || ''
 }
 
 function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   return (
     args.pr ||
-    envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER?.toString() ||
-    envs.SYSTEM_PULLREQUEST_PULLREQUESTID?.toString() ||
+    envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER ||
+    envs.SYSTEM_PULLREQUEST_PULLREQUESTID ||
     ''
   )
 }
@@ -54,7 +54,7 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  let commit = envs.BUILD_SOURCEVERSION?.toString() || ''
+  let commit = envs.BUILD_SOURCEVERSION || ''
 
   if (_getPR(inputs)) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
@@ -74,12 +74,12 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getProject(inputs: UploaderInputs): string {
   const { envs } = inputs
-  return envs.SYSTEM_TEAMPROJECT?.toString() || ''
+  return envs.SYSTEM_TEAMPROJECT || ''
 }
 
 function _getServerURI(inputs: UploaderInputs): string {
   const { envs } = inputs
-  return envs.SYSTEM_TEAMFOUNDATIONSERVERURI?.toString() || ''
+  return envs.SYSTEM_TEAMFOUNDATIONSERVERURI || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {

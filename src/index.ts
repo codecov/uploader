@@ -2,13 +2,13 @@ import { UploaderArgs } from "./types"
 
 import zlib from 'zlib'
 import { version } from '../package.json'
-import * as fileHelpers from './helpers/files'
 import * as validateHelpers from './helpers/validate'
-import * as tokenHelpers from './helpers/token'
 import * as webHelpers from './helpers/web'
 import { info, verbose } from './helpers/logger'
 import providers from './ci_providers'
 import { logAndThrow } from './helpers/util'
+import { getToken } from "./helpers/token"
+import { coverageFilePatterns, endEnvironmentMarker, endFileMarker, endNetworkMarker, fetchGitRoot, fileHeader, getCoverageFiles, getFileListing, readCoverageFile, removeFile } from "./helpers/files"
 
 /**
  *
@@ -82,7 +82,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
   info(generateHeader(getVersion()))
 
   // == Step 2: detect if we are in a git repo
-  const projectRoot = args.rootDir || fileHelpers.fetchGitRoot()
+  const projectRoot = args.rootDir || fetchGitRoot()
   if (projectRoot === '') {
     info(
       '=> No git repo detected. Please use the -R flag if the below detected directory is not correct.',
@@ -92,7 +92,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
   info(`=> Project root located at: ${projectRoot}`)
 
   // == Step 3: sanitize and set token
-  const token = await tokenHelpers.getToken(inputs, projectRoot)
+  const token = await getToken(inputs, projectRoot)
   if (token === '') {
     info('-> No token specified or token is empty')
   }
@@ -101,17 +101,17 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
   let uploadFile = ''
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
-    verbose('Start of network processing...', args.verbose)
+    verbose('Start of network processing...', Boolean(args.verbose))
     let fileListing = ''
     try {
-      fileListing = await fileHelpers.getFileListing(projectRoot, args)
+      fileListing = await getFileListing(projectRoot, args)
     } catch (error) {
       logAndThrow(`Error getting file listing: ${error}`)
     }
 
     uploadFile = uploadFile
       .concat(fileListing)
-      .concat(fileHelpers.endNetworkMarker())
+      .concat(endNetworkMarker())
   }
 
   // == Step 5: select coverage files (search or specify)
@@ -120,9 +120,9 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
   let coverageFilePaths = []
   if (!args.file) {
     info('Searching for coverage files...')
-    coverageFilePaths = await fileHelpers.getCoverageFiles(
+    coverageFilePaths = await getCoverageFiles(
       args.dir || projectRoot,
-      fileHelpers.coverageFilePatterns(),
+      coverageFilePatterns(),
     )
     if (coverageFilePaths.length > 0) {
       info(`=> Found ${coverageFilePaths.length} possible coverage files:`)
@@ -146,7 +146,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       logAndThrow('No coverage files found, exiting.')
     }
   }
-  verbose('End of network processing', args.verbose)
+  verbose('End of network processing', Boolean(args.verbose))
   // == Step 6: generate upload file
   // TODO: capture envs
 
@@ -155,7 +155,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
     let fileContents
     try {
       info(`Processing ${coverageFile}...`),
-        (fileContents = await fileHelpers.readCoverageFile(
+        (fileContents = await readCoverageFile(
           args.dir || projectRoot,
           coverageFile,
         ))
@@ -165,15 +165,15 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
     }
 
     uploadFile = uploadFile
-      .concat(fileHelpers.fileHeader(coverageFile))
+      .concat(fileHeader(coverageFile))
       .concat(fileContents)
-      .concat(fileHelpers.endFileMarker())
+      .concat(endFileMarker())
   }
 
   // Cleanup
   if (args.clean) {
     for (const coverageFile of coverageFilePaths) {
-      fileHelpers.removeFile(args.dir || projectRoot, coverageFile)
+      removeFile(args.dir || projectRoot, coverageFile)
     }
   }
 
@@ -187,7 +187,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       .join('')
     uploadFile = uploadFile
       .concat(vars)
-      .concat(fileHelpers.endEnvironmentMarker())
+      .concat(endEnvironmentMarker())
   }
 
   const gzippedFile = zlib.gzipSync(uploadFile)
@@ -224,7 +224,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       args.source || '',
     )}&token=*******&${query}`,
   )
-  verbose(`Passed token was ${token.length} characters long`, args.verbose)
+  verbose(`Passed token was ${token.length} characters long`, Boolean(args.verbose))
   try {
     verbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
@@ -233,7 +233,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
         X-Reduced-Redundancy: 'false'`,
-      args.verbose,
+        Boolean(args.verbose),
     )
 
     const uploadURL = await webHelpers.uploadToCodecov(
@@ -244,13 +244,13 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       args.source || '',
     )
 
-    verbose(`Returned upload url: ${uploadURL}`, args.verbose)
+    verbose(`Returned upload url: ${uploadURL}`, Boolean(args.verbose))
 
     verbose(
       `${uploadURL.split('\n')[1]}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'`,
-      args.verbose,
+        Boolean(args.verbose),
     )
     const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
     info(JSON.stringify(result))

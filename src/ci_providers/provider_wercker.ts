@@ -1,23 +1,23 @@
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-export function detect(envs: UploaderEnvs):boolean {
+export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.WERCKER_MAIN_PIPELINE_STARTED)
 }
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.WERCKER_MAIN_PIPELINE_STARTED?.toString() || ''
+  return args.build || envs.WERCKER_MAIN_PIPELINE_STARTED || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
   const { envs } = inputs
-  return envs.WERCKER_BUILD_URL?.toString() || ''
+  return envs.WERCKER_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
 
-  return args.branch || envs.WERCKER_GIT_BRANCH?.toString() || ''
+  return args.branch || envs.WERCKER_GIT_BRANCH || ''
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -40,12 +40,12 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.WERCKER_GIT_COMMIT?.toString() || ''
+  return args.sha || envs.WERCKER_GIT_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.slug || `${envs.WERCKER_GIT_OWNER?.toString()}/${envs.WERCKER_GIT_REPOSITORY?.toString()}`
+  return args.slug || `${envs.WERCKER_GIT_OWNER}/${envs.WERCKER_GIT_REPOSITORY}`
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {

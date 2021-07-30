@@ -233,7 +233,7 @@ export function parseGitIgnore(projectRoot: string): string[] {
  * @returns {string[]}
  */
 export function getAllFiles(projectRoot: string, dirPath: string, args: UploaderArgs, arrayOfFiles: string[] = []): string[] {
-  verbose(`Searching for files in ${dirPath}`, args.verbose)
+  verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
   const files = fs.readdirSync(dirPath)
 
   files.forEach(function (file) {
@@ -253,7 +253,7 @@ export function getAllFiles(projectRoot: string, dirPath: string, args: Uploader
       )
     }
   })
-  verbose(`Search complete for files in ${dirPath}`, args.verbose)
+  verbose(`Search complete for files in ${dirPath}`, Boolean(args.verbose))
   return arrayOfFiles
 }
 

@@ -21,7 +21,7 @@ describe('Get tokens', () => {
     it('Returns empty with no yaml file', () => {
       const args = {
         flags: '',
-        verbose: true
+        verbose: 'true'
       }
       expect(tokenHelpers.getTokenFromYaml('.', args)).toBe('')
     })
@@ -29,7 +29,7 @@ describe('Get tokens', () => {
     it('Returns the correct token from file', () => {
       const args = {
         flags: '',
-        verbose: true
+        verbose: 'true'
       }
       expect(
         tokenHelpers.getTokenFromYaml(fixturesDir, args),
@@ -39,7 +39,7 @@ describe('Get tokens', () => {
     it('Returns deprecation error from codecov_token', () => {
       const args = {
         flags: '',
-        verbose: true
+        verbose: 'true'
       }
       jest.spyOn(console, 'error').mockImplementation(() => {
         // Intentionally empty

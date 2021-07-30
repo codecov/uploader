@@ -14,8 +14,8 @@ import { validateToken } from './validate'
 export function getToken(inputs: UploaderInputs, projectRoot: string): string {
   const { args, envs } = inputs
   const options = [
-    [args.token?.toString(), 'arguments'],
-    [envs.CODECOV_TOKEN?.toString(), 'environment variables'],
+    [args.token, 'arguments'],
+    [envs.CODECOV_TOKEN, 'environment variables'],
     [getTokenFromYaml(projectRoot, args), 'Codecov yaml config'],
   ]
 
@@ -32,7 +32,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
 interface ICodecovYAML {
   codecov?: {
     token?: string
-  },
+  }
   codecov_token?: string
 }
 
@@ -49,7 +49,10 @@ function yamlParse(input: object | string | number): ICodecovYAML {
   return yaml
 }
 
-export function getTokenFromYaml(projectRoot: string, args: UploaderArgs): string {
+export function getTokenFromYaml(
+  projectRoot: string,
+  args: UploaderArgs,
+): string {
   const dirNames = ['', '.github', 'dev']
 
   const yamlNames = [
@@ -68,7 +71,9 @@ export function getTokenFromYaml(projectRoot: string, args: UploaderArgs): strin
           const fileContents = fs.readFileSync(filePath, {
             encoding: 'utf-8',
           })
-          const yamlConfig: ICodecovYAML = yamlParse(yaml.load(fileContents, {json: true}) || {})
+          const yamlConfig: ICodecovYAML = yamlParse(
+            yaml.load(fileContents, { json: true }) || {},
+          )
           if (
             yamlConfig['codecov'] &&
             yamlConfig['codecov']['token'] &&
@@ -87,7 +92,7 @@ export function getTokenFromYaml(projectRoot: string, args: UploaderArgs): strin
       } catch (err) {
         verbose(
           `Error searching for upload token in ${filePath}: ${err}`,
-          args.verbose,
+          Boolean(args.verbose),
         )
       }
     }

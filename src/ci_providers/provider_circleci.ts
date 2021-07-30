@@ -22,12 +22,12 @@ export function getServiceName(): string {
 
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.CIRCLE_BRANCH?.toString() || ''
+  return args.branch || envs.CIRCLE_BRANCH || ''
 }
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.CIRCLE_SHA1?.toString() || ''
+  return args.sha || envs.CIRCLE_SHA1 || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
@@ -37,7 +37,7 @@ function _getSlug(inputs: UploaderInputs): string {
     return slug
   }
   if (envs.CIRCLE_PROJECT_REPONAME !== '') {
-    slug = `${envs.CIRCLE_PROJECT_USERNAME?.toString()}/${envs.CIRCLE_PROJECT_REPONAME?.toString()}`
+    slug = `${envs.CIRCLE_PROJECT_USERNAME}/${envs.CIRCLE_PROJECT_REPONAME}`
   } else {
     if (envs.CIRCLE_REPOSITORY_URL) {
       slug = `${
@@ -54,16 +54,16 @@ function _getSlug(inputs: UploaderInputs): string {
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.CIRCLE_BUILD_NUM?.toString() || ''
+  return args.build || envs.CIRCLE_BUILD_NUM || ''
 }
 
 function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.pr || envs.CIRCLE_PR_NUMBER?.toString() || ''
+  return args.pr || envs.CIRCLE_PR_NUMBER || ''
 }
 
 function _getJob(envs: UploaderEnvs): string {
-  return envs.CIRCLE_NODE_INDEX?.toString() || ''
+  return envs.CIRCLE_NODE_INDEX || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {

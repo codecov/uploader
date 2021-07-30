@@ -7,6 +7,7 @@
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
     "test": "npm run lint && jest --runInBand",
+    "build:clean": "rm -rf dist",
     "build": "tsc  --build",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",

@@ -8,7 +8,7 @@ export function detect(envs: UploaderEnvs): boolean {
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.CI_BUILD_ID?.toString() || envs.CI_JOB_ID?.toString() || ''
+  return args.build || envs.CI_BUILD_ID || envs.CI_JOB_ID || ''
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -18,7 +18,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
 
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.CI_BUILD_REF_NAME?.toString() || envs.CI_COMMIT_REF_NAME?.toString() || ''
+  return args.branch || envs.CI_BUILD_REF_NAME || envs.CI_COMMIT_REF_NAME || ''
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -41,15 +41,15 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.CI_BUILD_REF?.toString() || envs.CI_COMMIT_SHA?.toString() || ''
+  return args.sha || envs.CI_BUILD_REF || envs.CI_COMMIT_SHA || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  const remoteAddr = envs.CI_BUILD_REPO?.toString() || envs.CI_REPOSITORY_URL?.toString() || ''
+  const remoteAddr = envs.CI_BUILD_REPO || envs.CI_REPOSITORY_URL || ''
   return (
     args.slug ||
-    envs.CI_PROJECT_PATH?.toString() ||
+    envs.CI_PROJECT_PATH ||
     parseSlugFromRemoteAddr(remoteAddr) ||
     ''
   )

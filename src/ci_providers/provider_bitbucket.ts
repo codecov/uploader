@@ -3,44 +3,44 @@ import { validateSHA } from '../helpers/validate'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
-  return Boolean(envs.CI) && Boolean(envs.BITBUCKET_BUILD_NUMBER)   || false
+  return (Boolean(envs.CI) && Boolean(envs.BITBUCKET_BUILD_NUMBER)) || false
 }
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.BITBUCKET_BUILD_NUMBER?.toString() || ''
+  return args.build || envs.BITBUCKET_BUILD_NUMBER || ''
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs) : string{
+function _getBuildURL(inputs: UploaderInputs): string {
   return ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.BITBUCKET_BRANCH?.toString() || ''
+  return args.branch || envs.BITBUCKET_BRANCH || ''
 }
 
 function _getJob(envs: UploaderEnvs): string {
-  return envs.BITBUCKET_BUILD_NUMBER ?.toString()|| ''
+  return envs.BITBUCKET_BUILD_NUMBER || ''
 }
 
 function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.pr || envs.BITBUCKET_PR_ID?.toString() || ''
+  return args.pr || envs.BITBUCKET_PR_ID || ''
 }
 
 function _getService(): string {
   return 'bitbucket'
 }
 
-export function getServiceName() : string{
+export function getServiceName(): string {
   return 'Bitbucket'
 }
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  let commit = envs.BITBUCKET_COMMIT?.toString() || ''
+  let commit = envs.BITBUCKET_COMMIT || ''
 
   if (commit && validateSHA(commit, 12)) {
     commit = childProcess.execFileSync('git', ['rev-parse', commit])

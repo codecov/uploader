@@ -10,8 +10,10 @@ describe('Wercker CI Params', () => {
 
   describe('detect()', () => {
     it('does not run without Wercker CI env variable', () => {
-      const inputs = {
-        args: {},
+      const inputs: UploaderInputs = {
+        args: {
+          flags: ''
+        },
         envs: {},
       }
       const detected = providerWercker.detect(inputs.envs)
@@ -19,8 +21,10 @@ describe('Wercker CI Params', () => {
     })
 
     it('does run with Wercker CI env variable', () => {
-      const inputs = {
-        args: {},
+      const inputs: UploaderInputs = {
+        args: {
+          flags: ''
+        },
         envs: {
           CI: 'true',
           WERCKER_MAIN_PIPELINE_STARTED: 'true',
@@ -40,7 +44,7 @@ describe('Wercker CI Params', () => {
         flags: '',
       },
       envs: {
-        CI: true,
+        CI: 'true',
         WERCKER_MAIN_PIPELINE_STARTED: '1',
         WERCKER_GIT_BRANCH: 'main',
         WERCKER_GIT_COMMIT: 'testingsha',
@@ -77,7 +81,7 @@ describe('Wercker CI Params', () => {
         flags: ''
       },
       envs: {
-        CI: true,
+        CI: 'true',
         WERCKER_MAIN_PIPELINE_STARTED: '1',
         WERCKER_GIT_BRANCH: 'main',
         WERCKER_GIT_COMMIT: 'testingsha',

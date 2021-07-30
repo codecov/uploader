@@ -9,7 +9,7 @@ export function detect(envs: UploaderEnvs): boolean {
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.GITHUB_RUN_ID?.toString() || ''
+  return args.build || envs.GITHUB_RUN_ID || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
@@ -24,7 +24,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   const branchRegex = /refs\/heads\/(.*)/
-  const branchMatches = branchRegex.exec(envs.GITHUB_REF?.toString() || '')
+  const branchMatches = branchRegex.exec(envs.GITHUB_REF || '')
   let branch
   if (branchMatches) {
     branch = branchMatches[1]
@@ -45,7 +45,7 @@ function _getPR(inputs: UploaderInputs): string {
   let match
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
     const prRegex = /refs\/pull\/([0-9]+)\/merge/
-    const matches = prRegex.exec(envs.GITHUB_REF?.toString() || '')
+    const matches = prRegex.exec(envs.GITHUB_REF || '')
     if (matches) {
       match = matches[1]
     }
@@ -65,7 +65,7 @@ function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   const pr = _getPR(inputs)
 
-  let commit = envs.GITHUB_SHA?.toString()
+  let commit = envs.GITHUB_SHA
   if (pr && pr.toLowerCase() !== 'false' && !args.sha) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
     const mergeCommitMessage = childProcess
@@ -88,7 +88,7 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.slug || envs.GITHUB_REPOSITORY?.toString() || ''
+  return args.slug || envs.GITHUB_REPOSITORY || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {

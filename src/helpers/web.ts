@@ -1,9 +1,9 @@
-import { IServiceParams, UploaderInputs } from "../types"
+import { IServiceParams, UploaderInputs } from '../types'
 
 import superagent from 'superagent'
 import { version } from '../../package.json'
 import * as validateHelpers from './validate'
-import { info , logError} from './logger'
+import { info, logError } from './logger'
 import { logAndThrow } from './util'
 
 /**
@@ -13,9 +13,12 @@ import { logAndThrow } from './util'
  * @param {Object} serviceParams
  * @returns Object
  */
-export function populateBuildParams(inputs: UploaderInputs, serviceParams: IServiceParams): IServiceParams {
+export function populateBuildParams(
+  inputs: UploaderInputs,
+  serviceParams: IServiceParams,
+): IServiceParams {
   const { args, envs } = inputs
-  serviceParams.name = args.name || envs.CODECOV_NAME ?.toString() || ''
+  serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
   let flags: string[]
   if (typeof args.flags === 'object') {
@@ -38,8 +41,10 @@ export function getPackage(source: string): string {
   }
 }
 
-
-export async function uploadToCodecovPUT(uploadURL: string, uploadFile: string | Buffer): Promise<{status: string, resultURL: string}> {
+export async function uploadToCodecovPUT(
+  uploadURL: string,
+  uploadFile: string | Buffer,
+): Promise<{ status: string; resultURL: string }> {
   info('Uploading...')
 
   const parts = uploadURL.split('\n')
@@ -66,14 +71,18 @@ export async function uploadToCodecovPUT(uploadURL: string, uploadFile: string |
 }
 
 interface SuperAgentResponse extends superagent.Response {
-    res?: {
-      text: string
-    }
-  
+  res?: {
+    text: string
+  }
 }
 
-
-export async function uploadToCodecov(uploadURL: string, token: string, query: string, uploadFile: string | Buffer, source: string): Promise<string> {
+export async function uploadToCodecov(
+  uploadURL: string,
+  token: string,
+  query: string,
+  uploadFile: string | Buffer,
+  source: string,
+): Promise<string> {
   const result: SuperAgentResponse = await superagent
     .post(
       `${uploadURL}/upload/v4?package=${getPackage(
@@ -93,9 +102,9 @@ export async function uploadToCodecov(uploadURL: string, token: string, query: s
     })
     .ok(res => res.status === 200)
 
-    if (result.res) {
-      return result.res.text
-    }
+  if (result.res) {
+    return result.res.text
+  }
   logAndThrow(`We don't have a PUT URL`)
 }
 
@@ -107,10 +116,11 @@ export async function uploadToCodecov(uploadURL: string, token: string, query: s
 function camelToSnake(str: string): string {
   return (
     str &&
-    (str
-      .match(
+    (
+      str.match(
         /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g,
-      ) || [])
+      ) || []
+    )
       .map((s: string) => s.toLowerCase())
       .join('_')
   )

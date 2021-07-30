@@ -22,12 +22,12 @@ export function getServiceName(): string {
 
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.BRANCH_NAME?.toString() || ''
+  return args.branch || envs.BRANCH_NAME || ''
 }
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.BUILD_VCS_NUMBER?.toString() || ''
+  return args.sha || envs.BUILD_VCS_NUMBER || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
@@ -37,7 +37,7 @@ function _getSlug(inputs: UploaderInputs): string {
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.BUILD_NUMBER?.toString() || ''
+  return args.build || envs.BUILD_NUMBER || ''
 }
 
 function _getPR(inputs: UploaderInputs): string {

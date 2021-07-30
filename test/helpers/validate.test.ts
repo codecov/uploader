@@ -80,7 +80,7 @@ describe('Input Validators', () => {
     })
   })
 
-  describe('getToken()', () => {
+  describe('fetchToken()', () => {
     beforeEach(() => {
       delete process.env.CODECOV_TOKEN
     })
@@ -91,13 +91,13 @@ describe('Input Validators', () => {
 
     it('should return an empty string if neither args or env are set', () => {
       const args = {flags: ''}
-      expect(validate.getToken(args)).toEqual('')
+      expect(validate.fetchToken(args)).toEqual('')
     })
 
     it('should return the value of the env if env is set, and args are not set', () => {
       process.env.CODECOV_TOKEN = 'testingEnvToken'
       const args = {flags: ''}
-      expect(validate.getToken(args)).toEqual('testingEnvToken')
+      expect(validate.fetchToken(args)).toEqual('testingEnvToken')
     })
 
     it('should return the value of the arg if env is set, and args are set', () => {
@@ -106,7 +106,7 @@ describe('Input Validators', () => {
         token: 'testingArgToken',
         flags: ''
       }
-      expect(validate.getToken(args)).toEqual('testingArgToken')
+      expect(validate.fetchToken(args)).toEqual('testingArgToken')
     })
   })
 })

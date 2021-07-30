@@ -6,7 +6,7 @@ export function detect(envs: UploaderEnvs): boolean {
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.CODEBUILD_BUILD_ID?.toString() || ''
+  return args.build || envs.CODEBUILD_BUILD_ID || ''
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -25,7 +25,7 @@ function _getBranch(inputs: UploaderInputs): string {
 }
 
 function _getJob(envs: UploaderEnvs): string {
-  return envs.CODEBUILD_BUILD_ID?.toString() || ''
+  return envs.CODEBUILD_BUILD_ID || ''
 }
 
 function _getPR(inputs: UploaderInputs): string {
@@ -43,13 +43,13 @@ function _getService(): string {
   return 'codebuild'
 }
 
-export function getServiceName() : string{
+export function getServiceName(): string {
   return 'AWS CodeBuild'
 }
 
-function _getSHA(inputs: UploaderInputs) : string{
+function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.CODEBUILD_RESOLVED_SOURCE_VERSION?.toString() || ''
+  return args.sha || envs.CODEBUILD_RESOLVED_SOURCE_VERSION || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
@@ -57,10 +57,9 @@ function _getSlug(inputs: UploaderInputs): string {
   return (
     args.slug ||
     (envs.CODEBUILD_SOURCE_REPO_URL
-      ? envs.CODEBUILD_SOURCE_REPO_URL.toString().replace(/^.*github.com\//, '').replace(
-          /\.git$/,
-          '',
-        )
+      ? envs.CODEBUILD_SOURCE_REPO_URL.toString()
+          .replace(/^.*github.com\//, '')
+          .replace(/\.git$/, '')
       : '')
   )
 }

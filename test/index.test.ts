@@ -78,7 +78,7 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: true,
+      dryRun: 'true',
       env: 'SOMETHING,ANOTHER',
       flags: ''
     })
@@ -103,7 +103,7 @@ describe('Uploader Core', () => {
       await app.main({
         name: 'customname',
         url: 'https://codecov.io',
-        dryRun: true,
+        dryRun: 'true',
         env: 'SOMETHING,ANOTHER',
         flags: ''
       })
@@ -170,7 +170,7 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: true,
+      dryRun: 'true',
       flags: ''
     })
     expect(log).toHaveBeenCalledWith(
@@ -184,7 +184,7 @@ describe('Uploader Core', () => {
   it('Can find a single specified file', async () => {
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
-      dryRun: true,
+      dryRun: 'true',
       file: 'test/fixtures/coverage.txt',
       name: 'customname',
       token: 'abcdefg',
@@ -199,7 +199,7 @@ describe('Uploader Core', () => {
   it('Can find multiple specified files', async () => {
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
-      dryRun: true,
+      dryRun: 'true',
       file: ['test/fixtures/coverage.txt','test/fixtures/other/coverage.txt','test/does/not/exist.txt'],
       name: 'customname',
       token: 'abcdefg',
@@ -228,7 +228,7 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: true,
+      dryRun: 'true',
       dir: './test/fixtures/other',
       flags: ''
     })
@@ -246,9 +246,9 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: true,
+      dryRun: 'true',
       dir: './test/fixtures/other',
-      clean: true,
+      clean: 'true',
       flags: ''
     })
     expect(unlink).toHaveBeenCalledWith(
@@ -263,7 +263,7 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: true,
+      dryRun: 'true',
       dir: './test/fixtures/other',
       flags: ''
     })
@@ -275,7 +275,7 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: true,
+      dryRun: 'true',
       feature: 'network',
       flags: ''
     })

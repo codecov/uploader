@@ -19,7 +19,7 @@ export function detect(envs: UploaderEnvs): boolean {
  */
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.BUILDKITE_BUILD_NUMBER ?.toString()|| ''
+  return args.build || envs.BUILDKITE_BUILD_NUMBER || ''
 }
 
 /**
@@ -30,7 +30,7 @@ function _getBuild(inputs: UploaderInputs): string {
  */
 // eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
-  return inputs.envs.BUILDKITE_BUILD_URL?.toString() || ''
+  return inputs.envs.BUILDKITE_BUILD_URL || ''
 }
 
 /**
@@ -41,7 +41,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
  */
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.BUILDKITE_BRANCH?.toString() || ''
+  return args.branch || envs.BUILDKITE_BRANCH || ''
 }
 
 /**
@@ -51,7 +51,7 @@ function _getBranch(inputs: UploaderInputs): string {
  * @returns {string}
  */
 function _getJob(envs: UploaderEnvs): string {
-  return envs.BUILDKITE_JOB_ID?.toString() || ''
+  return envs.BUILDKITE_JOB_ID || ''
 }
 
 /**
@@ -91,7 +91,7 @@ export function getServiceName(): string {
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   if (!!args.sha || !!envs.BUILDKITE_COMMIT) {
-    return args.sha || envs.BUILDKITE_COMMIT?.toString() || ''
+    return args.sha || envs.BUILDKITE_COMMIT || ''
   }
   logAndThrow('Unable to detect sha, please set manually with the -C flag')
   return ''
@@ -105,7 +105,7 @@ function _getSHA(inputs: UploaderInputs): string {
 function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
   if (args.slug || envs.BUILDKITE_PROJECT_SLUG) {
-    return args.slug || envs.BUILDKITE_PROJECT_SLUG?.toString() || ''
+    return args.slug || envs.BUILDKITE_PROJECT_SLUG || ''
   }
   logAndThrow('Unable to detect sluh, please set manually with the -r flag')
   return ''

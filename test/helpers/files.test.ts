@@ -38,7 +38,7 @@ describe('File Helpers', () => {
 
   it('can get a file listing', async () => {
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', verbose: true }),
+      await fileHelpers.getFileListing('.', { flags: '', verbose: 'true' }),
     ).toMatch('npm-shrinkwrap.json')
   })
 

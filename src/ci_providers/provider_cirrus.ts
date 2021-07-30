@@ -6,7 +6,7 @@ export function detect(envs: UploaderEnvs): boolean {
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.CIRRUS_BUILD_ID?.toString() || ''
+  return args.build || envs.CIRRUS_BUILD_ID || ''
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -16,16 +16,16 @@ function _getBuildURL(inputs: UploaderInputs): string {
 
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.CIRRUS_BRANCH?.toString() || ''
+  return args.branch || envs.CIRRUS_BRANCH || ''
 }
 
 function _getJob(envs: UploaderEnvs): string {
-  return envs.CIRRUS_TASK_ID?.toString() || ''
+  return envs.CIRRUS_TASK_ID || ''
 }
 
 function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.pr || envs.CIRRUS_PR?.toString() || ''
+  return args.pr || envs.CIRRUS_PR || ''
 }
 
 function _getService(): string {
@@ -38,12 +38,12 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.CIRRUS_CHANGE_IN_REPO?.toString() || ''
+  return args.sha || envs.CIRRUS_CHANGE_IN_REPO || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.slug || envs.CIRRUS_REPO_FULL_NAME?.toString() || ''
+  return args.slug || envs.CIRRUS_REPO_FULL_NAME || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {

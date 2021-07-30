@@ -1,7 +1,11 @@
-import { IServiceParams, UploaderArgs, UploaderEnvs, UploaderInputs } from "../types"
+import {
+  IServiceParams,
+  UploaderArgs,
+  UploaderEnvs,
+  UploaderInputs,
+} from '../types'
 
-export function detect(envs: UploaderEnvs
-) {
+export function detect(envs: UploaderEnvs) {
   return (
     (envs.CI === 'true' || envs.CI === 'True') &&
     (envs.APPVEYOR === 'true' || envs.APPVEYOR === 'True')
@@ -30,11 +34,10 @@ function _getBuildURL(inputs: UploaderInputs) {
 
 function _getBranch(inputs: UploaderInputs) {
   const { args, envs } = inputs
-  return args.branch || envs.APPVEYOR_REPO_BRANCH?.toString() || ''
+  return args.branch || envs.APPVEYOR_REPO_BRANCH || ''
 }
 
-function _getJob(envs: UploaderEnvs
-) {
+function _getJob(envs: UploaderEnvs) {
   if (
     envs.APPVEYOR_ACCOUNT_NAME &&
     envs.APPVEYOR_PROJECT_SLUG &&
@@ -47,7 +50,7 @@ function _getJob(envs: UploaderEnvs
 
 function _getPR(inputs: UploaderInputs) {
   const { args, envs } = inputs
-  return args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER?.toString() || ''
+  return args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER || ''
 }
 
 function _getService() {
@@ -60,16 +63,15 @@ export function getServiceName() {
 
 function _getSHA(inputs: UploaderInputs) {
   const { args, envs } = inputs
-  return args.sha || envs.APPVEYOR_REPO_COMMIT?.toString() || ''
+  return args.sha || envs.APPVEYOR_REPO_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs) {
   const { args, envs } = inputs
-  return args.slug || envs.APPVEYOR_REPO_NAME?.toString() || ''
+  return args.slug || envs.APPVEYOR_REPO_NAME || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams
- {
+export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

@@ -6,17 +6,17 @@ export function detect(envs: UploaderEnvs): boolean {
 
 function _getBuild(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.build || envs.DRONE_BUILD_NUMBER?.toString() || ''
+  return args.build || envs.DRONE_BUILD_NUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
   const { envs } = inputs
-  return envs.DRONE_BUILD_URL?.toString() || ''
+  return envs.DRONE_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.branch || envs.DRONE_BRANCH?.toString() || ''
+  return args.branch || envs.DRONE_BRANCH || ''
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -26,7 +26,7 @@ function _getJob(envs: UploaderEnvs): string {
 
 function _getPR(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.pr || envs.DRONE_PULL_REQUEST?.toString() || ''
+  return args.pr || envs.DRONE_PULL_REQUEST || ''
 }
 
 function _getService(): string {
@@ -39,12 +39,12 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.sha || envs.DRONE_COMMIT_SHA?.toString() || ''
+  return args.sha || envs.DRONE_COMMIT_SHA || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  return args.slug || envs.DRONE_REPO_LINK?.toString() || ''
+  return args.slug || envs.DRONE_REPO_LINK || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
