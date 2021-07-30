@@ -2,8 +2,8 @@ module.exports = {
   preset: 'ts-jest',
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.js',
-    '!src/ci_providers/provider_template.js',
+    'src/**/*.ts',
+    '!src/ci_providers/provider_template.ts',
     '!**/node_modules/**',
     '!**/vendor/**',
   ],
