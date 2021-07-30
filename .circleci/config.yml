@@ -164,6 +164,7 @@ jobs:
           command: |
             npm ci
             npm test
+            npm run build
             npm run build-windows
 
       - persist_to_workspace:
