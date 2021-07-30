@@ -73,7 +73,7 @@ jobs:
       - run:
           name: Download prebuilt static node binary
           command: |
-            apk add wget coreutils
+            apk add wget coreutils make
             NODE_RELEASE=node.v16.2.0_b57a0d7c9ecba551879997ac44bba3c9d9443df5
             wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/node
             wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA1SUM
