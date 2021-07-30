@@ -26,6 +26,7 @@
         "@types/jest": "26.0.24",
         "@types/node": "16.3.3",
         "@types/superagent": "4.1.12",
+        "@types/validator": "13.6.3",
         "@typescript-eslint/eslint-plugin": "4.28.4",
         "@typescript-eslint/parser": "4.28.4",
         "eslint": "7.31.0",
@@ -1250,6 +1251,12 @@
         "@types/cookiejar": "*",
         "@types/node": "*"
       }
+    },
+    "node_modules/@types/validator": {
+      "version": "13.6.3",
+      "resolved": "https://registry.npmjs.org/@types/validator/-/validator-13.6.3.tgz",
+      "integrity": "sha512-fWG42pMJOL4jKsDDZZREnXLjc3UE0R8LOJfARWYg6U966rxDT7TYejYzLnUF5cvSObGg34nd0+H2wHHU5Omdfw==",
+      "dev": true
     },
     "node_modules/@types/yargs": {
       "version": "16.0.4",
@@ -8074,6 +8081,12 @@
         "@types/cookiejar": "*",
         "@types/node": "*"
       }
+    },
+    "@types/validator": {
+      "version": "13.6.3",
+      "resolved": "https://registry.npmjs.org/@types/validator/-/validator-13.6.3.tgz",
+      "integrity": "sha512-fWG42pMJOL4jKsDDZZREnXLjc3UE0R8LOJfARWYg6U966rxDT7TYejYzLnUF5cvSObGg34nd0+H2wHHU5Omdfw==",
+      "dev": true
     },
     "@types/yargs": {
       "version": "16.0.4",

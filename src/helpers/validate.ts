@@ -1,6 +1,6 @@
 import { UploaderArgs } from "../types"
 
-const validator = require('validator')
+import validator from 'validator'
 
 /**
  *
