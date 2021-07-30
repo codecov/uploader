@@ -19,7 +19,7 @@ function _getTimestamp() {
  * @param {boolean} shouldVerbose - pass the value of the verbose flag
  * @return void
  */
-export function verbose(message: string, shouldVerbose = false) {
+export function verbose(message: string, shouldVerbose = false): void {
   if (shouldVerbose === true) {
     console.debug(`[${_getTimestamp()}] ['verbose'] ${message}`)
   }
@@ -30,7 +30,7 @@ export function verbose(message: string, shouldVerbose = false) {
  * @param {string} message - message to log
  * @return void
  */
-export function logError(message: string) {
+export function logError(message: string): void {
   console.error(`[${_getTimestamp()}] ['error'] ${message}`)
 }
 
@@ -39,6 +39,6 @@ export function logError(message: string) {
  * @param {string} message - message to log
  * @return void
  */
-export function info(message: string) {
+export function info(message: string): void {
   console.log(`[${_getTimestamp()}] ['info'] ${message}`)
 }
