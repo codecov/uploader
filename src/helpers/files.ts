@@ -192,7 +192,6 @@ export function fetchGitRoot() {
       childProcess.spawnSync('git', ['rev-parse', '--show-toplevel'], {
         encoding: 'utf-8',
       }).stdout ||
-      childProcess.spawnSync('hg', ['root'], { encoding: 'utf-8' }).stdout ||
       process.cwd()
     ).trimRight()
   } catch (error) {
