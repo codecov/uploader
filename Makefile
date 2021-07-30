@@ -24,6 +24,7 @@ build:
 	npm run build-macos
 
 build_alpine:
+	npm run build
 	npm run build-alpine
 
 .PHONY: clean install test build
