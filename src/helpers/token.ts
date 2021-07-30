@@ -1,12 +1,9 @@
-import { UploaderArgs, UploaderInputs } from "../types"
-import { logError } from "./logger"
-
-const fs = require('fs')
-const path = require('path')
-const yaml = require('js-yaml')
-
-const { error, info, verbose } = require('./logger')
-const validateHelpers = require('./validate')
+import fs from 'fs'
+import yaml from 'js-yaml'
+import path from 'path'
+import { UploaderArgs, UploaderInputs } from '../types'
+import { info, logError, verbose } from './logger'
+import { validateToken } from './validate'
 
 /**
  *
@@ -14,16 +11,16 @@ const validateHelpers = require('./validate')
  * @param {string} projectRoot
  * @returns string
  */
-export function getToken(inputs: UploaderInputs, projectRoot: string) {
+export function getToken(inputs: UploaderInputs, projectRoot: string): string {
   const { args, envs } = inputs
   const options = [
-    [args.token, 'arguments'],
-    [envs.CODECOV_TOKEN, 'environment variables'],
+    [args.token?.toString(), 'arguments'],
+    [envs.CODECOV_TOKEN?.toString(), 'environment variables'],
     [getTokenFromYaml(projectRoot, args), 'Codecov yaml config'],
   ]
 
   for (const option of options) {
-    if (option[0] && validateHelpers.validateToken(option[0])) {
+    if (option[0] && validateToken(option[0])) {
       info(`->  Token set by ${option[1]}`)
       return option[0]
     }
@@ -32,7 +29,27 @@ export function getToken(inputs: UploaderInputs, projectRoot: string) {
   return ''
 }
 
-export function getTokenFromYaml(projectRoot: string, args: UploaderArgs) {
+interface ICodecovYAML {
+  codecov?: {
+    token?: string
+  },
+  codecov_token?: string
+}
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+function yamlParse(input: object | string | number): ICodecovYAML {
+  let yaml: ICodecovYAML
+  if (typeof input === 'string') {
+    yaml = JSON.parse(input)
+  } else if (typeof input === 'number') {
+    yaml = JSON.parse(input.toString())
+  } else {
+    yaml = input
+  }
+  return yaml
+}
+
+export function getTokenFromYaml(projectRoot: string, args: UploaderArgs): string {
   const dirNames = ['', '.github', 'dev']
 
   const yamlNames = [
@@ -51,11 +68,11 @@ export function getTokenFromYaml(projectRoot: string, args: UploaderArgs) {
           const fileContents = fs.readFileSync(filePath, {
             encoding: 'utf-8',
           })
-          const yamlConfig = yaml.load(fileContents)
+          const yamlConfig: ICodecovYAML = yamlParse(yaml.load(fileContents, {json: true}) || {})
           if (
             yamlConfig['codecov'] &&
             yamlConfig['codecov']['token'] &&
-            validateHelpers.validateToken(yamlConfig['codecov']['token'])
+            validateToken(yamlConfig['codecov']['token'])
           ) {
             return yamlConfig['codecov']['token']
           }
@@ -63,7 +80,7 @@ export function getTokenFromYaml(projectRoot: string, args: UploaderArgs) {
           if (yamlConfig['codecov_token']) {
             logError(
               `'codecov_token' is a deprecated field. Please switch to 'codecov.token' ` +
-              '(https://docs.codecov.com/docs/codecovyml-reference#codecovtoken)'
+                '(https://docs.codecov.com/docs/codecovyml-reference#codecovtoken)',
             )
           }
         }
