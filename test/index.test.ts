@@ -21,6 +21,7 @@ describe('Uploader Core', () => {
     }
 
     jest.mock('process', () => mockProcess())
+    jest.resetAllMocks()
   })
 
   afterEach(() => {
@@ -270,7 +271,6 @@ describe('Uploader Core', () => {
   })
 
   it('Can ignore the network', async () => {
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       name: 'customname',
       token: 'abcdefg',
@@ -279,7 +279,7 @@ describe('Uploader Core', () => {
       feature: 'network',
       flags: ''
     })
-    expect(log).not.toHaveBeenCalledWith(
+    expect(console.log).not.toHaveBeenCalledWith(
       expect.stringMatching(/<<<<<< network/),
     )
   })
