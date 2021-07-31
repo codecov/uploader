@@ -59,8 +59,20 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'WERCKER_BUILD_URL',
+    'WERCKER_GIT_BRANCH',
+    'WERCKER_GIT_COMMIT',
+    'WERCKER_GIT_OWNER',
+    'WERCKER_GIT_REPOSITORY',
+    'WERCKER_MAIN_PIPELINE_STARTED',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

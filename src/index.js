@@ -193,6 +193,10 @@ async function main(args) {
   for (const provider of providers) {
     if (provider.detect(envs)) {
       info(`Detected ${provider.getServiceName()} as the CI provider.`)
+      verbose('-> Using the following env variables:', args.verbose)
+      for (const envVarName of provider.getEnvVarNames()) {
+        verbose(`     ${envVarName}: ${envs[envVarName]}`, args.verbose)
+      }
       serviceParams = provider.getServiceParams(inputs)
       break
     }

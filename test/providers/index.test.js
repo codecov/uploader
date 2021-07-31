@@ -14,5 +14,14 @@ describe('CI Providers', () => {
       expect(typeof provider.getServiceName()).toBe('string')
       expect(provider.getServiceName()).not.toBe('')
     })
+
+    it('has env var names', () => {
+      const envVarNames = provider.getEnvVarNames()
+      expect(typeof envVarNames).toBe('object')
+      expect(envVarNames.length).toBeGreaterThan(0)
+      for (const envVarName of envVarNames) {
+        expect(typeof envVarName).toBe('string')
+      }
+    })
   })
 })

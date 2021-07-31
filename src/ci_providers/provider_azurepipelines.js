@@ -106,8 +106,22 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'BUILD_BUILDID',
+    'BUILD_BUILDNUMBER',
+    'BUILD_SOURCEBRANCH',
+    'BUILD_SOURCEVERSION',
+    'SYSTEM_PULLREQUEST_PULLREQUESTID',
+    'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER',
+    'SYSTEM_TEAMFOUNDATIONSERVERURI',
+    'SYSTEM_TEAMPROJECT',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

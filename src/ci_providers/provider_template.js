@@ -140,8 +140,18 @@ function getServiceParams(inputs) {
   }
 }
 
+/**
+ * Returns all the environment variables used by the provider
+ *
+ * @returns [{string}]
+ */
+function getEnvVarNames() {
+  return []
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

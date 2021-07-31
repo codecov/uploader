@@ -62,8 +62,13 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return ['BRANCH_NAME', 'BUILD_NUMBER', 'BUILD_VCS_NUMBER', 'TEAMCITY_VERSION']
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

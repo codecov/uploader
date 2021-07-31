@@ -76,8 +76,20 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'CODEBUILD_BUILD_ID',
+    'CODEBUILD_CI',
+    'CODEBUILD_RESOLVED_SOURCE_VERSION',
+    'CODEBUILD_SOURCE_REPO_URL',
+    'CODEBUILD_SOURCE_VERSION',
+    'CODEBUILD_WEBHOOK_HEAD_REF',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

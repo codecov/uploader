@@ -98,8 +98,13 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return ['CI']
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }
