@@ -5,7 +5,7 @@ import fs from 'fs'
 import glob from 'fast-glob'
 import { posix as  path } from 'path'
 import { logAndThrow } from './util'
-import { logError, info, verbose } from './logger'
+import { logError, verbose } from './logger'
 
 /**
  *
