@@ -12,7 +12,7 @@ describe('Wercker CI Params', () => {
     it('does not run without Wercker CI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
         },
         envs: {},
       }
@@ -23,7 +23,7 @@ describe('Wercker CI Params', () => {
     it('does run with Wercker CI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
         },
         envs: {
           CI: 'true',
@@ -78,7 +78,7 @@ describe('Wercker CI Params', () => {
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
-        flags: ''
+        flags: '',
       },
       envs: {
         CI: 'true',

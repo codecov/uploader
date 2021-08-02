@@ -24,7 +24,7 @@ describe('CodeBuild Params', () => {
           tag: '',
           source: '',
           url: '',
-          flags: ''
+          flags: '',
         },
         envs: {
           CI: 'true',

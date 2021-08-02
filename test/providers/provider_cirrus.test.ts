@@ -37,7 +37,7 @@ describe('Cirrus Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         CI: 'true',

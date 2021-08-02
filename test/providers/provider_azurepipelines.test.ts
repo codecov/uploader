@@ -16,7 +16,7 @@ describe('Jenkins CI Params', () => {
           tag: '',
           url: '',
           source: '',
-          flags: ''
+          flags: '',
         },
         envs: {},
       }
@@ -25,12 +25,12 @@ describe('Jenkins CI Params', () => {
     })
 
     it('does run with AzurePipelines env variable', () => {
-      const inputs : UploaderInputs= {
+      const inputs: UploaderInputs = {
         args: {
           tag: '',
           url: '',
           source: '',
-          flags: ''
+          flags: '',
         },
         envs: {
           SYSTEM_TEAMFOUNDATIONSERVERURI: 'true',
@@ -41,15 +41,13 @@ describe('Jenkins CI Params', () => {
     })
   })
 
-  
-
   it('gets correct params on pr number', () => {
     const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         BUILD_BUILDNUMBER: '1',
@@ -85,7 +83,7 @@ describe('Jenkins CI Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         BUILD_BUILDNUMBER: '1',
@@ -121,7 +119,7 @@ describe('Jenkins CI Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         BUILD_BUILDNUMBER: '1',
@@ -150,7 +148,9 @@ describe('Jenkins CI Params', () => {
     const execFileSync = td.replace(childProcess, 'execFileSync')
     td.when(
       execFileSync('git', ['show', '--no-patch', '--format="%P"']),
-    ).thenReturn('testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890')
+    ).thenReturn(
+      'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
+    )
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -166,7 +166,7 @@ describe('Jenkins CI Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',

@@ -1,5 +1,4 @@
-
-import { logError, info, verbose, } from '../../src/helpers/logger'
+import { logError, info, verbose } from '../../src/helpers/logger'
 
 describe('Logger Helper - Legacy log() tests', () => {
   afterEach(() => {
@@ -16,10 +15,9 @@ describe('Logger Helper - Legacy log() tests', () => {
   })
 
   it('Should not call logger with default options.level = debug and verbose not set', () => {
-
     // eslint-disable-next-line
     jest.spyOn(console, 'debug').mockImplementation(() => {})
-    verbose('message with debug level', undefined )
+    verbose('message with debug level', undefined)
     expect(console.debug).not.toHaveBeenCalled()
   })
 

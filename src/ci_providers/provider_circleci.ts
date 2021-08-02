@@ -40,9 +40,7 @@ function _getSlug(inputs: UploaderInputs): string {
     slug = `${envs.CIRCLE_PROJECT_USERNAME}/${envs.CIRCLE_PROJECT_REPONAME}`
   } else {
     if (envs.CIRCLE_REPOSITORY_URL) {
-      slug = `${
-        envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]
-      }`
+      slug = `${envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]}`
     } else {
       logAndThrow(
         'Unable to detect slug from env. Please set manually with the -r flag',
@@ -80,5 +78,5 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
 }
 
 export function getEnvVarNames(): string[] {
-  return ['CI','CIRCLECI']
+  return ['CI', 'CIRCLECI']
 }

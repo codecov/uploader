@@ -72,7 +72,7 @@ function _getSHA(inputs: UploaderInputs) {
   }
 }
 
-function _getSlug(inputs: UploaderInputs) : string{
+function _getSlug(inputs: UploaderInputs): string {
   const { args } = inputs
   if (args.slug) {
     return args.slug

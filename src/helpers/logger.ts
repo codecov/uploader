@@ -12,7 +12,6 @@ function _getTimestamp() {
   return new Date().toISOString()
 }
 
-
 /**
  *
  * @param {string} message - message to log

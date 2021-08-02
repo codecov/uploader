@@ -45,7 +45,7 @@ describe('GitHub Actions Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -78,7 +78,7 @@ describe('GitHub Actions Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -119,7 +119,7 @@ describe('GitHub Actions Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -166,7 +166,7 @@ describe('GitHub Actions Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -199,7 +199,7 @@ describe('GitHub Actions Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         GITHUB_ACTIONS: 'true',

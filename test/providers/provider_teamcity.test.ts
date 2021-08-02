@@ -41,7 +41,7 @@ describe('TeamCity Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         CI: 'true',
@@ -75,7 +75,7 @@ describe('TeamCity Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         CI: 'true',
@@ -114,7 +114,7 @@ describe('TeamCity Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         CI: 'true',

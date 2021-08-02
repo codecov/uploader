@@ -95,7 +95,18 @@ describe('Web Helpers', () => {
   it('can populateBuildParams() from args', () => {
     const result = webHelper.populateBuildParams(
       { args: { flags: 'testFlag', tag: 'testTag' }, envs: {} },
-      { name: '', tag: ', flags: []', branch: '', build: '', buildURL: '', commit: '', job: '', service: 'Testing', slug: '', pr: '' },
+      {
+        name: '',
+        tag: ', flags: []',
+        branch: '',
+        build: '',
+        buildURL: '',
+        commit: '',
+        job: '',
+        service: 'Testing',
+        slug: '',
+        pr: '',
+      },
     )
     expect(result.flags).toBe('testFlag')
   })
@@ -103,7 +114,18 @@ describe('Web Helpers', () => {
   it('can populateBuildParams() from args with multiple flags', () => {
     const result = webHelper.populateBuildParams(
       { args: { flags: ['testFlag1', 'testFlag2'], tag: 'testTag' }, envs: {} },
-      { name: '', tag: ', flags: []', branch: '', build: '', buildURL: '', commit: '', job: '', service: 'Testing', slug: '', pr: ''  },
+      {
+        name: '',
+        tag: ', flags: []',
+        branch: '',
+        build: '',
+        buildURL: '',
+        commit: '',
+        job: '',
+        service: 'Testing',
+        slug: '',
+        pr: '',
+      },
     )
     expect(result.flags).toBe('testFlag1,testFlag2')
   })

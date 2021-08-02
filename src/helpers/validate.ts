@@ -1,4 +1,4 @@
-import { UploaderArgs } from "../types"
+import { UploaderArgs } from '../types'
 
 import validator from 'validator'
 
@@ -34,7 +34,10 @@ export function validateFileNamePath(path: string): boolean {
  */
 const GIT_SHA_LENGTH = 40
 
-export function validateSHA(commitSHA: string, requestedLength = GIT_SHA_LENGTH): boolean {
+export function validateSHA(
+  commitSHA: string,
+  requestedLength = GIT_SHA_LENGTH,
+): boolean {
   return (
     commitSHA.length === requestedLength && validator.isAlphanumeric(commitSHA)
   )

@@ -1,4 +1,4 @@
-import { UploaderArgs } from "./types"
+import { UploaderArgs } from './types'
 
 import zlib from 'zlib'
 import { version } from '../package.json'
@@ -7,8 +7,19 @@ import * as webHelpers from './helpers/web'
 import { info, verbose } from './helpers/logger'
 import providers from './ci_providers'
 import { logAndThrow } from './helpers/util'
-import { getToken } from "./helpers/token"
-import { coverageFilePatterns, fetchGitRoot, fileHeader, getCoverageFiles, getFileListing, MARKER_ENV_END, MARKER_FILE_END, MARKER_NETWORK_END, readCoverageFile, removeFile } from "./helpers/files"
+import { getToken } from './helpers/token'
+import {
+  coverageFilePatterns,
+  fetchGitRoot,
+  fileHeader,
+  getCoverageFiles,
+  getFileListing,
+  MARKER_ENV_END,
+  MARKER_FILE_END,
+  MARKER_NETWORK_END,
+  readCoverageFile,
+  removeFile,
+} from './helpers/files'
 
 /**
  *
@@ -18,7 +29,13 @@ import { coverageFilePatterns, fetchGitRoot, fileHeader, getCoverageFiles, getFi
  * @param {string} uploadFile
  * @param {string} source
  */
-function dryRun(uploadHost: string, token: string, query: string, uploadFile: string, source: string) {
+function dryRun(
+  uploadHost: string,
+  token: string,
+  query: string,
+  uploadFile: string,
+  source: string,
+) {
   info('==> Dumping upload file (no upload)')
   info(
     `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
@@ -53,7 +70,9 @@ function dryRun(uploadHost: string, token: string, query: string, uploadFile: st
  * @param {string} args.feature Toggle features
  * @param {string} args.source Track wrappers of the uploader
  */
-export async function main(args: UploaderArgs): Promise<void | Record<string, unknown>> {
+export async function main(
+  args: UploaderArgs,
+): Promise<void | Record<string, unknown>> {
   /*
   Step 1: validate and sanitize inputs
   Step 2: detect if we are in a git repo
@@ -71,9 +90,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
   const inputs = { args, envs }
 
   let uploadHost: string
-  if (args.url
- && validateHelpers.validateURL(args.url)
-) {
+  if (args.url && validateHelpers.validateURL(args.url)) {
     uploadHost = args.url
   } else {
     uploadHost = 'https://codecov.io'
@@ -109,9 +126,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       logAndThrow(`Error getting file listing: ${error}`)
     }
 
-    uploadFile = uploadFile
-      .concat(fileListing)
-      .concat(MARKER_NETWORK_END)
+    uploadFile = uploadFile.concat(fileListing).concat(MARKER_NETWORK_END)
   }
 
   // == Step 5: select coverage files (search or specify)
@@ -185,9 +200,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       .filter(Boolean)
       .map(evar => `${evar}=${process.env[evar] || ''}\n`)
       .join('')
-    uploadFile = uploadFile
-      .concat(vars)
-      .concat(MARKER_ENV_END)
+    uploadFile = uploadFile.concat(vars).concat(MARKER_ENV_END)
   }
 
   const gzippedFile = zlib.gzipSync(uploadFile)
@@ -201,7 +214,10 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       info(`Detected ${provider.getServiceName()} as the CI provider.`)
       verbose('-> Using the following env variables:', Boolean(args.verbose))
       for (const envVarName of provider.getEnvVarNames()) {
-        verbose(`     ${envVarName}: ${envs[envVarName]}`, Boolean(args.verbose))
+        verbose(
+          `     ${envVarName}: ${envs[envVarName]}`,
+          Boolean(args.verbose),
+        )
       }
       serviceParams = provider.getServiceParams(inputs)
       break
@@ -228,7 +244,10 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       args.source || '',
     )}&token=*******&${query}`,
   )
-  verbose(`Passed token was ${token.length} characters long`, Boolean(args.verbose))
+  verbose(
+    `Passed token was ${token.length} characters long`,
+    Boolean(args.verbose),
+  )
   try {
     verbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
@@ -237,7 +256,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
         X-Reduced-Redundancy: 'false'`,
-        Boolean(args.verbose),
+      Boolean(args.verbose),
     )
 
     const uploadURL = await webHelpers.uploadToCodecov(
@@ -254,7 +273,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       `${uploadURL.split('\n')[1]}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'`,
-        Boolean(args.verbose),
+      Boolean(args.verbose),
     )
     const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
     info(JSON.stringify(result))
@@ -286,5 +305,3 @@ export function getVersion(): string {
 }
 
 export { logError, info, verbose } from './helpers/logger'
-
-

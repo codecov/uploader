@@ -136,7 +136,7 @@ describe('Bitbucket Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         BITBUCKET_BRANCH: 'main',
@@ -177,7 +177,7 @@ describe('Bitbucket Params', () => {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         BITBUCKET_BRANCH: 'main',

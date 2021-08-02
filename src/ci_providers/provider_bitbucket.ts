@@ -3,7 +3,7 @@ import { validateSHA } from '../helpers/validate'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
-  return (Boolean(envs.CI) && Boolean(envs.BITBUCKET_BUILD_NUMBER))
+  return Boolean(envs.CI) && Boolean(envs.BITBUCKET_BUILD_NUMBER)
 }
 
 function _getBuild(inputs: UploaderInputs): string {
@@ -13,7 +13,6 @@ function _getBuild(inputs: UploaderInputs): string {
 
 // eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
-
   // TODO: https://github.com/codecov/uploader/issues/267
   return ''
 }
@@ -75,5 +74,5 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
 }
 
 export function getEnvVarNames(): string[] {
-  return ['CI','BITBUCKET_BUILD_NUMBER']
+  return ['CI', 'BITBUCKET_BUILD_NUMBER']
 }

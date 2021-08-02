@@ -61,7 +61,7 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      flags: ''
+      flags: '',
     })
     expect(result).toEqual({
       status: 'success',
@@ -80,7 +80,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       dryRun: 'true',
       env: 'SOMETHING,ANOTHER',
-      flags: ''
+      flags: '',
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/SOMETHING=red/))
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/ANOTHER=blue/))
@@ -105,7 +105,7 @@ describe('Uploader Core', () => {
         url: 'https://codecov.io',
         dryRun: 'true',
         env: 'SOMETHING,ANOTHER',
-        flags: ''
+        flags: '',
       })
       expect(log).toHaveBeenCalledWith(
         expect.stringMatching('-> No token specified or token is empty'),
@@ -156,7 +156,7 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       parent,
-      flags: ''
+      flags: '',
     })
     expect(result).toEqual({
       status: 'success',
@@ -171,7 +171,7 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       dryRun: 'true',
-      flags: ''
+      flags: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/An example coverage root file/),
@@ -189,7 +189,7 @@ describe('Uploader Core', () => {
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      flags: ''
+      flags: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching('Processing test/fixtures/coverage.txt...'),
@@ -200,11 +200,15 @@ describe('Uploader Core', () => {
     const log = jest.spyOn(console, 'log').mockImplementation(() => {})
     await app.main({
       dryRun: 'true',
-      file: ['test/fixtures/coverage.txt','test/fixtures/other/coverage.txt','test/does/not/exist.txt'],
+      file: [
+        'test/fixtures/coverage.txt',
+        'test/fixtures/other/coverage.txt',
+        'test/does/not/exist.txt',
+      ],
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      flags: ''
+      flags: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching('Processing test/fixtures/coverage.txt...'),
@@ -230,7 +234,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       dryRun: 'true',
       dir: './test/fixtures/other',
-      flags: ''
+      flags: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/An example coverage other file/),
@@ -249,7 +253,7 @@ describe('Uploader Core', () => {
       dryRun: 'true',
       dir: './test/fixtures/other',
       clean: 'true',
-      flags: ''
+      flags: '',
     })
     expect(unlink).toHaveBeenCalledWith(
       'test/fixtures/other/coverage.txt',
@@ -265,7 +269,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       dryRun: 'true',
       dir: './test/fixtures/other',
-      flags: ''
+      flags: '',
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
   })
@@ -277,7 +281,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       dryRun: 'true',
       feature: 'network',
-      flags: ''
+      flags: '',
     })
     expect(console.log).not.toHaveBeenCalledWith(
       expect.stringMatching(/<<<<<< network/),

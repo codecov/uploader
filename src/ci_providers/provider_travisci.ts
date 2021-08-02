@@ -65,5 +65,5 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
 }
 
 export function getEnvVarNames(): string[] {
-  return ['TRAVIS','SHIPPABLE']
+  return ['TRAVIS', 'SHIPPABLE']
 }

@@ -1,10 +1,6 @@
-import {
-  IServiceParams,
-  UploaderEnvs,
-  UploaderInputs,
-} from '../types'
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-export function detect(envs: UploaderEnvs):boolean {
+export function detect(envs: UploaderEnvs): boolean {
   return (
     (envs.CI === 'true' || envs.CI === 'True') &&
     (envs.APPVEYOR === 'true' || envs.APPVEYOR === 'True')

@@ -21,7 +21,7 @@ describe('Get tokens', () => {
     it('Returns empty with no yaml file', () => {
       const args = {
         flags: '',
-        verbose: 'true'
+        verbose: 'true',
       }
       expect(tokenHelpers.getTokenFromYaml('.', args)).toBe('')
     })
@@ -29,24 +29,20 @@ describe('Get tokens', () => {
     it('Returns the correct token from file', () => {
       const args = {
         flags: '',
-        verbose: 'true'
+        verbose: 'true',
       }
-      expect(
-        tokenHelpers.getTokenFromYaml(fixturesDir, args),
-      ).toBe('faketoken')
+      expect(tokenHelpers.getTokenFromYaml(fixturesDir, args)).toBe('faketoken')
     })
 
     it('Returns deprecation error from codecov_token', () => {
       const args = {
         flags: '',
-        verbose: 'true'
+        verbose: 'true',
       }
       jest.spyOn(console, 'error').mockImplementation(() => {
         // Intentionally empty
       })
-      expect(
-        tokenHelpers.getTokenFromYaml(invalidFixturesDir, args),
-      ).toBe('')
+      expect(tokenHelpers.getTokenFromYaml(invalidFixturesDir, args)).toBe('')
 
       expect(console.error).toHaveBeenCalledWith(
         expect.stringContaining("'codecov_token' is a deprecated field"),
@@ -65,7 +61,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs = {
-        args: {flags: ''},
+        args: { flags: '' },
         envs: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('envtoken')
@@ -73,7 +69,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs = {
-        args: {flags: ''},
+        args: { flags: '' },
         envs: {},
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('faketoken')
@@ -81,7 +77,7 @@ describe('Get tokens', () => {
 
     it('Returns from no source', () => {
       const inputs = {
-        args: { flags: ''},
+        args: { flags: '' },
         envs: {},
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')

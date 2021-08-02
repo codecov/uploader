@@ -10,7 +10,9 @@ describe('Input Validators', () => {
     })
     it('Returns true with a valid UUID token', () => {
       // Use a randomly generated UUIDv4
-      expect(validate.validateToken('5becd1a9-efa8-4bd8-8f94-e9f8613820c3')).toBe(true)
+      expect(
+        validate.validateToken('5becd1a9-efa8-4bd8-8f94-e9f8613820c3'),
+      ).toBe(true)
     })
     it('Returns false with an invalid token', () => {
       expect(validate.validateToken('1bc1 23')).toBe(false)
@@ -90,13 +92,13 @@ describe('Input Validators', () => {
     })
 
     it('should return an empty string if neither args or env are set', () => {
-      const args = {flags: ''}
+      const args = { flags: '' }
       expect(validate.fetchToken(args)).toEqual('')
     })
 
     it('should return the value of the env if env is set, and args are not set', () => {
       process.env.CODECOV_TOKEN = 'testingEnvToken'
-      const args = {flags: ''}
+      const args = { flags: '' }
       expect(validate.fetchToken(args)).toEqual('testingEnvToken')
     })
 
@@ -104,7 +106,7 @@ describe('Input Validators', () => {
       process.env.CODECOV_TOKEN = 'testingEnvToken'
       const args = {
         token: 'testingArgToken',
-        flags: ''
+        flags: '',
       }
       expect(validate.fetchToken(args)).toEqual('testingArgToken')
     })

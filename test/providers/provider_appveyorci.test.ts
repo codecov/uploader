@@ -15,7 +15,7 @@ describe('AppveyorCI Params', () => {
           tag: '',
           url: '',
           source: '',
-          flags: ''
+          flags: '',
         },
         envs: {},
       }
@@ -53,15 +53,13 @@ describe('AppveyorCI Params', () => {
     })
   })
 
-  
-
   it('gets correct params on push', () => {
     const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
-        flags: ''
+        flags: '',
       },
       envs: {
         APPVEYOR: 'true',
@@ -101,7 +99,7 @@ describe('AppveyorCI Params', () => {
         pr: '2',
         sha: 'testsha',
         slug: 'testOrg/testRepo',
-        flags: ''
+        flags: '',
       },
       envs: {
         APPVEYOR: 'true',
