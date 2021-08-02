@@ -2,8 +2,6 @@
   "compilerOptions": {
     "target": "ESnext",
     "module": "commonjs",
-    "allowJs": true,
-    "checkJs": true,
     "declaration": true,
     "sourceMap": true,
     "outDir": "dist",
@@ -13,5 +11,6 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true
-  }
+  },
+  "exclude": ["test/*"]
 }

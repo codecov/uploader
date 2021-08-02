@@ -73,7 +73,7 @@ jobs:
       - run:
           name: Download prebuilt static node binary
           command: |
-            apk add wget coreutils
+            apk add wget coreutils make
             NODE_RELEASE=node.v16.2.0_b57a0d7c9ecba551879997ac44bba3c9d9443df5
             wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/node
             wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA1SUM
@@ -104,7 +104,7 @@ jobs:
 
       - run:
           name: Build uploader binary on alpine
-          command: npm run build-alpine
+          command: make build_alpine
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
@@ -164,6 +164,7 @@ jobs:
           command: |
             npm ci
             npm test
+            npm run build
             npm run build-windows
 
       - persist_to_workspace:
