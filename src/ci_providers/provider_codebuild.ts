@@ -1,7 +1,7 @@
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
-  return !!envs.CODEBUILD_CI
+  return Boolean(envs.CODEBUILD_CI)
 }
 
 function _getBuild(inputs: UploaderInputs): string {

@@ -1,7 +1,7 @@
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
-  return !!envs.DRONE
+  return Boolean(envs.DRONE)
 }
 
 function _getBuild(inputs: UploaderInputs): string {

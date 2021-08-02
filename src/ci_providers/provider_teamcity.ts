@@ -2,7 +2,7 @@ import { parseSlugFromRemoteAddr } from '../helpers/git'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
-  return !!envs.TEAMCITY_VERSION
+  return Boolean(envs.TEAMCITY_VERSION)
 }
 
 // eslint-disable-next-line no-unused-vars

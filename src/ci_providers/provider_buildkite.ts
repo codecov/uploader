@@ -8,7 +8,7 @@ import { UploaderInputs, IServiceParams, UploaderEnvs } from '../types'
  * @returns boolean
  */
 export function detect(envs: UploaderEnvs): boolean {
-  return !!envs.BUILDKITE
+  return Boolean(envs.BUILDKITE)
 }
 
 /**
@@ -90,7 +90,7 @@ export function getServiceName(): string {
  */
 function _getSHA(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  if (!!args.sha || !!envs.BUILDKITE_COMMIT) {
+  if (Boolean(args.sha) || Boolean(envs.BUILDKITE_COMMIT)) {
     return args.sha || envs.BUILDKITE_COMMIT || ''
   }
   logAndThrow('Unable to detect sha, please set manually with the -C flag')
