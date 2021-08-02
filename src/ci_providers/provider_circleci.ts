@@ -41,7 +41,7 @@ function _getSlug(inputs: UploaderInputs): string {
   } else {
     if (envs.CIRCLE_REPOSITORY_URL) {
       slug = `${
-        envs.CIRCLE_REPOSITORY_URL.toString().split(':')[1].split('.git')[0]
+        envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]
       }`
     } else {
       logAndThrow(

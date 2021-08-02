@@ -19,7 +19,7 @@ function _getBranch(inputs: UploaderInputs): string {
   return (
     args.branch ||
     (envs.CODEBUILD_WEBHOOK_HEAD_REF
-      ? envs.CODEBUILD_WEBHOOK_HEAD_REF.toString().replace(/^refs\/heads\//, '')
+      ? envs.CODEBUILD_WEBHOOK_HEAD_REF.replace(/^refs\/heads\//, '')
       : '')
   )
 }
@@ -33,8 +33,8 @@ function _getPR(inputs: UploaderInputs): string {
   return (
     args.pr ||
     (envs.CODEBUILD_SOURCE_VERSION &&
-    envs.CODEBUILD_SOURCE_VERSION.toString().startsWith('pr/')
-      ? envs.CODEBUILD_SOURCE_VERSION.toString().replace(/^pr\//, '')
+    envs.CODEBUILD_SOURCE_VERSION.startsWith('pr/')
+      ? envs.CODEBUILD_SOURCE_VERSION.replace(/^pr\//, '')
       : '')
   )
 }

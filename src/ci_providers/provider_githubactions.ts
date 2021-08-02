@@ -31,7 +31,7 @@ function _getBranch(inputs: UploaderInputs): string {
   }
 
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
-    branch = envs.GITHUB_HEAD_REF.toString()
+    branch = envs.GITHUB_HEAD_REF
   }
   return args.branch || branch || ''
 }
