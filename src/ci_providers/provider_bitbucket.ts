@@ -3,7 +3,7 @@ import { validateSHA } from '../helpers/validate'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
-  return (Boolean(envs.CI) && Boolean(envs.BITBUCKET_BUILD_NUMBER)) || false
+  return (Boolean(envs.CI) && Boolean(envs.BITBUCKET_BUILD_NUMBER))
 }
 
 function _getBuild(inputs: UploaderInputs): string {
