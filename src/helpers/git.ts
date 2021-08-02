@@ -23,7 +23,7 @@ export function parseSlug(slug: string): string {
   return ''
 }
 
-export function parseSlugFromRemoteAddr(remoteAddr: string): string {
+export function parseSlugFromRemoteAddr(remoteAddr?: string): string {
   let slug = ''
   if (!remoteAddr) {
     remoteAddr = (
