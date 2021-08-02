@@ -13,6 +13,8 @@ function _getBuild(inputs: UploaderInputs): string {
 
 // eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
+
+  // TODO: https://github.com/codecov/uploader/issues/267
   return ''
 }
 
