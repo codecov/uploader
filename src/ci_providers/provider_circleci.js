@@ -65,8 +65,24 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'CI',
+    'CIRCLECI',
+    'CIRCLE_BRANCH',
+    'CIRCLE_BUILD_NUM',
+    'CIRCLE_NODE_INDEX',
+    'CIRCLE_PROJECT_REPONAME',
+    'CIRCLE_PROJECT_USERNAME',
+    'CIRCLE_PR_NUMBER',
+    'CIRCLE_REPOSITORY_URL',
+    'CIRCLE_SHA1',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

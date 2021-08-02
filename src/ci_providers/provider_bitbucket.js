@@ -71,8 +71,21 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'BITBUCKET_BRANCH',
+    'BITBUCKET_BUILD_NUMBER',
+    'BITBUCKET_COMMIT',
+    'BITBUCKET_PR_ID',
+    'BITBUCKET_REPO_OWNER',
+    'BITBUCKET_REPO_SLUG',
+    'CI',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

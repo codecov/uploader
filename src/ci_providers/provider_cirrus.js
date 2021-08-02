@@ -57,8 +57,21 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'CIRRUS_BRANCH',
+    'CIRRUS_BUILD_ID',
+    'CIRRUS_CHANGE_IN_REPO',
+    'CIRRUS_CI',
+    'CIRRUS_PR',
+    'CIRRUS_REPO_FULL_NAME',
+    'CIRRUS_TASK_ID',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

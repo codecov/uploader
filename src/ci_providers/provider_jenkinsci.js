@@ -66,8 +66,24 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'BRANCH_NAME',
+    'BUILD_NUMBER',
+    'BUILD_URL',
+    'CHANGE_ID',
+    'GIT_BRANCH',
+    'GIT_COMMIT',
+    'JENKINS_URL',
+    'ghprbActualCommit',
+    'ghprbPullId',
+    'ghprbSourceBranch',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

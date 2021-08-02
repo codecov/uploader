@@ -100,8 +100,22 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'GITHUB_ACTION',
+    'GITHUB_HEAD_REF',
+    'GITHUB_REF',
+    'GITHUB_REPOSITORY',
+    'GITHUB_RUN_ID',
+    'GITHUB_SERVER_URL',
+    'GITHUB_SHA',
+    'GITHUB_WORKFLOW',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

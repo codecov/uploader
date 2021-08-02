@@ -58,8 +58,21 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'DRONE',
+    'DRONE_BRANCH',
+    'DRONE_BUILD_NUMBER',
+    'DRONE_BUILD_URL',
+    'DRONE_COMMIT_SHA',
+    'DRONE_PULL_REQUEST',
+    'DRONE_REPO_LINK',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

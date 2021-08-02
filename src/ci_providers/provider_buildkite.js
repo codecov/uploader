@@ -118,8 +118,21 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'BUILDKITE',
+    'BUILDKITE_BRANCH',
+    'BUILDKITE_BUILD_NUMBER',
+    'BUILDKITE_BUILD_URL',
+    'BUILDKITE_COMMIT',
+    'BUILDKITE_JOB_ID',
+    'BUILDKITE_PROJECT_SLUG',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

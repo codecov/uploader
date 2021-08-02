@@ -62,8 +62,26 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'CI',
+    'SHIPPABLE',
+    'TRAVIS',
+    'TRAVIS_BRANCH',
+    'TRAVIS_COMMIT',
+    'TRAVIS_JOB_ID',
+    'TRAVIS_JOB_NUMBER',
+    'TRAVIS_PULL_REQUEST',
+    'TRAVIS_PULL_REQUEST_BRANCH',
+    'TRAVIS_PULL_REQUEST_SHA',
+    'TRAVIS_REPO_SLUG',
+    'TRAVIS_TAG',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }

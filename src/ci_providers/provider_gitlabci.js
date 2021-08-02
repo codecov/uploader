@@ -66,8 +66,24 @@ function getServiceParams(inputs) {
   }
 }
 
+function getEnvVarNames() {
+  return [
+    'CI_BUILD_ID',
+    'CI_BUILD_REF',
+    'CI_BUILD_REF_NAME',
+    'CI_BUILD_REPO',
+    'CI_COMMIT_REF_NAME',
+    'CI_COMMIT_SHA',
+    'CI_JOB_ID',
+    'CI_PROJECT_PATH',
+    'CI_REPOSITORY_URL',
+    'GITLAB_CI',
+  ]
+}
+
 module.exports = {
   detect,
+  getEnvVarNames,
   getServiceName,
   getServiceParams,
 }
