@@ -1,7 +1,7 @@
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-const childProcess = require('child_process')
-const { error, info, verbose } = require('../helpers/logger')
+import childProcess from 'child_process'
+import { info } from '../helpers/logger'
 
 export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.GITHUB_ACTIONS)
