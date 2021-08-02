@@ -12,7 +12,7 @@ function _getBuild(inputs: UploaderInputs): string {
 
 function _getBuildURL(inputs: UploaderInputs): string {
   const { envs } = inputs
-  return envs.BUILD_URL ? encodeURIComponent(envs.BUILD_URL || '') : ''
+  return envs.BUILD_URL ? encodeURIComponent(envs.BUILD_URL) : ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
