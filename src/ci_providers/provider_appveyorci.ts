@@ -1,6 +1,5 @@
 import {
   IServiceParams,
-  UploaderArgs,
   UploaderEnvs,
   UploaderInputs,
 } from '../types'
