@@ -66,3 +66,18 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     slug: _getSlug(inputs),
   }
 }
+
+export function getEnvVarNames(): string[] {
+  return [
+    'BRANCH_NAME',
+    'BUILD_NUMBER',
+    'BUILD_URL',
+    'CHANGE_ID',
+    'GIT_BRANCH',
+    'GIT_COMMIT',
+    'JENKINS_URL',
+    'ghprbActualCommit',
+    'ghprbPullId',
+    'ghprbSourceBranch',
+  ]
+}

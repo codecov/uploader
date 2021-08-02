@@ -199,6 +199,10 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
   for (const provider of providers) {
     if (provider.detect(envs)) {
       info(`Detected ${provider.getServiceName()} as the CI provider.`)
+      verbose('-> Using the following env variables:', Boolean(args.verbose))
+      for (const envVarName of provider.getEnvVarNames()) {
+        verbose(`     ${envVarName}: ${envs[envVarName]}`, Boolean(args.verbose))
+      }
       serviceParams = provider.getServiceParams(inputs)
       break
     }

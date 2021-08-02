@@ -76,3 +76,14 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     slug: _getSlug(inputs),
   }
 }
+
+export function getEnvVarNames(): string[] {
+  return [
+    'CODEBUILD_BUILD_ID',
+    'CODEBUILD_CI',
+    'CODEBUILD_RESOLVED_SOURCE_VERSION',
+    'CODEBUILD_SOURCE_REPO_URL',
+    'CODEBUILD_SOURCE_VERSION',
+    'CODEBUILD_WEBHOOK_HEAD_REF',
+  ]
+}

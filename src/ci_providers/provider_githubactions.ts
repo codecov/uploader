@@ -103,3 +103,16 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     slug: _getSlug(inputs),
   }
 }
+
+export function getEnvVarNames(): string[] {
+  return [
+    'GITHUB_ACTION',
+    'GITHUB_HEAD_REF',
+    'GITHUB_REF',
+    'GITHUB_REPOSITORY',
+    'GITHUB_RUN_ID',
+    'GITHUB_SERVER_URL',
+    'GITHUB_SHA',
+    'GITHUB_WORKFLOW',
+  ]
+}

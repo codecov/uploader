@@ -106,3 +106,16 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     slug: _getSlug(inputs),
   }
 }
+
+export function getEnvVarNames(): string[] {
+  return [
+    'BUILD_BUILDID',
+    'BUILD_BUILDNUMBER',
+    'BUILD_SOURCEBRANCH',
+    'BUILD_SOURCEVERSION',
+    'SYSTEM_PULLREQUEST_PULLREQUESTID',
+    'SYSTEM_PULLREQUEST_PULLREQUESTNUMBER',
+    'SYSTEM_TEAMFOUNDATIONSERVERURI',
+    'SYSTEM_TEAMPROJECT',
+  ]
+}

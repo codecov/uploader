@@ -63,3 +63,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     slug: _getSlug(inputs),
   }
 }
+
+export function getEnvVarNames(): string[] {
+  return ['TRAVIS','SHIPPABLE']
+}

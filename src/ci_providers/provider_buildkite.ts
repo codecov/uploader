@@ -128,3 +128,15 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     slug: _getSlug(inputs),
   }
 }
+
+export function getEnvVarNames() {
+  return [
+    'BUILDKITE',
+    'BUILDKITE_BRANCH',
+    'BUILDKITE_BUILD_NUMBER',
+    'BUILDKITE_BUILD_URL',
+    'BUILDKITE_COMMIT',
+    'BUILDKITE_JOB_ID',
+    'BUILDKITE_PROJECT_SLUG',
+  ]
+}

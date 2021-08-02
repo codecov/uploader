@@ -139,3 +139,12 @@ function getServiceParams(inputs) {
     slug: _getSlug(inputs),
   }
 }
+
+/**
+ * Returns all the environment variables used by the provider
+ *
+ * @returns [{string}]
+ */
+export function getEnvVarNames(): string[] {
+  return []
+}

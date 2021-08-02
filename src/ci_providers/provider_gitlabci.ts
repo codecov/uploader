@@ -67,3 +67,18 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     slug: _getSlug(inputs),
   }
 }
+
+export function getEnvVarNames(): string[] {
+  return [
+    'CI_BUILD_ID',
+    'CI_BUILD_REF',
+    'CI_BUILD_REF_NAME',
+    'CI_BUILD_REPO',
+    'CI_COMMIT_REF_NAME',
+    'CI_COMMIT_SHA',
+    'CI_JOB_ID',
+    'CI_PROJECT_PATH',
+    'CI_REPOSITORY_URL',
+    'GITLAB_CI',
+  ]
+}

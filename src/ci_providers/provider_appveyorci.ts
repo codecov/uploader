@@ -82,3 +82,20 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     slug: _getSlug(inputs),
   }
 }
+
+export function getEnvVarNames(): string[] {
+  return [
+    'APPVEYOR',
+    'APPVEYOR_ACCOUNT_NAME',
+    'APPVEYOR_BUILD_ID',
+    'APPVEYOR_BUILD_VERSION',
+    'APPVEYOR_JOB_ID',
+    'APPVEYOR_PROJECT_SLUG',
+    'APPVEYOR_PULL_REQUEST_NUMBER',
+    'APPVEYOR_REPO_BRANCH',
+    'APPVEYOR_REPO_COMMIT',
+    'APPVEYOR_REPO_NAME',
+    'APPVEYOR_URL',
+    'CI',
+  ]
+}
