@@ -8,7 +8,7 @@ import { info, verbose } from './helpers/logger'
 import providers from './ci_providers'
 import { logAndThrow } from './helpers/util'
 import { getToken } from "./helpers/token"
-import { coverageFilePatterns, endEnvironmentMarker, endFileMarker, endNetworkMarker, fetchGitRoot, fileHeader, getCoverageFiles, getFileListing, readCoverageFile, removeFile } from "./helpers/files"
+import { coverageFilePatterns, fetchGitRoot, fileHeader, getCoverageFiles, getFileListing, MARKER_ENV_END, MARKER_FILE_END, MARKER_NETWORK_END, readCoverageFile, removeFile } from "./helpers/files"
 
 /**
  *
@@ -111,7 +111,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
 
     uploadFile = uploadFile
       .concat(fileListing)
-      .concat(endNetworkMarker())
+      .concat(MARKER_NETWORK_END)
   }
 
   // == Step 5: select coverage files (search or specify)
@@ -167,7 +167,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
     uploadFile = uploadFile
       .concat(fileHeader(coverageFile))
       .concat(fileContents)
-      .concat(endFileMarker())
+      .concat(MARKER_FILE_END)
   }
 
   // Cleanup
@@ -187,7 +187,7 @@ export async function main(args: UploaderArgs): Promise<void | Record<string, un
       .join('')
     uploadFile = uploadFile
       .concat(vars)
-      .concat(endEnvironmentMarker())
+      .concat(MARKER_ENV_END)
   }
 
   const gzippedFile = zlib.gzipSync(uploadFile)

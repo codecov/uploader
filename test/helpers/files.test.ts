@@ -8,12 +8,16 @@ describe('File Helpers', () => {
     td.reset()
   })
 
-  it('can generate network end marker', () => {
-    expect(fileHelpers.endNetworkMarker()).toBe('<<<<<< network\n')
+  it('provides network end marker', () => {
+    expect(fileHelpers.MARKER_NETWORK_END).toBe('<<<<<< network\n')
   })
 
-  it('can generate file end marker', () => {
-    expect(fileHelpers.endFileMarker()).toBe('<<<<<< EOF\n')
+  it('provides file end marker', () => {
+    expect(fileHelpers.MARKER_FILE_END).toBe('<<<<<< EOF\n')
+  })
+
+  it('provides env end marker', () => {
+    expect(fileHelpers.MARKER_ENV_END).toBe('<<<<<< ENV\n')
   })
 
   it('can fetch the git root', () => {

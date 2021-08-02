@@ -1,11 +1,15 @@
-import { UploaderArgs } from "../types"
+import { UploaderArgs } from '../types'
 
 import childProcess from 'child_process'
 import fs from 'fs'
 import glob from 'fast-glob'
-import { posix as  path } from 'path'
+import { posix as path } from 'path'
 import { logAndThrow } from './util'
 import { logError, verbose } from './logger'
+
+export const MARKER_NETWORK_END = '<<<<<< network\n'
+export const MARKER_FILE_END = '<<<<<< EOF\n'
+export const MARKER_ENV_END = '<<<<<< ENV\n'
 
 /**
  *
@@ -13,7 +17,10 @@ import { logError, verbose } from './logger'
  * @param {Object} args
  * @returns {Promise<string>}
  */
-export async function getFileListing(projectRoot: string, args: UploaderArgs): Promise<string> {
+export async function getFileListing(
+  projectRoot: string,
+  args: UploaderArgs,
+): Promise<string> {
   return getAllFiles(projectRoot, projectRoot, args).join('')
 }
 
@@ -165,7 +172,10 @@ export function coverageFilePatterns(): string[] {
  * @param {string[]} coverageFilePatterns
  * @returns {Promise<string[]>}
  */
-export async function getCoverageFiles(projectRoot: string, coverageFilePatterns: string[]): Promise<string[]> {
+export async function getCoverageFiles(
+  projectRoot: string,
+  coverageFilePatterns: string[],
+): Promise<string[]> {
   const globstar = (pattern: string) => `**/${pattern}`
 
   return glob(coverageFilePatterns.map(globstar), {
@@ -181,7 +191,11 @@ export async function getCoverageFiles(projectRoot: string, coverageFilePatterns
  * @param {string[]} manualBlacklist
  * @returns boolean
  */
-export function isBlacklisted(projectRoot: string, file: string, manualBlacklist: string[]): boolean {
+export function isBlacklisted(
+  projectRoot: string,
+  file: string,
+  manualBlacklist: string[],
+): boolean {
   const blacklist = manualBlacklist
   return blacklist.includes(file)
 }
@@ -191,8 +205,7 @@ export function fetchGitRoot(): string {
     return (
       childProcess.spawnSync('git', ['rev-parse', '--show-toplevel'], {
         encoding: 'utf-8',
-      }).stdout ||
-      process.cwd()
+      }).stdout || process.cwd()
     ).trimRight()
   } catch (error) {
     logAndThrow('Error fetching git root. Please try using the -R flag.')
@@ -232,7 +245,12 @@ export function parseGitIgnore(projectRoot: string): string[] {
  * @param {string[]} arrayOfFiles
  * @returns {string[]}
  */
-export function getAllFiles(projectRoot: string, dirPath: string, args: UploaderArgs, arrayOfFiles: string[] = []): string[] {
+export function getAllFiles(
+  projectRoot: string,
+  dirPath: string,
+  args: UploaderArgs,
+  arrayOfFiles: string[] = [],
+): string[] {
   verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
   const files = fs.readdirSync(dirPath)
 
@@ -275,7 +293,10 @@ export function readAllLines(filePath: string): string[] {
  * @param {string} filePath
  * @returns {string}
  */
-export function readCoverageFile(projectRoot: string, filePath: string): string {
+export function readCoverageFile(
+  projectRoot: string,
+  filePath: string,
+): string {
   try {
     return fs.readFileSync(getFilePath(projectRoot, filePath), {
       encoding: 'utf-8',
@@ -286,14 +307,6 @@ export function readCoverageFile(projectRoot: string, filePath: string): string 
   return ''
 }
 
-export function endNetworkMarker() {
-  return '<<<<<< network\n'
-}
-
-export function endFileMarker() {
-  return '<<<<<< EOF\n'
-}
-
 /**
  *
  * @param {string} filePath
@@ -301,10 +314,6 @@ export function endFileMarker() {
  */
 export function fileHeader(filePath: string) {
   return `# path=${filePath}\n`
-}
-
-export function endEnvironmentMarker() {
-  return '<<<<<< ENV\n'
 }
 
 /**
