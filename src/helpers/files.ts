@@ -17,7 +17,7 @@ export async function getFileListing(projectRoot: string, args: UploaderArgs): P
   return getAllFiles(projectRoot, projectRoot, args).join('')
 }
 
-export function manualBlacklist() {
+export function manualBlacklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     'node_modules',
@@ -31,7 +31,7 @@ export function manualBlacklist() {
   ]
 }
 
-export function globBlacklist() {
+export function globBlacklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     'node_modules/**/*',
@@ -134,7 +134,7 @@ export function globBlacklist() {
   ]
 }
 
-export function coverageFilePatterns() {
+export function coverageFilePatterns(): string[] {
   return [
     '*coverage*.*',
     'nosetests.xml',
@@ -181,12 +181,12 @@ export async function getCoverageFiles(projectRoot: string, coverageFilePatterns
  * @param {string[]} manualBlacklist
  * @returns boolean
  */
-export function isBlacklisted(projectRoot: string, file: string, manualBlacklist: string[]) {
+export function isBlacklisted(projectRoot: string, file: string, manualBlacklist: string[]): boolean {
   const blacklist = manualBlacklist
   return blacklist.includes(file)
 }
 
-export function fetchGitRoot() {
+export function fetchGitRoot(): string {
   try {
     return (
       childProcess.spawnSync('git', ['rev-parse', '--show-toplevel'], {

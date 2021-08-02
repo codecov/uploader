@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import { logAndThrow } from './util'
 
-export function parseSlug(slug: string) {
+export function parseSlug(slug: string): string {
   // origin    https://github.com/torvalds/linux.git (fetch)
   // git@github.com: codecov / uploader.git
   if (typeof slug !== 'string') {
@@ -23,7 +23,7 @@ export function parseSlug(slug: string) {
   return ''
 }
 
-export function parseSlugFromRemoteAddr(remoteAddr: string) {
+export function parseSlugFromRemoteAddr(remoteAddr: string): string {
   let slug = ''
   if (!remoteAddr) {
     remoteAddr = (
