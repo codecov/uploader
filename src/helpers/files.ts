@@ -3,7 +3,7 @@ import { UploaderArgs } from "../types"
 import childProcess from 'child_process'
 import fs from 'fs'
 import glob from 'fast-glob'
-const path = require('path').posix
+import { posix as  path } from 'path'
 import { logAndThrow } from './util'
 import { logError, info, verbose } from './logger'
 
