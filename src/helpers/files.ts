@@ -312,7 +312,7 @@ export function readCoverageFile(
  * @param {string} filePath
  * @returns string
  */
-export function fileHeader(filePath: string) {
+export function fileHeader(filePath: string): string {
   return `# path=${filePath}\n`
 }
 
@@ -342,7 +342,7 @@ export function getFilePath(projectRoot: string, filePath: string): string {
  * @param {string} projectRoot
  * @param {string} filePath
  */
-export function removeFile(projectRoot: string, filePath: string) {
+export function removeFile(projectRoot: string, filePath: string): void {
   fs.unlink(getFilePath(projectRoot, filePath), err => {
     if (err) {
       logError(`Error removing ${filePath} coverage file`)

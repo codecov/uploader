@@ -5,7 +5,7 @@ import {
   UploaderInputs,
 } from '../types'
 
-export function detect(envs: UploaderEnvs) {
+export function detect(envs: UploaderEnvs):boolean {
   return (
     (envs.CI === 'true' || envs.CI === 'True') &&
     (envs.APPVEYOR === 'true' || envs.APPVEYOR === 'True')
