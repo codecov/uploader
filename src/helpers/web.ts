@@ -44,7 +44,7 @@ export function getPackage(source: string): string {
 export async function uploadToCodecovPUT(
   uploadURL: string,
   uploadFile: string | Buffer,
-): Promise<{ status: string; resultURL: string }> {
+): Promise<{ status: string, resultURL: string }> {
   info('Uploading...')
 
   const parts = uploadURL.split('\n')
