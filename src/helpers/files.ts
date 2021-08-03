@@ -314,12 +314,7 @@ export function readCoverageFile(
  * @returns boolean
  */
 export function fileExists(projectRoot: string, filePath: string): boolean {
-  try {
-    return fs.existsSync(getFilePath(projectRoot, filePath))
-  } catch (error) {
-    info(`File ${filePath} does not exist`)
-  }
-  return false
+  return fs.existsSync(getFilePath(projectRoot, filePath))
 }
 
 /**
