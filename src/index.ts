@@ -136,6 +136,7 @@ export async function main(
   info('Searching for coverage files...')
   info(`args.file ${args.file}`)
   info(`typeof args.file ${typeof args.file}`)
+  info(`typeof args.file ${typeof args.file === 'string'}`)
   if (args.file) {
     if (typeof args.file === 'string') {
       coverageFilePaths = [args.file]
@@ -144,6 +145,7 @@ export async function main(
     }
   }
   info(`coverageFilePaths ${coverageFilePaths}`)
+  info(`typeof coverageFilePaths ${typeof coverageFilePaths}`)
   coverageFilePaths = await getCoverageFiles(
     args.dir || projectRoot,
     coverageFilePaths.length > 0 ? coverageFilePaths : coverageFilePatterns(),
