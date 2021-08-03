@@ -252,27 +252,11 @@ export function getAllFiles(
   arrayOfFiles: string[] = [],
 ): string[] {
   verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
-  const files = fs.readdirSync(dirPath)
-
-  files.forEach(function (file) {
-    if (isBlacklisted(projectRoot, file, manualBlacklist())) {
-      return
-    }
-    if (fs.lstatSync(path.join(dirPath, file)).isDirectory()) {
-      arrayOfFiles = getAllFiles(
-        projectRoot,
-        path.join(dirPath, file),
-        args,
-        arrayOfFiles,
-      )
-    } else {
-      arrayOfFiles.push(
-        `${path.join(dirPath.replace(projectRoot, '.'), file)}\n`,
-      )
-    }
+  
+  return glob.sync({
+    cwd: projectRoot,
+    ignore: globBlacklist(),
   })
-  verbose(`Search complete for files in ${dirPath}`, Boolean(args.verbose))
-  return arrayOfFiles
 }
 
 /**
