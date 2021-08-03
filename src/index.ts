@@ -143,26 +143,22 @@ export async function main(
   }
   coverageFilePaths = await getCoverageFiles(
     args.dir || projectRoot,
-    coverageFilePaths || coverageFilePatterns(),
+    coverageFilePaths.length > 0 ? coverageFilePaths : coverageFilePatterns(),
   )
   coverageFilePaths.filter(file => {
     return validateHelpers.validateFileNamePath(file)
   })
 
-  if (!args.file) {
-    if (coverageFilePaths.length > 0) {
-    info(`=> Found ${coverageFilePaths.length} possible coverage files:`)
-    info(coverageFilePaths.join('\n'))
-    } else {
-      logAndThrow(
-        'No coverage files located, please try use `-f`, or change the project root with `-R`',
-      )
-    }
+  if (coverageFilePaths.length > 0) {
+    info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +
+        coverageFilePaths.join('\n  '))
   } else {
-    if (coverageFilePaths.length === 0) {
-      logAndThrow('No coverage files found, exiting.')
-    }
+    const noFilesError = args.file ?
+      'No coverage files found, exiting.' :
+      'No coverage files located, please try use `-f`, or change the project root with `-R`'
+    logAndThrow(noFilesError)
   }
+
   verbose('End of network processing', Boolean(args.verbose))
   // == Step 6: generate upload file
   // TODO: capture envs

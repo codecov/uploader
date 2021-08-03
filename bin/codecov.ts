@@ -124,7 +124,7 @@ main(argv)
     )
   })
   .catch(error => {
-    error(`Error!: ${error}`, { level: 'error', argv })
+    logError(`Error!: ${error}`)
     const end = Date.now()
     verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
     process.exit(argv.nonZero ? -1 : 0)
