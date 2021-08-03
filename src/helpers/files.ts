@@ -5,7 +5,7 @@ import fs from 'fs'
 import glob from 'fast-glob'
 import { posix as path } from 'path'
 import { logAndThrow } from './util'
-import { logError, verbose } from './logger'
+import { info, logError, verbose } from './logger'
 
 export const MARKER_NETWORK_END = '<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
@@ -305,6 +305,20 @@ export function readCoverageFile(
     logAndThrow(`There was an error reading the coverage file: ${error}`)
   }
   return ''
+}
+
+/**
+ *
+ * @param {string} filePath
+ * @returns boolean
+ */
+export function fileExists(filePath: string): boolean {
+  try {
+    return fs.existsSync(filePath)
+  } catch (error) {
+    info(`File ${filePath} does not exist`)
+  }
+  return false
 }
 
 /**

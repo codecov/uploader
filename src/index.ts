@@ -11,6 +11,7 @@ import { getToken } from './helpers/token'
 import {
   coverageFilePatterns,
   fetchGitRoot,
+  fileExists,
   fileHeader,
   getCoverageFiles,
   getFileListing,
@@ -134,9 +135,6 @@ export async function main(
   // Look for files
   let coverageFilePaths: string[] = []
   info('Searching for coverage files...')
-  info(`args.file ${args.file}`)
-  info(`typeof args.file ${typeof args.file}`)
-  info(`typeof args.file ${typeof args.file === 'string'}`)
   if (args.file) {
     if (typeof args.file === 'string') {
       coverageFilePaths = [args.file]
@@ -144,17 +142,15 @@ export async function main(
       coverageFilePaths = args.file
     }
   }
-  info(`coverageFilePaths ${coverageFilePaths}`)
-  info(`typeof coverageFilePaths ${typeof coverageFilePaths}`)
-  coverageFilePaths = await getCoverageFiles(
+  coverageFilePaths = coverageFilePaths.concat(await getCoverageFiles(
     args.dir || projectRoot,
     coverageFilePaths.length > 0 ? coverageFilePaths : coverageFilePatterns(),
-  )
-  info(`coverageFilePaths ${coverageFilePaths}`)
-  coverageFilePaths.filter(file => {
-    return validateHelpers.validateFileNamePath(file)
-  })
-  info(`coverageFilePaths ${coverageFilePaths}`)
+  ))
+
+  // Remove invalid and duplicate file paths
+  coverageFilePaths = [... new Set(coverageFilePaths.filter(file => {
+    return validateHelpers.validateFileNamePath(file) && fileExists(file)
+  }))]
 
   if (coverageFilePaths.length > 0) {
     info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +
@@ -171,6 +167,7 @@ export async function main(
   // TODO: capture envs
 
   // Get coverage report contents
+  let coverageFileAdded = false
   for (const coverageFile of coverageFilePaths) {
     let fileContents
     try {
@@ -188,6 +185,10 @@ export async function main(
       .concat(fileHeader(coverageFile))
       .concat(fileContents)
       .concat(MARKER_FILE_END)
+    coverageFileAdded = true
+  }
+  if (!coverageFileAdded) {
+    logAndThrow( 'No coverage files could be found to upload, exiting.')
   }
 
   // Cleanup
