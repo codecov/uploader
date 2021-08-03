@@ -106,6 +106,17 @@ describe('File Helpers', () => {
         expect(fileHelpers.coverageFilePatterns()).toContain('jacoco*.xml')
       })
     })
+    describe('file exists', () => {
+      it('returns true if file exists', () => {
+        expect(fileHelpers.fileExists('', 'test/fixtures/coverage.txt'))
+      })
+      it('returns false if file doesnt exist', () => {
+        expect(fileHelpers.fileExists('', 'test/fake/path/to/file.txt'))
+      })
+      it('returns true if file exists in a directory', () => {
+        expect(fileHelpers.fileExists('test/fixtures', 'coverage.txt'))
+      })
+    })
     describe('getFilePath()', () => {
       it('should return path when file path has no starting slash', () => {
         expect(fileHelpers.getFilePath('/usr/', 'coverage.xml')).toEqual(

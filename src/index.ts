@@ -11,9 +11,11 @@ import { getToken } from './helpers/token'
 import {
   coverageFilePatterns,
   fetchGitRoot,
+  fileExists,
   fileHeader,
   getCoverageFiles,
   getFileListing,
+  getFilePath,
   MARKER_ENV_END,
   MARKER_FILE_END,
   MARKER_NETWORK_END,
@@ -132,44 +134,46 @@ export async function main(
   // == Step 5: select coverage files (search or specify)
 
   // Look for files
-  let coverageFilePaths = []
-  if (!args.file) {
-    info('Searching for coverage files...')
-    coverageFilePaths = await getCoverageFiles(
-      args.dir || projectRoot,
-      coverageFilePatterns(),
-    )
-    if (coverageFilePaths.length > 0) {
-      info(`=> Found ${coverageFilePaths.length} possible coverage files:`)
-      info(coverageFilePaths.join('\n'))
-    } else {
-      logAndThrow(
-        'No coverage files located, please try use `-f`, or change the project root with `-R`',
-      )
-    }
-  } else {
+  let coverageFilePaths: string[] = []
+  info('Searching for coverage files...')
+  if (args.file) {
     if (typeof args.file === 'string') {
       coverageFilePaths = [args.file]
     } else {
       coverageFilePaths = args.file
     }
-
-    coverageFilePaths.filter(file => {
-      return validateHelpers.validateFileNamePath(file)
-    })
-    if (coverageFilePaths.length === 0) {
-      logAndThrow('No coverage files found, exiting.')
-    }
   }
+  coverageFilePaths = coverageFilePaths.concat(await getCoverageFiles(
+    args.dir || projectRoot,
+    coverageFilePaths.length > 0 ? coverageFilePaths : coverageFilePatterns(),
+  ))
+
+  // Remove invalid and duplicate file paths
+  coverageFilePaths = [... new Set(coverageFilePaths.filter(file => {
+    return validateHelpers.validateFileNamePath(file) &&
+      fileExists(args.dir || projectRoot, file)
+  }))]
+
+  if (coverageFilePaths.length > 0) {
+    info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +
+        coverageFilePaths.join('\n  '))
+  } else {
+    const noFilesError = args.file ?
+      'No coverage files found, exiting.' :
+      'No coverage files located, please try use `-f`, or change the project root with `-R`'
+    logAndThrow(noFilesError)
+  }
+
   verbose('End of network processing', Boolean(args.verbose))
   // == Step 6: generate upload file
   // TODO: capture envs
 
   // Get coverage report contents
+  let coverageFileAdded = false
   for (const coverageFile of coverageFilePaths) {
     let fileContents
     try {
-      info(`Processing ${coverageFile}...`),
+      info(`Processing ${getFilePath(args.dir || projectRoot, coverageFile)}...`),
         (fileContents = await readCoverageFile(
           args.dir || projectRoot,
           coverageFile,
@@ -183,6 +187,10 @@ export async function main(
       .concat(fileHeader(coverageFile))
       .concat(fileContents)
       .concat(MARKER_FILE_END)
+    coverageFileAdded = true
+  }
+  if (!coverageFileAdded) {
+    logAndThrow( 'No coverage files could be found to upload, exiting.')
   }
 
   // Cleanup
