@@ -185,7 +185,8 @@ jobs:
       - run:
           name: Run Linux binary -f (dry run)
           command: |
-            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v -e CIRCLE_BRANCH >> output_linux.txt
+            # out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v -e CIRCLE_BRANCH >> output_linux.txt
+            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v -e CIRCLE_BRANCH
       - run:
           name: Run Linux binary auto-detect (dry run)
           command: |
