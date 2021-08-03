@@ -15,6 +15,7 @@ import {
   fileHeader,
   getCoverageFiles,
   getFileListing,
+  getFilePath,
   MARKER_ENV_END,
   MARKER_FILE_END,
   MARKER_NETWORK_END,
@@ -149,7 +150,8 @@ export async function main(
 
   // Remove invalid and duplicate file paths
   coverageFilePaths = [... new Set(coverageFilePaths.filter(file => {
-    return validateHelpers.validateFileNamePath(file) && fileExists(file)
+    return validateHelpers.validateFileNamePath(file) &&
+      fileExists(args.dir || projectRoot, file)
   }))]
 
   if (coverageFilePaths.length > 0) {
@@ -171,7 +173,7 @@ export async function main(
   for (const coverageFile of coverageFilePaths) {
     let fileContents
     try {
-      info(`Processing ${coverageFile}...`),
+      info(`Processing ${getFilePath(args.dir || projectRoot, coverageFile)}...`),
         (fileContents = await readCoverageFile(
           args.dir || projectRoot,
           coverageFile,

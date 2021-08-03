@@ -192,7 +192,7 @@ describe('Uploader Core', () => {
       flags: '',
     })
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('Processing test/fixtures/coverage.txt...'),
+      expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
     )
   })
 
@@ -211,13 +211,13 @@ describe('Uploader Core', () => {
       flags: '',
     })
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('Processing test/fixtures/coverage.txt...'),
+      expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
     )
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('Processing test/fixtures/other/coverage.txt...'),
+      expect.stringMatching(/Processing.*test\/fixtures\/other\/coverage\.txt\.\.\./),
     )
     expect(log).not.toHaveBeenCalledWith(
-      expect.stringMatching('Processing test/does/not/exist.txt...'),
+      expect.stringMatching(/Processing.*test\/does\/not\/exist\.txt\.\.\./),
     )
   })
 
@@ -234,13 +234,13 @@ describe('Uploader Core', () => {
       flags: '',
     })
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('Processing test/fixtures/coverage.txt...'),
+      expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
     )
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('Processing test/fixtures/other/coverage.txt...'),
+      expect.stringMatching(/Processing.*test\/fixtures\/other\/coverage\.txt\.\.\./),
     )
     expect(log).not.toHaveBeenCalledWith(
-      expect.stringMatching('Processing test/does/not/exist.txt...'),
+      expect.stringMatching(/Processing.*test\/does\/not\/exist\.txt\.\.\./),
     )
   })
 
