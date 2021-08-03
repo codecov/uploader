@@ -134,6 +134,8 @@ export async function main(
   // Look for files
   let coverageFilePaths: string[] = []
   info('Searching for coverage files...')
+  info(`args.file ${args.file}`)
+  info(`typeof args.file ${typeof args.file}`)
   if (args.file) {
     if (typeof args.file === 'string') {
       coverageFilePaths = [args.file]
