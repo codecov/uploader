@@ -214,15 +214,33 @@ describe('Uploader Core', () => {
       expect.stringMatching('Processing test/fixtures/coverage.txt...'),
     )
     expect(log).toHaveBeenCalledWith(
+      expect.stringMatching('Processing test/fixtures/other/coverage.txt...'),
+    )
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringMatching('Processing test/does/not/exist.txt...'),
+    )
+  })
+
+  it('Can handle glob files', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    await app.main({
+      dryRun: 'true',
+      file: [
+        'cover*.txt',
+      ],
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      flags: '',
+    })
+    expect(log).toHaveBeenCalledWith(
       expect.stringMatching('Processing test/fixtures/coverage.txt...'),
     )
     expect(log).toHaveBeenCalledWith(
-      expect.stringMatching('Processing test/does/not/exist.txt...'),
+      expect.stringMatching('Processing test/fixtures/other/coverage.txt...'),
     )
-    expect(log).toHaveBeenCalledWith(
-      expect.stringContaining(
-        'Could not read coverage file (test/does/not/exist.txt):',
-      ),
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringMatching('Processing test/does/not/exist.txt...'),
     )
   })
 
