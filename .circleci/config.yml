@@ -183,6 +183,10 @@ jobs:
           # Must be absolute path or relative path from working_directory
           at: .
       - run:
+          name: Whats in coverage
+          command: |
+            ls -al /home/circleci/project/coverage/
+      - run:
           name: Run Linux binary -f (dry run)
           command: |
             # out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v -e CIRCLE_BRANCH >> output_linux.txt
