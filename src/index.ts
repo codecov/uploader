@@ -141,13 +141,16 @@ export async function main(
       coverageFilePaths = args.file
     }
   }
+  info(`coverageFilePaths ${coverageFilePaths}`)
   coverageFilePaths = await getCoverageFiles(
     args.dir || projectRoot,
     coverageFilePaths.length > 0 ? coverageFilePaths : coverageFilePatterns(),
   )
+  info(`coverageFilePaths ${coverageFilePaths}`)
   coverageFilePaths.filter(file => {
     return validateHelpers.validateFileNamePath(file)
   })
+  info(`coverageFilePaths ${coverageFilePaths}`)
 
   if (coverageFilePaths.length > 0) {
     info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +
