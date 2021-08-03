@@ -132,31 +132,33 @@ export async function main(
   // == Step 5: select coverage files (search or specify)
 
   // Look for files
-  let coverageFilePaths = []
+  let coverageFilePaths: string[] = []
+  info('Searching for coverage files...')
+  if (args.file) {
+    if (typeof args.file === 'string') {
+      coverageFilePaths = [args.file]
+    } else {
+      coverageFilePaths = args.file
+    }
+  }
+  coverageFilePaths = await getCoverageFiles(
+    args.dir || projectRoot,
+    coverageFilePaths || coverageFilePatterns(),
+  )
+  coverageFilePaths.filter(file => {
+    return validateHelpers.validateFileNamePath(file)
+  })
+
   if (!args.file) {
-    info('Searching for coverage files...')
-    coverageFilePaths = await getCoverageFiles(
-      args.dir || projectRoot,
-      coverageFilePatterns(),
-    )
     if (coverageFilePaths.length > 0) {
-      info(`=> Found ${coverageFilePaths.length} possible coverage files:`)
-      info(coverageFilePaths.join('\n'))
+    info(`=> Found ${coverageFilePaths.length} possible coverage files:`)
+    info(coverageFilePaths.join('\n'))
     } else {
       logAndThrow(
         'No coverage files located, please try use `-f`, or change the project root with `-R`',
       )
     }
   } else {
-    if (typeof args.file === 'string') {
-      coverageFilePaths = [args.file]
-    } else {
-      coverageFilePaths = args.file
-    }
-
-    coverageFilePaths.filter(file => {
-      return validateHelpers.validateFileNamePath(file)
-    })
     if (coverageFilePaths.length === 0) {
       logAndThrow('No coverage files found, exiting.')
     }
