@@ -256,7 +256,7 @@ export function getAllFiles(
   return glob.sync({
     cwd: projectRoot,
     ignore: globBlacklist(),
-  })
+  }).join('\n')
 }
 
 /**
