@@ -188,22 +188,6 @@ export async function getCoverageFiles(
   })
 }
 
-/**
- *
- * @param {string} projectRoot
- * @param {string} file
- * @param {string[]} manualBlacklist
- * @returns boolean
- */
-export function isBlacklisted(
-  projectRoot: string,
-  file: string,
-  manualBlacklist: string[],
-): boolean {
-  const blacklist = manualBlacklist
-  return blacklist.includes(file)
-}
-
 export function fetchGitRoot(): string {
   try {
     return (
