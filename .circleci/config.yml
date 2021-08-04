@@ -171,10 +171,8 @@ jobs:
           name: Build Windows Binary
           command: |
             $ErrorActionPreference="Stop"
-            npm ci
-            npm test
-            npm run build
-            npm run build-windows
+            node --version
+            npm ci; npm test; npm run build; npm run build-windows
 
       - persist_to_workspace:
           root: .
