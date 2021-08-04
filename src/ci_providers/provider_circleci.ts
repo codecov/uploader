@@ -55,7 +55,7 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.CIRCLE_BUILD_NUM || ''
 }
 
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
   return Number(args.pr || envs.CIRCLE_PR_NUMBER || '')
 }

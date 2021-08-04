@@ -26,7 +26,7 @@ function _getJob(envs: UploaderEnvs): string {
   return envs.BITBUCKET_BUILD_NUMBER || ''
 }
 
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
   return Number(args.pr || envs.BITBUCKET_PR_ID || '')
 }

@@ -24,7 +24,7 @@ function _getJob(envs: UploaderEnvs): string {
   return ''
 }
 
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
   return Number(args.pr || envs.DRONE_PULL_REQUEST || '')
 }

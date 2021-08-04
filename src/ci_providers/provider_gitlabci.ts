@@ -26,7 +26,7 @@ function _getJob(envs: UploaderEnvs): string {
   return ''
 }
 
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args } = inputs
   return Number(args.pr || '')
 }

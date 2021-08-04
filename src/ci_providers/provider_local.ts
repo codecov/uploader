@@ -40,7 +40,7 @@ function _getJob(env: UploaderEnvs): string {
 }
 
 // eslint-disable-next-line no-unused-vars
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args } = inputs
   return Number(args.pr || '')
 }
