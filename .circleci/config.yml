@@ -160,6 +160,12 @@ jobs:
           # Must be absolute path or relative path from working_directory
           at: .
       - run:
+          name: Install and set Node 16.x
+          command: |
+            nvm install v16 && \
+            nvm use v16 && \
+            nvm alias default v16
+      - run:
           name: Build Windows Binary
           command: |
             npm ci
