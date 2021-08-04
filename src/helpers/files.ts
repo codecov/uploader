@@ -180,7 +180,10 @@ export async function getCoverageFiles(
 
   return glob(coverageFilePatterns.map(globstar), {
     cwd: projectRoot,
-    ignore: globBlacklist(),
+    ignore: [
+      ...manualBlacklist(),
+      ...globBlacklist(),
+    ],
   })
 }
 
