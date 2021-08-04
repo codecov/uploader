@@ -1,6 +1,6 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 /*
 Add your provider here and name it provder<Ci>. Example:
@@ -42,13 +42,13 @@ describe('<Ci> Params', () => {
       args: { tag: '', url: '', source: '', flags: '' },
       envs: {},
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: '',
       build: '',
       buildURL: '',
       commit: '',
       job: '',
-      pr: '',
+      pr: 0,
       service: '',
       slug: '',
     }
@@ -64,13 +64,13 @@ describe('<Ci> Params', () => {
       args: { tag: '', url: '', source: '', flags: '' },
       envs: {},
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: '',
       build: '',
       buildURL: '',
       commit: '',
       job: '',
-      pr: '',
+      pr: 0,
       service: '',
       slug: '',
     }
@@ -91,13 +91,13 @@ describe('<Ci> Params', () => {
       },
       envs: {},
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: '',
       build: '',
       buildURL: '',
       commit: '',
       job: '',
-      pr: '',
+      pr: 0,
       service: '',
       slug: '',
     }
@@ -118,13 +118,13 @@ describe('<Ci> Params', () => {
       },
       envs: {},
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: '',
       build: '',
       buildURL: '',
       commit: '',
       job: '',
-      pr: '',
+      pr: 0,
       service: '',
       slug: '',
     }

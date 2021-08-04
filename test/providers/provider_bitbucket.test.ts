@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import td from 'testdouble'
 import * as providerBitbucket from '../../src/ci_providers//provider_bitbucket'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('Bitbucket Params', () => {
   afterEach(() => {
@@ -53,13 +53,13 @@ describe('Bitbucket Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: '',
       build: '1',
       buildURL: '',
       commit: '',
       job: '1',
-      pr: '',
+      pr: 0,
       service: 'bitbucket',
       slug: '',
     }
@@ -85,13 +85,13 @@ describe('Bitbucket Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: '',
       commit: 'testingsha',
       job: '1',
-      pr: '2',
+      pr: 2,
       service: 'bitbucket',
       slug: 'testOwner/testSlug',
     }
@@ -116,13 +116,13 @@ describe('Bitbucket Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: '',
       commit: 'testingsha',
       job: '1',
-      pr: '',
+      pr: 0,
       service: 'bitbucket',
       slug: 'testOwner/testSlug',
     }
@@ -147,13 +147,13 @@ describe('Bitbucket Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: '',
       commit: 'newtestsha',
       job: '1',
-      pr: '',
+      pr: 0,
       service: 'bitbucket',
       slug: 'testOwner/testSlug',
     }
@@ -189,13 +189,13 @@ describe('Bitbucket Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'feature',
       build: '3',
       buildURL: '',
       commit: 'overwriteSha',
       job: '1',
-      pr: '4',
+      pr: 4,
       service: 'bitbucket',
       slug: 'overwriteOwner/overwriteRepo',
     }

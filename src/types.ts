@@ -31,6 +31,7 @@ export interface UploaderInputs {
 
 export interface IProvider {
   detect: (arg0: UploaderEnvs) => boolean
+  _getPR (arg0: UploaderInputs): number
   getServiceName: () => string
   getServiceParams: (arg0: UploaderInputs) => IServiceParams
   getEnvVarNames: () => string[]
@@ -42,7 +43,7 @@ export interface IServiceParams {
   buildURL: string
   commit: string
   job: string
-  pr: string
+  pr: number | ''
   service: string
   slug: string
   name?: string

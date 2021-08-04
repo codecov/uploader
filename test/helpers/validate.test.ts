@@ -1,9 +1,16 @@
 import * as validate from '../../src/helpers/validate'
+import { checkValueType } from '../../src/helpers/validate'
 
 // Backup the env
 const realEnv = { ...process.env }
 
 describe('Input Validators', () => {
+  describe('checkValueType()', () => {
+it('throws an error when the value is not the correct type', () => {
+  expect(() => { checkValueType('testValue', {}, 'number')}).toThrowError(/The value of testValue is not of type number, can not continue, please review/)
+})
+  })
+
   describe('Tokens', () => {
     it('Returns true with a valid alphanumeric token', () => {
       expect(validate.validateToken('1bc123')).toBe(true)

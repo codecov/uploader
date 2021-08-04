@@ -1,7 +1,7 @@
 import td from 'testdouble'
 
 import * as providerCodeBuild from '../../src/ci_providers/provider_codebuild'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('CodeBuild Params', () => {
   afterEach(() => {
@@ -55,13 +55,13 @@ describe('CodeBuild Params', () => {
           CODEBUILD_SOURCE_REPO_URL: 'https://github.com/repo.git',
         },
       }
-      const expected = {
+      const expected: IServiceParams = {
         branch: 'master',
         build: '2',
         buildURL: '',
         commit: 'testingsha',
         job: '2',
-        pr: '1',
+        pr: 1,
         service: 'codebuild',
         slug: 'repo',
       }
@@ -92,13 +92,13 @@ describe('CodeBuild Params', () => {
           CODEBUILD_SOURCE_REPO_URL: 'https://github.com/repo.git',
         },
       }
-      const expected = {
+      const expected: IServiceParams = {
         branch: 'branch',
         build: '3',
         buildURL: '',
         commit: 'testsha',
         job: '2',
-        pr: '7',
+        pr: 7,
         service: 'codebuild',
         slug: 'testOrg/testRepo',
       }

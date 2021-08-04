@@ -28,15 +28,15 @@ function _getJob(envs: UploaderEnvs): string {
   return envs.CODEBUILD_BUILD_ID || ''
 }
 
-function _getPR(inputs: UploaderInputs): string {
+export function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
   return (
-    args.pr ||
+    Number(args.pr ||
     (envs.CODEBUILD_SOURCE_VERSION &&
     envs.CODEBUILD_SOURCE_VERSION.startsWith('pr/')
       ? envs.CODEBUILD_SOURCE_VERSION.replace(/^pr\//, '')
       : '')
-  )
+  ))
 }
 
 function _getService(): string {

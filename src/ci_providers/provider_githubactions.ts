@@ -40,7 +40,7 @@ function _getJob(envs: UploaderEnvs): string {
   return encodeURIComponent(envs.GITHUB_WORKFLOW || '')
 }
 
-function _getPR(inputs: UploaderInputs): string {
+export function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
   let match
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
@@ -50,7 +50,7 @@ function _getPR(inputs: UploaderInputs): string {
       match = matches[1]
     }
   }
-  return args.pr || match || ''
+  return Number(args.pr || match || '')
 }
 
 function _getService(): string {
@@ -66,7 +66,7 @@ function _getSHA(inputs: UploaderInputs): string {
   const pr = _getPR(inputs)
 
   let commit = envs.GITHUB_SHA
-  if (pr && pr.toLowerCase() !== 'false' && !args.sha) {
+  if (pr && pr !== 0 && !args.sha) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
     const mergeCommitMessage = childProcess
       .spawnSync('git', ['show', '--no-patch', '--format="%P"'])

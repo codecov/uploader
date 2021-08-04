@@ -2,7 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerLocal from '../../src/ci_providers//provider_local'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('Local Params', () => {
   afterEach(() => {
@@ -55,13 +55,13 @@ describe('Local Params', () => {
       },
       envs: {},
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '',
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: '1',
+      pr: 1,
       service: '',
       slug: 'owner/repo',
     }

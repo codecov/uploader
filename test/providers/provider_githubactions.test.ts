@@ -2,7 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerGitHubactions from '../../src/ci_providers//provider_githubactions'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('GitHub Actions Params', () => {
   afterEach(() => {
@@ -57,14 +57,14 @@ describe('GitHub Actions Params', () => {
         GITHUB_WORKFLOW: 'testWorkflow',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'master',
       build: '2',
       buildURL:
         'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: '',
+      pr: 0,
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
@@ -91,14 +91,14 @@ describe('GitHub Actions Params', () => {
         GITHUB_WORKFLOW: 'testWorkflow',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
       buildURL:
         'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: '1',
+      pr: 1,
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
@@ -132,14 +132,14 @@ describe('GitHub Actions Params', () => {
         GITHUB_WORKFLOW: 'testWorkflow',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
       buildURL:
         'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: 'testWorkflow',
-      pr: '1',
+      pr: 1,
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
@@ -173,14 +173,14 @@ describe('GitHub Actions Params', () => {
         GITHUB_SERVER_URL: 'https://github.com',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL:
         'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F3',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
@@ -212,14 +212,14 @@ describe('GitHub Actions Params', () => {
         GITHUB_WORKFLOW: 'testWorkflow',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
       buildURL:
         'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: '1',
+      pr: 1,
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }

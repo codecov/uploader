@@ -40,9 +40,9 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.BUILD_NUMBER || ''
 }
 
-function _getPR(inputs: UploaderInputs): string {
+export function _getPR(inputs: UploaderInputs): number {
   const { args } = inputs
-  return args.pr || ''
+  return Number(args.pr || '')
 }
 
 // eslint-disable-next-line no-unused-vars
