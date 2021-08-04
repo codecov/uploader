@@ -2,10 +2,12 @@ import td from 'testdouble'
 import fs from 'fs'
 import childProcess from 'child_process'
 import * as fileHelpers from '../../src/helpers/files'
+import mock from 'mock-fs'
 
 describe('File Helpers', () => {
   afterEach(() => {
     td.reset()
+    mock.restore()
   })
 
   it('provides network end marker', () => {
@@ -72,11 +74,12 @@ describe('File Helpers', () => {
       )
     })
     it('can read a coverage report file', async () => {
-      const readFileSync = td.replace(fs, 'readFileSync')
-      td.when(
-        readFileSync('test-coverage-file.xml', { encoding: 'utf-8' }),
-      ).thenReturn('I am test coverage data')
-      const reportContents = fileHelpers.readCoverageFile(
+
+      mock({
+        'test-coverage-file.xml': 'I am test coverage data'
+      })
+
+      const reportContents = await fileHelpers.readCoverageFile(
         '.',
         'test-coverage-file.xml',
       )
