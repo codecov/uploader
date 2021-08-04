@@ -253,10 +253,10 @@ export function getAllFiles(
 ): string[] {
   verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
   
-  return glob.sync({
+  return glob.sync(['**/*', '**/.[!.]*'], {
     cwd: projectRoot,
     ignore: globBlacklist(),
-  }).join('\n')
+  }).join('\n') + '\n'
 }
 
 /**
