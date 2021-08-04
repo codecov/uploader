@@ -86,6 +86,18 @@ describe('File Helpers', () => {
       expect(reportContents).toBe('I am test coverage data')
     })
 
+    it('throws when unable to read a coverage file', async () => {
+
+      mock({
+        'test-coverage-file.xml': 'I am test coverage data'
+      })
+
+      await expect(fileHelpers.readCoverageFile(
+        '.',
+        'test-no-coverage-file.xml',
+      )).rejects.toThrowError(/no such file or directory/)
+    })
+
     it('can return a list of coverage files', async () => {
       const results = await fileHelpers.getCoverageFiles(
         '.',
