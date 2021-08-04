@@ -60,7 +60,7 @@ function _getJob(envs: UploaderEnvs): string {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args } = inputs
   return Number(args.pr || '')
 }

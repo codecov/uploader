@@ -31,7 +31,7 @@ function _getJob(envs: UploaderEnvs) {
   return ''
 }
 
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
   return Number(args.pr || envs.ghprbPullId || envs.CHANGE_ID || '')
 }

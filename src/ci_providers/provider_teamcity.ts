@@ -40,7 +40,7 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.BUILD_NUMBER || ''
 }
 
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args } = inputs
   return Number(args.pr || '')
 }

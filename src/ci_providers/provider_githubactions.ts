@@ -40,7 +40,7 @@ function _getJob(envs: UploaderEnvs): string {
   return encodeURIComponent(envs.GITHUB_WORKFLOW || '')
 }
 
-export function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
   let match
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
