@@ -164,7 +164,7 @@ jobs:
           name: Install and set Node 16.x
           command: |
             $ErrorActionPreference="Stop"
-            nvm install v16
+            nvm install v16 64
             nvm use v16
             nvm alias default v16
       - run:
