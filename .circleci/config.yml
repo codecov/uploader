@@ -159,18 +159,21 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
+      # https://superuser.com/a/1620000/54442
       - run:
           name: Install and set Node 16.x
           command: |
-            nvm install v16 && \
-            nvm use v16 && \
+            $ErrorActionPreference="Stop"
+            nvm install v16
+            nvm use v16
             nvm alias default v16
       - run:
           name: Build Windows Binary
           command: |
+            $ErrorActionPreference="Stop"
             npm ci
-            npm test && \
-            npm run build && \
+            npm test
+            npm run build
             npm run build-windows
 
       - persist_to_workspace:
