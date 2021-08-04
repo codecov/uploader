@@ -188,22 +188,6 @@ export async function getCoverageFiles(
   })
 }
 
-/**
- *
- * @param {string} projectRoot
- * @param {string} file
- * @param {string[]} manualBlacklist
- * @returns boolean
- */
-export function isBlacklisted(
-  projectRoot: string,
-  file: string,
-  manualBlacklist: string[],
-): boolean {
-  const blacklist = manualBlacklist
-  return blacklist.includes(file)
-}
-
 export function fetchGitRoot(): string {
   try {
     return (
@@ -245,18 +229,15 @@ export function parseGitIgnore(projectRoot: string): string[] {
  * @param {string} projectRoot Root of the project
  * @param {string} dirPath Directory to search in
  * @param {Object} args
- * @param {boolean} [args.verbose]
- * @param {string[]} arrayOfFiles
  * @returns {string[]}
  */
 export function getAllFiles(
   projectRoot: string,
   dirPath: string,
   args: UploaderArgs,
-  arrayOfFiles: string[] = [],
 ): string[] {
   verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
-  
+
   return glob.sync(['**/*', '**/.[!.]*'], {
     cwd: projectRoot,
     ignore: globBlacklist(),
