@@ -1,6 +1,7 @@
 import td from 'testdouble'
 
 import * as providerDrone from '../../src/ci_providers/provider_drone'
+import { IServiceParams } from '../../src/types'
 
 describe('Drone Params', () => {
   afterEach(() => {
@@ -49,13 +50,13 @@ describe('Drone Params', () => {
         DRONE_REPO_LINK: 'https:/example.com/repo',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'master',
       build: '2',
       buildURL: 'https://www.drone.io/',
       commit: 'testingsha',
       job: '',
-      pr: '1',
+      pr: 1,
       service: 'drone',
       slug: 'https:/example.com/repo',
     }

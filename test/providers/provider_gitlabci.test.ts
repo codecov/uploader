@@ -2,7 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerGitLabci from '../../src/ci_providers//provider_gitlabci'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('GitLabCI Params', () => {
   afterEach(() => {
@@ -45,13 +45,13 @@ describe('GitLabCI Params', () => {
         GITLAB_CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: '',
       build: '',
       buildURL: '',
       commit: '',
       job: '',
-      pr: '',
+      pr: 0,
       service: 'gitlab',
       slug: '',
     }
@@ -82,13 +82,13 @@ describe('GitLabCI Params', () => {
         GITLAB_CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: '',
+      pr: 0,
       service: 'gitlab',
       slug: 'testOrg/testRepo',
     }
@@ -112,13 +112,13 @@ describe('GitLabCI Params', () => {
         GITLAB_CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'master',
       build: '2',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '',
+      pr: 0,
       service: 'gitlab',
       slug: 'testOrg/testRepo',
     }
@@ -202,13 +202,13 @@ describe('GitLabCI Params', () => {
         GITLAB_CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'gitlab',
       slug: 'testOrg/testRepo',
     }

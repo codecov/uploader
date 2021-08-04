@@ -74,7 +74,7 @@ describe('Web Helpers', () => {
   })
 
   it('Can generate query URL', () => {
-    const queryParams = {
+    const queryParams: IServiceParams  = {
       branch: 'testBranch',
       commit: 'commitSHA',
       build: '4',
@@ -84,7 +84,7 @@ describe('Web Helpers', () => {
       slug: 'testOrg/testRepo',
       service: 'testingCI',
       flags: 'unit,uploader',
-      pr: '2',
+      pr: 2,
       job: '6',
     }
     expect(webHelper.generateQuery(queryParams)).toBe(
@@ -105,7 +105,7 @@ describe('Web Helpers', () => {
         job: '',
         service: 'Testing',
         slug: '',
-        pr: '',
+        pr: 0,
       },
     )
     expect(result.flags).toBe('testFlag')
@@ -124,7 +124,7 @@ describe('Web Helpers', () => {
         job: '',
         service: 'Testing',
         slug: '',
-        pr: '',
+        pr: 0,
       },
     )
     expect(result.flags).toBe('testFlag1,testFlag2')

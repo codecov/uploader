@@ -2,7 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerJenkinsci from '../../src/ci_providers//provider_jenkinsci'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('Jenkins CI Params', () => {
   afterEach(() => {
@@ -57,13 +57,13 @@ describe('Jenkins CI Params', () => {
         JENKINS_URL: 'https://example.com',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: 'https%3A%2F%2Fexample.jenkins.com',
       commit: 'testingsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'jenkins',
       slug: '',
     }
@@ -118,13 +118,13 @@ describe('Jenkins CI Params', () => {
         JENKINS_URL: 'https://example.com',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'jenkins',
       slug: 'testOrg/testRepo',
     }

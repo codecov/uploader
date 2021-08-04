@@ -55,9 +55,9 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.CIRCLE_BUILD_NUM || ''
 }
 
-function _getPR(inputs: UploaderInputs): string {
+export function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
-  return args.pr || envs.CIRCLE_PR_NUMBER || ''
+  return Number(args.pr || envs.CIRCLE_PR_NUMBER || '')
 }
 
 function _getJob(envs: UploaderEnvs): string {

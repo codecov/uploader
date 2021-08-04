@@ -1,7 +1,7 @@
 import td from 'testdouble'
 
 import * as providerWercker from '../../src/ci_providers/provider_wercker'
-import { UploaderArgs, UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderArgs, UploaderInputs } from '../../src/types'
 
 describe('Wercker CI Params', () => {
   afterEach(() => {
@@ -53,13 +53,13 @@ describe('Wercker CI Params', () => {
         WERCKER_BUILD_URL: 'https://example.com/build',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: 'https://example.com/build',
       commit: 'testingsha',
       job: '',
-      pr: '',
+      pr: 0,
       service: 'wercker',
       slug: 'testOrg/testRepo',
     }
@@ -90,13 +90,13 @@ describe('Wercker CI Params', () => {
         WERCKER_BUILD_URL: 'https://example.com/build',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: 'https://example.com/build',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'wercker',
       slug: 'testOrg/testRepo',
     }

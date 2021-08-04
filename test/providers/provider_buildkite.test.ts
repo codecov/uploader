@@ -1,6 +1,6 @@
 import td from 'testdouble'
 import * as providerBuildkite from '../../src/ci_providers/provider_buildkite'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('Buildkite Params', () => {
   afterEach(() => {
@@ -48,13 +48,13 @@ describe('Buildkite Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: 'https://buildkite.com/testOrg/testRepo',
       commit: 'testingsha',
       job: '3',
-      pr: '',
+      pr: 0,
       service: 'buildkite',
       slug: 'testRepo',
     }
@@ -80,13 +80,13 @@ describe('Buildkite Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'buildkite',
       slug: 'testOrg/testRepo',
     }

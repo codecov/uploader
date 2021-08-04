@@ -34,13 +34,13 @@ function _getJob(envs: UploaderEnvs): string {
   return envs.BUILD_BUILDID || ''
 }
 
-function _getPR(inputs: UploaderInputs): string {
+export function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
   return (
-    args.pr ||
+    Number(args.pr ||
     envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER ||
     envs.SYSTEM_PULLREQUEST_PULLREQUESTID ||
-    ''
+    '')
   )
 }
 

@@ -1,7 +1,7 @@
 import td from 'testdouble'
 
 import * as providerCirrus from '../../src/ci_providers/provider_cirrus'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('Cirrus Params', () => {
   afterEach(() => {
@@ -49,13 +49,13 @@ describe('Cirrus Params', () => {
         CIRRUS_REPO_FULL_NAME: 'https:/example.com/repo',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'master',
       build: '2',
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: '1',
+      pr: 1,
       service: 'cirrus-ci',
       slug: 'https:/example.com/repo',
     }
@@ -86,13 +86,13 @@ describe('Cirrus Params', () => {
         CIRRUS_REPO_FULL_NAME: 'https:/example.com/repo',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'cirrus-ci',
       slug: 'testOrg/testRepo',
     }

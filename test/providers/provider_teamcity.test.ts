@@ -2,6 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerTeamCity from '../../src/ci_providers/provider_teamcity'
+import { IServiceParams } from '../../src/types'
 
 describe('TeamCity Params', () => {
   afterEach(() => {
@@ -51,13 +52,13 @@ describe('TeamCity Params', () => {
         BUILD_NUMBER: '1',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: '',
+      pr: 0,
       service: 'teamcity',
       slug: '',
     }
@@ -85,13 +86,13 @@ describe('TeamCity Params', () => {
         BUILD_NUMBER: '1',
       },
     }
-    const expected = {
+    const expected : IServiceParams= {
       branch: 'main',
       build: '1',
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: '',
+      pr: 0,
       service: 'teamcity',
       slug: 'testOrg/testRepo',
     }
@@ -128,13 +129,13 @@ describe('TeamCity Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url']),
     ).thenReturn({ stdout: '' })
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'teamcity',
       slug: 'testOrg/testRepo',
     }

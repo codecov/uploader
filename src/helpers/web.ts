@@ -5,6 +5,7 @@ import { version } from '../../package.json'
 import * as validateHelpers from './validate'
 import { info, logError } from './logger'
 import { logAndThrow } from './util'
+import { checkValueType } from './validate'
 
 /**
  *
@@ -132,7 +133,12 @@ function camelToSnake(str: string): string {
  * @returns {string}
  */
 export function generateQuery(queryParams: IServiceParams): string {
+  checkValueType('pr', queryParams.pr, 'number')
+  if (queryParams.pr === 0) {
+    queryParams.pr = ''
+  }
   return Object.entries(queryParams)
     .map(([key, value]) => `${camelToSnake(key)}=${value}`)
     .join('&')
 }
+

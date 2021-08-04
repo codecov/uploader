@@ -1,7 +1,7 @@
 import td from 'testdouble'
 
 import * as providerTravisci from '../../src/ci_providers/provider_travisci'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('TravisCI Params', () => {
   afterEach(() => {
@@ -66,13 +66,13 @@ describe('TravisCI Params', () => {
         TRAVIS_REPO_SLUG: 'testOrg/testRepo',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: '',
       build: '1',
       buildURL: '',
       commit: 'testingsha',
       job: '2',
-      pr: '',
+      pr: 0,
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
@@ -103,13 +103,13 @@ describe('TravisCI Params', () => {
         TRAVIS_TAG: 'main',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '1',
       buildURL: '',
       commit: 'testingprsha',
       job: '2',
-      pr: '',
+      pr: 0,
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
@@ -139,13 +139,13 @@ describe('TravisCI Params', () => {
         TRAVIS_TAG: 'main',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '1',
       buildURL: '',
       commit: 'testingprsha',
       job: '2',
-      pr: '',
+      pr: 0,
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
@@ -172,13 +172,13 @@ describe('TravisCI Params', () => {
         TRAVIS: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'travis',
       slug: 'testOrg/testRepo',
     }

@@ -43,9 +43,9 @@ function _getJob(envs: UploaderEnvs) {
   return ''
 }
 
-function _getPR(inputs: UploaderInputs) {
+export function _getPR(inputs: UploaderInputs): number {
   const { args, envs } = inputs
-  return args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER || ''
+  return Number(args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER || '')
 }
 
 function _getService() {

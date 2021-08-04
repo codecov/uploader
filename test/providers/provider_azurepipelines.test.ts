@@ -2,7 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerAzurepipelines from '../../src/ci_providers//provider_azurepipelines'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('Jenkins CI Params', () => {
   afterEach(() => {
@@ -60,14 +60,14 @@ describe('Jenkins CI Params', () => {
         SYSTEM_TEAMPROJECT: 'testOrg',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL:
         'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
       commit: 'testingsha',
       job: '2',
-      pr: '3',
+      pr: 3,
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
@@ -96,14 +96,14 @@ describe('Jenkins CI Params', () => {
         SYSTEM_TEAMPROJECT: 'testOrg',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL:
         'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
       commit: 'testingsha',
       job: '2',
-      pr: '3',
+      pr: 3,
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
@@ -132,14 +132,14 @@ describe('Jenkins CI Params', () => {
         SYSTEM_TEAMPROJECT: 'testOrg',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL:
         'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: '2',
-      pr: '3',
+      pr: 3,
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
@@ -172,13 +172,13 @@ describe('Jenkins CI Params', () => {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       project: '',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',

@@ -1,6 +1,7 @@
 import td from 'testdouble'
 
 import * as providerCircleci from '../../src/ci_providers//provider_circleci'
+import { IServiceParams } from '../../src/types'
 
 describe('CircleCI Params', () => {
   afterEach(() => {
@@ -48,13 +49,13 @@ describe('CircleCI Params', () => {
         CIRCLE_NODE_INDEX: '3',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'master',
       build: '2',
       buildURL: '',
       commit: 'testingsha',
       job: '3',
-      pr: '1',
+      pr: 1,
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }
@@ -79,13 +80,13 @@ describe('CircleCI Params', () => {
         CIRCLE_NODE_INDEX: '3',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'master',
       build: '2',
       buildURL: '',
       commit: 'testingsha',
       job: '3',
-      pr: '1',
+      pr: 1,
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }

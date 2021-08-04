@@ -42,7 +42,7 @@ export interface IServiceParams {
   buildURL: string
   commit: string
   job: string
-  pr: string
+  pr: number | ''
   service: string
   slug: string
   name?: string

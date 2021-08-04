@@ -1,7 +1,7 @@
 import td from 'testdouble'
 
 import * as providerAppveyorci from '../../src/ci_providers//provider_appveyorci'
-import { UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('AppveyorCI Params', () => {
   afterEach(() => {
@@ -76,14 +76,14 @@ describe('AppveyorCI Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL:
         'https%3A%2F%2Fappveyor.com%2Fproject%2FtestOrg%2FtestRepo%2Fbuilds%2F2%2Fjob%2F1',
       commit: 'testingsha',
       job: 'testOrg%2FtestRepo%2F3',
-      pr: '4',
+      pr: 4,
       service: 'appveyor',
       slug: 'testOrg/testRepo',
     }
@@ -106,13 +106,13 @@ describe('AppveyorCI Params', () => {
         CI: 'true',
       },
     }
-    const expected = {
+    const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: '2',
+      pr: 2,
       service: 'appveyor',
       slug: 'testOrg/testRepo',
     }
