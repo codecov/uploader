@@ -5,7 +5,8 @@ import fs from 'fs'
 import glob from 'fast-glob'
 import { posix as path } from 'path'
 import { logAndThrow } from './util'
-import { info, logError, verbose } from './logger'
+import { logError, verbose } from './logger'
+import { readFile } from 'fs/promises'
 
 export const MARKER_NETWORK_END = '<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
@@ -293,18 +294,15 @@ export function readAllLines(filePath: string): string[] {
  * @param {string} filePath
  * @returns {string}
  */
-export function readCoverageFile(
+export async function readCoverageFile(
   projectRoot: string,
   filePath: string,
-): string {
-  try {
-    return fs.readFileSync(getFilePath(projectRoot, filePath), {
-      encoding: 'utf-8',
-    })
-  } catch (error) {
-    logAndThrow(`There was an error reading the coverage file: ${error}`)
-  }
-  return ''
+): Promise<string> {
+  return readFile(getFilePath(projectRoot, filePath), {
+    encoding: 'utf-8',
+  }).catch(err => {
+    logAndThrow(`There was an error reading the coverage file: ${err}`)
+  })
 }
 
 /**
