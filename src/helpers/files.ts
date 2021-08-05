@@ -28,13 +28,13 @@ export async function getFileListing(
 export function manualBlacklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
-    'node_modules',
-    '.git',
-    '.nyc_output',
-    '.circleci',
-    '.nvmrc',
-    '.gitignore',
     '.DS_Store',
+    '.circleci',
+    '.git',
+    '.gitignore',
+    '.nvmrc',
+    '.nyc_output',
+    'node_modules',
     'vendor',
   ]
 }
@@ -42,13 +42,15 @@ export function manualBlacklist(): string[] {
 export function globBlacklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
+    '__pycache__',
     'node_modules/**/*',
     'vendor',
-    '.git',
-    '.nyc_output',
     '.circleci',
-    '.nvmrc',
+    '.git',
     '.gitignore',
+    '.nvmrc',
+    '.nyc_output',
+    '.tox',
     '*.am',
     '*.bash',
     '*.bat',
