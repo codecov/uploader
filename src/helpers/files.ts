@@ -34,8 +34,6 @@ export function manualBlacklist(): string[] {
     '.gitignore',
     '.nvmrc',
     '.nyc_output',
-    '.tox',
-    '__pycache__',
     'node_modules',
     'vendor',
   ]
@@ -260,7 +258,7 @@ export function getAllFiles(
   arrayOfFiles: string[] = [],
 ): string[] {
   verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
-  
+
   return glob.sync(['**/*', '**/.[!.]*'], {
     cwd: projectRoot,
     ignore: globBlacklist(),
