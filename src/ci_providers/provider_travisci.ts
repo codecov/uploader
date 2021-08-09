@@ -1,7 +1,7 @@
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
-  return Boolean(envs.CI) && Boolean(envs.TRAVIS) && Boolean(envs.SHIPPABLE)
+  return (Boolean(envs.CI) && Boolean(envs.TRAVIS)) && (Boolean(envs.SHIPPABLE) === false)
 }
 
 function _getBuild(inputs: UploaderInputs): string {
@@ -65,5 +65,5 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
 }
 
 export function getEnvVarNames(): string[] {
-  return ['TRAVIS', 'SHIPPABLE']
+  return ['TRAVIS']
 }

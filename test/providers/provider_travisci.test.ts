@@ -9,7 +9,7 @@ describe('TravisCI Params', () => {
   })
 
   describe('detect()', () => {
-    it('does not run without TravisCI env variable', () => {
+    it('does not run with Shipable env variable', () => {
       const inputs: UploaderInputs = {
         args: {
           tag: '',
@@ -28,6 +28,10 @@ describe('TravisCI Params', () => {
 
       inputs.envs.TRAVIS = 'true'
       detected = providerTravisci.detect(inputs.envs)
+      expect(detected).toBeTruthy()
+
+      inputs.envs.SHIPPABLE = 'true'
+      detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
@@ -36,7 +40,6 @@ describe('TravisCI Params', () => {
         args: {},
         envs: {
           CI: 'true',
-          SHIPPABLE: 'true',
           TRAVIS: 'true',
         },
       }
@@ -56,7 +59,6 @@ describe('TravisCI Params', () => {
       envs: {
         CI: 'true',
         TRAVIS: 'true',
-        SHIPPABLE: 'true',
         TRAVIS_JOB_NUMBER: '1',
         TRAVIS_BRANCH: 'main',
         TRAVIS_TAG: 'main',
@@ -90,7 +92,6 @@ describe('TravisCI Params', () => {
       },
       envs: {
         CI: 'true',
-        SHIPPABLE: 'true',
         TRAVIS: 'true',
         TRAVIS_BRANCH: 'branch',
         TRAVIS_COMMIT: 'testingsha',
@@ -127,7 +128,6 @@ describe('TravisCI Params', () => {
       },
       envs: {
         CI: 'true',
-        SHIPPABLE: 'true',
         TRAVIS: 'true',
         TRAVIS_BRANCH: 'branch',
         TRAVIS_COMMIT: 'testingsha',
@@ -168,7 +168,6 @@ describe('TravisCI Params', () => {
       },
       envs: {
         CI: 'true',
-        SHIPPABLE: 'true',
         TRAVIS: 'true',
       },
     }
