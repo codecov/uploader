@@ -6,6 +6,12 @@ const { logAndThrow } = require('../src/helpers/util')
 // eslint-disable-next-line no-undef
 require('testdouble-jest')(td, jest)
 
+const realLog = console.log
+
+console.log = jest.fn()
+console.debug = jest.fn()
+console.error = jest.fn()
+
 let execSync
 let exec
 

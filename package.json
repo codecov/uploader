@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "description": "Codecov Report Uploader",
   "private": true,
-  "bin": "bin/codecov",
+  "bin": "dist/bin/codecov.js",
   "scripts": {
-    "lint": "eslint \"src/**/*.{js,ts}\"",
-    "test": "jest",
+    "lint": "eslint \"src/**/*.ts\"",
+    "test": "npm run lint && jest --runInBand",
+    "build:clean": "rm -rf dist",
+    "build": "tsc  --build",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
@@ -39,36 +41,26 @@
   "devDependencies": {
     "@types/glob": "7.1.4",
     "@types/jest": "26.0.24",
+    "@types/js-yaml": "4.0.2",
+    "@types/mock-fs": "4.13.1",
     "@types/node": "16.3.3",
-    "@typescript-eslint/eslint-plugin": "4.28.4",
-    "@typescript-eslint/parser": "4.28.4",
-    "eslint": "7.31.0",
+    "@types/superagent": "4.1.12",
+    "@types/validator": "13.6.3",
+    "@typescript-eslint/eslint-plugin": "4.29.0",
+    "@typescript-eslint/parser": "4.29.0",
+    "eslint": "7.32.0",
     "eslint-config-prettier": "8.3.0",
     "husky": "7.0.1",
     "jest": "27.0.6",
-    "lint-staged": "11.1.1",
+    "jest-spec-reporter": "1.0.17",
+    "lint-staged": "11.1.2",
+    "mock-fs": "5.0.0",
     "nock": "13.1.1",
     "pkg": "5.1.0",
     "prettier": "2.3.2",
     "testdouble": "3.16.1",
-    "testdouble-jest": "2.0.0"
-  },
-  "jest": {
-    "collectCoverage": true,
-    "collectCoverageFrom": [
-      "src/**/*.js",
-      "!src/ci_providers/provider_template.js",
-      "!**/node_modules/**",
-      "!**/vendor/**"
-    ],
-    "coverageReporters": [
-      "text",
-      "cobertura",
-      "html"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/test/test_helpers.js"
-    ]
+    "testdouble-jest": "2.0.0",
+    "ts-jest": "27.0.4"
   },
   "lint-staged": {
     "**/*.js": [
