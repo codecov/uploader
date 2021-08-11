@@ -139,6 +139,7 @@ export function globBlacklist(): string[] {
     'phpunit-coverage.xml',
     'remapInstanbul.coverage*.json',
     'scoverage.measurements.*',
+    'test-result-*-codecoverage.json',
     'test_*_coverage.txt',
     'testrunner-coverage*',
   ]
