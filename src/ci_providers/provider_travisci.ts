@@ -5,7 +5,7 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.build || envs.TRAVIS_JOB_NUMBER || ''
 }
 
@@ -15,7 +15,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
 
   let branch = ''
   if (envs.TRAVIS_BRANCH !== envs.TRAVIS_TAG) {
@@ -29,7 +29,7 @@ function _getJob(envs: UploaderEnvs): string {
 }
 
 function _getPR(inputs: UploaderInputs): number {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return Number(args.pr || envs.TRAVIS_PULL_REQUEST || '')
 }
 
@@ -42,12 +42,12 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.sha || envs.TRAVIS_PULL_REQUEST_SHA || envs.TRAVIS_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.slug || envs.TRAVIS_REPO_SLUG || ''
 }
 
@@ -57,7 +57,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

@@ -1,0 +1,147 @@
+import yargs from "yargs"
+
+export interface ICLIArgument {
+  name: string
+  alias: string
+  type?: string
+  default?: string | boolean
+  description: string
+}
+
+const args: ICLIArgument[] = [
+  {
+    alias: 'b',
+    name: 'build',
+    description: 'Specify the build number manually',
+  },
+  {
+    alias: 'B',
+    name: 'branch',
+    description: 'Specify the branch manually',
+  },
+  {
+    alias: 'e',
+    name: 'env',
+    description:
+      'Specify environment variables to be included with this build.\nAlso accepting environment variables: CODECOV_ENV=VAR,VAR2',
+  },
+  {
+    alias: 'C',
+    name: 'sha',
+    description: 'Specify the commit SHA mannually',
+  },
+  {
+    alias: 'f',
+    name: 'file',
+    description: 'Target file(s) to upload',
+  },
+  {
+    alias: 'F',
+    name: 'flags',
+    default: '',
+    description: 'Flag the upload to group coverage metrics',
+  },
+  {
+    alias: 'n',
+    name: 'name',
+    default: '',
+    description: 'Custom defined name of the upload. Visible in Codecov UI',
+  },
+  {
+    alias: 'N',
+    name: 'parent',
+    description:
+      "The commit SHA of the parent for which you are uploading coverage. If not present, the parent will be determined using the API of your repository provider. When using the repository provider's API, the parent is determined via finding the closest ancestor to the commit.",
+  },
+  {
+    alias: 'P',
+    name: 'pr',
+    description: 'Specify the pull request number mannually',
+  },
+  {
+    alias: 's',
+    name: 'dir',
+    description:
+      'Directory to search for coverage reports.\nAlready searches project root and current working directory',
+  },
+  {
+    alias: 't',
+    name: 'token',
+    default: '',
+    description: 'Codecov upload token',
+  },
+  {
+    alias: 'T',
+    name: 'tag',
+    default: '',
+    description: 'Specify the git tag',
+  },
+  {
+    alias: 'v',
+    name: 'verbose',
+    type: 'boolean',
+    description: 'Run with verbose logging',
+  },
+  {
+    alias: 'R',
+    name: 'rootDir',
+    description: 'Specify the project root directory when not in a git repo',
+  },
+  {
+    alias: 'Z',
+    name: 'nonZero',
+    type: 'boolean',
+    default: false,
+    description: 'Should errors exit with a non-zero (default: false)',
+  },
+  {
+    alias: 'd',
+    name: 'dryRun',
+    type: 'boolean',
+    description: "Don't upload files to Codecov",
+  },
+  {
+    alias: 'r',
+    name: 'slug',
+    description: 'Specify the slug manually (Enterprise use)',
+  },
+  {
+    alias: 'u',
+    name: 'url',
+    type: 'string',
+    description: 'Change the upload host (Enterprise use)',
+    default: 'https://codecov.io',
+  },
+  {
+    alias: 'c',
+    name: 'clean',
+    type: 'boolean',
+    default: false,
+    description: 'Move discovered coverage reports to the trash',
+  },
+  {
+    alias: 'X',
+    name: 'feature',
+    type: 'string',
+    description: `Toggle functionalities
+      -X network       Disable uploading the file network`,
+  },
+  {
+    alias: 'Q',
+    name: 'source',
+    type: 'string',
+    default: '',
+    description: `Used internally by Codecov, this argument helps track wrappers
+      of the uploader (e.g. GitHub Action, CircleCI Orb)`,
+  },
+]
+
+interface IYargsObject {
+  option: (arg0: string, arg1: ICLIArgument) => void
+}
+
+export function addArguments(yargsInstance: IYargsObject): void {
+  args.forEach(arg => {
+    yargsInstance.option(arg.name, arg)
+  })
+}

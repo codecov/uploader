@@ -18,14 +18,14 @@ export function populateBuildParams(
   inputs: UploaderInputs,
   serviceParams: IServiceParams,
 ): IServiceParams {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
   let flags: string[]
   if (typeof args.flags === 'object') {
     flags = [...args.flags]
   } else {
-    flags = [args.flags]
+    flags = [args.flags || '']
   }
   serviceParams.flags = flags
     .filter(flag => validateHelpers.validateFlags(flag))

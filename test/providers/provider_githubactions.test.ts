@@ -15,7 +15,7 @@ describe('GitHub Actions Params', () => {
         args: {
           flags: '',
         },
-        envs: {
+        environment: {
           GITHUB_REF: 'refs/heads/master',
           GITHUB_REPOSITORY: 'testOrg/testRepo',
           GITHUB_RUN_ID: '2',
@@ -23,7 +23,7 @@ describe('GitHub Actions Params', () => {
           GITHUB_WORKFLOW: 'testWorkflow',
         },
       }
-      const detected = providerGitHubactions.detect(inputs.envs)
+      const detected = providerGitHubactions.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
@@ -47,7 +47,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_REF: 'refs/heads/master',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
@@ -80,7 +80,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',
@@ -121,7 +121,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',
@@ -168,7 +168,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_SERVER_URL: 'https://github.com',
       },
@@ -201,7 +201,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',

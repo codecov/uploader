@@ -34,14 +34,14 @@ describe('GitLabCI Params', () => {
   })
 
   it('gets correct empty params', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         GITLAB_CI: 'true',
       },
     }
@@ -64,14 +64,14 @@ describe('GitLabCI Params', () => {
   })
 
   it('gets correct initial params', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI_BUILD_ID: '1',
         CI_BUILD_REF: 'testingsha',
         CI_BUILD_REF_NAME: 'main',
@@ -104,7 +104,7 @@ describe('GitLabCI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI_COMMIT_REF_NAME: 'master',
         CI_COMMIT_SHA: 'testsha',
         CI_JOB_ID: '2',
@@ -134,25 +134,25 @@ describe('GitLabCI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         GITLAB_CI: 'true',
       },
     }
 
     it('can get the slug from http', () => {
-      inputs.envs.CI_BUILD_REPO = 'https://gitlab.com/testOrg/testRepo.git'
+      inputs.environment.CI_BUILD_REPO = 'https://gitlab.com/testOrg/testRepo.git'
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from git url', () => {
-      inputs.envs.CI_BUILD_REPO = 'git@gitlab.com:testOrg/testRepo.git'
+      inputs.environment.CI_BUILD_REPO = 'git@gitlab.com:testOrg/testRepo.git'
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from git config', () => {
-      inputs.envs.CI_BUILD_REPO = ''
+      inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url']),
@@ -163,7 +163,7 @@ describe('GitLabCI Params', () => {
     })
 
     it('can get the slug from git config as /', () => {
-      inputs.envs.CI_BUILD_REPO = ''
+      inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url']),
@@ -174,7 +174,7 @@ describe('GitLabCI Params', () => {
     })
 
     it('can handle no remote origin url', () => {
-      inputs.envs.CI_BUILD_REPO = ''
+      inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url']),
@@ -198,7 +198,7 @@ describe('GitLabCI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         GITLAB_CI: 'true',
       },
     }

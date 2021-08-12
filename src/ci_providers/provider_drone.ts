@@ -5,17 +5,17 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.build || envs.DRONE_BUILD_NUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { envs } = inputs
+  const { environment: envs } = inputs
   return envs.DRONE_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.branch || envs.DRONE_BRANCH || ''
 }
 
@@ -25,7 +25,7 @@ function _getJob(envs: UploaderEnvs): string {
 }
 
 function _getPR(inputs: UploaderInputs): number {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return Number(args.pr || envs.DRONE_PULL_REQUEST || '')
 }
 
@@ -38,12 +38,12 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.sha || envs.DRONE_COMMIT_SHA || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.slug || envs.DRONE_REPO_LINK || ''
 }
 
@@ -53,7 +53,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

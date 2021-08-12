@@ -17,25 +17,25 @@ describe('Bitbucket Params', () => {
           source: '',
           flags: '',
         },
-        envs: {},
+        environment: {},
       }
-      let detected = providerBitbucket.detect(inputs.envs)
+      let detected = providerBitbucket.detect(inputs.environment)
       expect(detected).toBeFalsy()
 
-      inputs.envs['CI'] = 'true'
-      detected = providerBitbucket.detect(inputs.envs)
+      inputs.environment['CI'] = 'true'
+      detected = providerBitbucket.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does not run without Bitbucket env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {},
-        envs: {
+        environment: {
           BITBUCKET_BUILD_NUMBER: '1',
           CI: 'true',
         },
       }
-      const detected = providerBitbucket.detect(inputs.envs)
+      const detected = providerBitbucket.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
@@ -48,7 +48,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BITBUCKET_BUILD_NUMBER: '1',
         CI: 'true',
       },
@@ -75,7 +75,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',
@@ -107,7 +107,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',
@@ -138,7 +138,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha12',
@@ -179,7 +179,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',

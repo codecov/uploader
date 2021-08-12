@@ -95,7 +95,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

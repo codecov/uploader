@@ -1,7 +1,7 @@
 import td from 'testdouble'
 
 import * as providerCircleci from '../../src/ci_providers//provider_circleci'
-import { IServiceParams } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('CircleCI Params', () => {
   afterEach(() => {
@@ -10,33 +10,33 @@ describe('CircleCI Params', () => {
 
   describe('detect()', () => {
     it('does not run without CircleCI env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {},
-        envs: {},
+        environment: {},
       }
-      const detected = providerCircleci.detect(inputs.envs)
+      const detected = providerCircleci.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does run with CircleCI env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {},
-        envs: {
+        environment: {
           CI: 'true',
           CIRCLECI: 'true',
         },
       }
-      const detected = providerCircleci.detect(inputs.envs)
+      const detected = providerCircleci.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
 
   it('gets correct params', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         CIRCLECI: 'true',
         CIRCLE_BRANCH: 'master',
@@ -64,11 +64,11 @@ describe('CircleCI Params', () => {
   })
 
   it('gets correct slug when empty reponame', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         CIRCLECI: 'true',
         CIRCLE_BRANCH: 'master',

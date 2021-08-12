@@ -21,17 +21,17 @@ export function getServiceName(): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.branch || envs.CIRCLE_BRANCH || ''
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.sha || envs.CIRCLE_SHA1 || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   let slug = args.slug || ''
   if (slug !== '') {
     return slug
@@ -51,12 +51,12 @@ function _getSlug(inputs: UploaderInputs): string {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.build || envs.CIRCLE_BUILD_NUM || ''
 }
 
 function _getPR(inputs: UploaderInputs): number {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return Number(args.pr || envs.CIRCLE_PR_NUMBER || '')
 }
 
@@ -70,7 +70,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

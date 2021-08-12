@@ -12,7 +12,7 @@ import { validateToken } from './validate'
  * @returns string
  */
 export function getToken(inputs: UploaderInputs, projectRoot: string): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   const options = [
     [args.token, 'arguments'],
     [envs.CODECOV_TOKEN, 'environment variables'],

@@ -17,46 +17,46 @@ describe('TravisCI Params', () => {
           source: '',
           flags: '',
         },
-        envs: {},
+        environment: {},
       }
-      let detected = providerTravisci.detect(inputs.envs)
+      let detected = providerTravisci.detect(inputs.environment)
       expect(detected).toBeFalsy()
 
-      inputs.envs.CI = 'true'
-      detected = providerTravisci.detect(inputs.envs)
+      inputs.environment.CI = 'true'
+      detected = providerTravisci.detect(inputs.environment)
       expect(detected).toBeFalsy()
 
-      inputs.envs.TRAVIS = 'true'
-      detected = providerTravisci.detect(inputs.envs)
+      inputs.environment.TRAVIS = 'true'
+      detected = providerTravisci.detect(inputs.environment)
       expect(detected).toBeTruthy()
 
-      inputs.envs.SHIPPABLE = 'true'
-      detected = providerTravisci.detect(inputs.envs)
+      inputs.environment.SHIPPABLE = 'true'
+      detected = providerTravisci.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does run with TravisCI env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {},
-        envs: {
+        environment: {
           CI: 'true',
           TRAVIS: 'true',
         },
       }
-      const detected = providerTravisci.detect(inputs.envs)
+      const detected = providerTravisci.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
 
   it('gets correct params on push', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         TRAVIS: 'true',
         TRAVIS_JOB_NUMBER: '1',
@@ -83,14 +83,14 @@ describe('TravisCI Params', () => {
   })
 
   it('gets correct params on PR', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         TRAVIS: 'true',
         TRAVIS_BRANCH: 'branch',
@@ -119,14 +119,14 @@ describe('TravisCI Params', () => {
   })
 
   it('gets correct params on PR with no pull request branch', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         TRAVIS: 'true',
         TRAVIS_BRANCH: 'branch',
@@ -154,7 +154,7 @@ describe('TravisCI Params', () => {
   })
 
   it('gets correct params for overrides', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         branch: 'branch',
         build: '3',
@@ -166,7 +166,7 @@ describe('TravisCI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         TRAVIS: 'true',
       },
