@@ -105,7 +105,7 @@ function _getSlug(inputs: UploaderInputs): string {
   if (args.slug || envs.BUILDKITE_PROJECT_SLUG) {
     return args.slug || envs.BUILDKITE_PROJECT_SLUG || ''
   }
-  throw new Error('Unable to detect sluh, please set manually with the -r flag')
+  throw new Error('Unable to detect slug, please set manually with the -r flag')
   return ''
 }
 /**
