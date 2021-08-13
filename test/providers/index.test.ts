@@ -1,13 +1,14 @@
 import td from 'testdouble'
 
 import providers from '../../src/ci_providers'
+import { UploaderInputs } from '../../src/types'
 
 describe('CI Providers', () => {
   afterEach(() => {
     td.reset()
   })
 
-  it('is an array of CI providers', () =>
+  it('check that each provider', () =>
     expect(providers).toBeInstanceOf(Array))
   providers.forEach(provider => {
     it('has a service name', () => {
@@ -22,6 +23,27 @@ describe('CI Providers', () => {
       for (const envVarName of envVarNames) {
         expect(typeof envVarName).toBe('string')
       }
+    })
+
+    describe('can return a ISeviceParams object that', () => {
+      const inputs: UploaderInputs = {
+        args: {
+          sha: '123',
+          slug: 'testOrg/testRepo'
+        },
+        environment: {}
+      }
+
+      const serviceParams = provider.getServiceParams(inputs)
+      expect(serviceParams).not.toBeNull()
+
+      it('has a sha', () => {
+        expect(serviceParams.commit).toEqual(inputs.args.sha)
+      })
+
+      it('has a slug', () => {
+        expect(serviceParams.slug).toEqual(inputs.args.slug)
+      })
     })
   })
 })
