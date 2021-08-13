@@ -1,5 +1,4 @@
-import { logAndThrow } from '../helpers/util'
-import { UploaderInputs, IServiceParams, UploaderEnvs } from '../types'
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.CI) && Boolean(envs.CIRCLECI)
@@ -42,7 +41,7 @@ function _getSlug(inputs: UploaderInputs): string {
     if (envs.CIRCLE_REPOSITORY_URL) {
       slug = `${envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]}`
     } else {
-      logAndThrow(
+      throw new Error(
         'Unable to detect slug from env. Please set manually with the -r flag',
       )
     }

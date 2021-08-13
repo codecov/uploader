@@ -1,5 +1,4 @@
-import { logAndThrow } from '../helpers/util'
-import { UploaderInputs, IServiceParams, UploaderEnvs } from '../types'
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 /**
  * Detects if this CI provider is being used
@@ -93,8 +92,7 @@ function _getSHA(inputs: UploaderInputs): string {
   if (Boolean(args.sha) || Boolean(envs.BUILDKITE_COMMIT)) {
     return args.sha || envs.BUILDKITE_COMMIT || ''
   }
-  logAndThrow('Unable to detect sha, please set manually with the -C flag')
-  return ''
+  throw new Error('Unable to detect sha, please set manually with the -C flag')
 }
 /**
  * Determine the slug (org/repo) based on  args or envs
@@ -107,7 +105,7 @@ function _getSlug(inputs: UploaderInputs): string {
   if (args.slug || envs.BUILDKITE_PROJECT_SLUG) {
     return args.slug || envs.BUILDKITE_PROJECT_SLUG || ''
   }
-  logAndThrow('Unable to detect sluh, please set manually with the -r flag')
+  throw new Error('Unable to detect sluh, please set manually with the -r flag')
   return ''
 }
 /**

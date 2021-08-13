@@ -1,5 +1,4 @@
 import childProcess from 'child_process'
-import { logAndThrow } from './util'
 
 export function parseSlug(slug: string): string {
   // origin    https://github.com/torvalds/linux.git (fetch)
@@ -19,8 +18,7 @@ export function parseSlug(slug: string): string {
     const cleanSlug = slug.split(':')[1].replace('.git', '')
     return cleanSlug
   }
-  logAndThrow(`Unable to parse slug URL: ${slug}`)
-  return ''
+  throw new Error(`Unable to parse slug URL: ${slug}`)
 }
 
 export function parseSlugFromRemoteAddr(remoteAddr?: string): string {

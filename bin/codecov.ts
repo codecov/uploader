@@ -26,7 +26,7 @@ main(realArgs)
     )
   })
   .catch(error => {
-    logError(`Error!: ${error}`)
+    logError(error)
     const end = Date.now()
     verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
     process.exit(argv.nonZero ? -1 : 0)
