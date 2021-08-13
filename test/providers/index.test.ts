@@ -8,7 +8,7 @@ describe('CI Providers', () => {
     td.reset()
   })
 
-  it('check that each provider', () =>
+  describe('check that each provider', () =>
     expect(providers).toBeInstanceOf(Array))
   providers.forEach(provider => {
     it('has a service name', () => {
