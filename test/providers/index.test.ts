@@ -11,12 +11,12 @@ describe('CI Providers', () => {
   describe('check that each provider', () =>
     expect(providers).toBeInstanceOf(Array))
   providers.forEach(provider => {
-    it('has a service name', () => {
+    it(`${provider.getServiceName()} has a service name`, () => {
       expect(typeof provider.getServiceName()).toBe('string')
       expect(provider.getServiceName()).not.toBe('')
     })
 
-    it('has env var names', () => {
+    it(`${provider.getServiceName()} has env var names`, () => {
       const envVarNames = provider.getEnvVarNames()
       expect(typeof envVarNames).toBe('object')
       expect(envVarNames.length).toBeGreaterThan(0)
@@ -25,7 +25,7 @@ describe('CI Providers', () => {
       }
     })
 
-    describe('can return a ISeviceParams object that', () => {
+    describe(`${provider.getServiceName()} can return a ISeviceParams object that`, () => {
       const inputs: UploaderInputs = {
         args: {
           sha: '123',
