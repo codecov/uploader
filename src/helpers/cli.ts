@@ -1,4 +1,4 @@
-import yargs from "yargs"
+import yargs from 'yargs'
 
 export interface ICLIArgument {
   name: string
@@ -136,7 +136,7 @@ const args: ICLIArgument[] = [
   },
 ]
 
-interface IYargsObject {
+export interface IYargsObject {
   option: (arg0: string, arg1: ICLIArgument) => void
 }
 
