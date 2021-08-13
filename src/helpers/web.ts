@@ -91,9 +91,6 @@ export async function uploadToCodecov(
       )}&token=${token}&${query}`,
     )
     .retry()
-    .send(uploadFile)
-    .set('Content-Type', 'text/plain')
-    .set('Content-Encoding', 'gzip')
     .set('X-Upload-Token', token)
     .set('X-Reduced-Redundancy', 'false')
     .on('error', err => {
