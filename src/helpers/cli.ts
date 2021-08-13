@@ -1,5 +1,3 @@
-import yargs from 'yargs'
-
 export interface ICLIArgument {
   name: string
   alias: string
