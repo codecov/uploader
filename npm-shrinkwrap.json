@@ -13,7 +13,7 @@
         "glob": "7.1.7",
         "js-yaml": "4.1.0",
         "line-reader": "0.4.0",
-        "snake-case": "^3.0.4",
+        "snake-case": "3.0.4",
         "superagent": "6.1.0",
         "typescript": "4.3.5",
         "validator": "13.6.0",
@@ -3043,7 +3043,9 @@
       "dev": true,
       "hasInstallScript": true,
       "optional": true,
-      "os": ["darwin"],
+      "os": [
+        "darwin"
+      ],
       "engines": {
         "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
       }
