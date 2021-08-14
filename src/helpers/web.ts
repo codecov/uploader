@@ -1,6 +1,7 @@
-import { IServiceParams, UploaderInputs } from '../types'
-
+import { snakeCase } from "snake-case";
 import superagent from 'superagent'
+
+import { IServiceParams, UploaderInputs } from '../types'
 import { version } from '../../package.json'
 import * as validateHelpers from './validate'
 import { info, logError } from './logger'
@@ -108,24 +109,6 @@ export async function uploadToCodecov(
 
 /**
  *
- * @param {string} str
- * @returns {string}
- */
-function camelToSnake(str: string): string {
-  return (
-    str &&
-    (
-      str.match(
-        /[A-Z]{2,}(?=[A-Z][a-z]+[0-9]*|\b)|[A-Z]?[a-z]+[0-9]*|[A-Z]|[0-9]+/g,
-      ) || []
-    )
-      .map((s: string) => s.toLowerCase())
-      .join('_')
-  )
-}
-
-/**
- *
  * @param {Object} queryParams
  * @returns {string}
  */
@@ -135,7 +118,7 @@ export function generateQuery(queryParams: IServiceParams): string {
     queryParams.pr = ''
   }
   return Object.entries(queryParams)
-    .map(([key, value]) => `${camelToSnake(key)}=${value}`)
+    .map(([key, value]) => `${snakeCase(key)}=${value}`)
     .join('&')
 }
 
