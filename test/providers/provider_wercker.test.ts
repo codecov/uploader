@@ -14,9 +14,9 @@ describe('Wercker CI Params', () => {
         args: {
           flags: '',
         },
-        envs: {},
+        environment: {},
       }
-      const detected = providerWercker.detect(inputs.envs)
+      const detected = providerWercker.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
@@ -25,12 +25,12 @@ describe('Wercker CI Params', () => {
         args: {
           flags: '',
         },
-        envs: {
+        environment: {
           CI: 'true',
           WERCKER_MAIN_PIPELINE_STARTED: 'true',
         },
       }
-      const detected = providerWercker.detect(inputs.envs)
+      const detected = providerWercker.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
@@ -43,7 +43,7 @@ describe('Wercker CI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         WERCKER_MAIN_PIPELINE_STARTED: '1',
         WERCKER_GIT_BRANCH: 'main',
@@ -80,7 +80,7 @@ describe('Wercker CI Params', () => {
         slug: 'testOrg/testRepo',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         WERCKER_MAIN_PIPELINE_STARTED: '1',
         WERCKER_GIT_BRANCH: 'main',

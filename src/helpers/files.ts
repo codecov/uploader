@@ -1,12 +1,10 @@
-import { UploaderArgs } from '../types'
-
 import childProcess from 'child_process'
-import fs from 'fs'
 import glob from 'fast-glob'
-import { posix as path } from 'path'
-import { logAndThrow } from './util'
-import { logError, verbose } from './logger'
+import fs from 'fs'
 import { readFile } from 'fs/promises'
+import { posix as path } from 'path'
+import { UploaderArgs } from '../types'
+import { logError, verbose } from './logger'
 
 export const MARKER_NETWORK_END = '<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
@@ -139,6 +137,7 @@ export function globBlacklist(): string[] {
     'phpunit-coverage.xml',
     'remapInstanbul.coverage*.json',
     'scoverage.measurements.*',
+    'test-result-*-codecoverage.json',
     'test_*_coverage.txt',
     'testrunner-coverage*',
   ]
@@ -183,10 +182,7 @@ export async function getCoverageFiles(
 
   return glob(coverageFilePatterns.map(globstar), {
     cwd: projectRoot,
-    ignore: [
-      ...manualBlacklist(),
-      ...globBlacklist(),
-    ],
+    ignore: [...manualBlacklist(), ...globBlacklist()],
   })
 }
 
@@ -198,8 +194,7 @@ export function fetchGitRoot(): string {
       }).stdout || process.cwd()
     ).trimRight()
   } catch (error) {
-    logAndThrow('Error fetching git root. Please try using the -R flag.')
-    return '.'
+    throw new Error('Error fetching git root. Please try using the -R flag.')
   }
 }
 
@@ -215,7 +210,7 @@ export function parseGitIgnore(projectRoot: string): string[] {
   try {
     lines = readAllLines(gitIgnorePath) || []
   } catch (error) {
-    logAndThrow(`Unable to open ${gitIgnorePath}: ${error}`)
+    throw new Error(`Unable to open ${gitIgnorePath}: ${error}`)
   }
 
   return lines.filter(line => {
@@ -240,10 +235,12 @@ export function getAllFiles(
 ): string[] {
   verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
 
-  return glob.sync(['**/*', '**/.[!.]*'], {
-    cwd: projectRoot,
-    ignore: globBlacklist(),
-  }).map((file) => `${file}\n`)
+  return glob
+    .sync(['**/*', '**/.[!.]*'], {
+      cwd: projectRoot,
+      ignore: globBlacklist(),
+    })
+    .map(file => `${file}\n`)
 }
 
 /**
@@ -271,7 +268,7 @@ export async function readCoverageFile(
   return readFile(getFilePath(projectRoot, filePath), {
     encoding: 'utf-8',
   }).catch(err => {
-    logAndThrow(`There was an error reading the coverage file: ${err}`)
+    throw new Error(`There was an error reading the coverage file: ${err}`)
   })
 }
 

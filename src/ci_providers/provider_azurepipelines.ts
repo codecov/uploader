@@ -7,12 +7,12 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.build || envs.BUILD_BUILDNUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { envs } = inputs
+  const { environment: envs } = inputs
   if (envs.SYSTEM_TEAMPROJECT && envs.BUILD_BUILDID) {
     return encodeURIComponent(
       `${envs.SYSTEM_TEAMFOUNDATIONSERVERURI}${envs.SYSTEM_TEAMPROJECT}/_build/results?buildId=${envs.BUILD_BUILDID}`,
@@ -22,7 +22,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   let branch = ''
   if (envs.BUILD_SOURCEBRANCH) {
     branch = envs.BUILD_SOURCEBRANCH.toString().replace('refs/heads/', '')
@@ -35,7 +35,7 @@ function _getJob(envs: UploaderEnvs): string {
 }
 
 function _getPR(inputs: UploaderInputs): number {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return (
     Number(args.pr ||
     envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER ||
@@ -53,7 +53,7 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   let commit = envs.BUILD_SOURCEVERSION || ''
 
   if (_getPR(inputs)) {
@@ -73,12 +73,12 @@ function _getSHA(inputs: UploaderInputs): string {
 }
 
 function _getProject(inputs: UploaderInputs): string {
-  const { envs } = inputs
+  const { environment: envs } = inputs
   return envs.SYSTEM_TEAMPROJECT || ''
 }
 
 function _getServerURI(inputs: UploaderInputs): string {
-  const { envs } = inputs
+  const { environment: envs } = inputs
   return envs.SYSTEM_TEAMFOUNDATIONSERVERURI || ''
 }
 
@@ -98,7 +98,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     project: _getProject(inputs),
     server_uri: _getServerURI(inputs),

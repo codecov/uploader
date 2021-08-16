@@ -39,7 +39,7 @@ describe('Drone Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         DRONE: 'true',
         DRONE_BRANCH: 'master',

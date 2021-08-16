@@ -18,11 +18,11 @@ describe('Local Params', () => {
           source: '',
           flags: '',
         },
-        envs: {
+        environment: {
           CI: 'true',
         },
       }
-      const detected = providerLocal.detect(inputs.envs)
+      const detected = providerLocal.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
@@ -34,15 +34,15 @@ describe('Local Params', () => {
           source: '',
           flags: '',
         },
-        envs: {},
+        environment: {},
       }
-      const detected = providerLocal.detect(inputs.envs)
+      const detected = providerLocal.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
 
   it('returns on override args', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         branch: 'main',
         pr: '1',
@@ -53,7 +53,7 @@ describe('Local Params', () => {
         source: '',
         flags: '',
       },
-      envs: {},
+      environment: {},
     }
     const expected: IServiceParams = {
       branch: 'main',
@@ -70,14 +70,14 @@ describe('Local Params', () => {
   })
 
   it('returns errors on git command failures', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {},
+      environment: {},
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     expect(() => {
@@ -102,14 +102,14 @@ describe('Local Params', () => {
   })
 
   describe('getSlug()', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {},
+      environment: {},
     }
 
     it('can get the slug from a git url', () => {

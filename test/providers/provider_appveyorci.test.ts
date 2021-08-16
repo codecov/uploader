@@ -17,38 +17,38 @@ describe('AppveyorCI Params', () => {
           source: '',
           flags: '',
         },
-        envs: {},
+        environment: {},
       }
-      let detected = providerAppveyorci.detect(inputs.envs)
+      let detected = providerAppveyorci.detect(inputs.environment)
       expect(detected).toBeFalsy()
 
-      inputs.envs.CI = 'true'
-      detected = providerAppveyorci.detect(inputs.envs)
+      inputs.environment.CI = 'true'
+      detected = providerAppveyorci.detect(inputs.environment)
       expect(detected).toBeFalsy()
 
-      inputs.envs.CI = 'True'
-      detected = providerAppveyorci.detect(inputs.envs)
+      inputs.environment.CI = 'True'
+      detected = providerAppveyorci.detect(inputs.environment)
       expect(detected).toBeFalsy()
 
-      inputs.envs.CI = 'false'
-      inputs.envs.APPVEYOR = 'true'
-      detected = providerAppveyorci.detect(inputs.envs)
+      inputs.environment.CI = 'false'
+      inputs.environment.APPVEYOR = 'true'
+      detected = providerAppveyorci.detect(inputs.environment)
       expect(detected).toBeFalsy()
 
-      inputs.envs.APPVEYOR = 'True'
-      detected = providerAppveyorci.detect(inputs.envs)
+      inputs.environment.APPVEYOR = 'True'
+      detected = providerAppveyorci.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does run with AppveyorCI env variable', () => {
-      const inputs = {
+      const inputs : UploaderInputs= {
         args: {},
-        envs: {
+        environment: {
           CI: 'true',
           APPVEYOR: 'true',
         },
       }
-      const detected = providerAppveyorci.detect(inputs.envs)
+      const detected = providerAppveyorci.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
@@ -61,7 +61,7 @@ describe('AppveyorCI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         APPVEYOR: 'true',
         APPVEYOR_ACCOUNT_NAME: 'testOrg',
         APPVEYOR_BUILD_ID: '2',
@@ -101,7 +101,7 @@ describe('AppveyorCI Params', () => {
         slug: 'testOrg/testRepo',
         flags: '',
       },
-      envs: {
+      environment: {
         APPVEYOR: 'true',
         CI: 'true',
       },

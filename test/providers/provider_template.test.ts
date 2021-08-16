@@ -14,9 +14,9 @@ describe('<Ci> Params', () => {
 
   describe('detect()', () => {
     it('does not run without <Ci> env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {},
-        envs: {},
+        environment: {},
       }
       /*
       const detected = provider<Ci>.detect(inputs.envs)
@@ -25,9 +25,9 @@ describe('<Ci> Params', () => {
     })
 
     it('does not run without <Ci> env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs= {
         args: {},
-        envs: {},
+        environment: {},
       }
       /*
       const detected = provider<Ci>.detect(inputs.envs)
@@ -40,7 +40,7 @@ describe('<Ci> Params', () => {
   it('gets the correct params on no env variables', () => {
     const inputs: UploaderInputs = {
       args: { tag: '', url: '', source: '', flags: '' },
-      envs: {},
+      environment: {},
     }
     const expected: IServiceParams = {
       branch: '',
@@ -62,7 +62,7 @@ describe('<Ci> Params', () => {
   it('gets the correct params on push', () => {
     const inputs: UploaderInputs = {
       args: { tag: '', url: '', source: '', flags: '' },
-      envs: {},
+      environment: {},
     }
     const expected: IServiceParams = {
       branch: '',
@@ -89,7 +89,7 @@ describe('<Ci> Params', () => {
         source: '',
         flags: '',
       },
-      envs: {},
+      environment: {},
     }
     const expected: IServiceParams = {
       branch: '',
@@ -116,7 +116,7 @@ describe('<Ci> Params', () => {
         source: '',
         flags: '',
       },
-      envs: {},
+      environment: {},
     }
     const expected: IServiceParams = {
       branch: '',

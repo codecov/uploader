@@ -2,7 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerTeamCity from '../../src/ci_providers/provider_teamcity'
-import { IServiceParams } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('TeamCity Params', () => {
   afterEach(() => {
@@ -11,40 +11,40 @@ describe('TeamCity Params', () => {
 
   describe('detect()', () => {
     it('does not run without TeamCity env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {},
-        envs: {},
+        environment: {},
       }
-      const detected = providerTeamCity.detect(inputs.envs)
+      const detected = providerTeamCity.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does run with TeamCity env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {
           tag: '',
           url: '',
           source: '',
         },
-        envs: {
+        environment: {
           CI: 'true',
           TEAMCITY_VERSION: 'true',
         },
       }
-      const detected = providerTeamCity.detect(inputs.envs)
+      const detected = providerTeamCity.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
 
   it('gets correct params', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         TEAMCITY_VERSION: 'true',
         BRANCH_NAME: 'main',
@@ -71,14 +71,14 @@ describe('TeamCity Params', () => {
   })
 
   it('gets correct params and remote slug', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         TEAMCITY_VERSION: 'true',
         BRANCH_NAME: 'main',
@@ -105,7 +105,7 @@ describe('TeamCity Params', () => {
   })
 
   it('gets correct params for overrides', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         branch: 'branch',
         build: '3',
@@ -117,7 +117,7 @@ describe('TeamCity Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         TEAMCITY_VERSION: 'true',
         BRANCH_NAME: 'main',

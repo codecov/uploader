@@ -12,5 +12,5 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "exclude": ["test/*"]
+  "exclude": ["dist/*", "test/*"]
 }

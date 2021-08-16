@@ -2,6 +2,7 @@ import path from 'path'
 
 import * as fileHelpers from '../../src/helpers/files'
 import * as tokenHelpers from '../../src/helpers/token'
+import { UploaderInputs } from '../../src/types'
 
 describe('Get tokens', () => {
   const fixturesDir = path.join(
@@ -52,33 +53,33 @@ describe('Get tokens', () => {
 
   describe('From right source', () => {
     it('Returns from args', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: { token: 'argtoken', flags: '' },
-        envs: { CODECOV_TOKEN: 'envtoken' },
+        environment: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('argtoken')
     })
 
     it('Returns from env', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: { flags: '' },
-        envs: { CODECOV_TOKEN: 'envtoken' },
+        environment: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('envtoken')
     })
 
     it('Returns from env', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: { flags: '' },
-        envs: {},
+        environment: {},
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('faketoken')
     })
 
     it('Returns from no source', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: { flags: '' },
-        envs: {},
+        environment: {},
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')
     })

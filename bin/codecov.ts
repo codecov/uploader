@@ -1,130 +1,32 @@
 #!/usr/bin/env node
 
 import { logError, main, verbose} from '../src'
+import { addArguments } from '../src/helpers/cli'
 
 var argv = require('yargs') // eslint-disable-line
-  .usage('Usage: $0 <command> [options]')
-  .options({
-    build: {
-      alias: 'b',
-      description: 'Specify the build number manually',
-    },
-    branch: {
-      alias: 'B',
-      description: 'Specify the branch manually',
-    },
-    env: {
-      alias: 'e',
-      description:
-        'Specify environment variables to be included with this build.\nAlso accepting environment variables: CODECOV_ENV=VAR,VAR2',
-    },
-    sha: {
-      alias: 'C',
-      description: 'Specify the commit SHA mannually',
-    },
-    file: {
-      alias: 'f',
-      description: 'Target file(s) to upload',
-    },
-    flags: {
-      alias: 'F',
-      default: '',
-      description: 'Flag the upload to group coverage metrics',
-    },
-    name: {
-      alias: 'n',
-      default: '',
-      description: 'Custom defined name of the upload. Visible in Codecov UI',
-    },
-    parent: {
-      alias: 'N',
-      description:
-        "The commit SHA of the parent for which you are uploading coverage. If not present, the parent will be determined using the API of your repository provider. When using the repository provider's API, the parent is determined via finding the closest ancestor to the commit.",
-    },
-    pr: {
-      alias: 'P',
-      description: 'Specify the pull request number mannually',
-    },
-    dir: {
-      alias: 's',
-      description:
-        'Directory to search for coverage reports.\nAlready searches project root and current working directory',
-    },
-    token: {
-      alias: 't',
-      default: '',
-      description: 'Codecov upload token',
-    },
-    tag: {
-      alias: 'T',
-      default: '',
-      description: 'Specify the git tag',
-    },
-    verbose: {
-      alias: 'v',
-      type: 'boolean',
-      description: 'Run with verbose logging',
-    },
-    rootDir: {
-      alias: 'R',
-      description: 'Specify the project root directory when not in a git repo',
-    },
-    nonZero: {
-      alias: 'Z',
-      type: 'boolean',
-      default: false,
-      description: 'Should errors exit with a non-zero (default: false)',
-    },
-    dryRun: {
-      alias: 'd',
-      type: 'boolean',
-      description: "Don't upload files to Codecov",
-    },
-    slug: {
-      alias: 'r',
-      description: 'Specify the slug manually (Enterprise use)',
-    },
-    url: {
-      alias: 'u',
-      type: 'string',
-      description: 'Change the upload host (Enterprise use)',
-      default: 'https://codecov.io',
-    },
-    clean: {
-      alias: 'c',
-      type: 'boolean',
-      default: false,
-      description: 'Move discovered coverage reports to the trash',
-    },
-    feature: {
-      alias: 'X',
-      type: 'string',
-      description: `Toggle functionalities
-        -X network       Disable uploading the file network`,
-    },
-    source: {
-      alias: 'Q',
-      type: 'string',
-      default: '',
-      description: `Used internally by Codecov, this argument helps track wrappers
-        of the uploader (e.g. GitHub Action, CircleCI Orb)`,
-    },
-  })
-  .version()
+
+
+argv.usage('Usage: $0 <command> [options]')
+  
+addArguments(argv)
+
+  argv.version()
   .help('help')
   .alias('help', 'h').argv
 
-const start = Date.now()
+  const realArgs = argv.argv
 
-verbose(`Start of uploader: ${start}...`)
-main(argv)
+  const start = Date.now()
+
+verbose(`Start of uploader: ${start}...`, Boolean(argv.verbose))
+main(realArgs)
   .then(() => {
     const end = Date.now()
     verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose,
     )
   })
   .catch(error => {
-    logError(`Error!: ${error}`)
+    logError(error)
     const end = Date.now()
     verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
     process.exit(argv.nonZero ? -1 : 0)

@@ -1,4 +1,4 @@
-import { UploaderArgs } from './types'
+import { UploaderArgs, UploaderInputs } from './types'
 
 import zlib from 'zlib'
 import { version } from '../package.json'
@@ -6,7 +6,6 @@ import * as validateHelpers from './helpers/validate'
 import * as webHelpers from './helpers/web'
 import { info, verbose } from './helpers/logger'
 import providers from './ci_providers'
-import { logAndThrow } from './helpers/util'
 import { getToken } from './helpers/token'
 import {
   coverageFilePatterns,
@@ -89,7 +88,7 @@ export async function main(
   // TODO: clean and sanitize envs and args
   const envs = process.env
   // args
-  const inputs = { args, envs }
+  const inputs: UploaderInputs = { args, environment: envs }
 
   let uploadHost: string
   if (args.url && validateHelpers.validateURL(args.url)) {
@@ -125,7 +124,7 @@ export async function main(
     try {
       fileListing = await getFileListing(projectRoot, args)
     } catch (error) {
-      logAndThrow(`Error getting file listing: ${error}`)
+      throw new Error(`Error getting file listing: ${error}`)
     }
 
     uploadFile = uploadFile.concat(fileListing).concat(MARKER_NETWORK_END)
@@ -150,8 +149,7 @@ export async function main(
 
   // Remove invalid and duplicate file paths
   coverageFilePaths = [... new Set(coverageFilePaths.filter(file => {
-    return validateHelpers.validateFileNamePath(file) &&
-      fileExists(args.dir || projectRoot, file)
+    return fileExists(args.dir || projectRoot, file)
   }))]
 
   if (coverageFilePaths.length > 0) {
@@ -161,7 +159,7 @@ export async function main(
     const noFilesError = args.file ?
       'No coverage files found, exiting.' :
       'No coverage files located, please try use `-f`, or change the project root with `-R`'
-    logAndThrow(noFilesError)
+    throw new Error(noFilesError)
   }
 
   verbose('End of network processing', Boolean(args.verbose))
@@ -190,7 +188,7 @@ export async function main(
     coverageFileAdded = true
   }
   if (!coverageFileAdded) {
-    logAndThrow( 'No coverage files could be found to upload, exiting.')
+    throw new Error( 'No coverage files could be found to upload, exiting.')
   }
 
   // Cleanup
@@ -233,8 +231,7 @@ export async function main(
   }
 
   if (serviceParams === undefined) {
-    logAndThrow('Unable to detect service, please specify manually.')
-    process.exit(args.nonZero ? -1 : 0)
+    throw new Error('Unable to detect service, please specify manually.')
   }
 
   // == Step 8: either upload or dry-run
@@ -287,7 +284,7 @@ export async function main(
     info(JSON.stringify(result))
     return result
   } catch (error) {
-    logAndThrow(`Error uploading to ${uploadHost}: ${error}`)
+    throw new Error(`Error uploading to ${uploadHost}: ${error}`)
   }
 }
 

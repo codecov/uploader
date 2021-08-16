@@ -26,26 +26,26 @@ describe('CodeBuild Params', () => {
           url: '',
           flags: '',
         },
-        envs: {
+        environment: {
           CI: 'true',
           CODEBUILD_CI: 'true',
         },
       }
-      const detected = providerCodeBuild.detect(inputs.envs)
+      const detected = providerCodeBuild.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
 
   describe('getServiceParams()', () => {
     it('gets correct params', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {
           tag: '',
           source: '',
           url: '',
           flags: '',
         },
-        envs: {
+        environment: {
           CI: 'true',
           CODEBUILD_CI: 'true',
           CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
@@ -70,7 +70,7 @@ describe('CodeBuild Params', () => {
     })
 
     it('gets correct params for overrides', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {
           branch: 'branch',
           build: '3',
@@ -82,7 +82,7 @@ describe('CodeBuild Params', () => {
           url: '',
           flags: '',
         },
-        envs: {
+        environment: {
           CI: 'true',
           CODEBUILD_CI: 'true',
           CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
