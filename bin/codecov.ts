@@ -7,7 +7,7 @@ var argv = require('yargs') // eslint-disable-line
 
 
 argv.usage('Usage: $0 <command> [options]')
-  
+
 addArguments(argv)
 
   argv.version()
