@@ -2,8 +2,10 @@ import childprocess from 'child_process'
 import { parseSlug } from '../helpers/git'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
+// This provider requires git to be installed
 export function detect(envs: UploaderEnvs): boolean {
-  return !envs.CI
+  return !childprocess
+  .spawnSync('git').error
 }
 
 function _getBuild(inputs: UploaderInputs): string {
