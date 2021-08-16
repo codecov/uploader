@@ -32,7 +32,7 @@ const providerList: IProvider[] = [
   providerTeamCity,
   providerTravisci,
   providerWercker,
-  providerLocal,
 ]
 
 export default providerList
+export { providerLocal }
