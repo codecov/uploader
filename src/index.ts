@@ -149,8 +149,7 @@ export async function main(
 
   // Remove invalid and duplicate file paths
   coverageFilePaths = [... new Set(coverageFilePaths.filter(file => {
-    return validateHelpers.validateFileNamePath(file) &&
-      fileExists(args.dir || projectRoot, file)
+    return fileExists(args.dir || projectRoot, file)
   }))]
 
   if (coverageFilePaths.length > 0) {
