@@ -44,7 +44,8 @@ export function detectProvider(inputs: UploaderInputs): IServiceParams {
   if (environment['CI']) {
     info(`Using Generic CI as the CI provider.`)
     serviceParams = providerLocal.getServiceParams(inputs)
-    serviceParams.service = 'generic_ci'
+    // the service name must be in the list of accepted names on the server.
+    serviceParams.service = 'custom'
     return serviceParams
   }
   //   if fails, run local normally
