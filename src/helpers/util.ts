@@ -1,11 +1,16 @@
-import { logError } from './logger'
+import childprocess from 'child_process'
 
-/**
- * Log the error and throw it
- * @param {string} message
- * @throws Error
- */
-export function logAndThrow(message: string): never {
-  logError(message)
-  throw new Error(message)
+export function isProgramInstalled(programName: string): boolean {
+  return !childprocess.spawnSync(programName).error
+}
+
+export function runExternalProgram(
+  programName: string,
+  optionalArguments: string[] = [],
+): string {
+  const result = childprocess.spawnSync(programName, optionalArguments)
+  if (result.error) {
+    throw new Error(`Error running external program: ${result.error}`)
+  }
+  return result.stdout.toString().trimRight()
 }
