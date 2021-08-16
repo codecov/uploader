@@ -19,45 +19,47 @@ export function detectProvider(inputs: UploaderInputs): IServiceParams {
       commit: args.sha,
       job: '',
       pr: 0,
-      service: 'manual',
+      service: '',
       slug: args.slug,
     }
     return serviceParams
   }
 
   //   if not, loop though all providers
-
-
-  //   if fails, run local normally
   try {
     serviceParams = walkProviders(inputs)
     if (serviceParams !== undefined) {
-        return serviceParams
+      return serviceParams
     }
   } catch (error) {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
-    if (!serviceParams) {
+    if (serviceParams !== undefined) {
       logError(`Errow detecting repos setting using git: ${error}`)
-      throw new Error(
-        '\nUnable to detect service, please specify sha and slug manually.\nYou can do this by passing the values with the `-S` and `-r` flags.\nSee the `-h` flag for more details.',
-      )
     }
   }
-  throw new Error(`There was an unknown error with provider detection`)
+  throw new Error(
+    '\nUnable to detect service, please specify sha and slug manually.\nYou can do this by passing the values with the `-S` and `-r` flags.\nSee the `-h` flag for more details.',
+  )
 }
 
-export function walkProviders(inputs: UploaderInputs): IServiceParams | undefined {
-    for (const provider of providers) {
-        if (provider.detect(inputs.environment)) {
-          info(`Detected ${provider.getServiceName()} as the CI provider.`)
-          verbose('-> Using the following env variables:', Boolean(inputs.args.verbose))
-          for (const envVarName of provider.getEnvVarNames()) {
-            verbose(
-              `     ${envVarName}: ${inputs.environment[envVarName]}`,
-              Boolean(inputs.args.verbose),
-            )
-          }
-          return provider.getServiceParams(inputs)
-        }
+export function walkProviders(
+  inputs: UploaderInputs,
+): IServiceParams {
+  for (const provider of providers) {
+    if (provider.detect(inputs.environment)) {
+      info(`Detected ${provider.getServiceName()} as the CI provider.`)
+      verbose(
+        '-> Using the following env variables:',
+        Boolean(inputs.args.verbose),
+      )
+      for (const envVarName of provider.getEnvVarNames()) {
+        verbose(
+          `     ${envVarName}: ${inputs.environment[envVarName]}`,
+          Boolean(inputs.args.verbose),
+        )
       }
+      return provider.getServiceParams(inputs)
+    }
+  }
+  throw new Error(`Unable to detect provider.`)
 }
