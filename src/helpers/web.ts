@@ -86,7 +86,7 @@ export async function uploadToCodecov(
     .post(
       `${uploadURL}/upload/v4?package=${getPackage(
         source,
-      )}&token=${token}&${query}`,
+      )}&${query}`,
     )
     .retry()
     .set('X-Upload-Token', token)
