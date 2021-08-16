@@ -1,6 +1,5 @@
 import childprocess from 'child_process'
 import { parseSlug } from '../helpers/git'
-import { logAndThrow } from '../helpers/util'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -29,8 +28,9 @@ function _getBranch(inputs: UploaderInputs): string {
       .trimRight()
     return branchName
   } catch (error) {
-    logAndThrow(`There was an error getting the branch name from git: ${error}`)
-    return ''
+    throw new Error(
+      `There was an error getting the branch name from git: ${error}`,
+    )
   }
 }
 
@@ -67,8 +67,7 @@ function _getSHA(inputs: UploaderInputs) {
       .trimRight()
     return sha
   } catch (error) {
-    logAndThrow(`There was an error getting the commit SHA from git: ${error}`)
-    return ''
+    throw new Error(`There was an error getting the commit SHA from git: ${error}`)
   }
 }
 
@@ -84,8 +83,7 @@ function _getSlug(inputs: UploaderInputs): string {
       .trimRight()
     return parseSlug(slug)
   } catch (error) {
-    logAndThrow(`There was an error getting the slug from git: ${error}`)
-    return ''
+    throw new Error(`There was an error getting the slug from git: ${error}`)
   }
 }
 
@@ -95,7 +93,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

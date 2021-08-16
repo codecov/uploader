@@ -1,7 +1,5 @@
-import { UploaderArgs } from '../types'
-
 import validator from 'validator'
-import { logAndThrow } from './util'
+import { UploaderArgs } from '../types'
 
 /**
  *
@@ -61,9 +59,14 @@ export function fetchToken(args: UploaderArgs): string {
   return token
 }
 
-export function checkValueType(name: string, value: unknown, type: string): void {
+export function checkValueType(
+  name: string,
+  value: unknown,
+  type: string,
+): void {
   if (typeof value !== type) {
-    return logAndThrow(`The value of ${name} is not of type ${type}, can not continue, please review: ${value}`)
+    throw new Error(
+      `The value of ${name} is not of type ${type}, can not continue, please review: ${value}`,
+    )
   }
 }
-

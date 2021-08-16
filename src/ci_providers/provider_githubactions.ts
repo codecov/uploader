@@ -8,12 +8,12 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.build || envs.GITHUB_RUN_ID || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { envs } = inputs
+  const { environment: envs } = inputs
   return encodeURIComponent(
     `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(
       inputs,
@@ -22,7 +22,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   const branchRegex = /refs\/heads\/(.*)/
   const branchMatches = branchRegex.exec(envs.GITHUB_REF || '')
   let branch
@@ -41,7 +41,7 @@ function _getJob(envs: UploaderEnvs): string {
 }
 
 function _getPR(inputs: UploaderInputs): number {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   let match
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
     const prRegex = /refs\/pull\/([0-9]+)\/merge/
@@ -62,7 +62,7 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   const pr = _getPR(inputs)
 
   let commit = envs.GITHUB_SHA
@@ -87,7 +87,7 @@ function _getSHA(inputs: UploaderInputs): string {
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.slug || envs.GITHUB_REPOSITORY || ''
 }
 
@@ -97,7 +97,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

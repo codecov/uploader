@@ -18,13 +18,13 @@ describe('Buildkite Params', () => {
     })
 
     it('does not run without Buildkite env variable', () => {
-      const inputs = {
+      const inputs: UploaderInputs = {
         args: {},
-        envs: {
+        environment: {
           BUILDKITE: 'true',
         },
       }
-      const detected = providerBuildkite.detect(inputs.envs)
+      const detected = providerBuildkite.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
@@ -37,7 +37,7 @@ describe('Buildkite Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BUILDKITE: 'true',
         BUILDKITE_BUILD_NUMBER: '1',
         BUILDKITE_JOB_ID: '3',
@@ -75,7 +75,7 @@ describe('Buildkite Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BUILDKITE: 'true',
         CI: 'true',
       },

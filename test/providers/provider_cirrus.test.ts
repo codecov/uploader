@@ -12,21 +12,21 @@ describe('Cirrus Params', () => {
     it('does not run without Cirrus env variable', () => {
       const inputs = {
         args: {},
-        envs: {},
+        environment: {},
       }
-      const detected = providerCirrus.detect(inputs.envs)
+      const detected = providerCirrus.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does run with Cirrus env variable', () => {
       const inputs = {
         args: {},
-        envs: {
+        environment: {
           CI: 'true',
           CIRRUS_CI: 'true',
         },
       }
-      const detected = providerCirrus.detect(inputs.envs)
+      const detected = providerCirrus.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
@@ -39,7 +39,7 @@ describe('Cirrus Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         CIRRUS_CI: 'true',
         CIRRUS_BRANCH: 'master',
@@ -76,7 +76,7 @@ describe('Cirrus Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         CI: 'true',
         CIRRUS_CI: 'true',
         CIRRUS_BRANCH: 'master',

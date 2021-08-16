@@ -18,13 +18,13 @@ describe('Jenkins CI Params', () => {
           source: '',
           flags: '',
         },
-        envs: {},
+        environment: {},
       }
-      let detected = providerJenkinsci.detect(inputs.envs)
+      let detected = providerJenkinsci.detect(inputs.environment)
       expect(detected).toBeFalsy()
 
-      inputs.envs.JENKINS_URL = ''
-      detected = providerJenkinsci.detect(inputs.envs)
+      inputs.environment.JENKINS_URL = ''
+      detected = providerJenkinsci.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
@@ -48,7 +48,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BUILD_NUMBER: '1',
         BUILD_URL: 'https://example.jenkins.com',
         CHANGE_ID: '2',
@@ -83,7 +83,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BUILD_NUMBER: '1',
         BUILD_URL: 'https://example.jenkins.com',
         CHANGE_ID: '2',
@@ -114,7 +114,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         JENKINS_URL: 'https://example.com',
       },
     }

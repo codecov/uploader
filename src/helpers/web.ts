@@ -1,11 +1,10 @@
 import { snakeCase } from "snake-case";
 import superagent from 'superagent'
 
-import { IServiceParams, UploaderInputs } from '../types'
 import { version } from '../../package.json'
-import * as validateHelpers from './validate'
+import { IServiceParams, UploaderInputs } from '../types'
 import { info, logError } from './logger'
-import { logAndThrow } from './util'
+import * as validateHelpers from './validate'
 import { checkValueType } from './validate'
 
 /**
@@ -19,14 +18,14 @@ export function populateBuildParams(
   inputs: UploaderInputs,
   serviceParams: IServiceParams,
 ): IServiceParams {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
   let flags: string[]
   if (typeof args.flags === 'object') {
     flags = [...args.flags]
   } else {
-    flags = [args.flags]
+    flags = [args.flags || '']
   }
   serviceParams.flags = flags
     .filter(flag => validateHelpers.validateFlags(flag))
@@ -46,7 +45,7 @@ export function getPackage(source: string): string {
 export async function uploadToCodecovPUT(
   uploadURL: string,
   uploadFile: string | Buffer,
-): Promise<{ status: string, resultURL: string }> {
+): Promise<{ status: string; resultURL: string }> {
   info('Uploading...')
 
   const parts = uploadURL.split('\n')
@@ -64,11 +63,9 @@ export async function uploadToCodecovPUT(
     if (result.status === 200) {
       return { status: 'success', resultURL: codecovResultURL }
     }
-    logAndThrow(
-      `Error uploading during PUT (inner): ${result.status}, ${result.body}`,
-    )
+    throw new Error(`${result.status}, ${result.body}`)
   } catch (error) {
-    logAndThrow(`Error uploading during PUT (outer): ${error}`)
+    throw new Error(`Error PUTing file to storage: ${error}`)
   }
 }
 
@@ -96,7 +93,7 @@ export async function uploadToCodecov(
     .set('X-Reduced-Redundancy', 'false')
     .on('error', err => {
       logError(
-        `Error uploading to Codecov when fetching PUT (inner): ${err.status} ${err.response.text}`,
+        `Error POSTing to ${uploadURL}: ${err.status} ${err.response.text}`,
       )
     })
     .ok(res => res.status === 200)
@@ -104,7 +101,7 @@ export async function uploadToCodecov(
   if (result.res) {
     return result.res.text
   }
-  logAndThrow(`We don't have a PUT URL`)
+  throw new Error(`There was an error fetching the storage URL during POST`)
 }
 
 /**
@@ -121,4 +118,3 @@ export function generateQuery(queryParams: IServiceParams): string {
     .map(([key, value]) => `${snakeCase(key)}=${value}`)
     .join('&')
 }
-

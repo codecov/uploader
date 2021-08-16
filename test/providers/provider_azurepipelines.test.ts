@@ -18,9 +18,9 @@ describe('Jenkins CI Params', () => {
           source: '',
           flags: '',
         },
-        envs: {},
+        environment: {},
       }
-      const detected = providerAzurepipelines.detect(inputs.envs)
+      const detected = providerAzurepipelines.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
@@ -32,11 +32,11 @@ describe('Jenkins CI Params', () => {
           source: '',
           flags: '',
         },
-        envs: {
+        environment: {
           SYSTEM_TEAMFOUNDATIONSERVERURI: 'true',
         },
       }
-      const detected = providerAzurepipelines.detect(inputs.envs)
+      const detected = providerAzurepipelines.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
@@ -49,7 +49,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
@@ -85,7 +85,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
@@ -121,7 +121,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
@@ -168,7 +168,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
       },
-      envs: {
+      environment: {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
       },
     }

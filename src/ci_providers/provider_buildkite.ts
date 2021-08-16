@@ -1,5 +1,4 @@
-import { logAndThrow } from '../helpers/util'
-import { UploaderInputs, IServiceParams, UploaderEnvs } from '../types'
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 /**
  * Detects if this CI provider is being used
@@ -18,7 +17,7 @@ export function detect(envs: UploaderEnvs): boolean {
  * @returns {string}
  */
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.build || envs.BUILDKITE_BUILD_NUMBER || ''
 }
 
@@ -30,7 +29,7 @@ function _getBuild(inputs: UploaderInputs): string {
  */
 // eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
-  return inputs.envs.BUILDKITE_BUILD_URL || ''
+  return inputs.environment.BUILDKITE_BUILD_URL || ''
 }
 
 /**
@@ -40,7 +39,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
  * @returns {string}
  */
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   return args.branch || envs.BUILDKITE_BRANCH || ''
 }
 
@@ -89,12 +88,11 @@ export function getServiceName(): string {
  * @returns {string}
  */
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   if (Boolean(args.sha) || Boolean(envs.BUILDKITE_COMMIT)) {
     return args.sha || envs.BUILDKITE_COMMIT || ''
   }
-  logAndThrow('Unable to detect sha, please set manually with the -C flag')
-  return ''
+  throw new Error('Unable to detect sha, please set manually with the -C flag')
 }
 /**
  * Determine the slug (org/repo) based on  args or envs
@@ -103,11 +101,11 @@ function _getSHA(inputs: UploaderInputs): string {
  * @returns {string}
  */
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, envs } = inputs
+  const { args, environment: envs } = inputs
   if (args.slug || envs.BUILDKITE_PROJECT_SLUG) {
     return args.slug || envs.BUILDKITE_PROJECT_SLUG || ''
   }
-  logAndThrow('Unable to detect sluh, please set manually with the -r flag')
+  throw new Error('Unable to detect slug, please set manually with the -r flag')
   return ''
 }
 /**
@@ -122,7 +120,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),
