@@ -1,7 +1,6 @@
 import { snakeCase } from "snake-case";
 import superagent from 'superagent'
 
-import { IServiceParams, UploaderInputs } from '../types'
 import { version } from '../../package.json'
 import { IServiceParams, UploaderInputs } from '../types'
 import { info, logError } from './logger'
