@@ -10,7 +10,11 @@ describe('Local Params', () => {
   })
 
   describe('detect()', () => {
-    it('does not run with the CI env variable', () => {
+    it('does not run with git not installed', () => {
+      const spawnSync = td.replace(childProcess, 'spawnSync')
+      td.when(spawnSync('git')).thenReturn({
+        error: 'Git is not installed!',
+      })
       const inputs: UploaderInputs = {
         args: {
           tag: '',
@@ -26,7 +30,7 @@ describe('Local Params', () => {
       expect(detected).toBeFalsy()
     })
 
-    it('does run without the CI env variable', () => {
+    it('does run with git installed', () => {
       const inputs: UploaderInputs = {
         args: {
           tag: '',
