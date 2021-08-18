@@ -23,7 +23,8 @@ build:
 	npm run build-linux
 	npm run build-macos
 
-build_arm:
+build_arm: install
+	npm run build
 	npm run build-macos-arm
 
 build_alpine:
