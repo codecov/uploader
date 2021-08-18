@@ -242,7 +242,7 @@ jobs:
           at: .
       - run:
           name: Build ARM64
-          command: npm run build-macos-arm
+          command: make build_arm
       - run:
           name: Run MacOS binary -f (dry-run)
           command: |
