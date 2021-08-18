@@ -1,7 +1,7 @@
 import nock from 'nock'
 
 import { version } from '../../package.json'
-import * as webHelper from '../../src/helpers/web'
+import { generateQuery, getPackage, parsePOSTResults, populateBuildParams, uploadToCodecov, uploadToCodecovPUT } from '../../src/helpers/web'
 import { IServiceParams } from '../../src/types'
 
 describe('Web Helpers', () => {
@@ -33,7 +33,7 @@ describe('Web Helpers', () => {
       .query(true)
       .reply(200, 'testPOSTHTTP')
 
-    const response = await webHelper.uploadToCodecov(
+    const response = await uploadToCodecov(
       uploadURL,
       token,
       query,
@@ -56,7 +56,7 @@ describe('Web Helpers', () => {
       .query(true)
       .reply(200, 'testPOSTHTTPS')
 
-    const response = await webHelper.uploadToCodecov(
+    const response = await uploadToCodecov(
       uploadURL,
       token,
       query,
@@ -68,9 +68,10 @@ describe('Web Helpers', () => {
 
   it('Can PUT to the storage endpoint', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => {})
-    uploadURL = 'https://results.codecov.io\nhttps://codecov.io'
-    const response = await webHelper.uploadToCodecovPUT(uploadURL, uploadFile)
-    expect(response.resultURL).toBe('https://results.codecov.io')
+    uploadURL = `https://results.codecov.io
+    https://codecov.io`
+    const response = await uploadToCodecovPUT(uploadURL, uploadFile)
+    expect(response.resultURL).toEqual('https://results.codecov.io')
   })
 
   it('Can generate query URL', () => {
@@ -87,13 +88,13 @@ describe('Web Helpers', () => {
       pr: 2,
       job: '6',
     }
-    expect(webHelper.generateQuery(queryParams)).toBe(
+    expect(generateQuery(queryParams)).toBe(
       'branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=2&job=6',
     )
   })
 
   it('can populateBuildParams() from args', () => {
-    const result = webHelper.populateBuildParams(
+    const result = populateBuildParams(
       { args: { flags: 'testFlag', tag: 'testTag' }, environment: {} },
       {
         name: '',
@@ -113,7 +114,7 @@ describe('Web Helpers', () => {
   })
 
   it('can populateBuildParams() from args with multiple flags as string', () => {
-    const result = webHelper.populateBuildParams(
+    const result = populateBuildParams(
       { args: { flags: 'testFlag1,testFlag2', tag: 'testTag' }, environment: {} },
       {
         name: '',
@@ -133,7 +134,7 @@ describe('Web Helpers', () => {
   })
 
   it('can populateBuildParams() from args with multiple flags as list', () => {
-    const result = webHelper.populateBuildParams(
+    const result = populateBuildParams(
       { args: { flags: ['testFlag1', 'testFlag2'], tag: 'testTag' }, environment: {} },
       {
         name: '',
@@ -153,12 +154,24 @@ describe('Web Helpers', () => {
   })
 
   it('can getPackage() from source', () => {
-    const result = webHelper.getPackage('github-actions-2.0.0')
+    const result = getPackage('github-actions-2.0.0')
     expect(result).toBe(`github-actions-2.0.0-uploader-${version}`)
   })
 
   it('can getPackage() from no source', () => {
-    const result = webHelper.getPackage('')
+    const result = getPackage('')
     expect(result).toBe(`uploader-${version}`)
+  })
+
+  describe('parsePOSTResults()', () => {
+    it('will throw when unable to match', () => {
+      const testURL = `🤨`
+      expect(() => parsePOSTResults(testURL)).toThrowError(/Parsing results from POST failed/)
+    })
+
+    it('will throw when can not match exactly twice', () => {
+      const testURL = `dummyURL`
+      expect(() => parsePOSTResults(testURL)).toThrowError('Incorrect number of urls when parsing results from POST: 1')
+    })
   })
 })
