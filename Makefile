@@ -22,6 +22,8 @@ build:
 	npm run build
 	npm run build-linux
 	npm run build-macos
+
+build_arm:
 	npm run build-macos-arm
 
 build_alpine:

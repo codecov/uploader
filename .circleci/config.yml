@@ -241,6 +241,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Build ARM64
+          command: npm run build-macos-arm
+      - run:
           name: Run MacOS binary -f (dry-run)
           command: |
             out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -v -e CIRCLE_BRANCH >> output_osx.txt
