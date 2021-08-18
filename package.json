@@ -11,7 +11,7 @@
     "build": "tsc  --build",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
-    "build-macos-arm": "pkg . --targets node16.4.1-macos-arm64 --output out/codecov-macos-arm",
+    "build-macos-arm": "pkg . --targets node16-macos-arm64 --output out/codecov-macos-arm",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
     "build-windows": "pkg . --targets win --output out/codecov.exe",
     "prepare": "husky install",
