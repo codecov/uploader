@@ -1,9 +1,9 @@
-import { snakeCase } from "snake-case";
+import { snakeCase } from 'snake-case'
 import superagent from 'superagent'
 
 import { version } from '../../package.json'
-import { IServiceParams, UploaderInputs } from '../types'
-import { info, logError } from './logger'
+import { IServiceParams, UploaderArgs, UploaderInputs } from '../types'
+import { info, logError, verbose } from './logger'
 import * as validateHelpers from './validate'
 import { checkValueType } from './validate'
 
@@ -50,9 +50,7 @@ export async function uploadToCodecovPUT(
 ): Promise<{ status: string; resultURL: string }> {
   info('Uploading...')
 
-  const parts = uploadURL.split('\n')
-  const putURL = parts[1]
-  const codecovResultURL = parts[0]
+  const { putURL, resultURL } = parsePOSTResults(uploadURL)
 
   try {
     const result = await superagent
@@ -63,7 +61,7 @@ export async function uploadToCodecovPUT(
       .set('Content-Encoding', 'gzip')
 
     if (result.status === 200) {
-      return { status: 'success', resultURL: codecovResultURL }
+      return { status: 'success', resultURL }
     }
     throw new Error(`${result.status}, ${result.body}`)
   } catch (error) {
@@ -119,4 +117,27 @@ export function generateQuery(queryParams: IServiceParams): string {
   return Object.entries(queryParams)
     .map(([key, value]) => `${snakeCase(key)}=${value}`)
     .join('&')
+}
+
+export function parsePOSTResults(uploadURL: string): {
+  putURL: string
+  resultURL: string
+} {
+  // JS for [[:graph:]] https://www.regular-expressions.info/posixbrackets.html
+  const re = /([\x21-\x7E]+)[\r\n]?/gm
+
+  const matches = uploadURL.match(re)
+
+  if (matches === null) {
+    throw new Error(`Parsing results from POST failed: (${uploadURL})`)
+  }
+
+  if (matches?.length !== 2) {
+    throw new Error(`Incorrect number of urls when parsing results from POST: ${matches.length}`)
+  }
+
+  const putURL = matches[1]
+  const resultURL = matches[0].trimEnd() // This match may have trailing 0x0A and 0x0D that must be trimmed
+
+  return { putURL, resultURL }
 }
