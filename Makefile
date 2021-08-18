@@ -8,6 +8,7 @@ clean:
 	rm -rf dist
 
 install:
+	nvm install v16 && nvm use v16
 	npm install
 
 test: 
