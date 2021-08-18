@@ -3,9 +3,9 @@ import { UploaderArgs, UploaderInputs } from './types'
 import zlib from 'zlib'
 import { version } from '../package.json'
 import * as validateHelpers from './helpers/validate'
+import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
 import { info, verbose } from './helpers/logger'
-import providers from './ci_providers'
 import { getToken } from './helpers/token'
 import {
   coverageFilePatterns,
@@ -213,26 +213,7 @@ export async function main(
 
   // == Step 7: determine CI provider
 
-  // Determine CI provider
-  let serviceParams
-  for (const provider of providers) {
-    if (provider.detect(envs)) {
-      info(`Detected ${provider.getServiceName()} as the CI provider.`)
-      verbose('-> Using the following env variables:', Boolean(args.verbose))
-      for (const envVarName of provider.getEnvVarNames()) {
-        verbose(
-          `     ${envVarName}: ${envs[envVarName]}`,
-          Boolean(args.verbose),
-        )
-      }
-      serviceParams = provider.getServiceParams(inputs)
-      break
-    }
-  }
-
-  if (serviceParams === undefined) {
-    throw new Error('Unable to detect service, please specify manually.')
-  }
+const serviceParams = detectProvider(inputs)
 
   // == Step 8: either upload or dry-run
 

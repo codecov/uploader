@@ -1,9 +1,10 @@
-import childprocess from 'child_process'
 import { parseSlug } from '../helpers/git'
+import { isProgramInstalled, runExternalProgram } from '../helpers/util'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
+// This provider requires git to be installed
 export function detect(envs: UploaderEnvs): boolean {
-  return !envs.CI
+  return isProgramInstalled('git')
 }
 
 function _getBuild(inputs: UploaderInputs): string {
@@ -22,10 +23,7 @@ function _getBranch(inputs: UploaderInputs): string {
     return args.branch
   }
   try {
-    const branchName = childprocess
-      .spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
-      .stdout.toString()
-      .trimRight()
+    const branchName = runExternalProgram('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
     return branchName
   } catch (error) {
     throw new Error(
@@ -61,10 +59,7 @@ function _getSHA(inputs: UploaderInputs) {
     return args.sha
   }
   try {
-    const sha = childprocess
-      .spawnSync('git', ['rev-parse', 'HEAD'])
-      .stdout.toString()
-      .trimRight()
+    const sha = runExternalProgram('git', ['rev-parse', 'HEAD'])
     return sha
   } catch (error) {
     throw new Error(`There was an error getting the commit SHA from git: ${error}`)
@@ -77,10 +72,7 @@ function _getSlug(inputs: UploaderInputs): string {
     return args.slug
   }
   try {
-    const slug = childprocess
-      .spawnSync('git', ['config', '--get', 'remote.origin.url'])
-      .stdout.toString()
-      .trimRight()
+    const slug = runExternalProgram('git', ['config', '--get', 'remote.origin.url'])
     return parseSlug(slug)
   } catch (error) {
     throw new Error(`There was an error getting the slug from git: ${error}`)
