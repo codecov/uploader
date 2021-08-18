@@ -173,5 +173,19 @@ describe('Web Helpers', () => {
       const testURL = `dummyURL`
       expect(() => parsePOSTResults(testURL)).toThrowError('Incorrect number of urls when parsing results from POST: 1')
     })
+
+    it('will return an object when parsing correctly and input has multiple linebreaks', () => {
+      const testURL = `dummyURL
+      
+      
+      
+      
+      
+      
+      
+      OtherURL`
+      const expectedResults = { putURL: 'OtherURL', resultURL: 'dummyURL'}
+      expect(parsePOSTResults(testURL)).toEqual(expectedResults)
+    })
   })
 })
