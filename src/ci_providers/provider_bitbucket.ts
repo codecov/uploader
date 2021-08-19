@@ -1,4 +1,5 @@
 import childProcess from 'child_process'
+import { runExternalProgram } from '../helpers/util'
 import { validateSHA } from '../helpers/validate'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
