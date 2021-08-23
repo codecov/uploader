@@ -36,7 +36,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
         )
       }
 
-      return option[0]
+      return token
     }
   }
 
