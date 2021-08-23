@@ -28,7 +28,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
       if (args.url !== DEFAULT_UPLOAD_HOST) {
         verbose('Self-hosted install detected due to -u flag')
         info(`->  Token set by ${source}`)
-        return option[0]
+        return token
       }
       if (validateToken(token) !== true) {
         throw new Error(
