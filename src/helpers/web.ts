@@ -111,7 +111,7 @@ export async function uploadToCodecov(
  */
 export function generateQuery(queryParams: IServiceParams): string {
   checkValueType('pr', queryParams.pr, 'number')
-  if (queryParams.pr === 0) {
+  if (queryParams.pr === 0  || isNaN(Number(queryParams.pr))) {
     queryParams.pr = ''
   }
   return Object.entries(queryParams)

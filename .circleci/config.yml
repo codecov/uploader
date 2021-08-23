@@ -11,7 +11,7 @@ jobs:
   build-linux-and-osx:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.6.2
+      - image: circleci/node:16.7.0
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -133,15 +133,15 @@ jobs:
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
-            NODE_DEBUG=vm out/codecov-alpine -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
+            NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
       - run:
           name: Run Alpine binary auto-detect (dry run)
           command: |
-            out/codecov-alpine -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
+            out/codecov-alpine -F alpine -v -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
       - run:
           name: Run Alpine binary (upload)
           command: |
-            out/codecov-alpine -F alpine -Z -e CIRCLE_BRANCH
+            out/codecov-alpine -F alpine -v -Z -e CIRCLE_BRANCH
 
       - store_artifacts:
           path: output_alpine.txt
@@ -183,7 +183,7 @@ jobs:
   test-linux:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.6.2
+      - image: circleci/node:16.7.0
     steps:
       - checkout
       - attach_workspace:
@@ -210,7 +210,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: circleci/node:16.6.2
+      - image: circleci/node:16.7.0
     steps:
       - checkout
       - attach_workspace:
@@ -247,11 +247,11 @@ jobs:
       - run:
           name: Run MacOS binary auto-detect (dry-run)
           command: |
-            out/codecov-macos -F macos -d -Z -e CIRCLE_BRANCH >> output_osx.txt
+            out/codecov-macos -F macos -v -d -Z -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-macos -F macos -Z -e CIRCLE_BRANCH
+            out/codecov-macos -F macos -v -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
@@ -298,12 +298,12 @@ jobs:
       - run:
           name: Run Windows binary auto-detect (dry-run)
           command: |
-            .\out\codecov.exe -F windows -d -Z -e CIRCLE_BRANCH >> output_win.txt
+            .\out\codecov.exe -F windows -v -d -Z -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
           command: |
-            .\out\codecov.exe -F windows -Z -e CIRCLE_BRANCH
+            .\out\codecov.exe -F windows -v -Z -e CIRCLE_BRANCH
           shell: cmd.exe
 
       - persist_to_workspace:
@@ -339,7 +339,7 @@ jobs:
 
   review:
     docker:
-      - image: circleci/node:16.6.2
+      - image: circleci/node:16.7.0
     steps:
       - attach_workspace:
           at: .
@@ -370,7 +370,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:16.6.2
+      - image: circleci/node:16.7.0
     steps:
       - attach_workspace:
           at: .
