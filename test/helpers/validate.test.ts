@@ -1,14 +1,20 @@
 import * as validate from '../../src/helpers/validate'
 import { checkValueType } from '../../src/helpers/validate'
+import { DEFAULT_UPLOAD_HOST } from '../../src/helpers/constansts'
+import Module from 'module'
 
 // Backup the env
 const realEnv = { ...process.env }
 
 describe('Input Validators', () => {
   describe('checkValueType()', () => {
-it('throws an error when the value is not the correct type', () => {
-  expect(() => { checkValueType('testValue', {}, 'number')}).toThrowError(/The value of testValue is not of type number, can not continue, please review/)
-})
+    it('throws an error when the value is not the correct type', () => {
+      expect(() => {
+        checkValueType('testValue', {}, 'number')
+      }).toThrowError(
+        /The value of testValue is not of type number, can not continue, please review/,
+      )
+    })
   })
 
   describe('Tokens', () => {
@@ -86,36 +92,6 @@ it('throws an error when the value is not the correct type', () => {
       expect(
         validate.validateSHA('1732d84b7ef2425e979d6034a3e3bb5633da344a'),
       ).toBe(true)
-    })
-  })
-
-  describe('fetchToken()', () => {
-    beforeEach(() => {
-      delete process.env.CODECOV_TOKEN
-    })
-
-    afterEach(() => {
-      process.env = realEnv
-    })
-
-    it('should return an empty string if neither args or env are set', () => {
-      const args = { flags: '' }
-      expect(validate.fetchToken(args)).toEqual('')
-    })
-
-    it('should return the value of the env if env is set, and args are not set', () => {
-      process.env.CODECOV_TOKEN = 'testingEnvToken'
-      const args = { flags: '' }
-      expect(validate.fetchToken(args)).toEqual('testingEnvToken')
-    })
-
-    it('should return the value of the arg if env is set, and args are set', () => {
-      process.env.CODECOV_TOKEN = 'testingEnvToken'
-      const args = {
-        token: 'testingArgToken',
-        flags: '',
-      }
-      expect(validate.fetchToken(args)).toEqual('testingArgToken')
     })
   })
 })
