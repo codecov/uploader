@@ -20,7 +20,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
     [getTokenFromYaml(projectRoot, args), 'Codecov yaml config'],
   ]
 
-  for (const option of options) {
+  for (const [token, source] of options) {
     if (token) {
       info(`->  Token found by ${source}`)
       // If this is self-hosted (-u is set), do not validate
