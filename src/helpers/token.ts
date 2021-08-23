@@ -27,7 +27,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
       // This is because self-hosted can use a global upload token
       if (args.url !== DEFAULT_UPLOAD_HOST) {
         verbose('Self-hosted install detected due to -u flag')
-        info(`->  Token set by ${option[1]}`)
+        info(`->  Token set by ${source}`)
         return option[0]
       }
       if (validateToken(token) !== true) {
