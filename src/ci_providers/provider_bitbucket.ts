@@ -1,4 +1,5 @@
 import childProcess from 'child_process'
+import { runExternalProgram } from '../helpers/util'
 import { validateSHA } from '../helpers/validate'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
@@ -44,7 +45,7 @@ function _getSHA(inputs: UploaderInputs): string {
   let commit = envs.BITBUCKET_COMMIT || ''
 
   if (commit && validateSHA(commit, 12)) {
-    commit = childProcess.execFileSync('git', ['rev-parse', commit])
+    commit = runExternalProgram('git', ['rev-parse', commit])
   }
 
   return args.sha || commit || ''

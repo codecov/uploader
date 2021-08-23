@@ -12,5 +12,5 @@ export function runExternalProgram(
   if (result.error) {
     throw new Error(`Error running external program: ${result.error}`)
   }
-  return result.stdout.toString().trimRight()
+  return result.stdout.toString().trim()
 }
