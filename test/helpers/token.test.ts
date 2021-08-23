@@ -3,6 +3,7 @@ import path from 'path'
 import * as fileHelpers from '../../src/helpers/files'
 import * as tokenHelpers from '../../src/helpers/token'
 import { UploaderInputs } from '../../src/types'
+import { DEFAULT_UPLOAD_HOST } from '../../src/helpers/constansts'
 
 describe('Get tokens', () => {
   const fixturesDir = path.join(
@@ -83,5 +84,42 @@ describe('Get tokens', () => {
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')
     })
+  })
+
+  it('should return token correctly from args when `-u` differs from default host', () => {
+    const inputs: UploaderInputs = {
+      args: {
+        url: 'dummy.local',
+        token: 'goodToken'
+      },
+      environment: {
+        CODECOV_TOKEN: 'badToken'
+      }
+    }
+    expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('goodToken')
+  })
+
+  it('should return token correctly from env when `-u` differs from default host', () => {
+    const inputs: UploaderInputs = {
+      args: {
+        url: 'dummy.local',
+      },
+      environment: {
+        CODECOV_TOKEN: 'goodT----oken'
+      }
+    }
+    expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('goodT----oken')
+  })
+
+  it('should fail validation when an invalid token is passed and host is not changed', () => {
+    const inputs: UploaderInputs = {
+      args: {
+        url: DEFAULT_UPLOAD_HOST
+      },
+      environment: {
+        CODECOV_TOKEN: 'bad------Token'
+      }
+    }
+    expect(() => tokenHelpers.getToken(inputs, fixturesDir)).toThrowError(/Token found by environment variables with length 14 did not pass validation/)
   })
 })

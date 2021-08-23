@@ -2,6 +2,7 @@ import fs from 'fs'
 import yaml from 'js-yaml'
 import path from 'path'
 import { UploaderArgs, UploaderInputs } from '../types'
+import { DEFAULT_UPLOAD_HOST } from './constansts'
 import { info, logError, verbose } from './logger'
 import { validateToken } from './validate'
 
@@ -20,8 +21,21 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
   ]
 
   for (const option of options) {
-    if (option[0] && validateToken(option[0])) {
-      info(`->  Token set by ${option[1]}`)
+    if (option[0]) {
+      info(`->  Token found by ${option[1]}`)
+      // If this is self-hosted (-u is set), do not validate
+      // This is because self-hosted can use a global upload token
+      if (args.url !== DEFAULT_UPLOAD_HOST) {
+        verbose('Self-hosted install detected due to -u flag')
+        info(`->  Token set by ${option[1]}`)
+        return option[0]
+      }
+      if (validateToken(option[0]) !== true) {
+        throw new Error(
+          `Token found by ${option[1]} with length ${option[0]?.length} did not pass validation`,
+        )
+      }
+
       return option[0]
     }
   }

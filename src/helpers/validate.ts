@@ -7,6 +7,7 @@ import { UploaderArgs } from '../types'
  * @returns boolean
  */
 export function validateToken(token: string): boolean {
+  // TODO: this should be refactored to check against format and length
   return validator.isAlphanumeric(token) || validator.isUUID(token)
 }
 
