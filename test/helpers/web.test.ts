@@ -93,6 +93,25 @@ describe('Web Helpers', () => {
     )
   })
 
+  it('NaN PR numbers are not propagated to the query', () => {
+    const queryParams: IServiceParams  = {
+      branch: 'testBranch',
+      commit: 'commitSHA',
+      build: '4',
+      buildURL: 'https://ci-providor.local/job/xyz',
+      name: 'testName',
+      tag: 'tagV1',
+      slug: 'testOrg/testRepo',
+      service: 'testingCI',
+      flags: 'unit,uploader',
+      pr: NaN,
+      job: '6',
+    }
+    expect(generateQuery(queryParams)).toBe(
+      'branch=testBranch&commit=commitSHA&build=4&build_url=https://ci-providor.local/job/xyz&name=testName&tag=tagV1&slug=testOrg/testRepo&service=testingCI&flags=unit,uploader&pr=&job=6',
+    )
+  })
+
   it('can populateBuildParams() from args', () => {
     const result = populateBuildParams(
       { args: { flags: 'testFlag', tag: 'testTag' }, environment: {} },
