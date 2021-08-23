@@ -30,7 +30,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
         info(`->  Token set by ${option[1]}`)
         return option[0]
       }
-      if (validateToken(option[0]) !== true) {
+      if (validateToken(token) !== true) {
         throw new Error(
           `Token found by ${source} with length ${token?.length} did not pass validation`,
         )
