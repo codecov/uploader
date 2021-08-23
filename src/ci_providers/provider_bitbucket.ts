@@ -54,11 +54,7 @@ function _getSHA(inputs: UploaderInputs): string {
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
 
-  let slug = ''
-  if (envs.BITBUCKET_REPO_OWNER && envs.BITBUCKET_REPO_SLUG) {
-    slug = `${envs.BITBUCKET_REPO_OWNER}/${envs.BITBUCKET_REPO_SLUG}`
-  }
-  return args.slug || slug
+  return args.slug || envs.BITBUCKET_REPO_FULL_NAME || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
