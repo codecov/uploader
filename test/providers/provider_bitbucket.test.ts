@@ -80,8 +80,7 @@ describe('Bitbucket Params', () => {
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',
         BITBUCKET_PR_ID: '2',
-        BITBUCKET_REPO_OWNER: 'testOwner',
-        BITBUCKET_REPO_SLUG: 'testSlug',
+        BITBUCKET_REPO_FULL_NAME: 'testOwner/testSlug',
         CI: 'true',
       },
     }
@@ -111,8 +110,7 @@ describe('Bitbucket Params', () => {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',
-        BITBUCKET_REPO_OWNER: 'testOwner',
-        BITBUCKET_REPO_SLUG: 'testSlug',
+        BITBUCKET_REPO_FULL_NAME: 'testOwner/testSlug',
         CI: 'true',
       },
     }
@@ -142,8 +140,7 @@ describe('Bitbucket Params', () => {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha12',
-        BITBUCKET_REPO_OWNER: 'testOwner',
-        BITBUCKET_REPO_SLUG: 'testSlug',
+        BITBUCKET_REPO_FULL_NAME: 'testOwner/testSlug',
         CI: 'true',
       },
     }
@@ -184,8 +181,7 @@ describe('Bitbucket Params', () => {
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',
         BITBUCKET_PR_ID: '2',
-        BITBUCKET_REPO_OWNER: 'testOwner',
-        BITBUCKET_REPO_SLUG: 'testSlug',
+        BITBUCKET_REPO_FULL_NAME: 'testOwner/testSlug',
         CI: 'true',
       },
     }
