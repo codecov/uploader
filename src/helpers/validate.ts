@@ -42,23 +42,6 @@ export function validateSHA(
   )
 }
 
-export function fetchToken(args: UploaderArgs): string {
-  // Token gets set in the following order:
-  // * args.token
-  // * process.env.CODECOV_TOKEN
-  // * ''
-  let token = ''
-  if (args.token && validateToken(args.token)) {
-    token = args.token
-  } else if (
-    process.env.CODECOV_TOKEN &&
-    validateToken(process.env.CODECOV_TOKEN)
-  ) {
-    token = process.env.CODECOV_TOKEN
-  }
-  return token
-}
-
 export function checkValueType(
   name: string,
   value: unknown,
