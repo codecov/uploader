@@ -7,6 +7,7 @@ import { UploaderArgs } from '../types'
  * @returns boolean
  */
 export function validateToken(token: string): boolean {
+  // TODO: this should be refactored to check against format and length
   return validator.isAlphanumeric(token) || validator.isUUID(token)
 }
 
@@ -40,23 +41,6 @@ export function validateSHA(
   return (
     commitSHA.length === requestedLength && validator.isAlphanumeric(commitSHA)
   )
-}
-
-export function fetchToken(args: UploaderArgs): string {
-  // Token gets set in the following order:
-  // * args.token
-  // * process.env.CODECOV_TOKEN
-  // * ''
-  let token = ''
-  if (args.token && validateToken(args.token)) {
-    token = args.token
-  } else if (
-    process.env.CODECOV_TOKEN &&
-    validateToken(process.env.CODECOV_TOKEN)
-  ) {
-    token = process.env.CODECOV_TOKEN
-  }
-  return token
 }
 
 export function checkValueType(

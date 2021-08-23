@@ -31,10 +31,25 @@ describe('runExternalProgram()', () => {
 
     })
 
-    it('should throw an error when program returns an error', () => {
+    it('should return stdout on success', () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('ls', ['-geewhiz'])).thenReturn({
           stdout: 'I am output',
+        })
+        expect(runExternalProgram('ls', ['-geewhiz'])).toEqual("I am output")
+
+    })
+
+    it('should return a trimmed string with no newlines', () => {
+        const spawnSync = td.replace(childProcess, 'spawnSync')
+        td.when(spawnSync('ls', ['-geewhiz'])).thenReturn({
+          stdout: `
+          
+          
+          I am output
+          
+          
+          `,
         })
         expect(runExternalProgram('ls', ['-geewhiz'])).toEqual("I am output")
 
