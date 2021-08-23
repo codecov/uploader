@@ -21,7 +21,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
   ]
 
   for (const option of options) {
-    if (option[0]) {
+    if (token) {
       info(`->  Token found by ${source}`)
       // If this is self-hosted (-u is set), do not validate
       // This is because self-hosted can use a global upload token
