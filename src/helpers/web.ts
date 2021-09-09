@@ -93,7 +93,7 @@ export async function uploadToCodecov(
     .set('X-Reduced-Redundancy', 'false')
     .on('error', err => {
       logError(
-        `Error POSTing to ${uploadURL}: ${err.status} ${err.response.text}`,
+        `Error POSTing to ${uploadURL}: ${err.status} ${err.response?.text}`,
       )
     })
     .ok(res => res.status === 200)
