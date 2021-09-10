@@ -28,3 +28,7 @@ build_alpine:
 	npm run build-alpine
 
 .PHONY: clean install test build
+
+run-standards-comparison:
+	docker pull codecov/autotest:standards-latest > /dev/null 2>&1
+	docker run --network autotest_codecov -e HOST_URL=http://web.local:5000 codecov/autotest:standards-latest
