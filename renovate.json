@@ -9,7 +9,7 @@
     {
       "matchPackageNames": ["pkg"],
       "allowedVersions": "4.4.8"
-    },
+    }, 
     {
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["patch", "minor"],
