@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  win: circleci/windows@2.4.1
+  win: circleci/windows@2.4.1 
 
 jobs:
   build-linux-and-osx:
@@ -18,7 +18,7 @@ jobs:
       # documented at https://circleci.com/docs/2.0/circleci-images/
       # - image: circleci/mongo:3.4.4
 
-    working_directory: ~/repo
+    working_directory: ~/repo 
 
     steps:
       - checkout
