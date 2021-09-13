@@ -17,7 +17,7 @@
         "superagent": "6.1.0",
         "typescript": "4.4.3",
         "validator": "13.6.0",
-        "yargs": "16.2.0"
+        "yargs": "17.1.1"
       },
       "bin": {
         "codecov": "dist/bin/codecov.js"
@@ -3093,7 +3093,9 @@
       "dev": true,
       "hasInstallScript": true,
       "optional": true,
-      "os": ["darwin"],
+      "os": [
+        "darwin"
+      ],
       "engines": {
         "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
       }
@@ -3914,6 +3916,24 @@
         }
       }
     },
+    "node_modules/jest-cli/node_modules/yargs": {
+      "version": "16.2.0",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
+      "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+      "dev": true,
+      "dependencies": {
+        "cliui": "^7.0.2",
+        "escalade": "^3.1.1",
+        "get-caller-file": "^2.0.5",
+        "require-directory": "^2.1.1",
+        "string-width": "^4.2.0",
+        "y18n": "^5.0.5",
+        "yargs-parser": "^20.2.2"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
     "node_modules/jest-diff": {
       "version": "27.2.0",
       "resolved": "https://registry.npmjs.org/jest-diff/-/jest-diff-27.2.0.tgz",
@@ -4268,6 +4288,24 @@
       "dev": true,
       "dependencies": {
         "@types/yargs-parser": "*"
+      }
+    },
+    "node_modules/jest-runtime/node_modules/yargs": {
+      "version": "16.2.0",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
+      "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+      "dev": true,
+      "dependencies": {
+        "cliui": "^7.0.2",
+        "escalade": "^3.1.1",
+        "get-caller-file": "^2.0.5",
+        "require-directory": "^2.1.1",
+        "string-width": "^4.2.0",
+        "y18n": "^5.0.5",
+        "yargs-parser": "^20.2.2"
+      },
+      "engines": {
+        "node": ">=10"
       }
     },
     "node_modules/jest-serializer": {
@@ -5400,6 +5438,24 @@
       },
       "bin": {
         "pkg-fetch": "lib-es5/bin.js"
+      }
+    },
+    "node_modules/pkg-fetch/node_modules/yargs": {
+      "version": "16.2.0",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
+      "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+      "dev": true,
+      "dependencies": {
+        "cliui": "^7.0.2",
+        "escalade": "^3.1.1",
+        "get-caller-file": "^2.0.5",
+        "require-directory": "^2.1.1",
+        "string-width": "^4.2.0",
+        "y18n": "^5.0.5",
+        "yargs-parser": "^20.2.2"
+      },
+      "engines": {
+        "node": ">=10"
       }
     },
     "node_modules/pkg/node_modules/@babel/parser": {
@@ -6868,9 +6924,9 @@
       }
     },
     "node_modules/yargs": {
-      "version": "16.2.0",
-      "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
-      "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+      "version": "17.1.1",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-17.1.1.tgz",
+      "integrity": "sha512-c2k48R0PwKIqKhPMWjeiF6y2xY/gPMUlro0sgxqXpbOIohWiLNXWslsootttv7E1e73QPAMQSg5FeySbVcpsPQ==",
       "dependencies": {
         "cliui": "^7.0.2",
         "escalade": "^3.1.1",
@@ -6881,7 +6937,7 @@
         "yargs-parser": "^20.2.2"
       },
       "engines": {
-        "node": ">=10"
+        "node": ">=12"
       }
     },
     "node_modules/yargs-parser": {
@@ -9832,6 +9888,21 @@
             "micromatch": "^4.0.4",
             "pretty-format": "^27.2.0"
           }
+        },
+        "yargs": {
+          "version": "16.2.0",
+          "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
+          "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+          "dev": true,
+          "requires": {
+            "cliui": "^7.0.2",
+            "escalade": "^3.1.1",
+            "get-caller-file": "^2.0.5",
+            "require-directory": "^2.1.1",
+            "string-width": "^4.2.0",
+            "y18n": "^5.0.5",
+            "yargs-parser": "^20.2.2"
+          }
         }
       }
     },
@@ -10125,6 +10196,21 @@
           "dev": true,
           "requires": {
             "@types/yargs-parser": "*"
+          }
+        },
+        "yargs": {
+          "version": "16.2.0",
+          "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
+          "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+          "dev": true,
+          "requires": {
+            "cliui": "^7.0.2",
+            "escalade": "^3.1.1",
+            "get-caller-file": "^2.0.5",
+            "require-directory": "^2.1.1",
+            "string-width": "^4.2.0",
+            "y18n": "^5.0.5",
+            "yargs-parser": "^20.2.2"
           }
         }
       }
@@ -11011,6 +11097,23 @@
         "progress": "^2.0.3",
         "semver": "^7.3.5",
         "yargs": "^16.2.0"
+      },
+      "dependencies": {
+        "yargs": {
+          "version": "16.2.0",
+          "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
+          "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+          "dev": true,
+          "requires": {
+            "cliui": "^7.0.2",
+            "escalade": "^3.1.1",
+            "get-caller-file": "^2.0.5",
+            "require-directory": "^2.1.1",
+            "string-width": "^4.2.0",
+            "y18n": "^5.0.5",
+            "yargs-parser": "^20.2.2"
+          }
+        }
       }
     },
     "please-upgrade-node": {
@@ -12105,9 +12208,9 @@
       "dev": true
     },
     "yargs": {
-      "version": "16.2.0",
-      "resolved": "https://registry.npmjs.org/yargs/-/yargs-16.2.0.tgz",
-      "integrity": "sha512-D1mvvtDG0L5ft/jGWkLpG1+m0eQxOfaBvTNELraWj22wSVUMWxZUvYgJYcKh6jGGIkJFhH4IZPQhR4TKpc8mBw==",
+      "version": "17.1.1",
+      "resolved": "https://registry.npmjs.org/yargs/-/yargs-17.1.1.tgz",
+      "integrity": "sha512-c2k48R0PwKIqKhPMWjeiF6y2xY/gPMUlro0sgxqXpbOIohWiLNXWslsootttv7E1e73QPAMQSg5FeySbVcpsPQ==",
       "requires": {
         "cliui": "^7.0.2",
         "escalade": "^3.1.1",
