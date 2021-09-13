@@ -25,7 +25,7 @@
       "devDependencies": {
         "@types/glob": "7.1.4",
         "@types/jest": "27.0.1",
-        "@types/js-yaml": "4.0.2",
+        "@types/js-yaml": "4.0.3",
         "@types/mock-fs": "4.13.1",
         "@types/node": "16.3.3",
         "@types/superagent": "4.1.12",
@@ -1261,9 +1261,9 @@
       }
     },
     "node_modules/@types/js-yaml": {
-      "version": "4.0.2",
-      "resolved": "https://registry.npmjs.org/@types/js-yaml/-/js-yaml-4.0.2.tgz",
-      "integrity": "sha512-KbeHS/Y4R+k+5sWXEYzAZKuB1yQlZtEghuhRxrVRLaqhtoG5+26JwQsa4HyS3AWX8v1Uwukma5HheduUDskasA==",
+      "version": "4.0.3",
+      "resolved": "https://registry.npmjs.org/@types/js-yaml/-/js-yaml-4.0.3.tgz",
+      "integrity": "sha512-5t9BhoORasuF5uCPr+d5/hdB++zRFUTMIZOzbNkr+jZh3yQht4HYbRDyj9fY8n2TZT30iW9huzav73x4NikqWg==",
       "dev": true
     },
     "node_modules/@types/json-schema": {
@@ -3093,9 +3093,7 @@
       "dev": true,
       "hasInstallScript": true,
       "optional": true,
-      "os": [
-        "darwin"
-      ],
+      "os": ["darwin"],
       "engines": {
         "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
       }
@@ -7927,9 +7925,9 @@
       }
     },
     "@types/js-yaml": {
-      "version": "4.0.2",
-      "resolved": "https://registry.npmjs.org/@types/js-yaml/-/js-yaml-4.0.2.tgz",
-      "integrity": "sha512-KbeHS/Y4R+k+5sWXEYzAZKuB1yQlZtEghuhRxrVRLaqhtoG5+26JwQsa4HyS3AWX8v1Uwukma5HheduUDskasA==",
+      "version": "4.0.3",
+      "resolved": "https://registry.npmjs.org/@types/js-yaml/-/js-yaml-4.0.3.tgz",
+      "integrity": "sha512-5t9BhoORasuF5uCPr+d5/hdB++zRFUTMIZOzbNkr+jZh3yQht4HYbRDyj9fY8n2TZT30iW9huzav73x4NikqWg==",
       "dev": true
     },
     "@types/json-schema": {
