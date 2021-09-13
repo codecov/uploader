@@ -86,8 +86,8 @@ export function getTokenFromYaml(
             encoding: 'utf-8',
           })
           const yamlConfig: ICodecovYAML = yamlParse(
-            yaml.load(fileContents, { json: true }) || {},
-          )
+            new Object(yaml.load(fileContents, { json: true }) || {},
+          ))
           if (
             yamlConfig['codecov'] &&
             yamlConfig['codecov']['token'] &&
