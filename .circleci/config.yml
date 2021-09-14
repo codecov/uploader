@@ -418,11 +418,32 @@ jobs:
             gcloud --quiet config set project $GCLOUD_UPLOADER_PROJECT_ID
             gcloud pubsub topics publish $GCLOUD_UPLOADER_PUBSUB_TOPIC --message '{"release":"'"$RELEASE_TAG"'", "latest":true}'
 
+  standards-coverage-comparison:
+    machine: true
+    steps:
+      - checkout
+      - run:
+          name: Clone Autotest and Start Acceptance Testing Containers
+          command: |
+            cd ..
+            git clone --depth 5 https://codecov:${GITHUB_TOKEN}@github.com/codecov/autotest.git > /dev/null 2>&1
+            cd autotest/
+            echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker-compose -f docker-compose-acceptance.yml up -d > /dev/null 2>&1
+            sleep 10
+      - run:
+          name: Standards Coverage Comparison
+          command: make run-standards-comparison
+
 workflows:
   version: 2
 
   'Build and Test':
     jobs:
+      - standards-coverage-comparison:
+          context:
+            - "DockerHub Push Context"
+            - "Github Checkout"
       - build-linux-and-osx
       - build-alpine:
           requires:
