@@ -45,7 +45,7 @@
     "@types/js-yaml": "4.0.3",
     "@types/mock-fs": "4.13.1",
     "@types/node": "16.3.3",
-    "@types/superagent": "4.1.12",
+    "@types/superagent": "4.1.13",
     "@types/validator": "13.6.3",
     "@types/yargs": "17.0.2",
     "@typescript-eslint/eslint-plugin": "4.31.1",
