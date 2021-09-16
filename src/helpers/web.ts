@@ -93,7 +93,7 @@ export async function uploadToCodecov(
     .set('X-Reduced-Redundancy', 'false')
     .on('error', err => {
       logError(
-        `Error POSTing to ${uploadURL}: ${err.status} ${err.response.text}`,
+        `Error POSTing to ${uploadURL}: ${err.status} ${err.response?.text}`,
       )
     })
     .ok(res => res.status === 200)
@@ -114,9 +114,9 @@ export function generateQuery(queryParams: IServiceParams): string {
   if (queryParams.pr === 0  || isNaN(Number(queryParams.pr))) {
     queryParams.pr = ''
   }
-  return Object.entries(queryParams)
-    .map(([key, value]) => `${snakeCase(key)}=${value}`)
-    .join('&')
+  return new URLSearchParams(Object.entries(queryParams)
+    .map(([key, value]) => [snakeCase(key), value])
+  ).toString()
 }
 
 export function parsePOSTResults(uploadURL: string): {
