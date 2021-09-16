@@ -6,7 +6,7 @@ export function detect(envs: UploaderEnvs): boolean {
 
 // eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
-  return ''
+  return inputs.environment['CIRCLE_BUILD_URL'] ?? ''
 }
 
 // This is the value that gets passed to the Codecov uploader

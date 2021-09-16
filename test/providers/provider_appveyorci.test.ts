@@ -80,7 +80,7 @@ describe('AppveyorCI Params', () => {
       branch: 'main',
       build: '1',
       buildURL:
-        'https%3A%2F%2Fappveyor.com%2Fproject%2FtestOrg%2FtestRepo%2Fbuilds%2F2%2Fjob%2F1',
+        'https://appveyor.com/project/testOrg/testRepo/builds/2/job/1',
       commit: 'testingsha',
       job: 'testOrg%2FtestRepo%2F3',
       pr: 4,

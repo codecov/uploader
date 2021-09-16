@@ -64,7 +64,7 @@ describe('Jenkins CI Params', () => {
       branch: 'main',
       build: '1',
       buildURL:
-        'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
+        'https://example.azure.comtestOrg/_build/results?buildId=2',
       commit: 'testingsha',
       job: '2',
       pr: 3,
@@ -100,7 +100,7 @@ describe('Jenkins CI Params', () => {
       branch: 'main',
       build: '1',
       buildURL:
-        'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
+        'https://example.azure.comtestOrg/_build/results?buildId=2',
       commit: 'testingsha',
       job: '2',
       pr: 3,
@@ -136,7 +136,7 @@ describe('Jenkins CI Params', () => {
       branch: 'main',
       build: '1',
       buildURL:
-        'https%3A%2F%2Fexample.azure.comtestOrg%2F_build%2Fresults%3FbuildId%3D2',
+        'https://example.azure.comtestOrg/_build/results?buildId=2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: '2',
       pr: 3,

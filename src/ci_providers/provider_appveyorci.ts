@@ -9,7 +9,7 @@ export function detect(envs: UploaderEnvs): boolean {
 
 function _getBuild(inputs: UploaderInputs) {
   const { args, environment: envs } = inputs
-  return args.build || encodeURIComponent(envs.APPVEYOR_JOB_ID || '')
+  return args.build || envs.APPVEYOR_JOB_ID || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs) {
@@ -20,8 +20,8 @@ function _getBuildURL(inputs: UploaderInputs) {
     envs.APPVEYOR_BUILD_ID &&
     envs.APPVEYOR_JOB_ID
   ) {
-    return encodeURIComponent(
-      `${envs.APPVEYOR_URL}/project/${envs.APPVEYOR_REPO_NAME}/builds/${envs.APPVEYOR_BUILD_ID}/job/${envs.APPVEYOR_JOB_ID}`,
+    return (
+      `${envs.APPVEYOR_URL}/project/${envs.APPVEYOR_REPO_NAME}/builds/${envs.APPVEYOR_BUILD_ID}/job/${envs.APPVEYOR_JOB_ID}`
     )
   }
   return ''
