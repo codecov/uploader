@@ -60,7 +60,7 @@ describe('Jenkins CI Params', () => {
     const expected: IServiceParams = {
       branch: 'main',
       build: '1',
-      buildURL: 'https%3A%2F%2Fexample.jenkins.com',
+      buildURL: 'https://example.jenkins.com',
       commit: 'testingsha',
       job: '',
       pr: 2,
