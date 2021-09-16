@@ -14,8 +14,8 @@ function _getBuild(inputs: UploaderInputs): string {
 function _getBuildURL(inputs: UploaderInputs): string {
   const { environment: envs } = inputs
   if (envs.SYSTEM_TEAMPROJECT && envs.BUILD_BUILDID) {
-    return encodeURIComponent(
-      `${envs.SYSTEM_TEAMFOUNDATIONSERVERURI}${envs.SYSTEM_TEAMPROJECT}/_build/results?buildId=${envs.BUILD_BUILDID}`,
+    return (
+      `${envs.SYSTEM_TEAMFOUNDATIONSERVERURI}${envs.SYSTEM_TEAMPROJECT}/_build/results?buildId=${envs.BUILD_BUILDID}`
     )
   }
   return ''

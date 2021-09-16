@@ -61,7 +61,7 @@ describe('GitHub Actions Params', () => {
       branch: 'master',
       build: '2',
       buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+        'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: 0,
@@ -95,7 +95,7 @@ describe('GitHub Actions Params', () => {
       branch: 'branch',
       build: '2',
       buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+        'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: 1,
@@ -136,7 +136,7 @@ describe('GitHub Actions Params', () => {
       branch: 'branch',
       build: '2',
       buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+        'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: 'testWorkflow',
       pr: 1,
@@ -177,7 +177,7 @@ describe('GitHub Actions Params', () => {
       branch: 'branch',
       build: '3',
       buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F3',
+        'https://github.com/testOrg/testRepo/actions/runs/3',
       commit: 'testsha',
       job: '',
       pr: 2,
@@ -216,7 +216,7 @@ describe('GitHub Actions Params', () => {
       branch: 'branch',
       build: '2',
       buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+        'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: 1,

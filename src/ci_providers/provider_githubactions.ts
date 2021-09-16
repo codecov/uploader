@@ -14,10 +14,10 @@ function _getBuild(inputs: UploaderInputs): string {
 
 function _getBuildURL(inputs: UploaderInputs): string {
   const { environment: envs } = inputs
-  return encodeURIComponent(
+  return (
     `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(
       inputs,
-    )}`,
+    )}`
   )
 }
 
@@ -37,7 +37,7 @@ function _getBranch(inputs: UploaderInputs): string {
 }
 
 function _getJob(envs: UploaderEnvs): string {
-  return encodeURIComponent(envs.GITHUB_WORKFLOW || '')
+  return (envs.GITHUB_WORKFLOW || '')
 }
 
 function _getPR(inputs: UploaderInputs): number {
