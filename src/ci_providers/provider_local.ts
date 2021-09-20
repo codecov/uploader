@@ -38,9 +38,9 @@ function _getJob(env: UploaderEnvs): string {
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
-  return Number(args.pr || '')
+  return args.pr || ''
 }
 
 // This is the value that gets passed to the Codecov uploader

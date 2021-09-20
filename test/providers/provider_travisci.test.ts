@@ -74,7 +74,7 @@ describe('TravisCI Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '2',
-      pr: 0,
+      pr: '',
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
@@ -110,7 +110,7 @@ describe('TravisCI Params', () => {
       buildURL: '',
       commit: 'testingprsha',
       job: '2',
-      pr: 0,
+      pr: '',
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
@@ -145,7 +145,7 @@ describe('TravisCI Params', () => {
       buildURL: '',
       commit: 'testingprsha',
       job: '2',
-      pr: 0,
+      pr: '',
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
@@ -177,7 +177,7 @@ describe('TravisCI Params', () => {
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'travis',
       slug: 'testOrg/testRepo',
     }

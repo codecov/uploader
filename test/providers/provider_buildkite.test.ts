@@ -54,7 +54,7 @@ describe('Buildkite Params', () => {
       buildURL: 'https://buildkite.com/testOrg/testRepo',
       commit: 'testingsha',
       job: '3',
-      pr: 0,
+      pr: '',
       service: 'buildkite',
       slug: 'testRepo',
     }
@@ -86,7 +86,7 @@ describe('Buildkite Params', () => {
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'buildkite',
       slug: 'testOrg/testRepo',
     }

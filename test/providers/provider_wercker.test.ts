@@ -59,7 +59,7 @@ describe('Wercker CI Params', () => {
       buildURL: 'https://example.com/build',
       commit: 'testingsha',
       job: '',
-      pr: 0,
+      pr: '',
       service: 'wercker',
       slug: 'testOrg/testRepo',
     }
@@ -96,7 +96,7 @@ describe('Wercker CI Params', () => {
       buildURL: 'https://example.com/build',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'wercker',
       slug: 'testOrg/testRepo',
     }

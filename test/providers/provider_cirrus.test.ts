@@ -55,7 +55,7 @@ describe('Cirrus Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: 1,
+      pr: '1',
       service: 'cirrus-ci',
       slug: 'https:/example.com/repo',
     }
@@ -92,7 +92,7 @@ describe('Cirrus Params', () => {
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'cirrus-ci',
       slug: 'testOrg/testRepo',
     }

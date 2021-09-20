@@ -23,9 +23,9 @@ function _getJob(envs: UploaderEnvs): string {
   return envs.CIRRUS_TASK_ID || ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return Number(args.pr || envs.CIRRUS_PR || '')
+  return args.pr || envs.CIRRUS_PR || ''
 }
 
 function _getService(): string {

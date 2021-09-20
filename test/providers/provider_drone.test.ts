@@ -56,7 +56,7 @@ describe('Drone Params', () => {
       buildURL: 'https://www.drone.io/',
       commit: 'testingsha',
       job: '',
-      pr: 1,
+      pr: '1',
       service: 'drone',
       slug: 'https:/example.com/repo',
     }

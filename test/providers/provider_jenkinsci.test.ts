@@ -63,7 +63,7 @@ describe('Jenkins CI Params', () => {
       buildURL: 'https://example.jenkins.com',
       commit: 'testingsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'jenkins',
       slug: '',
     }
@@ -124,7 +124,7 @@ describe('Jenkins CI Params', () => {
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'jenkins',
       slug: 'testOrg/testRepo',
     }

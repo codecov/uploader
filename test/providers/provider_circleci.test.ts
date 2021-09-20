@@ -55,7 +55,7 @@ describe('CircleCI Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '3',
-      pr: 1,
+      pr: '1',
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }
@@ -86,7 +86,7 @@ describe('CircleCI Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '3',
-      pr: 1,
+      pr: '1',
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }

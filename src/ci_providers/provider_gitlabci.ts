@@ -26,9 +26,9 @@ function _getJob(envs: UploaderEnvs): string {
   return ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
-  return Number(args.pr || '')
+  return args.pr || ''
 }
 
 function _getService(): string {

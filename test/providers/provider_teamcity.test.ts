@@ -58,7 +58,7 @@ describe('TeamCity Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: 0,
+      pr: '',
       service: 'teamcity',
       slug: '',
     }
@@ -92,7 +92,7 @@ describe('TeamCity Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: 0,
+      pr: '',
       service: 'teamcity',
       slug: 'testOrg/testRepo',
     }
@@ -135,7 +135,7 @@ describe('TeamCity Params', () => {
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'teamcity',
       slug: 'testOrg/testRepo',
     }

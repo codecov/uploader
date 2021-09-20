@@ -51,7 +51,7 @@ describe('GitLabCI Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: 'gitlab',
       slug: '',
     }
@@ -88,7 +88,7 @@ describe('GitLabCI Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: 0,
+      pr: '',
       service: 'gitlab',
       slug: 'testOrg/testRepo',
     }
@@ -118,7 +118,7 @@ describe('GitLabCI Params', () => {
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: 0,
+      pr: '',
       service: 'gitlab',
       slug: 'testOrg/testRepo',
     }
@@ -208,7 +208,7 @@ describe('GitLabCI Params', () => {
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'gitlab',
       slug: 'testOrg/testRepo',
     }
