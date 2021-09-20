@@ -61,7 +61,7 @@ describe('CodeBuild Params', () => {
         buildURL: '',
         commit: 'testingsha',
         job: '2',
-        pr: 1,
+        pr: '1',
         service: 'codebuild',
         slug: 'repo',
       }
@@ -98,7 +98,7 @@ describe('CodeBuild Params', () => {
         buildURL: '',
         commit: 'testsha',
         job: '2',
-        pr: 7,
+        pr: '7',
         service: 'codebuild',
         slug: 'testOrg/testRepo',
       }

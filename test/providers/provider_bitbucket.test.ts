@@ -59,7 +59,7 @@ describe('Bitbucket Params', () => {
       buildURL: '',
       commit: '',
       job: '1',
-      pr: 0,
+      pr: '',
       service: 'bitbucket',
       slug: '',
     }
@@ -90,7 +90,7 @@ describe('Bitbucket Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '1',
-      pr: 2,
+      pr: '2',
       service: 'bitbucket',
       slug: 'testOwner/testSlug',
     }
@@ -120,7 +120,7 @@ describe('Bitbucket Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '1',
-      pr: 0,
+      pr: '',
       service: 'bitbucket',
       slug: 'testOwner/testSlug',
     }
@@ -150,7 +150,7 @@ describe('Bitbucket Params', () => {
       buildURL: '',
       commit: 'newtestsha',
       job: '1',
-      pr: 0,
+      pr: '',
       service: 'bitbucket',
       slug: 'testOwner/testSlug',
     }
@@ -191,7 +191,7 @@ describe('Bitbucket Params', () => {
       buildURL: '',
       commit: 'overwriteSha',
       job: '1',
-      pr: 4,
+      pr: '4',
       service: 'bitbucket',
       slug: 'overwriteOwner/overwriteRepo',
     }

@@ -65,7 +65,7 @@ describe('Local Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '',
-      pr: 1,
+      pr: '1',
       service: '',
       slug: 'owner/repo',
     }

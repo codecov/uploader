@@ -48,7 +48,7 @@ describe('<Ci> Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: '',
       slug: '',
     }
@@ -70,7 +70,7 @@ describe('<Ci> Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: '',
       slug: '',
     }
@@ -97,7 +97,7 @@ describe('<Ci> Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: '',
       slug: '',
     }
@@ -124,7 +124,7 @@ describe('<Ci> Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: '',
       slug: '',
     }

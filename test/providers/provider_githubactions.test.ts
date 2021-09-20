@@ -64,7 +64,7 @@ describe('GitHub Actions Params', () => {
         'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: 0,
+      pr: '',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
@@ -98,7 +98,7 @@ describe('GitHub Actions Params', () => {
         'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: 1,
+      pr: '1',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
@@ -139,7 +139,7 @@ describe('GitHub Actions Params', () => {
         'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: 'testWorkflow',
-      pr: 1,
+      pr: '1',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
@@ -180,7 +180,7 @@ describe('GitHub Actions Params', () => {
         'https://github.com/testOrg/testRepo/actions/runs/3',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
@@ -219,7 +219,7 @@ describe('GitHub Actions Params', () => {
         'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: 1,
+      pr: '1',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }

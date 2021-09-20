@@ -83,7 +83,7 @@ describe('AppveyorCI Params', () => {
         'https://appveyor.com/project/testOrg/testRepo/builds/2/job/1',
       commit: 'testingsha',
       job: 'testOrg%2FtestRepo%2F3',
-      pr: 4,
+      pr: '4',
       service: 'appveyor',
       slug: 'testOrg/testRepo',
     }
@@ -112,7 +112,7 @@ describe('AppveyorCI Params', () => {
       buildURL: '',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'appveyor',
       slug: 'testOrg/testRepo',
     }
