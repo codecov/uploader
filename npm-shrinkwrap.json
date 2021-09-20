@@ -28,7 +28,7 @@
         "@types/js-yaml": "4.0.3",
         "@types/mock-fs": "4.13.1",
         "@types/node": "16.3.3",
-        "@types/superagent": "4.1.12",
+        "@types/superagent": "4.1.13",
         "@types/validator": "13.6.3",
         "@types/yargs": "17.0.2",
         "@typescript-eslint/eslint-plugin": "4.31.1",
@@ -1312,9 +1312,9 @@
       "dev": true
     },
     "node_modules/@types/superagent": {
-      "version": "4.1.12",
-      "resolved": "https://registry.npmjs.org/@types/superagent/-/superagent-4.1.12.tgz",
-      "integrity": "sha512-1GQvD6sySQPD6p9EopDFI3f5OogdICl1sU/2ij3Esobz/RtL9fWZZDPmsuv7eiy5ya+XNiPAxUcI3HIUTJa+3A==",
+      "version": "4.1.13",
+      "resolved": "https://registry.npmjs.org/@types/superagent/-/superagent-4.1.13.tgz",
+      "integrity": "sha512-YIGelp3ZyMiH0/A09PMAORO0EBGlF5xIKfDpK74wdYvWUs2o96b5CItJcWPdH409b7SAXIIG6p8NdU/4U2Maww==",
       "dev": true,
       "dependencies": {
         "@types/cookiejar": "*",
@@ -7978,9 +7978,9 @@
       "dev": true
     },
     "@types/superagent": {
-      "version": "4.1.12",
-      "resolved": "https://registry.npmjs.org/@types/superagent/-/superagent-4.1.12.tgz",
-      "integrity": "sha512-1GQvD6sySQPD6p9EopDFI3f5OogdICl1sU/2ij3Esobz/RtL9fWZZDPmsuv7eiy5ya+XNiPAxUcI3HIUTJa+3A==",
+      "version": "4.1.13",
+      "resolved": "https://registry.npmjs.org/@types/superagent/-/superagent-4.1.13.tgz",
+      "integrity": "sha512-YIGelp3ZyMiH0/A09PMAORO0EBGlF5xIKfDpK74wdYvWUs2o96b5CItJcWPdH409b7SAXIIG6p8NdU/4U2Maww==",
       "dev": true,
       "requires": {
         "@types/cookiejar": "*",

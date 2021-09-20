@@ -28,9 +28,9 @@ function _getJob(envs: UploaderEnvs): string {
   return envs.TRAVIS_JOB_ID || ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return Number(args.pr || envs.TRAVIS_PULL_REQUEST || '')
+  return args.pr || envs.TRAVIS_PULL_REQUEST || ''
 }
 
 function _getService(): string {

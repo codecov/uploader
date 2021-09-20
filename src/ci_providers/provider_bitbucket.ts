@@ -27,9 +27,9 @@ function _getJob(envs: UploaderEnvs): string {
   return envs.BITBUCKET_BUILD_NUMBER || ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return Number(args.pr || envs.BITBUCKET_PR_ID || '')
+  return args.pr || envs.BITBUCKET_PR_ID || ''
 }
 
 function _getService(): string {

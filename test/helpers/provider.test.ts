@@ -17,21 +17,15 @@ describe('detectProvider()', () => {
       },
       environment: {},
     }
-    const expectedOutput: IServiceParams = {
-      branch: '',
-      build: '',
-      buildURL: '',
+    const expectedOutput: Partial<IServiceParams> = {
       commit: '1234566',
-      job: '',
-      pr: 0,
-      service: '',
       slug: 'fakeOrg/fakeRepo',
     }
-    expect(detectProvider(inputs)).toEqual(expectedOutput)
+    expect(detectProvider(inputs)).toMatchObject(expectedOutput)
   })
 
   it('will throw if unable to detect', () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {})
+    jest.spyOn(console, 'error').mockImplementation(() => void {})
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(spawnSync('git')).thenReturn({
       error: 'Git is not installed!',
@@ -76,11 +70,10 @@ describe('walkProviders()', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: 'circleci',
       slug: 'undefined/undefined',
     }
     expect(walkProviders(inputs)).toEqual(expectedOutput)
   })
 })
-

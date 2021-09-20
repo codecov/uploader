@@ -31,9 +31,9 @@ function _getJob(envs: UploaderEnvs) {
   return ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return Number(args.pr || envs.ghprbPullId || envs.CHANGE_ID || '')
+  return args.pr || envs.ghprbPullId || envs.CHANGE_ID || ''
 }
 
 function _getService(): string {

@@ -2,32 +2,27 @@ import providers from '../ci_providers'
 import { info, logError, verbose } from '../helpers/logger'
 import { IServiceParams, UploaderInputs } from '../types'
 
-export function detectProvider(inputs: UploaderInputs): IServiceParams {
+export function detectProvider(inputs: UploaderInputs): Partial<IServiceParams> {
   const { args, environment } = inputs
-  let serviceParams: IServiceParams | undefined
+  let serviceParams: Partial<IServiceParams> | undefined
 
   //   check if we have a complete set of manual overrides (slug, SHA)
   if (args.sha && args.slug) {
     // We have the needed args for a manual override
     info(
-      `Using manual override from args. CI Provider detection will not be ran.`,
+      `Using manual override from args.`,
     )
     serviceParams = {
-      branch: '',
-      build: '',
-      buildURL: '',
       commit: args.sha,
-      job: '',
-      pr: 0,
-      service: '',
       slug: args.slug,
     }
-    return serviceParams
+  } else {
+    serviceParams = undefined
   }
 
-  //   if not, loop though all providers
+  //   loop though all providers
   try {
-    serviceParams = walkProviders(inputs)
+    serviceParams = { ...walkProviders(inputs), ...serviceParams }
     if (serviceParams !== undefined) {
       return serviceParams
     }
@@ -35,11 +30,13 @@ export function detectProvider(inputs: UploaderInputs): IServiceParams {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
     if (serviceParams !== undefined) {
       logError(`Errow detecting repos setting using git: ${error}`)
+    } else {
+      throw new Error(
+        '\nUnable to detect service, please specify sha and slug manually.\nYou can do this by passing the values with the `-S` and `-r` flags.\nSee the `-h` flag for more details.',
+      )
     }
   }
-  throw new Error(
-    '\nUnable to detect service, please specify sha and slug manually.\nYou can do this by passing the values with the `-S` and `-r` flags.\nSee the `-h` flag for more details.',
-  )
+  return serviceParams
 }
 
 export function walkProviders(

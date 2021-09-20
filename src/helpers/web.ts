@@ -16,8 +16,8 @@ import { checkValueType } from './validate'
  */
 export function populateBuildParams(
   inputs: UploaderInputs,
-  serviceParams: IServiceParams,
-): IServiceParams {
+  serviceParams: Partial<IServiceParams>,
+): Partial<IServiceParams> {
   const { args, environment: envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
@@ -109,11 +109,7 @@ export async function uploadToCodecov(
  * @param {Object} queryParams
  * @returns {string}
  */
-export function generateQuery(queryParams: IServiceParams): string {
-  checkValueType('pr', queryParams.pr, 'number')
-  if (queryParams.pr === 0  || isNaN(Number(queryParams.pr))) {
-    queryParams.pr = ''
-  }
+export function generateQuery(queryParams: Partial<IServiceParams>): string {
   return new URLSearchParams(Object.entries(queryParams)
     .map(([key, value]) => [snakeCase(key), value])
   ).toString()
