@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/codecov/uploader/compare/v0.1.1...v0.1.2) (2021-09-22)
+
+### Features
+
+- add flag to display changelog ([de6f3a4](https://github.com/codecov/uploader/commit/de6f3a4503810fac72305bb09dc3af7370ec7da6))
+
 ### 0.1.1 (2021-09-22)
 
 ### Features
