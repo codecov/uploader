@@ -16,7 +16,7 @@
     "prepare": "husky install",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "release": "standard-version"
+    "release": "standard-version --sign"
   },
   "repository": {
     "type": "git",
