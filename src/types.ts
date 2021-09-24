@@ -20,6 +20,7 @@ export interface UploaderArgs {
   clean?: string // Move discovered coverage reports to the trash
   feature?: string // Toggle features
   source?: string // Track wrappers of the uploader
+  changelog?: string // Displays the changelog and exits
 }
 
 export type UploaderEnvs = NodeJS.Dict<string>

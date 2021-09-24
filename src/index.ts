@@ -74,6 +74,13 @@ function dryRun(
 export async function main(
   args: UploaderArgs,
 ): Promise<void | Record<string, unknown>> {
+
+  // Did user asking for changelog?
+  if (args.changelog) {
+    webHelpers.displayChangelog()
+    return
+  }
+
   /*
   Step 1: validate and sanitize inputs
   Step 2: detect if we are in a git repo

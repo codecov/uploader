@@ -389,7 +389,7 @@ jobs:
           name: Package
           command: >
             RELEASE_TAG=v$(cat package.json | jq --raw-output
-            .version)_$CIRCLE_BUILD_NUM
+            .version)
 
             echo $RELEASE_TAG
 
@@ -442,8 +442,8 @@ workflows:
     jobs:
       - standards-coverage-comparison:
           context:
-            - "DockerHub Push Context"
-            - "Github Checkout"
+            - 'DockerHub Push Context'
+            - 'Github Checkout'
       - build-linux-and-osx
       - build-alpine:
           requires:
