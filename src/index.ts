@@ -74,9 +74,7 @@ function dryRun(
 export async function main(
   args: UploaderArgs,
 ): Promise<void | Record<string, unknown>> {
-  
-  console.debug({ args });
-  
+
   // Did user asking for changelog?
   if (args.changelog) {
     webHelpers.displayChangelog()
