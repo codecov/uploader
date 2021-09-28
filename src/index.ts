@@ -21,6 +21,8 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
+import { addEntry, getEntries } from './helpers/ignoreListManager'
+import path from 'path/posix'
 
 /**
  *
@@ -130,6 +132,7 @@ export async function main(
     let fileListing = ''
     try {
       fileListing = await getFileListing(projectRoot, args)
+      verbose(`Files found: ${fileListing}`, Boolean(args.verbose))
     } catch (error) {
       throw new Error(`Error getting file listing: ${error}`)
     }
@@ -149,14 +152,38 @@ export async function main(
       coverageFilePaths = args.file
     }
   }
-  coverageFilePaths = coverageFilePaths.concat(await getCoverageFiles(
-    args.dir || projectRoot,
-    coverageFilePaths.length > 0 ? coverageFilePaths : coverageFilePatterns(),
-  ))
+
+let searchPath = projectRoot
+
+// If customer provided an exclude to -s
+if (args.dir) {
+    if (args.dir.startsWith('!') || args.dir.startsWith('^')) {
+      verbose(`Adding search path to ignore list: ${args.dir}`)
+      addEntry(args.dir.substr(1))
+    } else {
+      // Change search dir from project root to args.dir
+      searchPath = args.dir
+    }
+}
+
+  verbose(`Using ignorePatterns: ${getEntries()}`, Boolean(args.verbose))
+  verbose(`Using searchPath: ${searchPath}`, Boolean(args.verbose))
+  const coverageFiles = await await getCoverageFiles(
+    searchPath || projectRoot,
+    coverageFilePaths.length > 0 ? coverageFilePaths : coverageFilePatterns()
+  )
+  verbose(`Found the following potential coverage files: ${coverageFiles}`, Boolean(args.verbose))
+  coverageFilePaths = coverageFilePaths.concat(coverageFiles)
+
+  verbose(`Searching for coverage files in updated paths: ${coverageFilePaths}`, Boolean(args.verbose))
 
   // Remove invalid and duplicate file paths
   coverageFilePaths = [... new Set(coverageFilePaths.filter(file => {
-    return fileExists(args.dir || projectRoot, file)
+    const exists = fileExists(searchPath || projectRoot, file)
+    if (exists) {
+      verbose(`Invalid file, removing from coverage files list: ${path.join(searchPath || projectRoot, file)}`)
+    }
+    return exists
   }))]
 
   if (coverageFilePaths.length > 0) {
@@ -178,9 +205,9 @@ export async function main(
   for (const coverageFile of coverageFilePaths) {
     let fileContents
     try {
-      info(`Processing ${getFilePath(args.dir || projectRoot, coverageFile)}...`),
+      info(`Processing ${getFilePath(searchPath || projectRoot, coverageFile)}...`),
         (fileContents = await readCoverageFile(
-          args.dir || projectRoot,
+          searchPath || projectRoot,
           coverageFile,
         ))
     } catch (err) {
@@ -201,7 +228,7 @@ export async function main(
   // Cleanup
   if (args.clean) {
     for (const coverageFile of coverageFilePaths) {
-      removeFile(args.dir || projectRoot, coverageFile)
+      removeFile(searchPath || projectRoot, coverageFile)
     }
   }
 

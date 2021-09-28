@@ -49,21 +49,13 @@ describe('File Helpers', () => {
   })
 
   it('can parse the .gitignore file', () => {
-    const readFileSync = td.replace(fs, 'readFileSync')
-    td.when(readFileSync('.gitignore')).thenReturn(
-      'ignore this file\nandthisone\n# not me!\n\nand me',
-    )
-    expect(fileHelpers.parseGitIgnore('.')).toStrictEqual([
-      'ignore this file',
-      'andthisone',
-      'and me',
-    ])
+    expect(fileHelpers.parseGitIgnore('test/fixtures/test.gitignore.txt')).toContain("*.pid")
+    expect(fileHelpers.parseGitIgnore('test/fixtures/test.gitignore.txt')).not.toContain("REPL")
   })
 
   it('throws error when cannot parse the .gitignore file', () => {
-    td.replace(fs, 'readFileSync')
     expect(() => {
-      fileHelpers.parseGitIgnore('.')
+      fileHelpers.parseGitIgnore('foo')
     }).toThrow()
   })
 
