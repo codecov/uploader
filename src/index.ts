@@ -74,7 +74,9 @@ function dryRun(
 export async function main(
   args: UploaderArgs,
 ): Promise<void | Record<string, unknown>> {
-
+  
+  console.debug({ args });
+  
   // Did user asking for changelog?
   if (args.changelog) {
     webHelpers.displayChangelog()
@@ -149,9 +151,18 @@ export async function main(
       coverageFilePaths = args.file
     }
   }
+  const isNegated = (path: string) => path.startsWith('!')
   coverageFilePaths = coverageFilePaths.concat(await getCoverageFiles(
     args.dir || projectRoot,
-    coverageFilePaths.length > 0 ? coverageFilePaths : coverageFilePatterns(),
+    (() => {
+      const numOfNegatedPaths = coverageFilePaths.filter(isNegated).length
+      
+      if (coverageFilePaths.length > numOfNegatedPaths) {
+        return coverageFilePaths
+      } else {
+        return coverageFilePaths.concat(coverageFilePatterns())
+      }
+    })(),
   ))
 
   // Remove invalid and duplicate file paths
