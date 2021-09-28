@@ -131,6 +131,10 @@ jobs:
           # Must be absolute path or relative path from working_directory
           at: .
       - run:
+          name: Verify node version
+          command: |
+            node --version
+      - run:
           name: Run Alpine binary -f (dry run)
           command: |
             NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
