@@ -92,14 +92,17 @@ jobs:
             mkdir -p ~/.pkg-cache/v2.6
             cp node /root/.pkg-cache/v2.6/fetched-v14.0.0-alpine-x64
       - run:
+          name: Remove downloaded binary and install node
+          command: |
+            rm -rf node
+            apk add npm git
+      - run:
           name: Verify node version
           command: |
             node --version
       - run:
-          name: Remove downloaded binary and run tests
+          name: Run tests
           command: |
-            rm -rf node
-            apk add npm git
             npm ci
             npm test
             mkdir -p coverage-alpine
