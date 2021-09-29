@@ -10,6 +10,8 @@ export const MARKER_NETWORK_END = '<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
 export const MARKER_ENV_END = '<<<<<< ENV\n'
 
+const globstar = (pattern: string) => `**/${pattern}`
+
 /**
  *
  * @param {string} projectRoot
@@ -253,7 +255,7 @@ export function getAllFiles(
   return glob
     .sync(['**/*', '**/.[!.]*'], {
       cwd: projectRoot,
-      ignore: globBlacklist(),
+      ignore: manualBlacklist().map(globstar),
     })
     .map(file => `${file}\n`)
 }
