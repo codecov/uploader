@@ -8,6 +8,11 @@ export interface ICLIArgument {
 
 const args: ICLIArgument[] = [
   {
+    alias: 'CL',
+    name: 'changelog',
+    description: 'Display a link for the current changelog'
+  },
+  {
     alias: 'b',
     name: 'build',
     description: 'Specify the build number manually',

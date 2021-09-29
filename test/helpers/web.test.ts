@@ -1,7 +1,7 @@
 import nock from 'nock'
 
 import { version } from '../../package.json'
-import { generateQuery, getPackage, parsePOSTResults, populateBuildParams, uploadToCodecov, uploadToCodecovPUT } from '../../src/helpers/web'
+import { displayChangelog, generateQuery, getPackage, parsePOSTResults, populateBuildParams, uploadToCodecov, uploadToCodecovPUT } from '../../src/helpers/web'
 import { IServiceParams } from '../../src/types'
 
 describe('Web Helpers', () => {
@@ -206,5 +206,13 @@ describe('Web Helpers', () => {
       const expectedResults = { putURL: 'OtherURL', resultURL: 'dummyURL'}
       expect(parsePOSTResults(testURL)).toEqual(expectedResults)
     })
+  })
+})
+
+describe("displayChangelog()", () => {
+  it("displays the correct link containing the current version", () => {
+    const fn = jest.spyOn(console, 'log').mockImplementation(() => void {})
+    displayChangelog()
+    expect(fn).toBeCalledWith(expect.stringContaining(version))
   })
 })

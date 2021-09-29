@@ -10,6 +10,8 @@ export const MARKER_NETWORK_END = '<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
 export const MARKER_ENV_END = '<<<<<< ENV\n'
 
+const globstar = (pattern: string) => `**/${pattern}`
+
 /**
  *
  * @param {string} projectRoot
@@ -178,8 +180,6 @@ export async function getCoverageFiles(
   projectRoot: string,
   coverageFilePatterns: string[],
 ): Promise<string[]> {
-  const globstar = (pattern: string) => `**/${pattern}`
-
   return glob(coverageFilePatterns.map(globstar), {
     cwd: projectRoot,
     ignore: [...manualBlacklist(), ...globBlacklist()],
@@ -238,7 +238,7 @@ export function getAllFiles(
   return glob
     .sync(['**/*', '**/.[!.]*'], {
       cwd: projectRoot,
-      ignore: globBlacklist(),
+      ignore: manualBlacklist().map(globstar),
     })
     .map(file => `${file}\n`)
 }

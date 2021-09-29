@@ -5,7 +5,6 @@ import { version } from '../../package.json'
 import { IServiceParams, UploaderArgs, UploaderInputs } from '../types'
 import { info, logError, verbose } from './logger'
 import * as validateHelpers from './validate'
-import { checkValueType } from './validate'
 
 /**
  *
@@ -136,4 +135,9 @@ export function parsePOSTResults(uploadURL: string): {
   const resultURL = matches[0].trimEnd() // This match may have trailing 0x0A and 0x0D that must be trimmed
 
   return { putURL, resultURL }
+}
+
+export function displayChangelog(): void {
+  info(`The change log for this version (v${version}) can be found at`)
+  info(`https://github.com/codecov/uploader/blob/v${version}/CHANGELOG.md`)
 }
