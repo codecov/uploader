@@ -130,6 +130,8 @@ export function globBlacklist(): string[] {
     '*~',
     '.*coveragerc',
     '.coverage*',
+    'codecov.SHA256SUM',
+    'codecov.SHA256SUM.sig',
     'coverage-summary.json',
     'createdFiles.lst',
     'fullLocaleNames.lst',
@@ -195,7 +197,7 @@ export async function getCoverageFiles(
     } else {
       parts.push(globstar(pattern))
     }
-    
+
     return parts.join(EMPTY_STRING)
   }), {
     cwd: projectRoot,
