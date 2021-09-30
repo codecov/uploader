@@ -227,6 +227,7 @@ describe('Uploader Core', () => {
       dryRun: 'true',
       file: [
         'cover*.txt',
+        '!fixtures/other'
       ],
       name: 'customname',
       token: 'abcdefg',
@@ -236,7 +237,7 @@ describe('Uploader Core', () => {
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
     )
-    expect(log).toHaveBeenCalledWith(
+    expect(log).not.toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/other\/coverage\.txt\.\.\./),
     )
     expect(log).not.toHaveBeenCalledWith(
