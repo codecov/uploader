@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.3](https://github.com/codecov/uploader/compare/v0.1.2...v0.1.3) (2021-09-30)
+
+### Bug Fixes
+
+- **deps:** update dependency glob to v7.2.0 ([f19bd71](https://github.com/codecov/uploader/commit/f19bd71777a88fcdea07e7594ee505152e926124))
+- **deps:** update dependency yargs to v17.2.0 ([9c70e07](https://github.com/codecov/uploader/commit/9c70e07ddcdabdde545748e0395511b927f25681))
+- **deps:** update dependency yargs to v17.2.1 ([670257e](https://github.com/codecov/uploader/commit/670257e883f501c1813d45f1b4ab75e59053c85b))
+
 ### [0.1.2](https://github.com/codecov/uploader/compare/v0.1.1...v0.1.2) (2021-09-22)
 
 ### Features
