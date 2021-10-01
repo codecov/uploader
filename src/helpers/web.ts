@@ -1,3 +1,4 @@
+import { default as ProxyAgent } from 'proxy-agent'
 import { snakeCase } from 'snake-case'
 import superagent from 'superagent'
 
@@ -43,6 +44,8 @@ export function getPackage(source: string): string {
   }
 }
 
+const prepareRequest = () => superagent;
+
 export async function uploadToCodecovPUT(
   uploadURL: string,
   uploadFile: string | Buffer,
@@ -54,6 +57,7 @@ export async function uploadToCodecovPUT(
   try {
     const result = await superagent
       .put(`${putURL}`)
+      .agent(new ProxyAgent())
       .retry()
       .send(uploadFile)
       .set('Content-Type', 'text/plain')
@@ -87,6 +91,7 @@ export async function uploadToCodecov(
         source,
       )}&token=${token}&${query}`,
     )
+    .agent(new ProxyAgent())
     .retry()
     .set('X-Upload-Token', token)
     .set('X-Reduced-Redundancy', 'false')
