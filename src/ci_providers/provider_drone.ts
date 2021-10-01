@@ -44,7 +44,7 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || envs.DRONE_REPO_LINK || ''
+  return args.slug || envs.DRONE_REPO || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
@@ -68,6 +68,6 @@ export function getEnvVarNames(): string[] {
     'DRONE_BUILD_URL',
     'DRONE_COMMIT_SHA',
     'DRONE_PULL_REQUEST',
-    'DRONE_REPO_LINK',
+    'DRONE_REPO',
   ]
 }
