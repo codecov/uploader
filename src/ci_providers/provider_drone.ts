@@ -30,7 +30,7 @@ function _getPR(inputs: UploaderInputs): string {
 }
 
 function _getService(): string {
-  return 'drone'
+  return 'drone.io'
 }
 
 export function getServiceName(): string {
