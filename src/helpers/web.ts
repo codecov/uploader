@@ -44,8 +44,6 @@ export function getPackage(source: string): string {
   }
 }
 
-const prepareRequest = () => superagent;
-
 export async function uploadToCodecovPUT(
   uploadURL: string,
   uploadFile: string | Buffer,
