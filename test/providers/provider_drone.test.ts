@@ -57,7 +57,7 @@ describe('Drone Params', () => {
       commit: 'testingsha',
       job: '',
       pr: '1',
-      service: 'drone',
+      service: 'drone.io',
       slug: 'repo',
     }
     const params = providerDrone.getServiceParams(inputs)
