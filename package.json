@@ -34,6 +34,7 @@
     "glob": "7.2.0",
     "js-yaml": "4.1.0",
     "line-reader": "0.4.0",
+    "proxy-agent": "^5.0.0",
     "snake-case": "3.0.4",
     "superagent": "6.1.0",
     "typescript": "4.4.3",
