@@ -263,7 +263,7 @@ export function getAllFiles(
   if (error instanceof Error || status !== 0) {
     return glob
       .sync(['**/*', '**/.[!.]*'], {
-        cwd: projectRoot,
+        cwd: dirPath,
         ignore: manualBlacklist().map(globstar),
       })
       .map(file => `${file}\n`)
