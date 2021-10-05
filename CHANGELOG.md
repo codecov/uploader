@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.4](https://github.com/codecov/uploader/compare/v0.1.3...v0.1.4) (2021-10-05)
+
+### Features
+
+- use `git ls-files` ([6ff874c](https://github.com/codecov/uploader/commit/6ff874c960c7e94ba9e3029dad0592df2b1ad0d0))
+
+### Bug Fixes
+
+- change `projectRoot` to `dirPath` ([93a82de](https://github.com/codecov/uploader/commit/93a82de9a19966ba87ce7f5da03d024c874e0266))
+- correct service name of done.io ci ([46e82d5](https://github.com/codecov/uploader/commit/46e82d56a4e7417eeb92d09e3a5fb9106e4d6234))
+- prevent SHA files from being uploaded ([4bbe5e3](https://github.com/codecov/uploader/commit/4bbe5e3eba3f88efbe2ea2ac00ec143fa5046cf2))
+
 ### [0.1.3](https://github.com/codecov/uploader/compare/v0.1.2...v0.1.3) (2021-09-30)
 
 ### Bug Fixes
