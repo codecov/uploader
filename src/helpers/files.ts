@@ -34,6 +34,7 @@ export function manualBlacklist(): string[] {
     '.gitignore',
     '.nvmrc',
     '.nyc_output',
+    'bower_components',
     'jspm_packages',
     'node_modules',
     'vendor',
