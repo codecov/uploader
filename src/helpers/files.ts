@@ -1,4 +1,4 @@
-import childProcess from 'child_process'
+import childProcess, { spawnSync } from 'child_process'
 import glob from 'fast-glob'
 import fs from 'fs'
 import { readFile } from 'fs/promises'
@@ -34,6 +34,8 @@ export function manualBlacklist(): string[] {
     '.gitignore',
     '.nvmrc',
     '.nyc_output',
+    'bower_components',
+    'jspm_packages',
     'node_modules',
     'vendor',
   ]
@@ -130,6 +132,8 @@ export function globBlacklist(): string[] {
     '*~',
     '.*coveragerc',
     '.coverage*',
+    'codecov.SHA256SUM',
+    'codecov.SHA256SUM.sig',
     'coverage-summary.json',
     'createdFiles.lst',
     'fullLocaleNames.lst',
@@ -195,7 +199,7 @@ export async function getCoverageFiles(
     } else {
       parts.push(globstar(pattern))
     }
-    
+
     return parts.join(EMPTY_STRING)
   }), {
     cwd: projectRoot,
@@ -252,12 +256,22 @@ export function getAllFiles(
 ): string[] {
   verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
 
-  return glob
-    .sync(['**/*', '**/.[!.]*'], {
-      cwd: projectRoot,
-      ignore: manualBlacklist().map(globstar),
-    })
-    .map(file => `${file}\n`)
+  const {
+    stdout,
+    status,
+    error,
+  } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
+
+  if (error instanceof Error || status !== 0) {
+    return glob
+      .sync(['**/*', '**/.[!.]*'], {
+        cwd: dirPath,
+        ignore: manualBlacklist().map(globstar),
+      })
+      .map(file => `${file}\n`)
+  } else {
+    return stdout.split(/[\r\n]+/)
+  }
 }
 
 /**

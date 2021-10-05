@@ -47,7 +47,7 @@ describe('Drone Params', () => {
         DRONE_BUILD_NUMBER: '2',
         DRONE_PULL_REQUEST: '1',
         DRONE_BUILD_URL: 'https://www.drone.io/',
-        DRONE_REPO_LINK: 'https:/example.com/repo',
+        DRONE_REPO: 'repo',
       },
     }
     const expected: IServiceParams = {
@@ -57,8 +57,8 @@ describe('Drone Params', () => {
       commit: 'testingsha',
       job: '',
       pr: '1',
-      service: 'drone',
-      slug: 'https:/example.com/repo',
+      service: 'drone.io',
+      slug: 'repo',
     }
     const params = providerDrone.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
