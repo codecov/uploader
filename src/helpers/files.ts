@@ -1,4 +1,4 @@
-import childProcess from 'child_process'
+import childProcess, { spawnSync } from 'child_process'
 import glob from 'fast-glob'
 import fs from 'fs'
 import { readFile } from 'fs/promises'
@@ -254,12 +254,22 @@ export function getAllFiles(
 ): string[] {
   verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
 
-  return glob
-    .sync(['**/*', '**/.[!.]*'], {
-      cwd: projectRoot,
-      ignore: manualBlacklist().map(globstar),
-    })
-    .map(file => `${file}\n`)
+  const {
+    stdout,
+    status,
+    error,
+  } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
+
+  if (error instanceof Error || status !== 0) {
+    return glob
+      .sync(['**/*', '**/.[!.]*'], {
+        cwd: projectRoot,
+        ignore: manualBlacklist().map(globstar),
+      })
+      .map(file => `${file}\n`)
+  } else {
+    return stdout.split(/[\r\n]+/)
+  }
 }
 
 /**
