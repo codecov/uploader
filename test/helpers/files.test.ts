@@ -48,6 +48,15 @@ describe('File Helpers', () => {
     ).toMatch('npm-shrinkwrap.json')
   })
 
+  it('can get a file listing when git is unavailable', async () => {
+    td.replace(childProcess, 'spawnSync', () => {
+      return { stdout: '', status: null, error: new Error() }
+    })
+    expect(
+      await fileHelpers.getFileListing('.', { flags: '', verbose: 'true' }),
+    ).toMatch('npm-shrinkwrap.json')
+  })
+
   it('can parse the .gitignore file', () => {
     const readFileSync = td.replace(fs, 'readFileSync')
     td.when(readFileSync('.gitignore')).thenReturn(
