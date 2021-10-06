@@ -2,19 +2,19 @@ import providers from '../ci_providers'
 import { info, logError, verbose } from '../helpers/logger'
 import { IServiceParams, UploaderInputs } from '../types'
 
-export function detectProvider(inputs: UploaderInputs): Partial<IServiceParams> {
+export function detectProvider(inputs: UploaderInputs, hasToken = false): Partial<IServiceParams> {
   const { args, environment } = inputs
   let serviceParams: Partial<IServiceParams> | undefined
 
   //   check if we have a complete set of manual overrides (slug, SHA)
-  if (args.sha && args.slug) {
+  if (args.sha && (args.slug || hasToken)) {
     // We have the needed args for a manual override
     info(
       `Using manual override from args.`,
     )
     serviceParams = {
       commit: args.sha,
-      slug: args.slug,
+      ...(hasToken ? {} : { slug: args.slug }),
     }
   } else {
     serviceParams = undefined

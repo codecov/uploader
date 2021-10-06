@@ -23,6 +23,19 @@ describe('detectProvider()', () => {
     }
     expect(detectProvider(inputs)).toMatchObject(expectedOutput)
   })
+  
+  it('can detect a manual override with token', () => {
+    const inputs: UploaderInputs = {
+      args: {
+        sha: '1234566',
+      },
+      environment: {},
+    }
+    const expectedOutput: Partial<IServiceParams> = {
+      commit: '1234566',
+    }
+    expect(detectProvider(inputs, true)).toMatchObject(expectedOutput)
+  })
 
   it('will throw if unable to detect', () => {
     jest.spyOn(console, 'error').mockImplementation(() => void {})
