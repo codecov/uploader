@@ -268,7 +268,6 @@ export function getAllFiles(
         cwd: dirPath,
         ignore: manualBlacklist().map(globstar),
       })
-      .map(file => `${file}\n`)
   } else {
     return stdout.split(/[\r\n]+/)
   }
