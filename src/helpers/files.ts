@@ -262,16 +262,14 @@ export function getAllFiles(
     error,
   } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
 
-  if (error instanceof Error || status !== 0) {
-    return glob
+  let fileList: string[] = error instanceof Error || status !== 0
+    ? glob
       .sync(['**/*', '**/.[!.]*'], {
         cwd: dirPath,
         ignore: manualBlacklist().map(globstar),
       })
-      .map(file => `${file}\n`)
-  } else {
-    return stdout.split(/[\r\n]+/)
-  }
+    : stdout.split(/[\r\n]+/)
+  return fileList.map(file => `${file}\n`);
 }
 
 /**
