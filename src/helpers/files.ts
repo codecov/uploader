@@ -22,7 +22,7 @@ export async function getFileListing(
   projectRoot: string,
   args: UploaderArgs,
 ): Promise<string> {
-  return getAllFiles(projectRoot, projectRoot, args).join('')
+  return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
 export function manualBlacklist(): string[] {
