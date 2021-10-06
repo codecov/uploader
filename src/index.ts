@@ -231,7 +231,7 @@ export async function main(
 
   const hasToken = token !== ''
 
-const serviceParams = detectProvider(inputs, hasToken)
+  const serviceParams = detectProvider(inputs, hasToken)
 
   // == Step 8: either upload or dry-run
 
