@@ -6,7 +6,7 @@ import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
 import { logError, verbose } from './logger'
 
-export const MARKER_NETWORK_END = '<<<<<< network\n'
+export const MARKER_NETWORK_END = '\n<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
 export const MARKER_ENV_END = '<<<<<< ENV\n'
 
@@ -22,7 +22,7 @@ export async function getFileListing(
   projectRoot: string,
   args: UploaderArgs,
 ): Promise<string> {
-  return getAllFiles(projectRoot, projectRoot, args).join('')
+  return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
 export function manualBlacklist(): string[] {
@@ -262,14 +262,13 @@ export function getAllFiles(
     error,
   } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
 
-  let fileList: string[] = error instanceof Error || status !== 0
+  return error instanceof Error || status !== 0
     ? glob
       .sync(['**/*', '**/.[!.]*'], {
         cwd: dirPath,
         ignore: manualBlacklist().map(globstar),
       })
     : stdout.split(/[\r\n]+/)
-  return fileList.map(file => `${file}\n`);
 }
 
 /**

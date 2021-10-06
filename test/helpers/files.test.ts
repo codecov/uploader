@@ -11,7 +11,7 @@ describe('File Helpers', () => {
   })
 
   it('provides network end marker', () => {
-    expect(fileHelpers.MARKER_NETWORK_END).toBe('<<<<<< network\n')
+    expect(fileHelpers.MARKER_NETWORK_END).toBe('\n<<<<<< network\n')
   })
 
   it('provides file end marker', () => {
