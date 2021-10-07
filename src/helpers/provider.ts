@@ -32,7 +32,7 @@ export function detectProvider(inputs: UploaderInputs): Partial<IServiceParams> 
       logError(`Errow detecting repos setting using git: ${error}`)
     } else {
       throw new Error(
-        '\nUnable to detect service, please specify sha and slug manually.\nYou can do this by passing the values with the `-S` and `-r` flags.\nSee the `-h` flag for more details.',
+        '\nUnable to detect service, please specify sha and slug manually.\nSee the `-h` flag for more details.',
       )
     }
   }
