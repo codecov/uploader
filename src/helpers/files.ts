@@ -171,6 +171,7 @@ export function coverageFilePatterns(): string[] {
     'gcov.info',
     '*.gcov',
     '*.lst',
+    'codeclimate?(*).json',
   ]
 }
 
