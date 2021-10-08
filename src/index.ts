@@ -229,7 +229,9 @@ export async function main(
 
   // == Step 7: determine CI provider
 
-const serviceParams = detectProvider(inputs)
+  const hasToken = token !== ''
+
+  const serviceParams = detectProvider(inputs, hasToken)
 
   // == Step 8: either upload or dry-run
 
