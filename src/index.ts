@@ -65,7 +65,7 @@ function dryRun(
  * @param {string} args.rootDir Specify the project root directory when not in a git repo
  * @param {boolean} args.nonZero Should errors exit with a non-zero (default: false)
  * @param {boolean} args.dryRun Don't upload files to Codecov
- * @param {string} args.slug Specify the slug manually (Enterprise use)
+ * @param {string} args.slug Specify the slug manually
  * @param {string} args.url Change the upload host (Enterprise use)
  * @param {boolean} args.clean Move discovered coverage reports to the trash
  * @param {string} args.feature Toggle features
@@ -154,7 +154,7 @@ export async function main(
     args.dir || projectRoot,
     (() => {
       const numOfNegatedPaths = coverageFilePaths.filter(isNegated).length
-      
+
       if (coverageFilePaths.length > numOfNegatedPaths) {
         return coverageFilePaths
       } else {

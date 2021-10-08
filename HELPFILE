@@ -23,7 +23,7 @@ Options:
   -Z, --nonZero  Should errors exit with a non-zero (default: false)
                                                       [boolean] [default: false]
   -d, --dryRun   Don't upload files to Codecov                         [boolean]
-  -r, --slug     Specify the slug manually (Enterprise use)
+  -r, --slug     Specify the slug manually
   -u, --url      Change the upload host (Enterprise use)
                                         [string] [default: "https://codecov.io"]
   -c, --clean    Move discovered coverage reports to the trash

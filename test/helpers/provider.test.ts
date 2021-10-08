@@ -34,7 +34,7 @@ describe('detectProvider()', () => {
       args: {},
       environment: {},
     }
-    expect(()  => detectProvider(inputs)).toThrowError(/Unable to detect service, please specify sha and slug manually/)
+    expect(()  => detectProvider(inputs)).toThrowError(/Unable to detect SHA and slug, please specify them manually/)
   })
 })
 
