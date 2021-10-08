@@ -43,9 +43,17 @@ describe('File Helpers', () => {
   })
 
   it('can get a file listing', async () => {
+    const files = ['npm-shrinkwrap.json', 'package.json']
+    td.replace(childProcess, 'spawnSync', () => {
+      return {
+        stdout: files.join('\n'),
+        status: 0,
+        error: undefined,
+      }
+    })
     expect(
       await fileHelpers.getFileListing('.', { flags: '', verbose: 'true' }),
-    ).toMatch('npm-shrinkwrap.json')
+    ).toBe(files.join('\n'))
   })
 
   it('can get a file listing when git is unavailable', async () => {
