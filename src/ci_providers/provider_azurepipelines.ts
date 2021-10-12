@@ -83,8 +83,8 @@ function _getServerURI(inputs: UploaderInputs): string {
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args } = inputs
-  return args.slug || ''
+  const { args, environment: envs } = inputs
+  return args.slug || envs.BUILD_REPOSITORY_NAME || ''
 }
 /**
  * Generates and return the serviceParams object

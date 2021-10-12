@@ -52,6 +52,7 @@ describe('Jenkins CI Params', () => {
       environment: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
+        BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
         BUILD_SOURCEVERSION: 'testingsha',
         SYSTEM_BUILD_BUILDID: '1',
@@ -71,7 +72,7 @@ describe('Jenkins CI Params', () => {
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
-      slug: '',
+      slug: 'testOrg/testRepo',
     }
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -88,6 +89,7 @@ describe('Jenkins CI Params', () => {
       environment: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
+        BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
         BUILD_SOURCEVERSION: 'testingsha',
         SYSTEM_BUILD_BUILDID: '1',
@@ -107,7 +109,7 @@ describe('Jenkins CI Params', () => {
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
-      slug: '',
+      slug: 'testOrg/testRepo',
     }
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -124,6 +126,7 @@ describe('Jenkins CI Params', () => {
       environment: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
+        BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
         BUILD_SOURCEVERSION: 'testingsha',
         SYSTEM_BUILD_BUILDID: '1',
@@ -143,7 +146,7 @@ describe('Jenkins CI Params', () => {
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
-      slug: '',
+      slug: 'testOrg/testRepo',
     }
     const execFileSync = td.replace(childProcess, 'execFileSync')
     td.when(
@@ -162,7 +165,7 @@ describe('Jenkins CI Params', () => {
         build: '3',
         pr: '2',
         sha: 'testsha',
-        slug: 'testOrg/testRepo',
+        slug: 'testOrg/otherTestRepo',
         tag: '',
         url: '',
         source: '',
@@ -170,6 +173,7 @@ describe('Jenkins CI Params', () => {
       },
       environment: {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
+        BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
       },
     }
     const expected: IServiceParams = {
@@ -182,7 +186,7 @@ describe('Jenkins CI Params', () => {
       project: '',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
-      slug: 'testOrg/testRepo',
+      slug: 'testOrg/otherTestRepo',
     }
 
     const params = providerAzurepipelines.getServiceParams(inputs)
