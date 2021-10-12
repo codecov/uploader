@@ -41,6 +41,34 @@ describe('Jenkins CI Params', () => {
     })
   })
 
+  it('gets empty string if environment variable is undefined', () => {
+    const inputs: UploaderInputs = {
+      args: {
+        tag: '',
+        url: '',
+        source: '',
+        flags: '',
+      },
+      environment: {
+        SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
+      },
+    }
+    const expected: IServiceParams = {
+        branch: '',
+        build: '',
+        buildURL: '',
+        commit: '',
+        job: '',
+        pr: '',
+        project: '',
+        server_uri: 'https://example.azure.com',
+        service: 'azure_pipelines',
+        slug: '',
+      }
+    const params = providerAzurepipelines.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
   it('gets correct params on pr number', () => {
     const inputs: UploaderInputs = {
       args: {
