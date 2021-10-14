@@ -143,6 +143,48 @@ describe('Jenkins CI Params', () => {
     expect(params).toMatchObject(expected)
   })
 
+  it('gets correct slug by remote address', () => {
+    const inputs: UploaderInputs = {
+      args: {
+        tag: '',
+        url: '',
+        source: '',
+        flags: '',
+      },
+      environment: {
+        BUILD_BUILDNUMBER: '1',
+        BUILD_BUILDID: '2',
+        BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
+        BUILD_SOURCEBRANCH: 'refs/heads/main',
+        BUILD_SOURCEVERSION: 'testingsha',
+        SYSTEM_BUILD_BUILDID: '1',
+        SYSTEM_PULLREQUEST_PULLREQUESTID: '3',
+        SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
+        SYSTEM_TEAMPROJECT: 'testOrg',
+      },
+    }
+    const expected: IServiceParams = {
+      branch: 'main',
+      build: '1',
+      buildURL:
+        'https://example.azure.comtestOrg/_build/results?buildId=2',
+      commit: 'testingsha',
+      job: '2',
+      pr: '3',
+      project: 'testOrg',
+      server_uri: 'https://example.azure.com',
+      service: 'azure_pipelines',
+      slug: 'testOrg/testRepo',
+    }
+
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+    ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
+    const params = providerAzurepipelines.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
   it('gets correct params on merge', () => {
     const inputs: UploaderInputs = {
       args: {
