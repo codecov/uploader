@@ -4,7 +4,7 @@ import childProcess from 'child_process'
 import * as providerAzurepipelines from '../../src/ci_providers//provider_azurepipelines'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 
-describe('Jenkins CI Params', () => {
+describe('Azure Pipelines CI Params', () => {
   afterEach(() => {
     td.reset()
   })
@@ -65,6 +65,11 @@ describe('Jenkins CI Params', () => {
         service: 'azure_pipelines',
         slug: '',
       }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+    ).thenReturn({ stdout: '' })
+
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
