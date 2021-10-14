@@ -1,4 +1,5 @@
 import childProcess from 'child_process'
+import { parseSlugFromRemoteAddr } from '../helpers/git'
 import { info } from '../helpers/logger'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
@@ -83,8 +84,8 @@ function _getServerURI(inputs: UploaderInputs): string {
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args } = inputs
-  return args.slug || ''
+  const { args, environment: envs } = inputs
+  return args.slug || envs.BUILD_REPOSITORY_NAME || parseSlugFromRemoteAddr('') || ''
 }
 /**
  * Generates and return the serviceParams object
