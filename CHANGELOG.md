@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.6](https://github.com/codecov/uploader/compare/v0.1.5...v0.1.6) (2021-10-14)
+
+### Bug Fixes
+
+- add in remote addr logic ([7f56b9a](https://github.com/codecov/uploader/commit/7f56b9ab6ad1a2206215b85aaf6a6142a50f75c8))
+- **deps:** update dependency typescript to v4.4.4 ([968433a](https://github.com/codecov/uploader/commit/968433aa59ecbc306d1d720342d016cb23d76840))
+- prefer `token` over `slug` ([2a0c1bc](https://github.com/codecov/uploader/commit/2a0c1bc8aea0d49474196933d60c1892ddaab9a6))
+- update azure test ([f7d5fe1](https://github.com/codecov/uploader/commit/f7d5fe1cc6822940e0f226320318a843c6424108))
+
 ### [0.1.5](https://github.com/codecov/uploader/compare/v0.1.4...v0.1.5) (2021-10-06)
 
 ### [0.1.4](https://github.com/codecov/uploader/compare/v0.1.3...v0.1.4) (2021-10-05)
