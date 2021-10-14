@@ -23,6 +23,19 @@ describe('detectProvider()', () => {
     }
     expect(detectProvider(inputs)).toMatchObject(expectedOutput)
   })
+  
+  it('can detect a manual override with token', () => {
+    const inputs: UploaderInputs = {
+      args: {
+        sha: '1234566',
+      },
+      environment: {},
+    }
+    const expectedOutput: Partial<IServiceParams> = {
+      commit: '1234566',
+    }
+    expect(detectProvider(inputs, true)).toMatchObject(expectedOutput)
+  })
 
   it('will throw if unable to detect', () => {
     jest.spyOn(console, 'error').mockImplementation(() => void {})
@@ -34,7 +47,7 @@ describe('detectProvider()', () => {
       args: {},
       environment: {},
     }
-    expect(()  => detectProvider(inputs)).toThrowError(/Unable to detect service, please specify sha and slug manually/)
+    expect(()  => detectProvider(inputs)).toThrowError(/Unable to detect SHA and slug, please specify them manually/)
   })
 })
 
