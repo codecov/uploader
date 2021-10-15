@@ -37,15 +37,3 @@ export function validateSHA(
     commitSHA.length === requestedLength && validator.isAlphanumeric(commitSHA)
   )
 }
-
-export function checkValueType(
-  name: string,
-  value: unknown,
-  type: string,
-): void {
-  if (typeof value !== type) {
-    throw new Error(
-      `The value of ${name} is not of type ${type}, can not continue, please review: ${value}`,
-    )
-  }
-}
