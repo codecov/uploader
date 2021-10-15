@@ -65,25 +65,6 @@ describe('File Helpers', () => {
     ).toMatch('npm-shrinkwrap.json')
   })
 
-  it('can parse the .gitignore file', () => {
-    const readFileSync = td.replace(fs, 'readFileSync')
-    td.when(readFileSync('.gitignore')).thenReturn(
-      'ignore this file\nandthisone\n# not me!\n\nand me',
-    )
-    expect(fileHelpers.parseGitIgnore('.')).toStrictEqual([
-      'ignore this file',
-      'andthisone',
-      'and me',
-    ])
-  })
-
-  it('throws error when cannot parse the .gitignore file', () => {
-    td.replace(fs, 'readFileSync')
-    expect(() => {
-      fileHelpers.parseGitIgnore('.')
-    }).toThrow()
-  })
-
   describe('Coverage report handling', () => {
     it('can generate report file header', () => {
       expect(fileHelpers.fileHeader('test-coverage-file.xml')).toBe(
