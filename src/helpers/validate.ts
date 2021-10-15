@@ -21,11 +21,6 @@ export function validateFlags(flags: string): boolean {
   return mask.test(flags)
 }
 
-export function validateFileNamePath(path: string): boolean {
-  const mask = /^[\w/.,-]+$/
-  return mask.test(path)
-}
-
 /**
  * Validate that a SHA is the correct length and content
  * @param {string} commitSHA

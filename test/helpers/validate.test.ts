@@ -61,22 +61,6 @@ describe('Input Validators', () => {
     })
   })
 
-  describe('FileNamePath', () => {
-    it('Should pass with an absolute path', () => {
-      expect(validate.validateFileNamePath('/path/to/file/1.txt')).toBe(true)
-    })
-    it('Should pass with a relative path', () => {
-      expect(validate.validateFileNamePath('./path/to/file/1.txt')).toBe(true)
-    })
-
-    it('Should fail with spaces', () => {
-      expect(validate.validateFileNamePath('/path to/file')).toBe(false)
-    })
-    it('Should fail with other characters', () => {
-      expect(validate.validateFileNamePath('/path{}to/file')).toBe(false)
-    })
-  })
-
   describe('validateSHA()', () => {
     it('should fail with invalid characters', () => {
       expect(validate.validateSHA('abc 123', 7)).toBe(false)
