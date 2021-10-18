@@ -232,6 +232,8 @@ jobs:
           root: .
           paths:
             - output_linux-proxy.txt
+      - store_artifacts:
+          path: output_linux-proxy.txt
 
   test-linux-without-git:
     docker:
