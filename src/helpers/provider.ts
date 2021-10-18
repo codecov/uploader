@@ -25,7 +25,7 @@ export function detectProvider(inputs: UploaderInputs, hasToken = false): Partia
     return { ...walkProviders(inputs), ...serviceParams }
   } catch (error) {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
-    if (serviceParams !== undefined) {
+    if (typeof serviceParams !== "undefined") {
       logError(`Errow detecting repos setting using git: ${error}`)
     } else {
       throw new Error(
