@@ -6,7 +6,7 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs): string {
+function _getBuildURL(): string {
   return ''
 }
 
@@ -46,7 +46,7 @@ function _getPR(inputs: UploaderInputs): string {
 }
 
 // eslint-disable-next-line no-unused-vars
-function _getJob(envs: UploaderEnvs): string {
+function _getJob(): string {
   return ''
 }
 
@@ -54,9 +54,9 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),
