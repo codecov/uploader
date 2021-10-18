@@ -3,7 +3,7 @@ import { info, logError, verbose } from '../helpers/logger'
 import { IServiceParams, UploaderInputs } from '../types'
 
 export function detectProvider(inputs: UploaderInputs, hasToken = false): Partial<IServiceParams> {
-  const { args, environment } = inputs
+  const { args } = inputs
   let serviceParams: Partial<IServiceParams> | undefined
 
   //   check if we have a complete set of manual overrides (slug, SHA)
@@ -22,13 +22,10 @@ export function detectProvider(inputs: UploaderInputs, hasToken = false): Partia
 
   //   loop though all providers
   try {
-    serviceParams = { ...walkProviders(inputs), ...serviceParams }
-    if (serviceParams !== undefined) {
-      return serviceParams
-    }
+    return { ...walkProviders(inputs), ...serviceParams }
   } catch (error) {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
-    if (serviceParams !== undefined) {
+    if (typeof serviceParams !== "undefined") {
       logError(`Errow detecting repos setting using git: ${error}`)
     } else {
       throw new Error(

@@ -1,9 +1,9 @@
 import { parseSlug } from '../helpers/git'
 import { isProgramInstalled, runExternalProgram } from '../helpers/util'
-import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
+import { IServiceParams, UploaderInputs } from '../types'
 
 // This provider requires git to be installed
-export function detect(envs: UploaderEnvs): boolean {
+export function detect(): boolean {
   return isProgramInstalled('git')
 }
 
@@ -12,8 +12,7 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs): string {
+function _getBuildURL(): string {
   return ''
 }
 
@@ -32,12 +31,10 @@ function _getBranch(inputs: UploaderInputs): string {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getJob(env: UploaderEnvs): string {
+function _getJob(): string {
   return ''
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
   return args.pr || ''
@@ -83,9 +80,9 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

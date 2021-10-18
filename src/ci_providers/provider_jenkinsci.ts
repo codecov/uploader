@@ -26,8 +26,7 @@ function _getBranch(inputs: UploaderInputs): string {
   )
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getJob(envs: UploaderEnvs) {
+function _getJob() {
   return ''
 }
 
@@ -60,7 +59,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

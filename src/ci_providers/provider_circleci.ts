@@ -4,7 +4,6 @@ export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.CI) && Boolean(envs.CIRCLECI)
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
   return inputs.environment['CIRCLE_BUILD_URL'] ?? ''
 }
