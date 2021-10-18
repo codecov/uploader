@@ -208,6 +208,31 @@ jobs:
           paths:
             - output_linux.txt
 
+  test-linux-proxy:
+    docker:
+      # specify the version you desire here
+      - image: circleci/node:16.11.1
+    steps:
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Start Proxy
+          command: npx pm2 start dist/bin/codecov.js #TODO: create real proxy
+      - run:
+          name: Run Linux binary -f (dry run)
+          command: |
+            out/codecov-linux -U localhost:3000 -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux-proxy -Z -v -e CIRCLE_BRANCH >> output_linux-proxy.txt
+      - run:
+          name: Stop Proxy
+          command: npx pm2 delete dist/bin/codecov.js
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_linux-proxy.txt
+
   test-linux-without-git:
     docker:
       - image: circleci/node:16.11.1
@@ -354,6 +379,8 @@ jobs:
       - store_artifacts:
           path: output_linux.txt
       - store_artifacts:
+          path: output_linux-proxy.txt
+      - store_artifacts:
           path: output_alpine.txt
       - store_artifacts:
           path: output_linux_without_git.txt
@@ -457,6 +484,9 @@ workflows:
       - test-linux:
           requires:
             - build-linux-and-osx
+      - test-linux-proxy:
+          requires:
+            - build-linux-and-osx
       - test-linux-without-git:
           requires:
             - test-linux
@@ -475,6 +505,7 @@ workflows:
       - review:
           requires:
             - test-alpine
+            - test-linux-proxy
             - test-linux-without-git
             - test-macos-without-git
             - test-windows-without-git
