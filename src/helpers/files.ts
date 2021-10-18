@@ -221,29 +221,6 @@ export function fetchGitRoot(): string {
 
 /**
  *
- * @param {string} projectRoot
- * @returns {string[]}
- */
-export function parseGitIgnore(projectRoot: string): string[] {
-  const gitIgnorePath = path.join(projectRoot, '.gitignore')
-  /** @type {string[]} */
-  let lines: string[] = []
-  try {
-    lines = readAllLines(gitIgnorePath) || []
-  } catch (error) {
-    throw new Error(`Unable to open ${gitIgnorePath}: ${error}`)
-  }
-
-  return lines.filter(line => {
-    if (line === '' || line.startsWith('#')) {
-      return false
-    }
-    return true
-  })
-}
-
-/**
- *
  * @param {string} projectRoot Root of the project
  * @param {string} dirPath Directory to search in
  * @param {Object} args
@@ -269,18 +246,6 @@ export function getAllFiles(
         ignore: manualBlacklist().map(globstar),
       })
     : stdout.split(/[\r\n]+/)
-}
-
-/**
- *
- * @param {string} filePath
- * @returns {string[]}
- */
-export function readAllLines(filePath: string): string[] {
-  const fileContents = fs.readFileSync(filePath)
-
-  const lines = fileContents.toString().split('\n') || []
-  return lines
 }
 
 /**
