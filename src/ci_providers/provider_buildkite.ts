@@ -27,7 +27,6 @@ function _getBuild(inputs: UploaderInputs): string {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
   return inputs.environment.BUILDKITE_BUILD_URL || ''
 }

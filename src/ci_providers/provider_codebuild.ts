@@ -9,7 +9,6 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.CODEBUILD_BUILD_ID || ''
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(): string {
   return ''
 }

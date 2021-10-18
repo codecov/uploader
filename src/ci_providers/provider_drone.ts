@@ -19,7 +19,6 @@ function _getBranch(inputs: UploaderInputs): string {
   return args.branch || envs.DRONE_BRANCH || ''
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getJob(): string {
   return ''
 }
