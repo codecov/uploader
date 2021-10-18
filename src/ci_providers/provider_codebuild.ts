@@ -58,7 +58,7 @@ function _getSlug(inputs: UploaderInputs): string {
     args.slug ||
     (envs.CODEBUILD_SOURCE_REPO_URL
       ? envs.CODEBUILD_SOURCE_REPO_URL.toString()
-          .replace(/^.*github.com\//, '')
+          .replace(/^.*github.com\//, '') // lgtm [js/incomplete-hostname-regexp] - We want this to match all subdomains.
           .replace(/\.git$/, '')
       : '')
   )
