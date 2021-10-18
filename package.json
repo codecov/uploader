@@ -55,6 +55,8 @@
     "@typescript-eslint/parser": "5.0.0",
     "eslint": "8.0.1",
     "eslint-config-prettier": "8.3.0",
+    "express": "^4.17.1",
+    "express-http-proxy": "1.6.2",
     "husky": "7.0.2",
     "jest": "27.3.0",
     "jest-spec-reporter": "1.0.17",

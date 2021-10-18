@@ -219,14 +219,14 @@ jobs:
           at: .
       - run:
           name: Start Proxy
-          command: npx pm2 start dist/bin/codecov.js #TODO: create real proxy
+          command: npx pm2 start tools/test-proxy.cjs
       - run:
           name: Run Linux binary -f (dry run)
           command: |
             out/codecov-linux -U localhost:3000 -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux-proxy -Z -v -e CIRCLE_BRANCH >> output_linux-proxy.txt
       - run:
           name: Stop Proxy
-          command: npx pm2 delete dist/bin/codecov.js
+          command: npx pm2 delete tools/test-proxy.cjs
 
       - persist_to_workspace:
           root: .
