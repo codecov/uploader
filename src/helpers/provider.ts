@@ -22,10 +22,7 @@ export function detectProvider(inputs: UploaderInputs, hasToken = false): Partia
 
   //   loop though all providers
   try {
-    serviceParams = { ...walkProviders(inputs), ...serviceParams }
-    if (serviceParams !== undefined) {
-      return serviceParams
-    }
+    return { ...walkProviders(inputs), ...serviceParams }
   } catch (error) {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
     if (serviceParams !== undefined) {
