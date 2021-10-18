@@ -12,7 +12,6 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || ''
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(): string {
   return ''
 }
@@ -32,12 +31,10 @@ function _getBranch(inputs: UploaderInputs): string {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getJob(): string {
   return ''
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
   return args.pr || ''

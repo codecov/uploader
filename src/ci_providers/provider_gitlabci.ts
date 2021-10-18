@@ -11,7 +11,6 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.CI_BUILD_ID || envs.CI_JOB_ID || ''
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(): string {
   return ''
 }
@@ -21,7 +20,6 @@ function _getBranch(inputs: UploaderInputs): string {
   return args.branch || envs.CI_BUILD_REF_NAME || envs.CI_COMMIT_REF_NAME || ''
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getJob(): string {
   return ''
 }

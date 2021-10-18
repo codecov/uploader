@@ -26,7 +26,6 @@ function _getBranch(inputs: UploaderInputs): string {
   )
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getJob() {
   return ''
 }

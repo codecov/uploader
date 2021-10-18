@@ -5,7 +5,6 @@ export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.TEAMCITY_VERSION)
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(): string {
   return ''
 }
@@ -45,7 +44,6 @@ function _getPR(inputs: UploaderInputs): string {
   return args.pr || ''
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getJob(): string {
   return ''
 }
