@@ -1,5 +1,4 @@
 import validator from 'validator'
-import { UploaderArgs } from '../types'
 
 /**
  *
