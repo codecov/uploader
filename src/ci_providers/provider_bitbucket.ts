@@ -1,4 +1,3 @@
-import childProcess from 'child_process'
 import { runExternalProgram } from '../helpers/util'
 import { validateSHA } from '../helpers/validate'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
@@ -12,8 +11,7 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.BITBUCKET_BUILD_NUMBER || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs): string {
+function _getBuildURL(): string {
   // TODO: https://github.com/codecov/uploader/issues/267
   return ''
 }
@@ -61,7 +59,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
     job: _getJob(inputs.environment),
     pr: _getPR(inputs),
