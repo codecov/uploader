@@ -3,7 +3,7 @@ import { info, logError, verbose } from '../helpers/logger'
 import { IServiceParams, UploaderInputs } from '../types'
 
 export function detectProvider(inputs: UploaderInputs, hasToken = false): Partial<IServiceParams> {
-  const { args, environment } = inputs
+  const { args } = inputs
   let serviceParams: Partial<IServiceParams> | undefined
 
   //   check if we have a complete set of manual overrides (slug, SHA)
