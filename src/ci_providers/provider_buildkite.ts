@@ -27,7 +27,6 @@ function _getBuild(inputs: UploaderInputs): string {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
   return inputs.environment.BUILDKITE_BUILD_URL || ''
 }
@@ -106,7 +105,6 @@ function _getSlug(inputs: UploaderInputs): string {
     return args.slug || envs.BUILDKITE_PROJECT_SLUG || ''
   }
   throw new Error('Unable to detect slug, please set manually with the -r flag')
-  return ''
 }
 /**
  * Generates and return the serviceParams object

@@ -15,32 +15,12 @@ describe('Local Params', () => {
       td.when(spawnSync('git')).thenReturn({
         error: 'Git is not installed!',
       })
-      const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          url: '',
-          source: '',
-          flags: '',
-        },
-        environment: {
-          CI: 'true',
-        },
-      }
-      const detected = providerLocal.detect(inputs.environment)
+      const detected = providerLocal.detect()
       expect(detected).toBeFalsy()
     })
 
     it('does run with git installed', () => {
-      const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          url: '',
-          source: '',
-          flags: '',
-        },
-        environment: {},
-      }
-      const detected = providerLocal.detect(inputs.environment)
+      const detected = providerLocal.detect()
       expect(detected).toBeTruthy()
     })
   })

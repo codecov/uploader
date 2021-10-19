@@ -38,7 +38,7 @@ function _getJob(envs: UploaderEnvs) {
     envs.APPVEYOR_PROJECT_SLUG &&
     envs.APPVEYOR_BUILD_VERSION
   ) {
-    return `${envs.APPVEYOR_ACCOUNT_NAME}%2F${envs.APPVEYOR_PROJECT_SLUG}%2F${envs.APPVEYOR_BUILD_VERSION}`
+    return `${envs.APPVEYOR_ACCOUNT_NAME}/${envs.APPVEYOR_PROJECT_SLUG}/${envs.APPVEYOR_BUILD_VERSION}`
   }
   return ''
 }

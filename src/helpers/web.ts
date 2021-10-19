@@ -2,8 +2,8 @@ import { snakeCase } from 'snake-case'
 import superagent from 'superagent'
 
 import { version } from '../../package.json'
-import { IServiceParams, UploaderArgs, UploaderInputs } from '../types'
-import { info, logError, verbose } from './logger'
+import { IServiceParams, UploaderInputs } from '../types'
+import { info, logError } from './logger'
 import * as validateHelpers from './validate'
 
 /**
@@ -109,8 +109,8 @@ export async function uploadToCodecov(
  * @returns {string}
  */
 export function generateQuery(queryParams: Partial<IServiceParams>): string {
-  return new URLSearchParams(Object.entries(queryParams)
-    .map(([key, value]) => [snakeCase(key), value])
+  return new URLSearchParams(
+    Object.entries(queryParams).map(([key, value]) => [snakeCase(key), value]),
   ).toString()
 }
 
@@ -128,7 +128,9 @@ export function parsePOSTResults(uploadURL: string): {
   }
 
   if (matches?.length !== 2) {
-    throw new Error(`Incorrect number of urls when parsing results from POST: ${matches.length}`)
+    throw new Error(
+      `Incorrect number of urls when parsing results from POST: ${matches.length}`,
+    )
   }
 
   const putURL = matches[1]

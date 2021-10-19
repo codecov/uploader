@@ -11,7 +11,7 @@ jobs:
   build-linux-and-osx:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.11.1
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -183,7 +183,7 @@ jobs:
   test-linux:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.11.1
     steps:
       - checkout
       - attach_workspace:
@@ -210,7 +210,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.11.1
     steps:
       - checkout
       - attach_workspace:
@@ -339,7 +339,7 @@ jobs:
 
   review:
     docker:
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.11.1
     steps:
       - attach_workspace:
           at: .
@@ -370,7 +370,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.11.1
     steps:
       - attach_workspace:
           at: .
