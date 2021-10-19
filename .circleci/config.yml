@@ -151,6 +151,44 @@ jobs:
           paths:
             - coverage-alpine
             - output_alpine.txt
+            
+  test-alpine-without-git:
+    docker:
+      # specify the version you desire here
+      - image: alpine:3.14.2
+    steps:
+      - run:
+          name: Install git
+          command: |
+            apk update
+            apk add git
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Remove .git directory
+          command: rm -rf .git          
+      - run:
+          name: Run Alpine binary -f (dry run)
+          command: |
+            NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine_without_git.txt
+      - run:
+          name: Run Alpine binary auto-detect (dry run)
+          command: |
+            out/codecov-alpine -F alpine-without-git -v -d -Z -e CIRCLE_BRANCH >> output_alpine_without_git.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -F alpine-without-git -v -Z -e CIRCLE_BRANCH
+
+      - store_artifacts:
+          path: output_alpine.txt
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine_without_git.txt
 
   build-windows:
     executor: win/default
@@ -356,6 +394,8 @@ jobs:
       - store_artifacts:
           path: output_alpine.txt
       - store_artifacts:
+          path: output_alpine_without_git.txt
+      - store_artifacts:
           path: output_linux_without_git.txt
       - store_artifacts:
           path: output_osx.txt
@@ -451,6 +491,9 @@ workflows:
       - test-alpine:
           requires:
             - build-alpine
+      - test-alpine-without-git:
+          requires:
+            - test-alpine
       - build-windows:
           requires:
             - build-linux-and-osx
@@ -474,7 +517,7 @@ workflows:
             - test-windows
       - review:
           requires:
-            - test-alpine
+            - test-alpine-without-git
             - test-linux-without-git
             - test-macos-without-git
             - test-windows-without-git
