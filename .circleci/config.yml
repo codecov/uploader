@@ -208,6 +208,24 @@ jobs:
           paths:
             - output_linux.txt
 
+  test-linux-teamcity-proxy:
+    docker:
+      - image: jetbrains/teamcity-server:2021.1.4-nanoserver-1809
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Linux binary auto-detect (dry run)
+          command: |
+            out/codecov-linux -F linux -d -Z -e CIRCLE_BRANCH >> output_linux_teamcity_proxy.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_linux_teamcity_proxy.txt
+      - store_artifacts:
+          path: output_linux_teamcity_proxy.txt
+
   test-linux-without-git:
     docker:
       - image: circleci/node:16.11.1
@@ -354,6 +372,8 @@ jobs:
       - store_artifacts:
           path: output_linux.txt
       - store_artifacts:
+          path: output_linux_teamcity_proxy.txt
+      - store_artifacts:
           path: output_alpine.txt
       - store_artifacts:
           path: output_linux_without_git.txt
@@ -457,6 +477,9 @@ workflows:
       - test-linux:
           requires:
             - build-linux-and-osx
+      - test-linux-teamcity-proxy:
+          requires:
+            - build-linux-and-osx
       - test-linux-without-git:
           requires:
             - test-linux
@@ -475,6 +498,7 @@ workflows:
       - review:
           requires:
             - test-alpine
+            - test-linux-teamcity-proxy
             - test-linux-without-git
             - test-macos-without-git
             - test-windows-without-git
