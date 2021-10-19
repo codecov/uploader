@@ -210,7 +210,7 @@ jobs:
 
   test-linux-teamcity-proxy:
     docker:
-      - image: jetbrains/teamcity-server:2021.1.4-nanoserver-1809
+      - image: jetbrains/teamcity-server:2021.1.4-linux
     steps:
       - checkout
       - attach_workspace:
