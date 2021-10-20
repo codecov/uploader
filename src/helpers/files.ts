@@ -75,6 +75,7 @@ export function globBlacklist(): string[] {
     '*.ec',
     '*.ec',
     '*.egg',
+    '*.egg-info',
     '*.el',
     '*.env',
     '*.erb',
