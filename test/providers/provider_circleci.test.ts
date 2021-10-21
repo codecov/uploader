@@ -11,7 +11,9 @@ describe('CircleCI Params', () => {
   describe('detect()', () => {
     it('does not run without CircleCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {},
       }
       const detected = providerCircleci.detect(inputs.environment)
@@ -20,7 +22,9 @@ describe('CircleCI Params', () => {
 
     it('does run with CircleCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {
           CI: 'true',
           CIRCLECI: 'true',

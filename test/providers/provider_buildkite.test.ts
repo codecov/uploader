@@ -19,7 +19,9 @@ describe('Buildkite Params', () => {
 
     it('does not run without Buildkite env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {
           BUILDKITE: 'true',
         },

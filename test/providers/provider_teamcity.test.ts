@@ -12,7 +12,9 @@ describe('TeamCity Params', () => {
   describe('detect()', () => {
     it('does not run without TeamCity env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {},
       }
       const detected = providerTeamCity.detect(inputs.environment)
@@ -25,6 +27,7 @@ describe('TeamCity Params', () => {
           tag: '',
           url: '',
           source: '',
+          flags: ''
         },
         environment: {
           CI: 'true',

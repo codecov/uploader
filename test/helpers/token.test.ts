@@ -90,7 +90,8 @@ describe('Get tokens', () => {
     const inputs: UploaderInputs = {
       args: {
         url: 'dummy.local',
-        token: 'goodToken'
+        token: 'goodToken',
+        flags: ''
       },
       environment: {
         CODECOV_TOKEN: 'badToken'
@@ -103,6 +104,7 @@ describe('Get tokens', () => {
     const inputs: UploaderInputs = {
       args: {
         url: 'dummy.local',
+        flags: ''
       },
       environment: {
         CODECOV_TOKEN: 'goodT----oken'
@@ -114,7 +116,8 @@ describe('Get tokens', () => {
   it('should fail validation when an invalid token is passed and host is not changed', () => {
     const inputs: UploaderInputs = {
       args: {
-        url: DEFAULT_UPLOAD_HOST
+        url: DEFAULT_UPLOAD_HOST,
+        flags: ''
       },
       environment: {
         CODECOV_TOKEN: 'bad------Token'

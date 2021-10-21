@@ -29,7 +29,8 @@ describe('CI Providers', () => {
       const inputs: UploaderInputs = {
         args: {
           sha: '123',
-          slug: 'testOrg/testRepo'
+          slug: 'testOrg/testRepo',
+          flags: ''
         },
         environment: {}
       }

@@ -10,8 +10,10 @@ describe('Cirrus Params', () => {
 
   describe('detect()', () => {
     it('does not run without Cirrus env variable', () => {
-      const inputs = {
-        args: {},
+      const inputs: UploaderInputs = {
+        args: {
+          flags: ''
+        },
         environment: {},
       }
       const detected = providerCirrus.detect(inputs.environment)

@@ -37,7 +37,9 @@ describe('TravisCI Params', () => {
 
     it('does run with TravisCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {
           CI: 'true',
           TRAVIS: 'true',
