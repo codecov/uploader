@@ -7,15 +7,6 @@ const execFilePromise = promisify(execFile)
 describe('Uploader Output E2E Tests', () => {
   let runResult: { stderr: string; stdout: string }
 
-  beforeAll(async () => {
-    const buildResult = await execFilePromise('npm', ['run', 'build'])
-
-    if (buildResult.stderr !== '') {
-      console.error(buildResult.stderr)
-      expect(true).toBeFalsy // Fail
-    }
-  })
-
   describe('successful runs', () => {
     beforeEach(async () => {
       // Clear the results
