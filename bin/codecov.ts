@@ -15,19 +15,19 @@ const realArgs = argv.argv
 
 const start = Date.now()
 
-verbose(`Start of uploader: ${start}...`, Boolean(argv.verbose))
+verbose(`Start of uploader: ${start}...`, Boolean(realArgs.verbose))
 main(realArgs)
   .then(() => {
     const end = Date.now()
-    verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
+    verbose(`End of uploader: ${end - start} milliseconds`, realArgs.verbose)
   })
   .catch(error => {
     if (error instanceof Error) {
       logError(`There was an error running the uploader: ${error.message}`)
-      verbose(`The error stack is: ${error.stack}`, argv.verbose)
+      verbose(`The error stack is: ${error.stack}`, realArgs.verbose)
     }
 
     const end = Date.now()
-    verbose(`End of uploader: ${end - start} milliseconds`, argv.verbose)
+    verbose(`End of uploader: ${end - start} milliseconds`, realArgs.verbose)
     process.exit(realArgs.nonZero ? -1 : 0)
   })
