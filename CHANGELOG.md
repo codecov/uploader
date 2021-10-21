@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.8](https://github.com/codecov/uploader/compare/v0.1.7...v0.1.8) (2021-10-21)
+
+### Features
+
+- ignore `*.egg-info` ([6f26dc4](https://github.com/codecov/uploader/commit/6f26dc4d6a41008ff42ec725b39b5864d47407f0))
+
+### Bug Fixes
+
+- use correct variable for args so verbose logs show ([de5f4ef](https://github.com/codecov/uploader/commit/de5f4ef1ba8993f7f4655b3928e9619887b5faca))
+
 ### [0.1.7](https://github.com/codecov/uploader/compare/v0.1.5...v0.1.7) (2021-10-19)
 
 ### Bug Fixes
