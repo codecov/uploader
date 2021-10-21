@@ -29,7 +29,9 @@ describe('Bitbucket Params', () => {
 
     it('does not run without Bitbucket env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {
           BITBUCKET_BUILD_NUMBER: '1',
           CI: 'true',

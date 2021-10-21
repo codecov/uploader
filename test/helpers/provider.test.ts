@@ -14,6 +14,7 @@ describe('detectProvider()', () => {
       args: {
         sha: '1234566',
         slug: 'fakeOrg/fakeRepo',
+        flags: ''
       },
       environment: {},
     }
@@ -28,6 +29,7 @@ describe('detectProvider()', () => {
     const inputs: UploaderInputs = {
       args: {
         sha: '1234566',
+        flags: ''
       },
       environment: {},
     }
@@ -44,7 +46,9 @@ describe('detectProvider()', () => {
       error: 'Git is not installed!',
     })
     const inputs: UploaderInputs = {
-      args: {},
+      args: {
+        flags: ''
+      },
       environment: {},
     }
     expect(()  => detectProvider(inputs)).toThrowError(/Unable to detect SHA and slug, please specify them manually/)
@@ -62,7 +66,9 @@ describe('walkProviders()', () => {
       error: 'Git is not installed!',
     })
     const inputs: UploaderInputs = {
-      args: {},
+      args: {
+        flags: ''
+      },
       environment: {},
     }
     expect(()  => walkProviders(inputs)).toThrowError(/Unable to detect provider./)
@@ -71,7 +77,9 @@ describe('walkProviders()', () => {
 
   it('will return serviceParams if able to detect', () => {
     const inputs: UploaderInputs = {
-      args: {},
+      args: {
+        flags: ''
+      },
       environment: {
         CI: 'true',
         CIRCLECI: 'true',

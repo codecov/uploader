@@ -5,7 +5,7 @@ export interface UploaderArgs {
   env?: string // Specify environment variables to be included with this build
   sha?: string // Specify the commit SHA mannually
   file?: string | string[] // Target file(s) to upload
-  flags?: string | string[] // Flag the upload to group coverage metrics
+  flags: string | string[] // Flag the upload to group coverage metrics
   name?: string // Custom defined name of the upload. Visible in Codecov UI
   parent?: string // The commit SHA of the parent for which you are uploading coverage.
   pr?: string // Specify the pull request number mannually

@@ -15,7 +15,9 @@ describe('<Ci> Params', () => {
   describe('detect()', () => {
     it('does not run without <Ci> env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {},
       }
       /*
@@ -26,7 +28,9 @@ describe('<Ci> Params', () => {
 
     it('does not run without <Ci> env variable', () => {
       const inputs: UploaderInputs= {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {},
       }
       /*

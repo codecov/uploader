@@ -42,7 +42,9 @@ describe('AppveyorCI Params', () => {
 
     it('does run with AppveyorCI env variable', () => {
       const inputs : UploaderInputs= {
-        args: {},
+        args: {
+          flags: ''
+        },
         environment: {
           CI: 'true',
           APPVEYOR: 'true',
