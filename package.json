@@ -6,7 +6,8 @@
   "bin": "dist/bin/codecov.js",
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
-    "test": "npm run lint && jest --runInBand",
+    "test": "npm run lint && npm run build && jest --runInBand",
+    "test:e2e": "jest test/e2e/output.test.ts",
     "build:clean": "rm -rf dist",
     "build": "tsc  --build",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
