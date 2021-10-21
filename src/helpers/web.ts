@@ -25,6 +25,7 @@ export function populateBuildParams(
   if (typeof args.flags === 'object') {
     flags = [...args.flags]
   } else {
+    args.flags = args.flags?.toString()
     flags = (args.flags || '').split(',')
   }
   serviceParams.flags = flags
