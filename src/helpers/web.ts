@@ -25,8 +25,7 @@ export function populateBuildParams(
   if (typeof args.flags === 'object') {
     flags = [...args.flags]
   } else {
-    args.flags = args.flags?.toString()
-    flags = (args.flags || '').split(',')
+    flags = String(args.flags || '').split(',')
   }
   serviceParams.flags = flags
     .filter(flag => validateHelpers.validateFlags(flag))
