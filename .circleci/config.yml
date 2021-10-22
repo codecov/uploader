@@ -6,6 +6,7 @@ version: 2.1
 
 orbs:
   win: circleci/windows@2.4.1
+  codecov: codecov/codecov@3.20
 
 jobs:
   build-linux-and-osx:
@@ -151,7 +152,7 @@ jobs:
           paths:
             - coverage-alpine
             - output_alpine.txt
-            
+
   test-alpine-without-git:
     docker:
       # specify the version you desire here
@@ -168,7 +169,7 @@ jobs:
           at: .
       - run:
           name: Remove .git directory
-          command: rm -rf .git          
+          command: rm -rf .git
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
@@ -240,6 +241,10 @@ jobs:
           command: |
             out/codecov-linux -F linux -Z -e CIRCLE_BRANCH
             out/codecov-linux -F "-linux" -Z -e CIRCLE_BRANCH
+
+      - codecov/upload:
+          flags: 'linux-orb'
+          xtra_args: '-v'
 
       - persist_to_workspace:
           root: .
