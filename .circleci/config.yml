@@ -151,7 +151,7 @@ jobs:
           paths:
             - coverage-alpine
             - output_alpine.txt
-            
+
   test-alpine-without-git:
     docker:
       # specify the version you desire here
@@ -168,7 +168,7 @@ jobs:
           at: .
       - run:
           name: Remove .git directory
-          command: rm -rf .git          
+          command: rm -rf .git
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
@@ -348,8 +348,8 @@ jobs:
           root: .
           paths:
             - output_win_cmd.txt
-            
-   test-windows-ps:
+
+  test-windows-ps:
     executor: win/default
     steps:
       - checkout
@@ -542,7 +542,7 @@ workflows:
             - test-macos
       - test-windows-cmd:
           requires:
-            - build-windows      
+            - build-windows
       - test-windows-ps:
           requires:
             - build-windows
