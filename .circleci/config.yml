@@ -320,7 +320,7 @@ jobs:
           paths:
             - output_osx_without_git.txt
 
-  test-windows:
+  test-windows-cmd:
     executor: win/default
     steps:
       - checkout
@@ -331,23 +331,52 @@ jobs:
           command: |
             dir C:\Users\circleci\project\coverage\
             attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
-            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
+            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows-cmd -d -Z -v -e CIRCLE_BRANCH >> output_win_cmd.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary auto-detect (dry-run)
           command: |
-            .\out\codecov.exe -F windows -v -d -Z -e CIRCLE_BRANCH >> output_win.txt
+            .\out\codecov.exe -F windows-cmd -v -d -Z -e CIRCLE_BRANCH >> output_win_cmd.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary (upload)
           command: |
-            .\out\codecov.exe -F windows -v -Z -e CIRCLE_BRANCH
+            .\out\codecov.exe -F windows-cmd -v -Z -e CIRCLE_BRANCH
           shell: cmd.exe
 
       - persist_to_workspace:
           root: .
           paths:
-            - output_win.txt
+            - output_win_cmd.txt
+            
+   test-windows-ps:
+    executor: win/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Run Windows binary -f (dry-run)
+          command: |
+            dir C:\Users\circleci\project\coverage\
+            attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
+            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows-ps -d -Z -v -e CIRCLE_BRANCH >> output_win_ps.txt
+          shell: powershell.exe
+      - run:
+          name: Run Windows binary auto-detect (dry-run)
+          command: |
+            .\out\codecov.exe -F windows-ps -v -d -Z -e CIRCLE_BRANCH >> output_win_ps.txt
+          shell: powershell.exe
+      - run:
+          name: Run Windows binary (upload)
+          command: |
+            .\out\codecov.exe -F windows-ps -v -Z -e CIRCLE_BRANCH
+          shell: powershell.exe
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_win_ps.txt
 
   test-windows-without-git:
     executor: win/default
@@ -402,7 +431,9 @@ jobs:
       - store_artifacts:
           path: output_osx_without_git.txt
       - store_artifacts:
-          path: output_win.txt
+          path: output_win_cmd.txt
+      - store_artifacts:
+          path: output_win_ps.txt
       - store_artifacts:
           path: output_win_without_git.txt
 
@@ -509,12 +540,16 @@ workflows:
       - test-macos-without-git:
           requires:
             - test-macos
-      - test-windows:
+      - test-windows-cmd:
+          requires:
+            - build-windows      
+      - test-windows-ps:
           requires:
             - build-windows
       - test-windows-without-git:
           requires:
-            - test-windows
+            - test-windows-cmd
+            - test-windows-ps
       - review:
           requires:
             - test-alpine-without-git
