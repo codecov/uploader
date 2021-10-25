@@ -360,7 +360,7 @@ jobs:
           command: |
             dir C:\Users\circleci\project\coverage\
             attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
-            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows-ps -d -Z -v -e CIRCLE_BRANCH >> output_win_ps.txt
+            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows-ps -d -Z -v -e CIRCLE_BRANCH
           shell: powershell.exe
       - run:
           name: Run Windows binary auto-detect (dry-run)
@@ -372,6 +372,9 @@ jobs:
           command: |
             .\out\codecov.exe -F windows-ps -v -Z -e CIRCLE_BRANCH
           shell: powershell.exe
+      - store_artifacts:
+          path: output_win_ps.txt
+          when: always
 
       - persist_to_workspace:
           root: .
