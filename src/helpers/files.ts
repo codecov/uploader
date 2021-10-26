@@ -240,13 +240,18 @@ export function getAllFiles(
     error,
   } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
 
-  return error instanceof Error || status !== 0
-    ? glob
+  let files = []
+  if (error instanceof Error || status !== 0) {
+    files = glob
       .sync(['**/*', '**/.[!.]*'], {
         cwd: dirPath,
         ignore: manualBlacklist().map(globstar),
       })
-    : stdout.split(/[\r\n]+/)
+  } else {
+    files = stdout.split(/[\r\n]+/)
+  }
+
+  return args.networkFilter ? files.filter(file => file.startsWith(String(args.networkFilter))) : files
 }
 
 /**

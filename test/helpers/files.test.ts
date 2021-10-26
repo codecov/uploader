@@ -56,6 +56,34 @@ describe('File Helpers', () => {
     ).toBe(files.join('\n'))
   })
 
+  it('can get a file listing with a file filter', async () => {
+    const files = ['npm-shrinkwrap.json', 'package.json', 'package-lock.json', 'src/file.js']
+    td.replace(childProcess, 'spawnSync', () => {
+      return {
+        stdout: files.join('\n'),
+        status: 0,
+        error: undefined,
+      }
+    })
+    expect(
+      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'package', verbose: 'true' }),
+    ).toBe(['package.json', 'package-lock.json'].join('\n'))
+  })
+
+  it('can get a file listing with a dir filter', async () => {
+    const files = ['npm-shrinkwrap.json', 'package.json', 'src/file.js']
+    td.replace(childProcess, 'spawnSync', () => {
+      return {
+        stdout: files.join('\n'),
+        status: 0,
+        error: undefined,
+      }
+    })
+    expect(
+      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'src/', verbose: 'true' }),
+    ).toBe(['src/file.js'].join('\n'))
+  })
+
   it('can get a file listing when git is unavailable', async () => {
     td.replace(childProcess, 'spawnSync', () => {
       return { stdout: '', status: null, error: new Error() }
@@ -63,6 +91,24 @@ describe('File Helpers', () => {
     expect(
       await fileHelpers.getFileListing('.', { flags: '', verbose: 'true' }),
     ).toMatch('npm-shrinkwrap.json')
+  })
+
+  it('can get a file listing when git is unavailable with a filter', async () => {
+    td.replace(childProcess, 'spawnSync', () => {
+      return { stdout: '', status: null, error: new Error() }
+    })
+    expect(
+      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'npm', verbose: 'true' }),
+    ).toMatch('npm-shrinkwrap.json')
+  })
+
+  it('can get a file listing when git is unavailable with a filter without matches', async () => {
+    td.replace(childProcess, 'spawnSync', () => {
+      return { stdout: '', status: null, error: new Error() }
+    })
+    expect(
+      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'src', verbose: 'true' }),
+    ).toMatch('')
   })
 
   describe('Coverage report handling', () => {

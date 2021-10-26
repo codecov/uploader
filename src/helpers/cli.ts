@@ -123,6 +123,12 @@ const args: ICLIArgument[] = [
     description: 'Move discovered coverage reports to the trash',
   },
   {
+    alias: 'i',
+    name: 'networkFiler',
+    type: 'string',
+    description: 'Specify a prefix on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing',
+  },
+  {
     alias: 'X',
     name: 'feature',
     type: 'string',
