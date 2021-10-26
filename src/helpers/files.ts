@@ -255,7 +255,11 @@ export function getAllFiles(
     files = files.filter(file => file.startsWith(String(args.networkFilter)))
   }
 
-  return args.networkPrefix ? files.map(file => String(args.networkPrefix) + file) : files
+  if (args.networkPrefix) {
+    files = files.map(file => String(args.networkPrefix) + file)
+  }
+  
+  return files
 }
 
 /**
