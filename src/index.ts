@@ -98,7 +98,7 @@ export async function main(
   const inputs: UploaderInputs = { args, environment: envs }
 
   let uploadHost: string
-  if (args.url && validateHelpers.validateURL(args.url)) {
+  if (args.url) {
     uploadHost = args.url
   } else {
     uploadHost = 'https://codecov.io'
