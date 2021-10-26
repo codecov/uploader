@@ -462,6 +462,9 @@ jobs:
     machine: true
     steps:
       - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
       - run:
           name: Clone Autotest and Start Acceptance Testing Containers
           command: |
@@ -484,6 +487,8 @@ workflows:
           context:
             - 'DockerHub Push Context'
             - 'Github Checkout'
+          requires:
+            - build-alpine
       - build-linux-and-osx
       - build-alpine:
           requires:
