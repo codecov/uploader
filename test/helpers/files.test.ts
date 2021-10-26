@@ -93,6 +93,34 @@ describe('File Helpers', () => {
     ).toMatch('npm-shrinkwrap.json')
   })
 
+  it('can get a file listing with a file filter and prefix', async () => {
+    const files = ['npm-shrinkwrap.json', 'package.json', 'package-lock.json', 'src/file.js']
+    td.replace(childProcess, 'spawnSync', () => {
+      return {
+        stdout: files.join('\n'),
+        status: 0,
+        error: undefined,
+      }
+    })
+    expect(
+      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'package', networkPrefix: 'build/', verbose: 'true' }),
+    ).toBe(['build/package.json', 'build/package-lock.json'].join('\n'))
+  })
+
+  it('can get a file listing with a dir filter and prefix', async () => {
+    const files = ['npm-shrinkwrap.json', 'package.json', 'src/file.js']
+    td.replace(childProcess, 'spawnSync', () => {
+      return {
+        stdout: files.join('\n'),
+        status: 0,
+        error: undefined,
+      }
+    })
+    expect(
+      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'src/', networkPrefix: 'build/', verbose: 'true' }),
+    ).toBe(['build/src/file.js'].join('\n'))
+  })
+
   it('can get a file listing when git is unavailable with a filter', async () => {
     td.replace(childProcess, 'spawnSync', () => {
       return { stdout: '', status: null, error: new Error() }

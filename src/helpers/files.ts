@@ -251,7 +251,11 @@ export function getAllFiles(
     files = stdout.split(/[\r\n]+/)
   }
 
-  return args.networkFilter ? files.filter(file => file.startsWith(String(args.networkFilter))) : files
+  if (args.networkFilter) {
+    files = files.filter(file => file.startsWith(String(args.networkFilter)))
+  }
+
+  return args.networkPrefix ? files.map(file => String(args.networkPrefix) + file) : files
 }
 
 /**

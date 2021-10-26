@@ -57,7 +57,8 @@ function dryRun(
  * @param {string} args.file Target file(s) to upload
  * @param {string} args.flags Flag the upload to group coverage metrics
  * @param {string} args.name Custom defined name of the upload. Visible in Codecov UI
- * @param {string} args.networkFilter Specify a prefix on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing
+ * @param {string} args.networkFilter Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing
+ * @param {string} args.networkPrefix Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing
  * @param {string} args.parent The commit SHA of the parent for which you are uploading coverage.
  * @param {string} args.pr Specify the pull request number mannually
  * @param {string} args.token Codecov upload token

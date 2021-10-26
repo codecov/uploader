@@ -126,7 +126,13 @@ const args: ICLIArgument[] = [
     alias: 'i',
     name: 'networkFiler',
     type: 'string',
-    description: 'Specify a prefix on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing',
+    description: 'Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing',
+  },
+  {
+    alias: 'k',
+    name: 'networkPrefix',
+    type: 'string',
+    description: 'Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing',
   },
   {
     alias: 'X',
