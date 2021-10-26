@@ -206,7 +206,6 @@ export async function getCoverageFiles(
     cwd: projectRoot,
     dot: true,
     ignore: [...manualBlacklist(), ...globBlacklist()],
-    dot: true,
   })
 }
 
