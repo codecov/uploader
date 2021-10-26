@@ -1,3 +1,5 @@
+import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
+
 /**
  * Detects if this CI provider is being used
  *
@@ -5,8 +7,8 @@
  * @returns boolean
  */
 
-// eslint-disable-next-line no-unused-vars
-function detect(envs) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function detect(envs: UploaderEnvs): boolean {
   return false
 }
 
@@ -16,7 +18,7 @@ function detect(envs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getBuild(inputs) {
+function _getBuild(inputs: UploaderInputs): string {
   const { args } = inputs
   return args.build || ''
 }
@@ -27,8 +29,8 @@ function _getBuild(inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _getBuildURL(inputs: UploaderInputs): string {
   return ''
 }
 
@@ -38,7 +40,7 @@ function _getBuildURL(inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getBranch(inputs) {
+function _getBranch(inputs: UploaderInputs): string {
   const { args } = inputs
   try {
     return args.branch || ''
@@ -55,8 +57,8 @@ function _getBranch(inputs) {
  * @param {*} envs an object of enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
-function _getJob(envs) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _getJob(envs: UploaderEnvs): string {
   return ''
 }
 
@@ -66,8 +68,8 @@ function _getJob(envs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
-function _getPR(inputs) {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
   try {
     return args.pr || ''
@@ -81,7 +83,7 @@ function _getPR(inputs) {
  *
  * @returns {string}
  */
-function _getService() {
+function _getService(): string {
   return ''
 }
 
@@ -90,7 +92,7 @@ function _getService() {
  *
  * @returns
  */
-function getServiceName() {
+export function getServiceName(): string {
   return ''
 }
 /**
@@ -99,7 +101,7 @@ function getServiceName() {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getSHA(inputs) {
+function _getSHA(inputs: UploaderInputs): string {
   const { args } = inputs
   try {
     return args.sha || ''
@@ -115,7 +117,7 @@ function _getSHA(inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getSlug(inputs) {
+function _getSlug(inputs: UploaderInputs): string {
   const { args } = inputs
   try {
     return args.slug || ''
@@ -129,13 +131,13 @@ function _getSlug(inputs) {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {{ branch: string, build: string, buildURL: string, commit: string, job: string, pr: string, service: string, slug: string }}
  */
-function getServiceParams(inputs) {
+export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.envs),
+    job: _getJob(inputs.environment),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

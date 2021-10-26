@@ -52,7 +52,7 @@ function _getService() {
   return 'appveyor'
 }
 
-export function getServiceName() {
+export function getServiceName(): string {
   return 'Appveyor CI'
 }
 

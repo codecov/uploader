@@ -10,6 +10,7 @@ import * as providerCodeBuild from './provider_codebuild'
 import * as providerDrone from './provider_drone'
 import * as providerGitHubactions from './provider_githubactions'
 import * as providerGitLabci from './provider_gitlabci'
+import * as providerHerokuci from './provider_herokuci'
 import * as providerJenkinsci from './provider_jenkinsci'
 import * as providerLocal from './provider_local'
 import * as providerTeamCity from './provider_teamcity'
@@ -28,6 +29,7 @@ const providerList: IProvider[] = [
   providerDrone,
   providerGitHubactions,
   providerGitLabci,
+  providerHerokuci,
   providerJenkinsci,
   providerTeamCity,
   providerTravisci,
