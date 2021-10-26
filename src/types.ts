@@ -7,6 +7,8 @@ export interface UploaderArgs {
   file?: string | string[] // Target file(s) to upload
   flags: string | string[] // Flag the upload to group coverage metrics
   name?: string // Custom defined name of the upload. Visible in Codecov UI
+  networkFilter?: string // Specify a prefix on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing
+  networkPrefix?: string // Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing
   parent?: string // The commit SHA of the parent for which you are uploading coverage.
   pr?: string // Specify the pull request number mannually
   token?: string // Codecov upload token

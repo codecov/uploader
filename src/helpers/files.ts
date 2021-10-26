@@ -241,13 +241,26 @@ export function getAllFiles(
     error,
   } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
 
-  return error instanceof Error || status !== 0
-    ? glob
+  let files = []
+  if (error instanceof Error || status !== 0) {
+    files = glob
       .sync(['**/*', '**/.[!.]*'], {
         cwd: dirPath,
         ignore: manualBlacklist().map(globstar),
       })
-    : stdout.split(/[\r\n]+/)
+  } else {
+    files = stdout.split(/[\r\n]+/)
+  }
+
+  if (args.networkFilter) {
+    files = files.filter(file => file.startsWith(String(args.networkFilter)))
+  }
+
+  if (args.networkPrefix) {
+    files = files.map(file => String(args.networkPrefix) + file)
+  }
+  
+  return files
 }
 
 /**
