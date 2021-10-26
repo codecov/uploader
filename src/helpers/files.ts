@@ -204,6 +204,7 @@ export async function getCoverageFiles(
     return parts.join(EMPTY_STRING)
   }), {
     cwd: projectRoot,
+    dot: true,
     ignore: [...manualBlacklist(), ...globBlacklist()],
     dot: true,
   })
