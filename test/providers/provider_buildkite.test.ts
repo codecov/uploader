@@ -43,7 +43,7 @@ describe('Buildkite Params', () => {
         BUILDKITE: 'true',
         BUILDKITE_BUILD_NUMBER: '1',
         BUILDKITE_JOB_ID: '3',
-        BUILDKITE_PROJECT_SLUG: 'testRepo',
+        BUILDKITE_PIPELINE_SLUG: 'testRepo',
         BUILDKITE_BRANCH: 'main',
         BUILDKITE_COMMIT: 'testingsha',
         BUILDKITE_BUILD_URL: 'https://buildkite.com/testOrg/testRepo',
