@@ -188,8 +188,13 @@ const isNegated = (path: string) => path.startsWith('!')
 export async function getCoverageFiles(
   projectRoot: string,
   coverageFilePatterns: string[],
+  args: UploaderArgs,
 ): Promise<string[]> {
   const globstar = (pattern: string) => `**/${pattern}`
+  verbose(
+    `Possible coverage patterns, prior to globbing ${coverageFilePatterns}`,
+    Boolean(args.verbose),
+  )
 
   return glob(coverageFilePatterns.map((pattern: string) => {
     const parts = []
@@ -200,8 +205,12 @@ export async function getCoverageFiles(
     } else {
       parts.push(globstar(pattern))
     }
-
-    return parts.join(EMPTY_STRING)
+    const joinedPaths = parts.join(EMPTY_STRING)
+    verbose(
+      `Possible coverage patterns, after globbing ${joinedPaths}`,
+      Boolean(args.verbose),
+    )
+    return joinedPaths
   }), {
     cwd: projectRoot,
     ignore: [...manualBlacklist(), ...globBlacklist()],

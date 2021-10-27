@@ -161,6 +161,7 @@ export async function main(
         return coverageFilePaths.concat(coverageFilePatterns())
       }
     })(),
+    args
   ))
 
   // Remove invalid and duplicate file paths
