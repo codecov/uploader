@@ -101,8 +101,8 @@ function _getSHA(inputs: UploaderInputs): string {
  */
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  if (args.slug || envs.BUILDKITE_PROJECT_SLUG) {
-    return args.slug || envs.BUILDKITE_PROJECT_SLUG || ''
+  if (args.slug || envs.BUILDKITE_PIPELINE_SLUG) {
+    return args.slug || envs.BUILDKITE_PIPELINE_SLUG || ''
   }
   throw new Error('Unable to detect slug, please set manually with the -r flag')
 }
