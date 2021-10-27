@@ -125,7 +125,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   }
 }
 
-export function getEnvVarNames() {
+export function getEnvVarNames(): string[] {
   return [
     'BUILDKITE',
     'BUILDKITE_BRANCH',
