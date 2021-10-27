@@ -100,6 +100,9 @@ describe('File Helpers', () => {
       const results = await fileHelpers.getCoverageFiles(
         '.',
         fileHelpers.coverageFilePatterns(),
+        {
+          flags: ''
+        }
       )
 
       expect(results).not.toContain('dummy.codecov.exe')
@@ -111,12 +114,16 @@ describe('File Helpers', () => {
 
     it('can return a list of coverage files with a pattern', async () => {
       expect(
-        await fileHelpers.getCoverageFiles('.', ['index.test.ts']),
+        await fileHelpers.getCoverageFiles('.', ['index.test.ts'],         {
+          flags: ''
+        }),
       ).toStrictEqual(['test/index.test.ts', 'test/providers/index.test.ts'])
     })
     it('can return a list of coverage files with a negated pattern', async () => {
       expect(
-        await fileHelpers.getCoverageFiles('.', ['index.test.ts', '!test/providers']),
+        await fileHelpers.getCoverageFiles('.', ['index.test.ts', '!test/providers'],         {
+          flags: ''
+        }),
       ).toStrictEqual(['test/index.test.ts'])
     })
     describe('coverage file patterns', () => {
