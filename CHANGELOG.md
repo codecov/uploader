@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.9](https://github.com/codecov/uploader/compare/v0.1.8...v0.1.9) (2021-11-01)
+
+### Features
+
+- add herokuci provider ([fdabd2e](https://github.com/codecov/uploader/commit/fdabd2ee3fc94a0d03565017bf54e18010b9daf6))
+- add network filter ([3bbc222](https://github.com/codecov/uploader/commit/3bbc22247f76d6ea33e6061fad22857c222a2ac0))
+- add network prefix ([4d5ee16](https://github.com/codecov/uploader/commit/4d5ee16bc0d96bca7b477017ba664f602b80b11f))
+- ignore `*.egg-info` ([54060a8](https://github.com/codecov/uploader/commit/54060a86a52bbeb6763454f4284fe290cb8760ef))
+
+### Bug Fixes
+
+- enable `dot` ([549894c](https://github.com/codecov/uploader/commit/549894ce2a2a0f2a3b93f4e88861d419f7b2a0be))
+- use correct variable for args so verbose logs show ([e8455ef](https://github.com/codecov/uploader/commit/e8455ef3cf717eeedceb2c43221a29f64264b077))
+
 ### [0.1.8](https://github.com/codecov/uploader/compare/v0.1.7...v0.1.8) (2021-10-21)
 
 ### Features
