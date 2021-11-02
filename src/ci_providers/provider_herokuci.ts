@@ -2,7 +2,7 @@ import { parseSlugFromRemoteAddr } from '../helpers/git'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
-  return Boolean(envs.CI) && envs.HEROKU_TEST_RUN_BRANCH != ''
+  return Boolean(envs.CI) && Boolean(envs.HEROKU_TEST_RUN_BRANCH)
 }
 
 function _getBuild(inputs: UploaderInputs): string {
