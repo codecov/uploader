@@ -1,6 +1,6 @@
 {
   "name": "codecov",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Codecov Report Uploader",
   "private": true,
   "bin": "dist/bin/codecov.js",
