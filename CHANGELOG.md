@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.10](https://github.com/codecov/uploader/compare/v0.1.9...v0.1.10) (2021-11-02)
+
+### Bug Fixes
+
+- **deps:** update dependency validator to v13.7.0 ([afe657a](https://github.com/codecov/uploader/commit/afe657a97ad0d68db2a8d18ac166c182ca4cb2ef))
+
 ### [0.1.9](https://github.com/codecov/uploader/compare/v0.1.8...v0.1.9) (2021-11-01)
 
 ### Features
