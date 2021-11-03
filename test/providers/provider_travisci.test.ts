@@ -16,6 +16,7 @@ describe('TravisCI Params', () => {
           url: '',
           source: '',
           flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -38,7 +39,8 @@ describe('TravisCI Params', () => {
     it('does run with TravisCI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {
           CI: 'true',
@@ -57,6 +59,7 @@ describe('TravisCI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',
@@ -91,6 +94,7 @@ describe('TravisCI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',
@@ -127,6 +131,7 @@ describe('TravisCI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',

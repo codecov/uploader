@@ -14,3 +14,7 @@ export function runExternalProgram(
   }
   return result.stdout.toString().trim()
 }
+
+export function isSetAndNotEmpty(val: string | undefined): boolean {
+  return typeof val !== 'undefined' && val !== ''
+}

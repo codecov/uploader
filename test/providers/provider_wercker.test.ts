@@ -1,7 +1,7 @@
 import td from 'testdouble'
 
 import * as providerWercker from '../../src/ci_providers/provider_wercker'
-import { IServiceParams, UploaderArgs, UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('Wercker CI Params', () => {
   afterEach(() => {
@@ -13,6 +13,7 @@ describe('Wercker CI Params', () => {
       const inputs: UploaderInputs = {
         args: {
           flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -24,6 +25,7 @@ describe('Wercker CI Params', () => {
       const inputs: UploaderInputs = {
         args: {
           flags: '',
+          slug: '',
         },
         environment: {
           CI: 'true',
@@ -42,6 +44,7 @@ describe('Wercker CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',

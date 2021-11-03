@@ -53,8 +53,8 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
+  if (args.slug !== '') return args.slug
   return (
-    args.slug ||
     (envs.CODEBUILD_SOURCE_REPO_URL
       ? envs.CODEBUILD_SOURCE_REPO_URL.toString()
           .replace(/^.*github.com\//, '') // lgtm [js/incomplete-hostname-regexp] - We want this to match all subdomains.

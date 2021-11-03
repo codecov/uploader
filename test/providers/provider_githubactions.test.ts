@@ -14,6 +14,7 @@ describe('GitHub Actions Params', () => {
       const inputs: UploaderInputs = {
         args: {
           flags: '',
+          slug: '',
         },
         environment: {
           GITHUB_REF: 'refs/heads/master',
@@ -46,6 +47,7 @@ describe('GitHub Actions Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         GITHUB_ACTIONS: 'true',
@@ -79,6 +81,7 @@ describe('GitHub Actions Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         GITHUB_ACTIONS: 'true',
@@ -120,6 +123,7 @@ describe('GitHub Actions Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         GITHUB_ACTIONS: 'true',
@@ -200,6 +204,7 @@ describe('GitHub Actions Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         GITHUB_ACTIONS: 'true',

@@ -114,7 +114,7 @@ describe('Web Helpers', () => {
 
   it('can populateBuildParams() from args', () => {
     const result = populateBuildParams(
-      { args: { flags: 'testFlag', tag: 'testTag' }, environment: {} },
+      { args: { flags: 'testFlag', tag: 'testTag', slug: '', }, environment: {} },
       {
         name: '',
         tag: ',',
@@ -134,7 +134,7 @@ describe('Web Helpers', () => {
 
   it('can populateBuildParams() from args with multiple flags as string', () => {
     const result = populateBuildParams(
-      { args: { flags: 'testFlag1,testFlag2', tag: 'testTag' }, environment: {} },
+      { args: { flags: 'testFlag1,testFlag2', tag: 'testTag' , slug: '',}, environment: {} },
       {
         name: '',
         tag: '',
@@ -154,7 +154,7 @@ describe('Web Helpers', () => {
 
   it('can populateBuildParams() from args with multiple flags as list', () => {
     const result = populateBuildParams(
-      { args: { flags: ['testFlag1', 'testFlag2'], tag: 'testTag' }, environment: {} },
+      { args: { flags: ['testFlag1', 'testFlag2'], tag: 'testTag', slug: '', }, environment: {} },
       {
         name: '',
         tag: '',

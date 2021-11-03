@@ -60,6 +60,7 @@ describe('Local Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {},
     }
@@ -92,6 +93,7 @@ describe('Local Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {},
     }

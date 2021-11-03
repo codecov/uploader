@@ -63,7 +63,8 @@ function _getSHA(inputs: UploaderInputs) {
 
 function _getSlug(inputs: UploaderInputs) {
   const { args, environment: envs } = inputs
-  return args.slug || envs.APPVEYOR_REPO_NAME || ''
+  if (args.slug !== '') return args.slug
+  return envs.APPVEYOR_REPO_NAME || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
