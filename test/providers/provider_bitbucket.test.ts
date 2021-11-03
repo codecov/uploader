@@ -16,6 +16,7 @@ describe('Bitbucket Params', () => {
           url: '',
           source: '',
           flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -30,7 +31,8 @@ describe('Bitbucket Params', () => {
     it('does not run without Bitbucket env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {
           BITBUCKET_BUILD_NUMBER: '1',
@@ -49,6 +51,7 @@ describe('Bitbucket Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BITBUCKET_BUILD_NUMBER: '1',
@@ -76,6 +79,7 @@ describe('Bitbucket Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BITBUCKET_BRANCH: 'main',
@@ -107,6 +111,7 @@ describe('Bitbucket Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BITBUCKET_BRANCH: 'main',
@@ -137,6 +142,7 @@ describe('Bitbucket Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BITBUCKET_BRANCH: 'main',

@@ -85,7 +85,8 @@ function _getServerURI(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || envs.BUILD_REPOSITORY_NAME || parseSlugFromRemoteAddr('') || ''
+  if (args.slug !== '') return args.slug
+  return envs.BUILD_REPOSITORY_NAME || parseSlugFromRemoteAddr('') || ''
 }
 /**
  * Generates and return the serviceParams object

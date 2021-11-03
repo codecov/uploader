@@ -12,7 +12,8 @@ describe('Cirrus Params', () => {
     it('does not run without Cirrus env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -40,6 +41,7 @@ describe('Cirrus Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',
@@ -48,7 +50,8 @@ describe('Cirrus Params', () => {
         CIRRUS_CHANGE_IN_REPO: 'testingsha',
         CIRRUS_BUILD_ID: '2',
         CIRRUS_PR: '1',
-        CIRRUS_REPO_FULL_NAME: 'https:/example.com/repo',
+        CIRRUS_REPO_OWNER: 'testOrg',
+        CIRRUS_REPO_NAME: 'testRepo',
       },
     }
     const expected: IServiceParams = {
@@ -59,7 +62,7 @@ describe('Cirrus Params', () => {
       job: '',
       pr: '1',
       service: 'cirrus-ci',
-      slug: 'https:/example.com/repo',
+      slug: 'testOrg/testRepo',
     }
     const params = providerCirrus.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -85,7 +88,8 @@ describe('Cirrus Params', () => {
         CIRRUS_CHANGE_IN_REPO: 'testingsha',
         CIRRUS_BUILD_ID: '2',
         CIRRUS_PR: '1',
-        CIRRUS_REPO_FULL_NAME: 'https:/example.com/repo',
+        CIRRUS_REPO_OWNER: 'testOrg',
+        CIRRUS_REPO_NAME: 'testRepo',
       },
     }
     const expected: IServiceParams = {

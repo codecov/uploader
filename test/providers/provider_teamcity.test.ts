@@ -13,7 +13,8 @@ describe('TeamCity Params', () => {
     it('does not run without TeamCity env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -27,7 +28,8 @@ describe('TeamCity Params', () => {
           tag: '',
           url: '',
           source: '',
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {
           CI: 'true',
@@ -46,6 +48,7 @@ describe('TeamCity Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',
@@ -80,6 +83,7 @@ describe('TeamCity Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',

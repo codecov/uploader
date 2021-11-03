@@ -9,18 +9,22 @@ describe('Buildkite Params', () => {
 
   describe('detect()', () => {
     it('does not run without Buildkite env variable', () => {
-      const inputs = {
-        args: {},
-        envs: {},
+      const inputs: UploaderInputs = {
+        args: {
+          flags: '',
+          slug: '',
+        },
+        environment: {},
       }
-      const detected = providerBuildkite.detect(inputs.envs)
+      const detected = providerBuildkite.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does not run without Buildkite env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {
           BUILDKITE: 'true',
@@ -38,11 +42,13 @@ describe('Buildkite Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BUILDKITE: 'true',
         BUILDKITE_BUILD_NUMBER: '1',
         BUILDKITE_JOB_ID: '3',
+        BUILDKITE_ORGANIZATION_SLUG: 'testOrg',
         BUILDKITE_PIPELINE_SLUG: 'testRepo',
         BUILDKITE_BRANCH: 'main',
         BUILDKITE_COMMIT: 'testingsha',
@@ -58,7 +64,7 @@ describe('Buildkite Params', () => {
       job: '3',
       pr: '',
       service: 'buildkite',
-      slug: 'testRepo',
+      slug: 'testOrg/testRepo',
     }
     const params = providerBuildkite.getServiceParams(inputs)
     expect(params).toMatchObject(expected)

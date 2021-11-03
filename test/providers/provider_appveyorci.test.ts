@@ -16,6 +16,7 @@ describe('AppveyorCI Params', () => {
           url: '',
           source: '',
           flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -43,7 +44,8 @@ describe('AppveyorCI Params', () => {
     it('does run with AppveyorCI env variable', () => {
       const inputs : UploaderInputs= {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {
           CI: 'true',
@@ -62,6 +64,7 @@ describe('AppveyorCI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         APPVEYOR: 'true',

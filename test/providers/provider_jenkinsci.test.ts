@@ -17,6 +17,7 @@ describe('Jenkins CI Params', () => {
           url: '',
           source: '',
           flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -29,13 +30,16 @@ describe('Jenkins CI Params', () => {
     })
 
     it('does run with JenkinsCI env variable', () => {
-      const inputs = {
-        args: {},
-        envs: {
+      const inputs: UploaderInputs = {
+        args: {
+          flags: '',
+          slug: '',
+        },
+        environment: {
           JENKINS_URL: 'https://example.jenkins.com',
         },
       }
-      const detected = providerJenkinsci.detect(inputs.envs)
+      const detected = providerJenkinsci.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
@@ -47,6 +51,7 @@ describe('Jenkins CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BUILD_NUMBER: '1',
@@ -82,6 +87,7 @@ describe('Jenkins CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BUILD_NUMBER: '1',

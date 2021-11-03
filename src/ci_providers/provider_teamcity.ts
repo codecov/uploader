@@ -31,7 +31,8 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args } = inputs
-  return args.slug || parseSlugFromRemoteAddr('') || ''
+  if (args.slug !== '') return args.slug
+  return parseSlugFromRemoteAddr('') || ''
 }
 
 function _getBuild(inputs: UploaderInputs): string {
