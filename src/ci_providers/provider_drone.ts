@@ -1,3 +1,6 @@
+/**
+ * https://docs.drone.io/runner/exec/configuration/reference/
+ */
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -43,7 +46,8 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || envs.DRONE_REPO || ''
+  if (args.slug !== '') return args.slug
+  return envs.DRONE_REPO || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {

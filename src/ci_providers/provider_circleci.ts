@@ -30,22 +30,19 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  let slug = args.slug || ''
-  if (slug !== '') {
-    return slug
+  if (args.slug !== '') {
+    return args.slug
   }
-  if (envs.CIRCLE_PROJECT_REPONAME !== '') {
-    slug = `${envs.CIRCLE_PROJECT_USERNAME}/${envs.CIRCLE_PROJECT_REPONAME}`
-  } else {
-    if (envs.CIRCLE_REPOSITORY_URL) {
-      slug = `${envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]}`
-    } else {
-      throw new Error(
-        'Unable to detect slug from env. Please set manually with the -r flag',
-      )
-    }
+  if (
+    typeof envs.CIRCLE_PROJECT_USERNAME !== 'undefined' &&
+    typeof envs.CIRCLE_PROJECT_REPONAME !== 'undefined'
+  ) {
+    return `${envs.CIRCLE_PROJECT_USERNAME}/${envs.CIRCLE_PROJECT_REPONAME}`
   }
-  return args.slug || slug
+  if (typeof envs.CIRCLE_REPOSITORY_URL !== "undefined") {
+    return `${envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]}`
+  }
+  return ''
 }
 
 function _getBuild(inputs: UploaderInputs): string {

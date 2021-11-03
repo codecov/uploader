@@ -29,7 +29,8 @@ describe('detectProvider()', () => {
     const inputs: UploaderInputs = {
       args: {
         sha: '1234566',
-        flags: ''
+        flags: '',
+        slug: '',
       },
       environment: {},
     }
@@ -47,7 +48,8 @@ describe('detectProvider()', () => {
     })
     const inputs: UploaderInputs = {
       args: {
-        flags: ''
+        flags: '',
+        slug: '',
       },
       environment: {},
     }
@@ -67,7 +69,8 @@ describe('walkProviders()', () => {
     })
     const inputs: UploaderInputs = {
       args: {
-        flags: ''
+        flags: '',
+        slug: '',
       },
       environment: {},
     }
@@ -78,7 +81,8 @@ describe('walkProviders()', () => {
   it('will return serviceParams if able to detect', () => {
     const inputs: UploaderInputs = {
       args: {
-        flags: ''
+        flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',
@@ -93,7 +97,7 @@ describe('walkProviders()', () => {
       job: '',
       pr: '',
       service: 'circleci',
-      slug: 'undefined/undefined',
+      slug: '',
     }
     expect(walkProviders(inputs)).toEqual(expectedOutput)
   })

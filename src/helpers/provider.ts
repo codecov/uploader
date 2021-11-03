@@ -2,16 +2,17 @@ import providers from '../ci_providers'
 import { info, logError, verbose } from '../helpers/logger'
 import { IServiceParams, UploaderInputs } from '../types'
 
-export function detectProvider(inputs: UploaderInputs, hasToken = false): Partial<IServiceParams> {
+export function detectProvider(
+  inputs: UploaderInputs,
+  hasToken = false,
+): Partial<IServiceParams> {
   const { args } = inputs
   let serviceParams: Partial<IServiceParams> | undefined
 
   //   check if we have a complete set of manual overrides (slug, SHA)
   if (args.sha && (args.slug || hasToken)) {
     // We have the needed args for a manual override
-    info(
-      `Using manual override from args.`,
-    )
+    info(`Using manual override from args.`)
     serviceParams = {
       commit: args.sha,
       ...(hasToken ? {} : { slug: args.slug }),
@@ -25,7 +26,7 @@ export function detectProvider(inputs: UploaderInputs, hasToken = false): Partia
     return { ...walkProviders(inputs), ...serviceParams }
   } catch (error) {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
-    if (typeof serviceParams !== "undefined") {
+    if (typeof serviceParams !== 'undefined') {
       logError(`Errow detecting repos setting using git: ${error}`)
     } else {
       throw new Error(
@@ -36,9 +37,7 @@ export function detectProvider(inputs: UploaderInputs, hasToken = false): Partia
   return serviceParams
 }
 
-export function walkProviders(
-  inputs: UploaderInputs,
-): IServiceParams {
+export function walkProviders(inputs: UploaderInputs): IServiceParams {
   for (const provider of providers) {
     if (provider.detect(inputs.environment)) {
       info(`Detected ${provider.getServiceName()} as the CI provider.`)
@@ -56,4 +55,23 @@ export function walkProviders(
     }
   }
   throw new Error(`Unable to detect provider.`)
+}
+
+export function setSlug(
+  slugArg: string,
+  orgEnv: string | undefined,
+  repoEnv: string | undefined,
+): string {
+  if (slugArg !== '') {
+    return slugArg
+  }
+  if (
+    typeof orgEnv !== 'undefined' &&
+    typeof repoEnv !== 'undefined' &&
+    orgEnv !== '' &&
+    repoEnv !== ''
+  ) {
+    return `${orgEnv}/${repoEnv}`
+  }
+  return ''
 }

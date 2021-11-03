@@ -44,9 +44,9 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
+  if (args.slug !== '') return args.slug
   const remoteAddr = envs.CI_BUILD_REPO || envs.CI_REPOSITORY_URL || ''
   return (
-    args.slug ||
     envs.CI_PROJECT_PATH ||
     parseSlugFromRemoteAddr(remoteAddr) ||
     ''

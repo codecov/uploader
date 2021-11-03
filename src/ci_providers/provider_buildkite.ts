@@ -1,3 +1,4 @@
+import { setSlug } from '../helpers/provider'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 /**
@@ -101,10 +102,7 @@ function _getSHA(inputs: UploaderInputs): string {
  */
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  if (args.slug || envs.BUILDKITE_PIPELINE_SLUG) {
-    return args.slug || envs.BUILDKITE_PIPELINE_SLUG || ''
-  }
-  throw new Error('Unable to detect slug, please set manually with the -r flag')
+  return setSlug(args.slug, envs.BUILDKITE_ORGANIZATION_SLUG, envs.BUILDKITE_PIPELINE_SLUG)
 }
 /**
  * Generates and return the serviceParams object

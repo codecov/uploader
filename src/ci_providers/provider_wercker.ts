@@ -1,3 +1,4 @@
+import { setSlug } from '../helpers/provider'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -44,7 +45,7 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || `${envs.WERCKER_GIT_OWNER}/${envs.WERCKER_GIT_REPOSITORY}`
+  return setSlug(args.slug, envs.WERCKER_GIT_OWNER, envs.WERCKER_GIT_REPOSITORY)
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {

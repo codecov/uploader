@@ -12,7 +12,8 @@ describe('CircleCI Params', () => {
     it('does not run without CircleCI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -23,7 +24,8 @@ describe('CircleCI Params', () => {
     it('does run with CircleCI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {
           CI: 'true',
@@ -39,6 +41,7 @@ describe('CircleCI Params', () => {
     const inputs: UploaderInputs = {
       args: {
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',
@@ -71,6 +74,7 @@ describe('CircleCI Params', () => {
     const inputs: UploaderInputs = {
       args: {
         flags: '',
+        slug: '',
       },
       environment: {
         CI: 'true',

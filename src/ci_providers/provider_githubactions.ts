@@ -1,3 +1,6 @@
+/**
+ * https://docs.github.com/en/actions/learn-github-actions/environment-variables
+ */
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 import childProcess from 'child_process'
@@ -88,7 +91,8 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || envs.GITHUB_REPOSITORY || ''
+  if (args.slug !== '') return args.slug
+  return envs.GITHUB_REPOSITORY || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {

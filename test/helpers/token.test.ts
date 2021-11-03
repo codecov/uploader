@@ -2,7 +2,7 @@ import path from 'path'
 
 import * as fileHelpers from '../../src/helpers/files'
 import * as tokenHelpers from '../../src/helpers/token'
-import { UploaderInputs } from '../../src/types'
+import { UploaderArgs, UploaderInputs } from '../../src/types'
 import { DEFAULT_UPLOAD_HOST } from '../../src/helpers/constansts'
 
 describe('Get tokens', () => {
@@ -21,25 +21,28 @@ describe('Get tokens', () => {
 
   describe('From yaml', () => {
     it('Returns empty with no yaml file', () => {
-      const args = {
+      const args: UploaderArgs = {
         flags: '',
         verbose: 'true',
+        slug: '',
       }
       expect(tokenHelpers.getTokenFromYaml('.', args)).toBe('')
     })
 
     it('Returns the correct token from file', () => {
-      const args = {
+      const args: UploaderArgs = {
         flags: '',
         verbose: 'true',
+        slug: '',
       }
       expect(tokenHelpers.getTokenFromYaml(fixturesDir, args)).toBe('faketoken')
     })
 
     it('Returns deprecation error from codecov_token', () => {
-      const args = {
+      const args: UploaderArgs = {
         flags: '',
         verbose: 'true',
+        slug: '',
       }
       jest.spyOn(console, 'error').mockImplementation(() => {
         // Intentionally empty
@@ -55,7 +58,7 @@ describe('Get tokens', () => {
   describe('From right source', () => {
     it('Returns from args', () => {
       const inputs: UploaderInputs = {
-        args: { token: 'argtoken', flags: '' },
+        args: { token: 'argtoken', flags: '', slug: '', },
         environment: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('argtoken')
@@ -63,7 +66,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '' },
+        args: { flags: '', slug: '', },
         environment: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('envtoken')
@@ -71,7 +74,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '' },
+        args: { flags: '', slug: '', },
         environment: {},
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('faketoken')
@@ -79,7 +82,7 @@ describe('Get tokens', () => {
 
     it('Returns from no source', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '' },
+        args: { flags: '', slug: '', },
         environment: {},
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')
@@ -91,7 +94,8 @@ describe('Get tokens', () => {
       args: {
         url: 'dummy.local',
         token: 'goodToken',
-        flags: ''
+        flags: '',
+        slug: '',
       },
       environment: {
         CODECOV_TOKEN: 'badToken'
@@ -104,7 +108,8 @@ describe('Get tokens', () => {
     const inputs: UploaderInputs = {
       args: {
         url: 'dummy.local',
-        flags: ''
+        flags: '',
+        slug: '',
       },
       environment: {
         CODECOV_TOKEN: 'goodT----oken'
@@ -117,7 +122,8 @@ describe('Get tokens', () => {
     const inputs: UploaderInputs = {
       args: {
         url: DEFAULT_UPLOAD_HOST,
-        flags: ''
+        flags: '',
+        slug: '',
       },
       environment: {
         CODECOV_TOKEN: 'bad------Token'

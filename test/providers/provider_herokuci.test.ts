@@ -13,7 +13,8 @@ describe('HerokuCI Params', () => {
     it('does not run without HerokuCI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -24,7 +25,8 @@ describe('HerokuCI Params', () => {
     it('does run with Herokuci env variable', () => {
       const inputs: UploaderInputs= {
         args: {
-          flags: ''
+          flags: '',
+          slug: '',
         },
         environment: {
           CI: 'true',
@@ -39,7 +41,7 @@ describe('HerokuCI Params', () => {
   // This should test that the provider outputs proper default values
   it('gets the correct params on no env variables', () => {
     const inputs: UploaderInputs = {
-      args: { tag: '', url: '', source: '', flags: '' },
+      args: { tag: '', url: '', source: '', flags: '', slug: '', },
       environment: {},
     }
     const expected: IServiceParams = {
@@ -63,7 +65,7 @@ describe('HerokuCI Params', () => {
   // This should test that the provider outputs proper parameters when a push event is created
   it('gets the correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: { tag: '', url: '', source: '', flags: '' },
+      args: { tag: '', url: '', source: '', flags: '', slug: '', },
       environment: {
         CI: 'true',
         HEROKU_TEST_RUN_BRANCH: 'testBranch',

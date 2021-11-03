@@ -46,7 +46,9 @@ describe('Uploader Core', () => {
   })
 
   it('Can upload with custom name', async () => {
-    jest.spyOn(console, 'log').mockImplementation(() => {})
+    jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
     process.env.CI = 'true'
     process.env.CIRCLECI = 'true'
 
@@ -62,6 +64,7 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       flags: '',
+      slug: '',
     })
     expect(result).toEqual({
       status: 'success',
@@ -73,7 +76,9 @@ describe('Uploader Core', () => {
     process.env.SOMETHING = 'red'
     process.env.ANOTHER = 'blue'
     jest.spyOn(process, 'exit')
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
     await app.main({
       name: 'customname',
       token: 'abcdefg',
@@ -81,6 +86,7 @@ describe('Uploader Core', () => {
       dryRun: 'true',
       env: 'SOMETHING,ANOTHER',
       flags: '',
+      slug: '',
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/SOMETHING=red/))
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/ANOTHER=blue/))
@@ -99,13 +105,16 @@ describe('Uploader Core', () => {
 
     it('Can upload without token', async () => {
       jest.spyOn(process, 'exit')
-      const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+      const log = jest.spyOn(console, 'log').mockImplementation(() => {
+        // intentionally empty
+      })
       await app.main({
         name: 'customname',
         url: 'https://codecov.io',
         dryRun: 'true',
         env: 'SOMETHING,ANOTHER',
         flags: '',
+        slug: '',
       })
       expect(log).toHaveBeenCalledWith(
         expect.stringMatching('-> No token specified or token is empty'),
@@ -131,6 +140,7 @@ describe('Uploader Core', () => {
         url: 'https://codecov.io',
         tag: '',
         source: '',
+        slug: '',
       })
       expect(result).toEqual({
         status: 'success',
@@ -157,6 +167,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       parent,
       flags: '',
+      slug: '',
     })
     expect(result).toEqual({
       status: 'success',
@@ -165,13 +176,16 @@ describe('Uploader Core', () => {
   }, 30000)
 
   it('Can find all coverage from root dir', async () => {
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
     await app.main({
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
       dryRun: 'true',
       flags: '',
+      slug: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/An example coverage root file/),
@@ -182,7 +196,9 @@ describe('Uploader Core', () => {
   })
 
   it('Can find a single specified file', async () => {
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
     await app.main({
       dryRun: 'true',
       file: 'test/fixtures/coverage.txt',
@@ -190,6 +206,7 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       flags: '',
+      slug: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
@@ -197,7 +214,9 @@ describe('Uploader Core', () => {
   })
 
   it('Can find multiple specified files', async () => {
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
     await app.main({
       dryRun: 'true',
       file: [
@@ -209,6 +228,7 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       flags: '',
+      slug: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
@@ -222,7 +242,9 @@ describe('Uploader Core', () => {
   })
 
   it('Can handle glob files', async () => {
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
     await app.main({
       dryRun: 'true',
       file: [
@@ -233,6 +255,7 @@ describe('Uploader Core', () => {
       token: 'abcdefg',
       url: 'https://codecov.io',
       flags: '',
+      slug: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
@@ -246,7 +269,9 @@ describe('Uploader Core', () => {
   })
 
   it('Can find only coverage from custom dir', async () => {
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
     await app.main({
       name: 'customname',
       token: 'abcdefg',
@@ -254,6 +279,7 @@ describe('Uploader Core', () => {
       dryRun: 'true',
       dir: './test/fixtures/other',
       flags: '',
+      slug: '',
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/An example coverage other file/),
@@ -264,7 +290,9 @@ describe('Uploader Core', () => {
   })
 
   it('Can remove coverage files', async () => {
-    const unlink = jest.spyOn(fs, 'unlink').mockImplementation(() => {})
+    const unlink = jest.spyOn(fs, 'unlink').mockImplementation(() => {
+      // intentionally empty
+    })
     await app.main({
       name: 'customname',
       token: 'abcdefg',
@@ -273,6 +301,7 @@ describe('Uploader Core', () => {
       dir: './test/fixtures/other',
       clean: 'true',
       flags: '',
+      slug: '',
     })
     expect(unlink).toHaveBeenCalledWith(
       'test/fixtures/other/coverage.txt',
@@ -281,7 +310,9 @@ describe('Uploader Core', () => {
   })
 
   it('Can include the network', async () => {
-    const log = jest.spyOn(console, 'log').mockImplementation(() => {})
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
     await app.main({
       name: 'customname',
       token: 'abcdefg',
@@ -289,6 +320,7 @@ describe('Uploader Core', () => {
       dryRun: 'true',
       dir: './test/fixtures/other',
       flags: '',
+      slug: '',
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
   })
@@ -301,6 +333,7 @@ describe('Uploader Core', () => {
       dryRun: 'true',
       feature: 'network',
       flags: '',
+      slug: '',
     })
     expect(console.log).not.toHaveBeenCalledWith(
       expect.stringMatching(/<<<<<< network/),

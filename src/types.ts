@@ -17,7 +17,7 @@ export interface UploaderArgs {
   rootDir?: string // Specify the project root directory when not in a git repo
   nonZero?: string // Should errors exit with a non-zero (default: false)
   dryRun?: string // Don't upload files to Codecov
-  slug?: string // Specify the slug manually
+  slug: string // Specify the slug manually
   url?: string // Change the upload host (Enterprise use)
   clean?: string // Move discovered coverage reports to the trash
   feature?: string // Toggle features

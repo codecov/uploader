@@ -5,7 +5,7 @@ import { version } from '../package.json'
 import * as validateHelpers from './helpers/validate'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, verbose } from './helpers/logger'
+import { info, logError, verbose } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
   coverageFilePatterns,
@@ -237,9 +237,18 @@ export async function main(
 
   // == Step 8: either upload or dry-run
 
-  const query = webHelpers.generateQuery(
-    webHelpers.populateBuildParams(inputs, serviceParams),
-  )
+  const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
+
+  verbose('Using the following upload parameters:', Boolean(args.verbose))
+  for (const parameter in buildParams) {
+    verbose(`${parameter}`, Boolean(args.verbose))
+  }
+
+  if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
+    logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
+  }
+  
+  const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {
     return dryRun(uploadHost, token, query, uploadFile, args.source || '')

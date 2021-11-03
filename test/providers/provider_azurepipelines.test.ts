@@ -17,6 +17,7 @@ describe('Azure Pipelines CI Params', () => {
           url: '',
           source: '',
           flags: '',
+          slug: '',
         },
         environment: {},
       }
@@ -31,6 +32,7 @@ describe('Azure Pipelines CI Params', () => {
           url: '',
           source: '',
           flags: '',
+          slug: '',
         },
         environment: {
           SYSTEM_TEAMFOUNDATIONSERVERURI: 'true',
@@ -48,6 +50,7 @@ describe('Azure Pipelines CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
@@ -81,6 +84,7 @@ describe('Azure Pipelines CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BUILD_BUILDNUMBER: '1',
@@ -118,6 +122,7 @@ describe('Azure Pipelines CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BUILD_BUILDNUMBER: '1',
@@ -155,6 +160,7 @@ describe('Azure Pipelines CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BUILD_BUILDNUMBER: '1',
@@ -197,6 +203,7 @@ describe('Azure Pipelines CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        slug: '',
       },
       environment: {
         BUILD_BUILDNUMBER: '1',
