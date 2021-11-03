@@ -58,11 +58,11 @@ export function walkProviders(inputs: UploaderInputs): IServiceParams {
 }
 
 export function setSlug(
-  slugArg: string,
+  slugArg: string | undefined,
   orgEnv: string | undefined,
   repoEnv: string | undefined,
 ): string {
-  if (slugArg !== '') {
+  if (typeof slugArg !== "undefined" && slugArg !== '') {
     return slugArg
   }
   if (

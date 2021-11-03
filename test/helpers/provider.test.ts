@@ -1,6 +1,6 @@
 import childProcess from 'child_process'
 import td from 'testdouble'
-import { detectProvider, walkProviders } from '../../src/helpers/provider'
+import { detectProvider, setSlug, walkProviders } from '../../src/helpers/provider'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('detectProvider()', () => {
@@ -102,3 +102,27 @@ describe('walkProviders()', () => {
     expect(walkProviders(inputs)).toEqual(expectedOutput)
   })
 })
+
+describe('setSlug()', () => {
+  it('will return an empty string when not correctedly passed values', () => {
+    expect(setSlug(undefined, undefined, undefined)).toEqual('')
+    expect(setSlug(undefined, 'foo', undefined)).toEqual('')
+    expect(setSlug(undefined, undefined, 'bar')).toEqual('')
+  })
+
+  it('will return the args.slug if either orgEnv or repoEnv are not valid', () => {
+    expect(setSlug('baz', undefined, undefined)).toEqual('baz')
+    expect(setSlug('baz', 'foo', undefined)).toEqual('baz')
+    expect(setSlug('baz', undefined, 'bar')).toEqual('baz')  
+  })
+
+  it('will return the args.slug if set and both orgEnv and repoEnv are valid', () => {
+    expect(setSlug('baz', 'foo', 'bar')).toEqual('baz')
+  })
+
+  it('will return orgEnv/epoEnv if args.slug is empty and both orgEnv and repoEnv are valid', () => {
+    expect(setSlug('', 'foo', 'bar')).toEqual('foo/bar')
+  })
+})
+
+
