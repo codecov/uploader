@@ -1,3 +1,5 @@
+import { setSlug } from '../helpers/provider'
+import { isSetAndNotEmpty } from '../helpers/util'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -30,19 +32,20 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  if (args.slug !== '') {
-    return args.slug
+
+  const slug = setSlug(
+    args.slug,
+    envs.CIRCLE_PROJECT_USERNAME,
+    envs.CIRCLE_PROJECT_REPONAME,
+  )
+  if (slug !== '') {
+    return slug
   }
-  if (
-    typeof envs.CIRCLE_PROJECT_USERNAME !== 'undefined' &&
-    typeof envs.CIRCLE_PROJECT_REPONAME !== 'undefined'
-  ) {
-    return `${envs.CIRCLE_PROJECT_USERNAME}/${envs.CIRCLE_PROJECT_REPONAME}`
+
+  if (isSetAndNotEmpty(envs.CIRCLE_REPOSITORY_URL)) {
+    return `${envs.CIRCLE_REPOSITORY_URL?.split(':')[1].split('.git')[0]}`
   }
-  if (typeof envs.CIRCLE_REPOSITORY_URL !== "undefined") {
-    return `${envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]}`
-  }
-  return ''
+  return slug
 }
 
 function _getBuild(inputs: UploaderInputs): string {
