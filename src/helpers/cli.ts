@@ -106,6 +106,7 @@ const args: ICLIArgument[] = [
   {
     alias: 'r',
     name: 'slug',
+    type: 'string',
     default: '',
     description: 'Specify the slug manually',
   },
