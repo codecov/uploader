@@ -26,6 +26,7 @@ describe('CodeBuild Params', () => {
           url: '',
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           CI: 'true',
@@ -46,6 +47,7 @@ describe('CodeBuild Params', () => {
           url: '',
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           CI: 'true',
@@ -83,6 +85,7 @@ describe('CodeBuild Params', () => {
           source: '',
           url: '',
           flags: '',
+          upstream: ''
         },
         environment: {
           CI: 'true',

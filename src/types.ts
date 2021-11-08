@@ -1,3 +1,5 @@
+import { Agent } from "https";
+
 export interface UploaderArgs {
   build?: string // Specify the build number manually
   branch?: string // Specify the branch manually
@@ -21,6 +23,7 @@ export interface UploaderArgs {
   url?: string // Change the upload host (Enterprise use)
   clean?: string // Move discovered coverage reports to the trash
   feature?: string // Toggle features
+  upstream: string // Upstream proxy to connect to
   source?: string // Track wrappers of the uploader
   changelog?: string // Displays the changelog and exits
 }
@@ -54,4 +57,19 @@ export interface IServiceParams {
   parent?: string
   project?: string
   server_uri?: string
+}
+
+export enum HTTP_METHOD {
+  "POST",
+  "PUT"
+}
+
+export interface IRequestHeaders {
+  url: string;
+  options: {
+    method: string,
+    agent?: Agent
+    body?: string | Buffer,
+    headers: Record<string, string>
+  } 
 }

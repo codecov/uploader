@@ -14,7 +14,8 @@ describe('detectProvider()', () => {
       args: {
         sha: '1234566',
         slug: 'fakeOrg/fakeRepo',
-        flags: ''
+        flags: '',
+        upstream: ''
       },
       environment: {},
     }
@@ -31,6 +32,7 @@ describe('detectProvider()', () => {
         sha: '1234566',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {},
     }
@@ -50,6 +52,7 @@ describe('detectProvider()', () => {
       args: {
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {},
     }
@@ -71,6 +74,7 @@ describe('walkProviders()', () => {
       args: {
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {},
     }
@@ -83,6 +87,7 @@ describe('walkProviders()', () => {
       args: {
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',

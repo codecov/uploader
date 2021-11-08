@@ -25,6 +25,7 @@ describe('Get tokens', () => {
         flags: '',
         verbose: 'true',
         slug: '',
+        upstream: ','
       }
       expect(tokenHelpers.getTokenFromYaml('.', args)).toBe('')
     })
@@ -34,6 +35,7 @@ describe('Get tokens', () => {
         flags: '',
         verbose: 'true',
         slug: '',
+        upstream: ','
       }
       expect(tokenHelpers.getTokenFromYaml(fixturesDir, args)).toBe('faketoken')
     })
@@ -43,6 +45,7 @@ describe('Get tokens', () => {
         flags: '',
         verbose: 'true',
         slug: '',
+        upstream: ','
       }
       jest.spyOn(console, 'error').mockImplementation(() => {
         // Intentionally empty
@@ -58,7 +61,7 @@ describe('Get tokens', () => {
   describe('From right source', () => {
     it('Returns from args', () => {
       const inputs: UploaderInputs = {
-        args: { token: 'argtoken', flags: '', slug: '', },
+        args: { token: 'argtoken', flags: '', slug: '', upstream: ','},
         environment: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('argtoken')
@@ -66,7 +69,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '', slug: '', },
+        args: { flags: '', slug: '', upstream: ','},
         environment: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('envtoken')
@@ -74,7 +77,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '', slug: '', },
+        args: { flags: '', slug: '', upstream: ','},
         environment: {},
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('faketoken')
@@ -82,7 +85,7 @@ describe('Get tokens', () => {
 
     it('Returns from no source', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '', slug: '', },
+        args: { flags: '', slug: '', upstream: ','},
         environment: {},
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')
@@ -96,6 +99,7 @@ describe('Get tokens', () => {
         token: 'goodToken',
         flags: '',
         slug: '',
+        upstream: ','
       },
       environment: {
         CODECOV_TOKEN: 'badToken'
@@ -110,6 +114,7 @@ describe('Get tokens', () => {
         url: 'dummy.local',
         flags: '',
         slug: '',
+        upstream: ','
       },
       environment: {
         CODECOV_TOKEN: 'goodT----oken'
@@ -124,6 +129,7 @@ describe('Get tokens', () => {
         url: DEFAULT_UPLOAD_HOST,
         flags: '',
         slug: '',
+        upstream: ','
       },
       environment: {
         CODECOV_TOKEN: 'bad------Token'

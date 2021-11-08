@@ -17,6 +17,7 @@ describe('AppveyorCI Params', () => {
           source: '',
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -46,6 +47,7 @@ describe('AppveyorCI Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           CI: 'true',
@@ -65,6 +67,7 @@ describe('AppveyorCI Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         APPVEYOR: 'true',
@@ -105,6 +108,7 @@ describe('AppveyorCI Params', () => {
         sha: 'testsha',
         slug: 'testOrg/testRepo',
         flags: '',
+        upstream: ''
       },
       environment: {
         APPVEYOR: 'true',

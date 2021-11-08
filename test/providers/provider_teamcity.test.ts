@@ -15,6 +15,7 @@ describe('TeamCity Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -30,6 +31,7 @@ describe('TeamCity Params', () => {
           source: '',
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           CI: 'true',
@@ -49,6 +51,7 @@ describe('TeamCity Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
@@ -84,6 +87,7 @@ describe('TeamCity Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
@@ -123,6 +127,7 @@ describe('TeamCity Params', () => {
         url: '',
         source: '',
         flags: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',

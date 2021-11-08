@@ -18,6 +18,7 @@ describe('Jenkins CI Params', () => {
           source: '',
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -34,6 +35,7 @@ describe('Jenkins CI Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           JENKINS_URL: 'https://example.jenkins.com',
@@ -52,6 +54,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         BUILD_NUMBER: '1',
@@ -88,6 +91,7 @@ describe('Jenkins CI Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         BUILD_NUMBER: '1',
@@ -119,6 +123,7 @@ describe('Jenkins CI Params', () => {
         url: '',
         source: '',
         flags: '',
+        upstream: ''
       },
       environment: {
         JENKINS_URL: 'https://example.com',

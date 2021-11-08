@@ -1,7 +1,15 @@
 import nock from 'nock'
 
 import { version } from '../../package.json'
-import { displayChangelog, generateQuery, getPackage, parsePOSTResults, populateBuildParams, uploadToCodecov, uploadToCodecovPUT } from '../../src/helpers/web'
+import {
+  displayChangelog,
+  generateQuery,
+  getPackage,
+  parsePOSTResults,
+  populateBuildParams,
+  uploadToCodecov,
+  uploadToCodecovPUT,
+} from '../../src/helpers/web'
 import { IServiceParams } from '../../src/types'
 
 describe('Web Helpers', () => {
@@ -33,12 +41,11 @@ describe('Web Helpers', () => {
       .query(true)
       .reply(200, 'testPOSTHTTP')
 
-    const response = await uploadToCodecov(
-      uploadURL,
-      token,
-      query,
-      source,
-    )
+    const response = await uploadToCodecov(uploadURL, token, query, source, {
+      flags: '',
+      slug: '',
+      upstream: '',
+    })
     try {
       expect(response).toBe('testPOSTHTTP')
     } catch (error) {
@@ -55,12 +62,11 @@ describe('Web Helpers', () => {
       .query(true)
       .reply(200, 'testPOSTHTTPS')
 
-    const response = await uploadToCodecov(
-      uploadURL,
-      token,
-      query,
-      source,
-    )
+    const response = await uploadToCodecov(uploadURL, token, query, source, {
+      flags: '',
+      slug: '',
+      upstream: '',
+    })
     expect(response).toBe('testPOSTHTTPS')
   })
 
@@ -68,12 +74,16 @@ describe('Web Helpers', () => {
     jest.spyOn(console, 'log').mockImplementation(() => void {})
     uploadURL = `https://results.codecov.io
     https://codecov.io`
-    const response = await uploadToCodecovPUT(uploadURL, uploadFile)
+    const response = await uploadToCodecovPUT(uploadURL, uploadFile, {
+      flags: '',
+      slug: '',
+      upstream: '',
+    })
     expect(response.resultURL).toEqual('https://results.codecov.io')
   })
 
   it('Can generate query URL', () => {
-    const queryParams: IServiceParams  = {
+    const queryParams: IServiceParams = {
       branch: 'testBranch',
       commit: 'commitSHA',
       build: '4',
@@ -112,7 +122,10 @@ describe('Web Helpers', () => {
 
   it('can populateBuildParams() from args', () => {
     const result = populateBuildParams(
-      { args: { flags: 'testFlag', tag: 'testTag', slug: '', }, environment: {} },
+      {
+        args: { flags: 'testFlag', tag: 'testTag', slug: '', upstream: '' },
+        environment: {},
+      },
       {
         name: '',
         tag: ',',
@@ -132,7 +145,15 @@ describe('Web Helpers', () => {
 
   it('can populateBuildParams() from args with multiple flags as string', () => {
     const result = populateBuildParams(
-      { args: { flags: 'testFlag1,testFlag2', tag: 'testTag' , slug: '',}, environment: {} },
+      {
+        args: {
+          flags: 'testFlag1,testFlag2',
+          tag: 'testTag',
+          slug: '',
+          upstream: '',
+        },
+        environment: {},
+      },
       {
         name: '',
         tag: '',
@@ -152,7 +173,15 @@ describe('Web Helpers', () => {
 
   it('can populateBuildParams() from args with multiple flags as list', () => {
     const result = populateBuildParams(
-      { args: { flags: ['testFlag1', 'testFlag2'], tag: 'testTag', slug: '', }, environment: {} },
+      {
+        args: {
+          flags: ['testFlag1', 'testFlag2'],
+          tag: 'testTag',
+          slug: '',
+          upstream: '',
+        },
+        environment: {},
+      },
       {
         name: '',
         tag: '',
@@ -183,12 +212,16 @@ describe('Web Helpers', () => {
   describe('parsePOSTResults()', () => {
     it('will throw when unable to match', () => {
       const testURL = `🤨`
-      expect(() => parsePOSTResults(testURL)).toThrowError(/Parsing results from POST failed/)
+      expect(() => parsePOSTResults(testURL)).toThrowError(
+        /Parsing results from POST failed/,
+      )
     })
 
     it('will throw when can not match exactly twice', () => {
       const testURL = `dummyURL`
-      expect(() => parsePOSTResults(testURL)).toThrowError('Incorrect number of urls when parsing results from POST: 1')
+      expect(() => parsePOSTResults(testURL)).toThrowError(
+        'Incorrect number of urls when parsing results from POST: 1',
+      )
     })
 
     it('will return an object when parsing correctly and input has multiple linebreaks', () => {
@@ -201,14 +234,14 @@ describe('Web Helpers', () => {
       
       
       OtherURL`
-      const expectedResults = { putURL: 'OtherURL', resultURL: 'dummyURL'}
+      const expectedResults = { putURL: 'OtherURL', resultURL: 'dummyURL' }
       expect(parsePOSTResults(testURL)).toEqual(expectedResults)
     })
   })
 })
 
-describe("displayChangelog()", () => {
-  it("displays the correct link containing the current version", () => {
+describe('displayChangelog()', () => {
+  it('displays the correct link containing the current version', () => {
     const fn = jest.spyOn(console, 'log').mockImplementation(() => void {})
     displayChangelog()
     expect(fn).toBeCalledWith(expect.stringContaining(version))

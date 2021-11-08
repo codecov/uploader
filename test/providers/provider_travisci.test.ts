@@ -17,6 +17,7 @@ describe('TravisCI Params', () => {
           source: '',
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -41,6 +42,7 @@ describe('TravisCI Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           CI: 'true',
@@ -60,6 +62,7 @@ describe('TravisCI Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
@@ -95,6 +98,7 @@ describe('TravisCI Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
@@ -132,6 +136,7 @@ describe('TravisCI Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
@@ -172,6 +177,7 @@ describe('TravisCI Params', () => {
         url: '',
         source: '',
         flags: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',

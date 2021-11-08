@@ -30,7 +30,8 @@ describe('CI Providers', () => {
         args: {
           sha: '123',
           slug: 'testOrg/testRepo',
-          flags: ''
+          flags: '',
+          upstream: ''
         },
         environment: {}
       }

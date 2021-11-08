@@ -13,6 +13,7 @@ describe('Buildkite Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -25,6 +26,7 @@ describe('Buildkite Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           BUILDKITE: 'true',
@@ -43,6 +45,7 @@ describe('Buildkite Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         BUILDKITE: 'true',
@@ -82,6 +85,7 @@ describe('Buildkite Params', () => {
         url: '',
         source: '',
         flags: '',
+        upstream: ''
       },
       environment: {
         BUILDKITE: 'true',

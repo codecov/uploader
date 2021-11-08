@@ -15,6 +15,7 @@ describe('GitHub Actions Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           GITHUB_REF: 'refs/heads/master',
@@ -28,7 +29,7 @@ describe('GitHub Actions Params', () => {
       expect(detected).toBeFalsy()
     })
 
-    it('does not with GitHub Actions env variable', () => {
+    it('does not run with only the GitHub Actions env variable', () => {
       const inputs = {
         args: {},
         envs: {
@@ -48,6 +49,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         GITHUB_ACTIONS: 'true',
@@ -82,6 +84,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         GITHUB_ACTIONS: 'true',
@@ -124,6 +127,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         GITHUB_ACTIONS: 'true',
@@ -171,6 +175,7 @@ describe('GitHub Actions Params', () => {
         url: '',
         source: '',
         flags: '',
+        upstream: ''
       },
       environment: {
         GITHUB_ACTIONS: 'true',
@@ -205,6 +210,7 @@ describe('GitHub Actions Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         GITHUB_ACTIONS: 'true',

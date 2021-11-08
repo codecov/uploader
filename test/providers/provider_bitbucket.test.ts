@@ -17,6 +17,7 @@ describe('Bitbucket Params', () => {
           source: '',
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -33,6 +34,7 @@ describe('Bitbucket Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           BITBUCKET_BUILD_NUMBER: '1',
@@ -52,6 +54,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         BITBUCKET_BUILD_NUMBER: '1',
@@ -80,6 +83,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         BITBUCKET_BRANCH: 'main',
@@ -112,6 +116,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         BITBUCKET_BRANCH: 'main',
@@ -143,6 +148,7 @@ describe('Bitbucket Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         BITBUCKET_BRANCH: 'main',
@@ -183,6 +189,7 @@ describe('Bitbucket Params', () => {
         url: '',
         source: '',
         flags: '',
+        upstream: ''
       },
       environment: {
         BITBUCKET_BRANCH: 'main',

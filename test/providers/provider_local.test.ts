@@ -36,6 +36,7 @@ describe('Local Params', () => {
         url: '',
         source: '',
         flags: '',
+        upstream: ''
       },
       environment: {},
     }
@@ -61,6 +62,7 @@ describe('Local Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {},
     }
@@ -94,6 +96,7 @@ describe('Local Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {},
     }

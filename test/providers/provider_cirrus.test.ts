@@ -14,6 +14,7 @@ describe('Cirrus Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -42,6 +43,7 @@ describe('Cirrus Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
@@ -69,7 +71,7 @@ describe('Cirrus Params', () => {
   })
 
   it('gets correct params for overrides', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         branch: 'branch',
         build: '3',
@@ -80,6 +82,7 @@ describe('Cirrus Params', () => {
         url: '',
         source: '',
         flags: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',

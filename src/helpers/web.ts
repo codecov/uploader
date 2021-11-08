@@ -2,9 +2,16 @@ import { snakeCase } from 'snake-case'
 import fetch from 'node-fetch'
 
 import { version } from '../../package.json'
-import { IServiceParams, UploaderInputs } from '../types'
+import {
+  HTTP_METHOD,
+  IRequestHeaders,
+  IServiceParams,
+  UploaderArgs,
+  UploaderInputs,
+} from '../types'
 import { info } from './logger'
 import * as validateHelpers from './validate'
+import { HttpsProxyAgent } from 'https-proxy-agent'
 
 /**
  *
@@ -46,19 +53,18 @@ export function getPackage(source: string): string {
 export async function uploadToCodecovPUT(
   uploadURL: string,
   uploadFile: string | Buffer,
+  args: UploaderArgs
 ): Promise<{ status: string; resultURL: string }> {
   info('Uploading...')
 
   const { putURL, resultURL } = parsePOSTResults(uploadURL)
 
-  const response = await fetch(putURL, {
-    method: 'put',
-    body: uploadFile,
-    headers: {
-      'Content-Type': 'text/plain',
-      'Content-Encoding': 'gzip',
-    },
-  })
+  const requestHeaders = generateRequestHeadersPUT(
+    putURL,
+    uploadFile,
+    args,
+  )
+  const response = await fetch(requestHeaders.url, requestHeaders.options)
 
   if (response.status !== 200) {
     const data = await response.text()
@@ -75,19 +81,17 @@ export async function uploadToCodecov(
   token: string,
   query: string,
   source: string,
+  args: UploaderArgs,
 ): Promise<string> {
-  const response = await fetch(
-    `${uploadURL}/upload/v4?package=${getPackage(
-      source,
-    )}&token=${token}&${query}`,
-    {
-      method: 'post',
-      headers: {
-        'X-Upload-Token': token,
-        'X-Reduced-Redundancy': 'false',
-      },
-    },
+  const requestHeaders = generateRequestHeadersPOST(
+    uploadURL,
+    token,
+    query,
+    source,
+    args,
+    HTTP_METHOD.POST,
   )
+  const response = await fetch(requestHeaders.url, requestHeaders.options)
 
   if (response.status !== 200) {
     const data = await response.text()
@@ -138,4 +142,113 @@ export function parsePOSTResults(uploadURL: string): {
 export function displayChangelog(): void {
   info(`The change log for this version (v${version}) can be found at`)
   info(`https://github.com/codecov/uploader/blob/v${version}/CHANGELOG.md`)
+}
+
+export function generateRequestHeadersPOST(
+  uploadURL: string,
+  token: string,
+  query: string,
+  source: string,
+  args: UploaderArgs,
+  method: HTTP_METHOD,
+): IRequestHeaders {
+  if (method === HTTP_METHOD.POST) {
+    if (args.upstream !== '') {
+      const proxyAgent = new HttpsProxyAgent(args.upstream)
+      return {
+        url: `${uploadURL}/upload/v4?package=${getPackage(
+          source,
+        )}&token=${token}&${query}`,
+        options: {
+          agent: proxyAgent,
+          method: 'post',
+          headers: {
+            'X-Upload-Token': token,
+            'X-Reduced-Redundancy': 'false',
+          },
+        },
+      }
+    }
+
+    return {
+      url: `${uploadURL}/upload/v4?package=${getPackage(
+        source,
+      )}&token=${token}&${query}`,
+      options: {
+        method: 'post',
+        headers: {
+          'X-Upload-Token': token,
+          'X-Reduced-Redundancy': 'false',
+        },
+      },
+    }
+  }
+
+  if (method === HTTP_METHOD.PUT) {
+    if (args.upstream !== '') {
+      const proxyAgent = new HttpsProxyAgent(args.upstream)
+      return {
+        url: `${args.upstream}/upload/v4?package=${getPackage(
+          source,
+        )}&token=${token}&${query}`,
+        options: {
+          method: 'put',
+          agent: proxyAgent,
+          headers: {
+            'X-Upload-Token': token,
+            'X-Reduced-Redundancy': 'false',
+          },
+        },
+      }
+    }
+    return {
+      url: `${uploadURL}/upload/v4?package=${getPackage(
+        source,
+      )}&token=${token}&${query}`, options: {
+        method: 'put',
+        headers: {
+          'X-Upload-Token': token,
+          'X-Reduced-Redundancy': 'false',
+        },
+      }
+
+    }
+  }
+
+  throw new Error(`Unsupported method requested: ${method}`)
+}
+
+export function generateRequestHeadersPUT(
+  uploadURL: string,
+  uploadFile: string | Buffer,
+  args: UploaderArgs,
+): IRequestHeaders {
+
+    if (args.upstream !== '') {
+      const proxyAgent = new HttpsProxyAgent(args.upstream)
+      return {
+        url: uploadURL,
+        options: {
+          method: 'put',
+          agent: proxyAgent,
+          body: uploadFile,
+          headers: {
+            'Content-Type': 'text/plain',
+            'Content-Encoding': 'gzip',
+          },
+        },
+      }
+    }
+    return {
+      url: uploadURL, options: {
+        method: 'put',
+        body: uploadFile,
+        headers: {
+          'Content-Type': 'text/plain',
+          'Content-Encoding': 'gzip',
+        },
+      }
+
+    }
+  
 }

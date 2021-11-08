@@ -14,6 +14,7 @@ describe('CircleCI Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -26,6 +27,7 @@ describe('CircleCI Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           CI: 'true',
@@ -42,6 +44,7 @@ describe('CircleCI Params', () => {
       args: {
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
@@ -75,6 +78,7 @@ describe('CircleCI Params', () => {
       args: {
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',

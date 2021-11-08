@@ -1,7 +1,7 @@
 import td from 'testdouble'
 
 import * as providerDrone from '../../src/ci_providers/provider_drone'
-import { IServiceParams } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
 
 describe('Drone Params', () => {
   afterEach(() => {
@@ -32,13 +32,14 @@ describe('Drone Params', () => {
   })
 
   it('gets correct params', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
         tag: '',
         url: '',
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',

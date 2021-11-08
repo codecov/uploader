@@ -144,6 +144,13 @@ const args: ICLIArgument[] = [
       -X network       Disable uploading the file network`,
   },
   {
+    alias: 'U',
+    name: 'upstream',
+    type: 'string',
+    default: '',
+    description: 'The upstream http proxy server to connect through',
+  },
+  {
     alias: 'Q',
     name: 'source',
     type: 'string',

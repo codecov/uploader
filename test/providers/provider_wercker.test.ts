@@ -14,6 +14,7 @@ describe('Wercker CI Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {},
       }
@@ -26,6 +27,7 @@ describe('Wercker CI Params', () => {
         args: {
           flags: '',
           slug: '',
+          upstream: ''
         },
         environment: {
           CI: 'true',
@@ -45,6 +47,7 @@ describe('Wercker CI Params', () => {
         source: '',
         flags: '',
         slug: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
@@ -82,6 +85,7 @@ describe('Wercker CI Params', () => {
         sha: 'testsha',
         slug: 'testOrg/testRepo',
         flags: '',
+        upstream: ''
       },
       environment: {
         CI: 'true',
