@@ -1,9 +1,9 @@
 import { snakeCase } from 'snake-case'
-import superagent from 'superagent'
+import fetch from 'node-fetch'
 
 import { version } from '../../package.json'
 import { IServiceParams, UploaderInputs } from '../types'
-import { info, logError } from './logger'
+import { info } from './logger'
 import * as validateHelpers from './validate'
 
 /**
@@ -51,56 +51,52 @@ export async function uploadToCodecovPUT(
 
   const { putURL, resultURL } = parsePOSTResults(uploadURL)
 
-  try {
-    const result = await superagent
-      .put(`${putURL}`)
-      .retry()
-      .send(uploadFile)
-      .set('Content-Type', 'text/plain')
-      .set('Content-Encoding', 'gzip')
+  const response = await fetch(putURL, {
+    method: 'put',
+    body: uploadFile,
+    headers: {
+      'Content-Type': 'text/plain',
+      'Content-Encoding': 'gzip',
+    },
+  })
 
-    if (result.status === 200) {
-      return { status: 'success', resultURL }
-    }
-    throw new Error(`${result.status}, ${result.body}`)
-  } catch (error) {
-    throw new Error(`Error PUTing file to storage: ${error}`)
+  if (response.status !== 200) {
+    const data = await response.text()
+    throw new Error(
+      `There was an error fetching the storage URL during PUT: ${response.status} - ${response.statusText} - ${data}`,
+    )
   }
-}
 
-interface SuperAgentResponse extends superagent.Response {
-  res?: {
-    text: string
-  }
+  return { status: 'success', resultURL }
 }
 
 export async function uploadToCodecov(
   uploadURL: string,
   token: string,
   query: string,
-  uploadFile: string | Buffer,
   source: string,
 ): Promise<string> {
-  const result: SuperAgentResponse = await superagent
-    .post(
-      `${uploadURL}/upload/v4?package=${getPackage(
-        source,
-      )}&token=${token}&${query}`,
-    )
-    .retry()
-    .set('X-Upload-Token', token)
-    .set('X-Reduced-Redundancy', 'false')
-    .on('error', err => {
-      logError(
-        `Error POSTing to ${uploadURL}: ${err.status} ${err.response?.text}`,
-      )
-    })
-    .ok(res => res.status === 200)
+  const response = await fetch(
+    `${uploadURL}/upload/v4?package=${getPackage(
+      source,
+    )}&token=${token}&${query}`,
+    {
+      method: 'post',
+      headers: {
+        'X-Upload-Token': token,
+        'X-Reduced-Redundancy': 'false',
+      },
+    },
+  )
 
-  if (result.res) {
-    return result.res.text
+  if (response.status !== 200) {
+    const data = await response.text()
+    throw new Error(
+      `There was an error fetching the storage URL during POST: ${response.status} - ${response.statusText} - ${data}`,
+    )
   }
-  throw new Error(`There was an error fetching the storage URL during POST`)
+
+  return await response.text()
 }
 
 /**

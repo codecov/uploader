@@ -37,7 +37,6 @@ describe('Web Helpers', () => {
       uploadURL,
       token,
       query,
-      uploadFile,
       source,
     )
     try {
@@ -60,7 +59,6 @@ describe('Web Helpers', () => {
       uploadURL,
       token,
       query,
-      uploadFile,
       source,
     )
     expect(response).toBe('testPOSTHTTPS')

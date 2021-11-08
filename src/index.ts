@@ -278,7 +278,6 @@ export async function main(
       uploadHost,
       token,
       query,
-      gzippedFile,
       args.source || '',
     )
 
