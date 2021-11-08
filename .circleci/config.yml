@@ -533,7 +533,8 @@ workflows:
           requires:
             - build-alpine
       - test-alpine-proxy:
-          - build-alpine
+          requires:
+            - build-alpine
       - test-alpine-without-git:
           requires:
             - test-alpine
