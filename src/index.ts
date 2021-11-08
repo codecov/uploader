@@ -93,7 +93,7 @@ export async function main(
   Step 7: either upload or dry-run
   */
 
-  // == Step 1: validate and sanitize inputs
+  // #region == Step 1: validate and sanitize inputs
   // TODO: clean and sanitize envs and args
   const envs = process.env
   // args
@@ -108,7 +108,8 @@ export async function main(
 
   info(generateHeader(getVersion()))
 
-  // == Step 2: detect if we are in a git repo
+  // #endregion
+  // #region == Step 2: detect if we are in a git repo
   const projectRoot = args.rootDir || fetchGitRoot()
   if (projectRoot === '') {
     info(
@@ -118,13 +119,15 @@ export async function main(
 
   info(`=> Project root located at: ${projectRoot}`)
 
-  // == Step 3: sanitize and set token
+  // #endregion
+  // #region == Step 3: sanitize and set token
   const token = await getToken(inputs, projectRoot)
   if (token === '') {
     info('-> No token specified or token is empty')
   }
 
-  // == Step 4: get network
+  // #endregion
+  // #region == Step 4: get network
   let uploadFile = ''
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
@@ -139,7 +142,8 @@ export async function main(
     uploadFile = uploadFile.concat(fileListing).concat(MARKER_NETWORK_END)
   }
 
-  // == Step 5: select coverage files (search or specify)
+  // #endregion
+  // #region == Step 5: select coverage files (search or specify)
 
   // Look for files
   let coverageFilePaths: string[] = []
@@ -181,7 +185,8 @@ export async function main(
   }
 
   verbose('End of network processing', Boolean(args.verbose))
-  // == Step 6: generate upload file
+  // #endregion
+  // #region == Step 6: generate upload file
   // TODO: capture envs
 
   // Get coverage report contents
@@ -229,13 +234,15 @@ export async function main(
 
   const gzippedFile = zlib.gzipSync(uploadFile)
 
-  // == Step 7: determine CI provider
+  // #endregion
+  // #region == Step 7: determine CI provider
 
   const hasToken = token !== ''
 
   const serviceParams = detectProvider(inputs, hasToken)
 
-  // == Step 8: either upload or dry-run
+  // #endregion
+  // #region == Step 8: either upload or dry-run
 
   const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
 
@@ -296,6 +303,7 @@ export async function main(
   } catch (error) {
     throw new Error(`Error uploading to ${uploadHost}: ${error}`)
   }
+  // #endregion
 }
 
 /**
