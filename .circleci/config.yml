@@ -168,7 +168,7 @@ jobs:
           at: .
       - run:
           name: Start Squid
-          command: rc-service squid start
+          command: squid
       - run:
           name: Run Alpine binary auto-detect (dry run)
           command: |
