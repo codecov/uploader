@@ -3,6 +3,7 @@ import childProcess from 'child_process'
 
 import * as providerLocal from '../../src/ci_providers//provider_local'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Local Params', () => {
   afterEach(() => {
@@ -28,14 +29,13 @@ describe('Local Params', () => {
   it('returns on override args', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'main',
-        pr: '1',
-        sha: 'testingsha',
-        slug: 'owner/repo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'main',
+          pr: '1',
+          sha: 'testingsha',
+          slug: 'owner/repo',
+        },
       },
       environment: {},
     }
@@ -55,13 +55,7 @@ describe('Local Params', () => {
 
   it('returns errors on git command failures', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
@@ -88,13 +82,7 @@ describe('Local Params', () => {
 
   describe('getSlug()', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
 

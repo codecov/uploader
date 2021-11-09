@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import * as providerCirrus from '../../src/ci_providers/provider_cirrus'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Cirrus Params', () => {
   afterEach(() => {
@@ -11,10 +12,7 @@ describe('Cirrus Params', () => {
   describe('detect()', () => {
     it('does not run without Cirrus env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       const detected = providerCirrus.detect(inputs.environment)
@@ -22,8 +20,8 @@ describe('Cirrus Params', () => {
     })
 
     it('does run with Cirrus env variable', () => {
-      const inputs = {
-        args: {},
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
         environment: {
           CI: 'true',
           CIRRUS_CI: 'true',
@@ -36,13 +34,7 @@ describe('Cirrus Params', () => {
 
   it('gets correct params', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI: 'true',
         CIRRUS_CI: 'true',
@@ -69,17 +61,16 @@ describe('Cirrus Params', () => {
   })
 
   it('gets correct params for overrides', () => {
-    const inputs = {
+    const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         CI: 'true',

@@ -1,6 +1,7 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 /*
 Add your provider here and name it provder<Ci>. Example:
@@ -15,10 +16,7 @@ describe('<Ci> Params', () => {
   describe('detect()', () => {
     it('does not run without <Ci> env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       /*
@@ -28,11 +26,8 @@ describe('<Ci> Params', () => {
     })
 
     it('does not run without <Ci> env variable', () => {
-      const inputs: UploaderInputs= {
-        args: {
-          flags: '',
-          slug: '',
-        },
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       /*
@@ -45,7 +40,7 @@ describe('<Ci> Params', () => {
   // This should test that the provider outputs proper default values
   it('gets the correct params on no env variables', () => {
     const inputs: UploaderInputs = {
-      args: { tag: '', url: '', source: '', flags: '', slug: '', },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
     const expected: IServiceParams = {
@@ -67,7 +62,7 @@ describe('<Ci> Params', () => {
   // This should test that the provider outputs proper parameters when a push event is created
   it('gets the correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: { tag: '', url: '', source: '', flags: '', slug: '', },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
     const expected: IServiceParams = {
@@ -89,13 +84,7 @@ describe('<Ci> Params', () => {
   // This should test that the provider outputs proper parameters when a pull request event is created
   it('gets the correct params on pr', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
     const expected: IServiceParams = {
@@ -117,13 +106,7 @@ describe('<Ci> Params', () => {
   // This should test that the provider outputs proper parameters when given overrides
   it('gets the correct params on overrides', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
     const expected: IServiceParams = {

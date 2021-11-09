@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import * as providerWercker from '../../src/ci_providers/provider_wercker'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Wercker CI Params', () => {
   afterEach(() => {
@@ -11,10 +12,7 @@ describe('Wercker CI Params', () => {
   describe('detect()', () => {
     it('does not run without Wercker CI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       const detected = providerWercker.detect(inputs.environment)
@@ -23,10 +21,7 @@ describe('Wercker CI Params', () => {
 
     it('does run with Wercker CI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {
           CI: 'true',
           WERCKER_MAIN_PIPELINE_STARTED: 'true',
@@ -39,13 +34,7 @@ describe('Wercker CI Params', () => {
 
   it('gets correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI: 'true',
         WERCKER_MAIN_PIPELINE_STARTED: '1',
@@ -73,15 +62,14 @@ describe('Wercker CI Params', () => {
   it('gets correct params for overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        tag: '',
-        url: '',
-        source: '',
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         CI: 'true',
