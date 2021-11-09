@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.12](https://github.com/codecov/uploader/compare/v0.1.11...v0.1.12) (2021-11-09)
+
+### Features
+
+- add proxy support ([cf66308](https://github.com/codecov/uploader/commit/cf663088d2e6c6a6683fcbb7aa4a97d51ea643f0))
+
 ### [0.1.11](https://github.com/codecov/uploader/compare/v0.1.10...v0.1.11) (2021-11-03)
 
 ### [0.1.10](https://github.com/codecov/uploader/compare/v0.1.9...v0.1.10) (2021-11-02)
