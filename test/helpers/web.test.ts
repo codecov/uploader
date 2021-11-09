@@ -259,6 +259,7 @@ describe('displayChangelog()', () => {
 
 describe('generateRequestHeadersPOST()', () => {
   const args: UploaderArgs = { ...createEmptyArgs() }
+  const source = args.source || ''
 
   it('should return return the correct url when args.upstream is not set', () => {
     args.upstream = ''
@@ -271,7 +272,9 @@ describe('generateRequestHeadersPOST()', () => {
     )
 
     expect(requestHeaders.url).toEqual(
-      'https:localhost.local/upload/v4?package=G-uploader-0.1.11&token=134&slug=testOrg/testUploader',
+      `https:localhost.local/upload/v4?package=${getPackage(
+        'G',
+      )}&token=134&slug=testOrg/testUploader`,
     )
     expect(typeof requestHeaders.options.body).toEqual('undefined')
     expect(typeof requestHeaders.options.agent).toEqual('undefined')
@@ -288,8 +291,11 @@ describe('generateRequestHeadersPOST()', () => {
     )
 
     expect(requestHeaders.url).toEqual(
-      'https:localhost.local/upload/v4?package=G-uploader-0.1.11&token=134&slug=testOrg/testUploader',
+      `https:localhost.local/upload/v4?package=${getPackage(
+        'G',
+      )}&token=134&slug=testOrg/testUploader`,
     )
+
     expect(typeof requestHeaders.options.body).toEqual('undefined')
     expect(requestHeaders.options.agent).toMatchObject(
       new HttpsProxyAgent(args.upstream),
