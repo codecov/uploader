@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import * as providerCircleci from '../../src/ci_providers//provider_circleci'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('CircleCI Params', () => {
   afterEach(() => {
@@ -11,11 +12,7 @@ describe('CircleCI Params', () => {
   describe('detect()', () => {
     it('does not run without CircleCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-          upstream: ''
-        },
+        args: {...createEmptyArgs(), },
         environment: {},
       }
       const detected = providerCircleci.detect(inputs.environment)
@@ -24,11 +21,7 @@ describe('CircleCI Params', () => {
 
     it('does run with CircleCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-          upstream: ''
-        },
+        args: {...createEmptyArgs(), },
         environment: {
           CI: 'true',
           CIRCLECI: 'true',
@@ -41,11 +34,7 @@ describe('CircleCI Params', () => {
 
   it('gets correct params', () => {
     const inputs: UploaderInputs = {
-      args: {
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: {...createEmptyArgs(), },
       environment: {
         CI: 'true',
         CIRCLECI: 'true',
@@ -75,11 +64,7 @@ describe('CircleCI Params', () => {
 
   it('gets correct slug when empty reponame', () => {
     const inputs: UploaderInputs = {
-      args: {
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: {...createEmptyArgs(), },
       environment: {
         CI: 'true',
         CIRCLECI: 'true',

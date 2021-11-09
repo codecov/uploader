@@ -101,6 +101,7 @@ const args: ICLIArgument[] = [
     alias: 'd',
     name: 'dryRun',
     type: 'boolean',
+    default: false,
     description: "Don't upload files to Codecov",
   },
   {

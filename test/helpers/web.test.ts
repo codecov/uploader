@@ -14,6 +14,7 @@ import {
   uploadToCodecovPUT,
 } from '../../src/helpers/web'
 import { IServiceParams, UploaderArgs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Web Helpers', () => {
   let uploadURL: string
@@ -126,7 +127,10 @@ describe('Web Helpers', () => {
   it('can populateBuildParams() from args', () => {
     const result = populateBuildParams(
       {
-        args: { flags: 'testFlag', tag: 'testTag', slug: '', upstream: '' },
+        args: {
+          ...createEmptyArgs(),
+          ...{ flags: 'testFlag', tag: 'testTag' },
+        },
         environment: {},
       },
       {
@@ -150,10 +154,11 @@ describe('Web Helpers', () => {
     const result = populateBuildParams(
       {
         args: {
-          flags: 'testFlag1,testFlag2',
-          tag: 'testTag',
-          slug: '',
-          upstream: '',
+          ...createEmptyArgs(),
+          ...{
+            flags: 'testFlag1,testFlag2',
+            tag: 'testTag',
+          },
         },
         environment: {},
       },
@@ -178,10 +183,11 @@ describe('Web Helpers', () => {
     const result = populateBuildParams(
       {
         args: {
-          flags: ['testFlag1', 'testFlag2'],
-          tag: 'testTag',
-          slug: '',
-          upstream: '',
+          ...createEmptyArgs(),
+          ...{
+            flags: ['testFlag1', 'testFlag2'],
+            tag: 'testTag',
+          },
         },
         environment: {},
       },
@@ -252,11 +258,7 @@ describe('displayChangelog()', () => {
 })
 
 describe('generateRequestHeadersPOST()', () => {
-  const args: UploaderArgs = {
-    flags: '',
-    slug: '',
-    upstream: '',
-  }
+  const args: UploaderArgs = { ...createEmptyArgs() }
 
   it('should return return the correct url when args.upstream is not set', () => {
     args.upstream = ''
@@ -296,11 +298,7 @@ describe('generateRequestHeadersPOST()', () => {
 })
 
 describe('generateRequestHeadersPUT()', () => {
-  const args: UploaderArgs = {
-    flags: '',
-    slug: '',
-    upstream: '',
-  }
+  const args: UploaderArgs = { ...createEmptyArgs() }
 
   it('should return return the correct url when args.upstream is not set', () => {
     args.upstream = ''

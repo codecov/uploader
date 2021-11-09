@@ -2,6 +2,7 @@ import childProcess from 'child_process'
 import td from 'testdouble'
 import * as providerBitbucket from '../../src/ci_providers//provider_bitbucket'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Bitbucket Params', () => {
   afterEach(() => {
@@ -11,14 +12,7 @@ describe('Bitbucket Params', () => {
   describe('detect()', () => {
     it('does not run without Bitbucket env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          url: '',
-          source: '',
-          flags: '',
-          slug: '',
-          upstream: ''
-        },
+        args: {...createEmptyArgs(), },
         environment: {},
       }
       let detected = providerBitbucket.detect(inputs.environment)
@@ -31,11 +25,7 @@ describe('Bitbucket Params', () => {
 
     it('does not run without Bitbucket env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-          upstream: ''
-        },
+        args: {...createEmptyArgs(), },
         environment: {
           BITBUCKET_BUILD_NUMBER: '1',
           CI: 'true',
@@ -48,14 +38,7 @@ describe('Bitbucket Params', () => {
 
   it('gets the correct params on no env variables', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: {...createEmptyArgs(), },
       environment: {
         BITBUCKET_BUILD_NUMBER: '1',
         CI: 'true',
@@ -77,14 +60,7 @@ describe('Bitbucket Params', () => {
 
   it('gets the correct params on pr', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: {...createEmptyArgs(), },
       environment: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
@@ -110,14 +86,7 @@ describe('Bitbucket Params', () => {
 
   it('gets the correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: {...createEmptyArgs(), },
       environment: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
@@ -142,14 +111,7 @@ describe('Bitbucket Params', () => {
 
   it('gets the correct params with short SHA', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: {...createEmptyArgs(), },
       environment: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
@@ -179,18 +141,14 @@ describe('Bitbucket Params', () => {
 
   it('gets the correct params on overrides', () => {
     const inputs: UploaderInputs = {
-      args: {
+      args: {...createEmptyArgs(), ...{
         branch: 'feature',
         build: '3',
         pr: '4',
         sha: 'overwriteSha',
         slug: 'overwriteOwner/overwriteRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        upstream: ''
-      },
+
+      }},
       environment: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',

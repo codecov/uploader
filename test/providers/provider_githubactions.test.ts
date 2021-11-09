@@ -3,6 +3,7 @@ import childProcess from 'child_process'
 
 import * as providerGitHubactions from '../../src/ci_providers//provider_githubactions'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('GitHub Actions Params', () => {
   afterEach(() => {
@@ -12,11 +13,7 @@ describe('GitHub Actions Params', () => {
   describe('detect()', () => {
     it('does not run without GitHub Actions env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-          upstream: ''
-        },
+        args: { ...createEmptyArgs() },
         environment: {
           GITHUB_REF: 'refs/heads/master',
           GITHUB_REPOSITORY: 'testOrg/testRepo',
@@ -30,27 +27,20 @@ describe('GitHub Actions Params', () => {
     })
 
     it('does not run with only the GitHub Actions env variable', () => {
-      const inputs = {
-        args: {},
-        envs: {
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
+        environment: {
           GITHUB_ACTIONS: 'true',
         },
       }
-      const detected = providerGitHubactions.detect(inputs.envs)
+      const detected = providerGitHubactions.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
 
   it('gets correct params for a push event', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_REF: 'refs/heads/master',
@@ -64,8 +54,7 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'master',
       build: '2',
-      buildURL:
-        'https://github.com/testOrg/testRepo/actions/runs/2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: '',
@@ -78,14 +67,7 @@ describe('GitHub Actions Params', () => {
 
   it('gets correct params for a PR', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
@@ -100,8 +82,7 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
-      buildURL:
-        'https://github.com/testOrg/testRepo/actions/runs/2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: '1',
@@ -121,14 +102,7 @@ describe('GitHub Actions Params', () => {
 
   it('gets correct params for a merge', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
@@ -143,8 +117,7 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
-      buildURL:
-        'https://github.com/testOrg/testRepo/actions/runs/2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: 'testWorkflow',
       pr: '1',
@@ -166,16 +139,14 @@ describe('GitHub Actions Params', () => {
   it('gets correct params for overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        upstream: ''
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         GITHUB_ACTIONS: 'true',
@@ -185,8 +156,7 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
-      buildURL:
-        'https://github.com/testOrg/testRepo/actions/runs/3',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/3',
       commit: 'testsha',
       job: '',
       pr: '2',
@@ -204,14 +174,7 @@ describe('GitHub Actions Params', () => {
 
   it('gets an improper merge commit message', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
@@ -226,8 +189,7 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
-      buildURL:
-        'https://github.com/testOrg/testRepo/actions/runs/2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
       pr: '1',

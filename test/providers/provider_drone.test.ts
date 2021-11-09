@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import * as providerDrone from '../../src/ci_providers/provider_drone'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Drone Params', () => {
   afterEach(() => {
@@ -10,37 +11,30 @@ describe('Drone Params', () => {
 
   describe('detect()', () => {
     it('does not run without Drone env variable', () => {
-      const inputs = {
-        args: {},
-        envs: {},
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
+        environment: {},
       }
-      const detected = providerDrone.detect(inputs.envs)
+      const detected = providerDrone.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does run with Drone env variable', () => {
-      const inputs = {
-        args: {},
-        envs: {
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
+        environment: {
           CI: 'true',
           DRONE: 'true',
         },
       }
-      const detected = providerDrone.detect(inputs.envs)
+      const detected = providerDrone.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
 
   it('gets correct params', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-        upstream: ''
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI: 'true',
         DRONE: 'true',

@@ -4,6 +4,7 @@ import * as fileHelpers from '../../src/helpers/files'
 import * as tokenHelpers from '../../src/helpers/token'
 import { UploaderArgs, UploaderInputs } from '../../src/types'
 import { DEFAULT_UPLOAD_HOST } from '../../src/helpers/constansts'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Get tokens', () => {
   const fixturesDir = path.join(
@@ -22,30 +23,30 @@ describe('Get tokens', () => {
   describe('From yaml', () => {
     it('Returns empty with no yaml file', () => {
       const args: UploaderArgs = {
-        flags: '',
-        verbose: 'true',
-        slug: '',
-        upstream: ',',
+        ...createEmptyArgs(),
+        ...{
+          verbose: 'true',
+        },
       }
       expect(tokenHelpers.getTokenFromYaml('.', args)).toBe('')
     })
 
     it('Returns the correct token from file', () => {
       const args: UploaderArgs = {
-        flags: '',
-        verbose: 'true',
-        slug: '',
-        upstream: ',',
+        ...createEmptyArgs(),
+        ...{
+          verbose: 'true',
+        },
       }
       expect(tokenHelpers.getTokenFromYaml(fixturesDir, args)).toBe('faketoken')
     })
 
     it('Returns deprecation error from codecov_token', () => {
       const args: UploaderArgs = {
-        flags: '',
-        verbose: 'true',
-        slug: '',
-        upstream: ',',
+        ...createEmptyArgs(),
+        ...{
+          verbose: 'true',
+        },
       }
       jest.spyOn(console, 'error').mockImplementation(() => {
         // Intentionally empty
@@ -61,7 +62,7 @@ describe('Get tokens', () => {
   describe('From right source', () => {
     it('Returns from args', () => {
       const inputs: UploaderInputs = {
-        args: { token: 'argtoken', flags: '', slug: '', upstream: ',' },
+        args: { ...createEmptyArgs(), ...{ token: 'argtoken' } },
         environment: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('argtoken')
@@ -69,7 +70,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '', slug: '', upstream: ',' },
+        args: {...createEmptyArgs(),},
         environment: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('envtoken')
@@ -77,7 +78,7 @@ describe('Get tokens', () => {
 
     it('Returns from env', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '', slug: '', upstream: ',' },
+        args: {...createEmptyArgs(),},
         environment: {},
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('faketoken')
@@ -85,7 +86,7 @@ describe('Get tokens', () => {
 
     it('Returns from no source', () => {
       const inputs: UploaderInputs = {
-        args: { flags: '', slug: '', upstream: ',' },
+        args: {...createEmptyArgs(), },
         environment: {},
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')
@@ -94,47 +95,40 @@ describe('Get tokens', () => {
 
   it('should return token correctly from args when `-u` differs from default host', () => {
     const inputs: UploaderInputs = {
-      args: {
+      args: {...createEmptyArgs(), ...{
         url: 'dummy.local',
         token: 'goodToken',
-        flags: '',
-        slug: '',
-        upstream: ',',
-      },
+      }},
       environment: {
-        CODECOV_TOKEN: 'badToken'
-      }
+        CODECOV_TOKEN: 'badToken',
+      },
     }
     expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('goodToken')
   })
 
   it('should return token correctly from env when `-u` differs from default host', () => {
     const inputs: UploaderInputs = {
-      args: {
+      args: {...createEmptyArgs(), ...{
         url: 'dummy.local',
-        flags: '',
-        slug: '',
-        upstream: ',',
-      },
+      }},
       environment: {
-        CODECOV_TOKEN: 'goodT----oken'
-      }
+        CODECOV_TOKEN: 'goodT----oken',
+      },
     }
     expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('goodT----oken')
   })
 
   it('should fail validation when an invalid token is passed and host is not changed', () => {
     const inputs: UploaderInputs = {
-      args: {
+      args: {...createEmptyArgs(), ...{
         url: DEFAULT_UPLOAD_HOST,
-        flags: '',
-        slug: '',
-        upstream: ',',
-      },
+      }},
       environment: {
-        CODECOV_TOKEN: 'bad------Token'
-      }
+        CODECOV_TOKEN: 'bad------Token',
+      },
     }
-    expect(() => tokenHelpers.getToken(inputs, fixturesDir)).toThrowError(/Token found by environment variables with length 14 did not pass validation/)
+    expect(() => tokenHelpers.getToken(inputs, fixturesDir)).toThrowError(
+      /Token found by environment variables with length 14 did not pass validation/,
+    )
   })
 })
