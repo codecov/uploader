@@ -232,8 +232,6 @@ export async function main(
     uploadFile = uploadFile.concat(vars).concat(MARKER_ENV_END)
   }
 
-  const gzippedFile = zlib.gzipSync(uploadFile)
-
   // #endregion
   // #region == Step 7: determine CI provider
 
@@ -243,6 +241,8 @@ export async function main(
 
   // #endregion
   // #region == Step 8: either upload or dry-run
+
+  const gzippedFile = zlib.gzipSync(uploadFile)
 
   const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
 
