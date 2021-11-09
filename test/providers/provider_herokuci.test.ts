@@ -1,6 +1,7 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 const providerHerokuci = require('../../src/ci_providers//provider_herokuci')
 
@@ -12,10 +13,7 @@ describe('HerokuCI Params', () => {
   describe('detect()', () => {
     it('does not run without HerokuCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       const detected = providerHerokuci.detect(inputs.environment)
@@ -23,11 +21,8 @@ describe('HerokuCI Params', () => {
     })
 
     it('does run with Herokuci env variable', () => {
-      const inputs: UploaderInputs= {
-        args: {
-          flags: '',
-          slug: '',
-        },
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
         environment: {
           CI: 'true',
           HEROKU_TEST_RUN_BRANCH: 'test',
@@ -41,7 +36,7 @@ describe('HerokuCI Params', () => {
   // This should test that the provider outputs proper default values
   it('gets the correct params on no env variables', () => {
     const inputs: UploaderInputs = {
-      args: { tag: '', url: '', source: '', flags: '', slug: '', },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
     const expected: IServiceParams = {
@@ -65,7 +60,7 @@ describe('HerokuCI Params', () => {
   // This should test that the provider outputs proper parameters when a push event is created
   it('gets the correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: { tag: '', url: '', source: '', flags: '', slug: '', },
+      args: { tag: '', url: '', source: '', flags: '', slug: '', upstream: '' },
       environment: {
         CI: 'true',
         HEROKU_TEST_RUN_BRANCH: 'testBranch',
@@ -95,15 +90,14 @@ describe('HerokuCI Params', () => {
   it('gets the correct params on overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {},
     }

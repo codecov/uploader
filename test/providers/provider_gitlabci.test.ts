@@ -3,6 +3,7 @@ import childProcess from 'child_process'
 
 import * as providerGitLabci from '../../src/ci_providers//provider_gitlabci'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('GitLabCI Params', () => {
   afterEach(() => {
@@ -12,9 +13,7 @@ describe('GitLabCI Params', () => {
   describe('detect()', () => {
     it('does not run without GitLabCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '', slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       const detected = providerGitLabci.detect(inputs.environment)
@@ -22,28 +21,20 @@ describe('GitLabCI Params', () => {
     })
 
     it('does run with GitLabCI env variable', () => {
-      const inputs = {
-        args: {
-          flags: '',
-        },
-        envs: {
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
+        environment: {
           GITLAB_CI: 'true',
         },
       }
-      const detected = providerGitLabci.detect(inputs.envs)
+      const detected = providerGitLabci.detect(inputs.environment)
       expect(detected).toBeTruthy()
     })
   })
 
   it('gets correct empty params', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         GITLAB_CI: 'true',
       },
@@ -68,13 +59,7 @@ describe('GitLabCI Params', () => {
 
   it('gets correct initial params', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI_BUILD_ID: '1',
         CI_BUILD_REF: 'testingsha',
@@ -102,13 +87,7 @@ describe('GitLabCI Params', () => {
 
   it('gets correct second params', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI_COMMIT_REF_NAME: 'master',
         CI_COMMIT_SHA: 'testsha',
@@ -133,20 +112,15 @@ describe('GitLabCI Params', () => {
 
   describe('getSlug()', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         GITLAB_CI: 'true',
       },
     }
 
     it('can get the slug from http', () => {
-      inputs.environment.CI_BUILD_REPO = 'https://gitlab.com/testOrg/testRepo.git'
+      inputs.environment.CI_BUILD_REPO =
+        'https://gitlab.com/testOrg/testRepo.git'
       const params = providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
@@ -194,15 +168,14 @@ describe('GitLabCI Params', () => {
   it('gets correct params for overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         GITLAB_CI: 'true',

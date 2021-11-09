@@ -1,6 +1,7 @@
 import td from 'testdouble'
 import * as providerBuildkite from '../../src/ci_providers/provider_buildkite'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Buildkite Params', () => {
   afterEach(() => {
@@ -10,10 +11,7 @@ describe('Buildkite Params', () => {
   describe('detect()', () => {
     it('does not run without Buildkite env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       const detected = providerBuildkite.detect(inputs.environment)
@@ -22,10 +20,7 @@ describe('Buildkite Params', () => {
 
     it('does not run without Buildkite env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {
           BUILDKITE: 'true',
         },
@@ -37,13 +32,7 @@ describe('Buildkite Params', () => {
 
   it('gets correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         BUILDKITE: 'true',
         BUILDKITE_BUILD_NUMBER: '1',
@@ -73,15 +62,14 @@ describe('Buildkite Params', () => {
   it('gets correct params for overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         BUILDKITE: 'true',

@@ -3,6 +3,7 @@ import childProcess from 'child_process'
 
 import * as providerJenkinsci from '../../src/ci_providers//provider_jenkinsci'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Jenkins CI Params', () => {
   afterEach(() => {
@@ -12,13 +13,7 @@ describe('Jenkins CI Params', () => {
   describe('detect()', () => {
     it('does not run without JenkinsCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          url: '',
-          source: '',
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       let detected = providerJenkinsci.detect(inputs.environment)
@@ -31,10 +26,7 @@ describe('Jenkins CI Params', () => {
 
     it('does run with JenkinsCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {
           JENKINS_URL: 'https://example.jenkins.com',
         },
@@ -46,13 +38,7 @@ describe('Jenkins CI Params', () => {
 
   it('gets correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         BUILD_NUMBER: '1',
         BUILD_URL: 'https://example.jenkins.com',
@@ -82,13 +68,7 @@ describe('Jenkins CI Params', () => {
 
   it('can get the slug from git config', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         BUILD_NUMBER: '1',
         BUILD_URL: 'https://example.jenkins.com',
@@ -110,15 +90,14 @@ describe('Jenkins CI Params', () => {
   it('gets correct params for overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         JENKINS_URL: 'https://example.com',

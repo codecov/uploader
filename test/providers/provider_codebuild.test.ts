@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import * as providerCodeBuild from '../../src/ci_providers/provider_codebuild'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('CodeBuild Params', () => {
   afterEach(() => {
@@ -10,23 +11,17 @@ describe('CodeBuild Params', () => {
 
   describe('detect()', () => {
     it('does not run without CodeBuild env variable', () => {
-      const inputs = {
-        args: {},
-        envs: {},
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
+        environment: {},
       }
-      const detected = providerCodeBuild.detect(inputs.envs)
+      const detected = providerCodeBuild.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does run with CodeBuild env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          source: '',
-          url: '',
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {
           CI: 'true',
           CODEBUILD_CI: 'true',
@@ -40,13 +35,7 @@ describe('CodeBuild Params', () => {
   describe('getServiceParams()', () => {
     it('gets correct params', () => {
       const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          source: '',
-          url: '',
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {
           CI: 'true',
           CODEBUILD_CI: 'true',
@@ -74,15 +63,14 @@ describe('CodeBuild Params', () => {
     it('gets correct params for overrides', () => {
       const inputs: UploaderInputs = {
         args: {
-          branch: 'branch',
-          build: '3',
-          pr: '7',
-          sha: 'testsha',
-          slug: 'testOrg/testRepo',
-          tag: '',
-          source: '',
-          url: '',
-          flags: '',
+          ...createEmptyArgs(),
+          ...{
+            branch: 'branch',
+            build: '3',
+            pr: '7',
+            sha: 'testsha',
+            slug: 'testOrg/testRepo',
+          },
         },
         environment: {
           CI: 'true',

@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import * as providerTravisci from '../../src/ci_providers/provider_travisci'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('TravisCI Params', () => {
   afterEach(() => {
@@ -11,13 +12,7 @@ describe('TravisCI Params', () => {
   describe('detect()', () => {
     it('does not run with Shipable env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          url: '',
-          source: '',
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       let detected = providerTravisci.detect(inputs.environment)
@@ -38,10 +33,7 @@ describe('TravisCI Params', () => {
 
     it('does run with TravisCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {
           CI: 'true',
           TRAVIS: 'true',
@@ -54,13 +46,7 @@ describe('TravisCI Params', () => {
 
   it('gets correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI: 'true',
         TRAVIS: 'true',
@@ -89,13 +75,7 @@ describe('TravisCI Params', () => {
 
   it('gets correct params on PR', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI: 'true',
         TRAVIS: 'true',
@@ -126,13 +106,7 @@ describe('TravisCI Params', () => {
 
   it('gets correct params on PR with no pull request branch', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI: 'true',
         TRAVIS: 'true',
@@ -163,15 +137,14 @@ describe('TravisCI Params', () => {
   it('gets correct params for overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         CI: 'true',

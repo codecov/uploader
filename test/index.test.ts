@@ -65,6 +65,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(result).toEqual({
       status: 'success',
@@ -87,6 +88,7 @@ describe('Uploader Core', () => {
       env: 'SOMETHING,ANOTHER',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/SOMETHING=red/))
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/ANOTHER=blue/))
@@ -115,6 +117,7 @@ describe('Uploader Core', () => {
         env: 'SOMETHING,ANOTHER',
         flags: '',
         slug: '',
+        upstream: ''
       })
       expect(log).toHaveBeenCalledWith(
         expect.stringMatching('-> No token specified or token is empty'),
@@ -141,6 +144,7 @@ describe('Uploader Core', () => {
         tag: '',
         source: '',
         slug: '',
+        upstream: ''
       })
       expect(result).toEqual({
         status: 'success',
@@ -168,6 +172,7 @@ describe('Uploader Core', () => {
       parent,
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(result).toEqual({
       status: 'success',
@@ -186,6 +191,7 @@ describe('Uploader Core', () => {
       dryRun: 'true',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/An example coverage root file/),
@@ -207,6 +213,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
@@ -229,6 +236,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
@@ -256,6 +264,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
@@ -280,6 +289,7 @@ describe('Uploader Core', () => {
       dir: './test/fixtures/other',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/An example coverage other file/),
@@ -302,6 +312,7 @@ describe('Uploader Core', () => {
       clean: 'true',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(unlink).toHaveBeenCalledWith(
       'test/fixtures/other/coverage.txt',
@@ -321,6 +332,7 @@ describe('Uploader Core', () => {
       dir: './test/fixtures/other',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/<<<<<< network/))
   })
@@ -334,6 +346,7 @@ describe('Uploader Core', () => {
       feature: 'network',
       flags: '',
       slug: '',
+      upstream: ''
     })
     expect(console.log).not.toHaveBeenCalledWith(
       expect.stringMatching(/<<<<<< network/),

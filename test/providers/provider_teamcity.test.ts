@@ -3,6 +3,7 @@ import childProcess from 'child_process'
 
 import * as providerTeamCity from '../../src/ci_providers/provider_teamcity'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('TeamCity Params', () => {
   afterEach(() => {
@@ -12,10 +13,7 @@ describe('TeamCity Params', () => {
   describe('detect()', () => {
     it('does not run without TeamCity env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {},
       }
       const detected = providerTeamCity.detect(inputs.environment)
@@ -24,13 +22,7 @@ describe('TeamCity Params', () => {
 
     it('does run with TeamCity env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          url: '',
-          source: '',
-          flags: '',
-          slug: '',
-        },
+        args: { ...createEmptyArgs() },
         environment: {
           CI: 'true',
           TEAMCITY_VERSION: 'true',
@@ -43,13 +35,7 @@ describe('TeamCity Params', () => {
 
   it('gets correct params', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI: 'true',
         TEAMCITY_VERSION: 'true',
@@ -78,13 +64,7 @@ describe('TeamCity Params', () => {
 
   it('gets correct params and remote slug', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-        slug: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         CI: 'true',
         TEAMCITY_VERSION: 'true',
@@ -93,7 +73,7 @@ describe('TeamCity Params', () => {
         BUILD_NUMBER: '1',
       },
     }
-    const expected : IServiceParams= {
+    const expected: IServiceParams = {
       branch: 'main',
       build: '1',
       buildURL: '',
@@ -114,15 +94,14 @@ describe('TeamCity Params', () => {
   it('gets correct params for overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         CI: 'true',

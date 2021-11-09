@@ -1,3 +1,5 @@
+import { UploaderArgs } from "../src/types"
+
 const td = require('testdouble')
 const childProcess = require('child_process')
 const { beforeAll, afterEach, afterAll, expect } = require('@jest/globals')
@@ -11,8 +13,8 @@ console.log = jest.fn()
 console.debug = jest.fn()
 console.error = jest.fn()
 
-let execSync
-let exec
+let execSync: jest.SpyInstance
+let exec: jest.SpyInstance
 
 beforeAll(() => {
   execSync = jest.spyOn(childProcess, 'execSync').mockImplementation(() => {
@@ -33,3 +35,36 @@ afterEach(() => {
 afterAll(() => {
   jest.restoreAllMocks()
 })
+
+/**
+ * Create a full set of uploader args for testing
+ */
+export function createEmptyArgs(): UploaderArgs {
+  return {
+    build: '',
+    branch: '',
+    changelog: '',
+    clean: '',
+    dir: '',
+    dryRun: '',
+    env: '',
+    feature: '',
+    file: '',
+    flags: '',
+    name: '',
+    networkFilter: '',
+    networkPrefix: '',
+    nonZero: '',
+    parent: '',
+    pr: '',
+    rootDir: '',
+    sha: '',
+    slug: '',
+    source: '',
+    tag: '',
+    token: '',
+    upstream: '',
+    url: '',
+    verbose: '',
+  }
+}

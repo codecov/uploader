@@ -11,7 +11,7 @@ jobs:
   build-linux-and-osx:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.11.1
+      - image: circleci/node:16.13.0
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -151,7 +151,41 @@ jobs:
           paths:
             - coverage-alpine
             - output_alpine.txt
-            
+
+  test-alpine-proxy:
+    docker:
+      # specify the version you desire here
+      - image: alpine:3.14.2
+    steps:
+      - run:
+          name: Install git
+          command: |
+            apk update
+            apk add git squid
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Start Squid
+          command: squid
+      - run:
+          name: Run Alpine binary auto-detect (dry run)
+          command: |
+            out/codecov-alpine -U http://localhost:3128 -F alpine-proxy -v -d -Z -e CIRCLE_BRANCH >> output_alpine_proxy.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -U http://localhost:3128 -F alpine-proxy -v -Z -e CIRCLE_BRANCH
+
+      - store_artifacts:
+          path: output_alpine_proxy.txt
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine_proxy.txt
+
   test-alpine-without-git:
     docker:
       # specify the version you desire here
@@ -168,7 +202,7 @@ jobs:
           at: .
       - run:
           name: Remove .git directory
-          command: rm -rf .git          
+          command: rm -rf .git
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
@@ -221,7 +255,7 @@ jobs:
   test-linux:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.11.1
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - attach_workspace:
@@ -248,7 +282,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: circleci/node:16.11.1
+      - image: circleci/node:16.13.0
     steps:
       - checkout
       - attach_workspace:
@@ -377,7 +411,7 @@ jobs:
 
   review:
     docker:
-      - image: circleci/node:16.11.1
+      - image: circleci/node:16.13.0
     steps:
       - attach_workspace:
           at: .
@@ -393,6 +427,8 @@ jobs:
           path: output_linux.txt
       - store_artifacts:
           path: output_alpine.txt
+      - store_artifacts:
+          path: output_alpine_proxy.txt
       - store_artifacts:
           path: output_alpine_without_git.txt
       - store_artifacts:
@@ -410,7 +446,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:16.11.1
+      - image: circleci/node:16.13.0
     steps:
       - attach_workspace:
           at: .
@@ -496,6 +532,9 @@ workflows:
       - test-alpine:
           requires:
             - build-alpine
+      - test-alpine-proxy:
+          requires:
+            - build-alpine
       - test-alpine-without-git:
           requires:
             - test-alpine
@@ -522,6 +561,7 @@ workflows:
             - test-windows
       - review:
           requires:
+            - test-alpine-proxy
             - test-alpine-without-git
             - test-linux-without-git
             - test-macos-without-git

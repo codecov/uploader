@@ -2,6 +2,7 @@ import childProcess from 'child_process'
 import td from 'testdouble'
 import { detectProvider, setSlug, walkProviders } from '../../src/helpers/provider'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('detectProvider()', () => {
   afterEach(() => {
@@ -11,11 +12,10 @@ describe('detectProvider()', () => {
 
   it('can detect a manual override', () => {
     const inputs: UploaderInputs = {
-      args: {
+      args: {...createEmptyArgs(), ...{
         sha: '1234566',
         slug: 'fakeOrg/fakeRepo',
-        flags: ''
-      },
+      }},
       environment: {},
     }
     const expectedOutput: Partial<IServiceParams> = {
@@ -27,11 +27,9 @@ describe('detectProvider()', () => {
   
   it('can detect a manual override with token', () => {
     const inputs: UploaderInputs = {
-      args: {
+      args: {...createEmptyArgs(), ...{
         sha: '1234566',
-        flags: '',
-        slug: '',
-      },
+      }},
       environment: {},
     }
     const expectedOutput: Partial<IServiceParams> = {
@@ -47,10 +45,7 @@ describe('detectProvider()', () => {
       error: 'Git is not installed!',
     })
     const inputs: UploaderInputs = {
-      args: {
-        flags: '',
-        slug: '',
-      },
+      args: {...createEmptyArgs()},
       environment: {},
     }
     expect(()  => detectProvider(inputs)).toThrowError(/Unable to detect SHA and slug, please specify them manually/)
@@ -68,10 +63,7 @@ describe('walkProviders()', () => {
       error: 'Git is not installed!',
     })
     const inputs: UploaderInputs = {
-      args: {
-        flags: '',
-        slug: '',
-      },
+      args: {...createEmptyArgs()},
       environment: {},
     }
     expect(()  => walkProviders(inputs)).toThrowError(/Unable to detect provider./)
@@ -80,10 +72,7 @@ describe('walkProviders()', () => {
 
   it('will return serviceParams if able to detect', () => {
     const inputs: UploaderInputs = {
-      args: {
-        flags: '',
-        slug: '',
-      },
+      args: {...createEmptyArgs()},
       environment: {
         CI: 'true',
         CIRCLECI: 'true',
