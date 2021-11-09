@@ -66,7 +66,13 @@ describe('File Helpers', () => {
       }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'package', verbose: 'true', slug: '', upstream: ''}),
+      await fileHelpers.getFileListing('.', {
+        flags: '',
+        networkFilter: 'package',
+        verbose: 'true',
+        slug: '',
+        upstream: '',
+      }),
     ).toBe(['package.json', 'package-lock.json'].join('\n'))
   })
 
@@ -80,7 +86,13 @@ describe('File Helpers', () => {
       }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'src/', verbose: 'true', slug: '', upstream: ''}),
+      await fileHelpers.getFileListing('.', {
+        flags: '',
+        networkFilter: 'src/',
+        verbose: 'true',
+        slug: '',
+        upstream: '',
+      }),
     ).toBe(['src/file.js'].join('\n'))
   })
 
@@ -89,7 +101,12 @@ describe('File Helpers', () => {
       return { stdout: '', status: null, error: new Error() }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', verbose: 'true', slug: '', upstream: ''}),
+      await fileHelpers.getFileListing('.', {
+        flags: '',
+        verbose: 'true',
+        slug: '',
+        upstream: '',
+      }),
     ).toMatch('npm-shrinkwrap.json')
   })
 
@@ -103,7 +120,14 @@ describe('File Helpers', () => {
       }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'package', networkPrefix: 'build/', verbose: 'true', slug: '', upstream: ''}),
+      await fileHelpers.getFileListing('.', {
+        flags: '',
+        networkFilter: 'package',
+        networkPrefix: 'build/',
+        verbose: 'true',
+        slug: '',
+        upstream: '',
+      }),
     ).toBe(['build/package.json', 'build/package-lock.json'].join('\n'))
   })
 
@@ -117,7 +141,14 @@ describe('File Helpers', () => {
       }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'src/', networkPrefix: 'build/', verbose: 'true', slug: '', upstream: ''}),
+      await fileHelpers.getFileListing('.', {
+        flags: '',
+        networkFilter: 'src/',
+        networkPrefix: 'build/',
+        verbose: 'true',
+        slug: '',
+        upstream: '',
+      }),
     ).toBe(['build/src/file.js'].join('\n'))
   })
 
@@ -126,7 +157,13 @@ describe('File Helpers', () => {
       return { stdout: '', status: null, error: new Error() }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'npm', verbose: 'true', slug: '', upstream: ''}),
+      await fileHelpers.getFileListing('.', {
+        flags: '',
+        networkFilter: 'npm',
+        verbose: 'true',
+        slug: '',
+        upstream: '',
+      }),
     ).toMatch('npm-shrinkwrap.json')
   })
 
@@ -135,7 +172,13 @@ describe('File Helpers', () => {
       return { stdout: '', status: null, error: new Error() }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', networkFilter: 'src', verbose: 'true', slug: '', upstream: ''}),
+      await fileHelpers.getFileListing('.', {
+        flags: '',
+        networkFilter: 'src',
+        verbose: 'true',
+        slug: '',
+        upstream: '',
+      }),
     ).toMatch('')
   })
 

@@ -268,8 +268,10 @@ describe('generateRequestHeadersPOST()', () => {
       args,
     )
 
-    expect(requestHeaders.url).toEqual('https:localhost.local/upload/v4?package=G-uploader-0.1.11&token=134&slug=testOrg/testUploader')
-    expect(typeof requestHeaders.options.body).toEqual("undefined")
+    expect(requestHeaders.url).toEqual(
+      'https:localhost.local/upload/v4?package=G-uploader-0.1.11&token=134&slug=testOrg/testUploader',
+    )
+    expect(typeof requestHeaders.options.body).toEqual('undefined')
     expect(typeof requestHeaders.options.agent).toEqual('undefined')
   })
 
@@ -283,9 +285,13 @@ describe('generateRequestHeadersPOST()', () => {
       args,
     )
 
-    expect(requestHeaders.url).toEqual('https:localhost.local/upload/v4?package=G-uploader-0.1.11&token=134&slug=testOrg/testUploader')
-    expect(typeof requestHeaders.options.body).toEqual("undefined")
-    expect(requestHeaders.options.agent).toMatchObject(new HttpsProxyAgent(args.upstream))
+    expect(requestHeaders.url).toEqual(
+      'https:localhost.local/upload/v4?package=G-uploader-0.1.11&token=134&slug=testOrg/testUploader',
+    )
+    expect(typeof requestHeaders.options.body).toEqual('undefined')
+    expect(requestHeaders.options.agent).toMatchObject(
+      new HttpsProxyAgent(args.upstream),
+    )
   })
 })
 
@@ -319,6 +325,8 @@ describe('generateRequestHeadersPUT()', () => {
 
     expect(requestHeaders.url).toEqual('https:localhost.local')
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
-    expect(requestHeaders.options.agent).toMatchObject(new HttpsProxyAgent(args.upstream))
+    expect(requestHeaders.options.agent).toMatchObject(
+      new HttpsProxyAgent(args.upstream),
+    )
   })
 })

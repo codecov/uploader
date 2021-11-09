@@ -13,7 +13,9 @@ describe('GitLabCI Params', () => {
     it('does not run without GitLabCI env variable', () => {
       const inputs: UploaderInputs = {
         args: {
-          flags: '', slug: '',         upstream: ''
+          flags: '',
+          slug: '',
+          upstream: '',
         },
         environment: {},
       }
@@ -43,7 +45,7 @@ describe('GitLabCI Params', () => {
         source: '',
         flags: '',
         slug: '',
-        upstream: ''
+        upstream: '',
       },
       environment: {
         GITLAB_CI: 'true',
@@ -75,7 +77,7 @@ describe('GitLabCI Params', () => {
         source: '',
         flags: '',
         slug: '',
-        upstream: ''
+        upstream: '',
       },
       environment: {
         CI_BUILD_ID: '1',
@@ -110,7 +112,7 @@ describe('GitLabCI Params', () => {
         source: '',
         flags: '',
         slug: '',
-        upstream: ''
+        upstream: '',
       },
       environment: {
         CI_COMMIT_REF_NAME: 'master',
@@ -142,7 +144,7 @@ describe('GitLabCI Params', () => {
         source: '',
         flags: '',
         slug: '',
-        upstream: ''
+        upstream: '',
       },
       environment: {
         GITLAB_CI: 'true',
@@ -207,7 +209,7 @@ describe('GitLabCI Params', () => {
         url: '',
         source: '',
         flags: '',
-        upstream: ''
+        upstream: '',
       },
       environment: {
         GITLAB_CI: 'true',

@@ -279,7 +279,7 @@ export async function main(
       token,
       query,
       args.source || '',
-      args
+      args,
     )
 
     verbose(`Returned upload url: ${uploadURL}`, Boolean(args.verbose))
@@ -290,7 +290,11 @@ export async function main(
         Content-Encoding: 'gzip'`,
       Boolean(args.verbose),
     )
-    const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile, args)
+    const result = await webHelpers.uploadToCodecovPUT(
+      uploadURL,
+      gzippedFile,
+      args,
+    )
     info(JSON.stringify(result))
     return result
   } catch (error) {
