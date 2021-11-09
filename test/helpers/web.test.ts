@@ -1,16 +1,19 @@
+import { HttpsProxyAgent } from 'https-proxy-agent'
 import nock from 'nock'
 
 import { version } from '../../package.json'
 import {
   displayChangelog,
   generateQuery,
+  generateRequestHeadersPOST,
+  generateRequestHeadersPUT,
   getPackage,
   parsePOSTResults,
   populateBuildParams,
   uploadToCodecov,
   uploadToCodecovPUT,
 } from '../../src/helpers/web'
-import { IServiceParams } from '../../src/types'
+import { IServiceParams, UploaderArgs } from '../../src/types'
 
 describe('Web Helpers', () => {
   let uploadURL: string
@@ -245,5 +248,77 @@ describe('displayChangelog()', () => {
     const fn = jest.spyOn(console, 'log').mockImplementation(() => void {})
     displayChangelog()
     expect(fn).toBeCalledWith(expect.stringContaining(version))
+  })
+})
+
+describe('generateRequestHeadersPOST()', () => {
+  const args: UploaderArgs = {
+    flags: '',
+    slug: '',
+    upstream: '',
+  }
+
+  it('should return return the correct url when args.upstream is not set', () => {
+    args.upstream = ''
+    const requestHeaders = generateRequestHeadersPOST(
+      'https:localhost.local',
+      '134',
+      'slug=testOrg/testUploader',
+      'G',
+      args,
+    )
+
+    expect(requestHeaders.url).toEqual('https:localhost.local/upload/v4?package=G-uploader-0.1.11&token=134&slug=testOrg/testUploader')
+    expect(typeof requestHeaders.options.body).toEqual("undefined")
+    expect(typeof requestHeaders.options.agent).toEqual('undefined')
+  })
+
+  it('should return return the correct url when args.upstream is set', () => {
+    args.upstream = 'http://proxy.local'
+    const requestHeaders = generateRequestHeadersPOST(
+      'https:localhost.local',
+      '134',
+      'slug=testOrg/testUploader',
+      'G',
+      args,
+    )
+
+    expect(requestHeaders.url).toEqual('https:localhost.local/upload/v4?package=G-uploader-0.1.11&token=134&slug=testOrg/testUploader')
+    expect(typeof requestHeaders.options.body).toEqual("undefined")
+    expect(requestHeaders.options.agent).toMatchObject(new HttpsProxyAgent(args.upstream))
+  })
+})
+
+describe('generateRequestHeadersPUT()', () => {
+  const args: UploaderArgs = {
+    flags: '',
+    slug: '',
+    upstream: '',
+  }
+
+  it('should return return the correct url when args.upstream is not set', () => {
+    args.upstream = ''
+    const requestHeaders = generateRequestHeadersPUT(
+      'https:localhost.local',
+      "I'm a coverage report!",
+      args,
+    )
+
+    expect(requestHeaders.url).toEqual('https:localhost.local')
+    expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
+    expect(typeof requestHeaders.options.agent).toEqual('undefined')
+  })
+
+  it('should return return the correct url when args.upstream is set', () => {
+    args.upstream = 'http://proxy.local'
+    const requestHeaders = generateRequestHeadersPUT(
+      'https:localhost.local',
+      "I'm a coverage report!",
+      args,
+    )
+
+    expect(requestHeaders.url).toEqual('https:localhost.local')
+    expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
+    expect(requestHeaders.options.agent).toMatchObject(new HttpsProxyAgent(args.upstream))
   })
 })
