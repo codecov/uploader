@@ -15,6 +15,7 @@ console.error = jest.fn()
 
 let execSync: jest.SpyInstance
 let exec: jest.SpyInstance
+const realEnv = { ...process.env }
 
 beforeAll(() => {
   execSync = jest.spyOn(childProcess, 'execSync').mockImplementation(() => {
@@ -25,6 +26,8 @@ beforeAll(() => {
   exec = jest.spyOn(childProcess, 'exec').mockImplementation(() => {
     throw new Error(`Security alert! Do not use exec(), use spawn() instead`)
   })
+
+  process.env = {}
 })
 
 afterEach(() => {
@@ -34,6 +37,7 @@ afterEach(() => {
 
 afterAll(() => {
   jest.restoreAllMocks()
+  process.env = realEnv
 })
 
 /**
