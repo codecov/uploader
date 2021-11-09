@@ -59,11 +59,6 @@ export interface IServiceParams {
   server_uri?: string
 }
 
-export enum HTTP_METHOD {
-  "POST",
-  "PUT"
-}
-
 export interface IRequestHeaders {
   url: string;
   options: {

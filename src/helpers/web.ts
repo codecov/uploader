@@ -3,7 +3,6 @@ import fetch from 'node-fetch'
 
 import { version } from '../../package.json'
 import {
-  HTTP_METHOD,
   IRequestHeaders,
   IServiceParams,
   UploaderArgs,
@@ -89,7 +88,6 @@ export async function uploadToCodecov(
     query,
     source,
     args,
-    HTTP_METHOD.POST,
   )
   const response = await fetch(requestHeaders.url, requestHeaders.options)
 
@@ -150,9 +148,7 @@ export function generateRequestHeadersPOST(
   query: string,
   source: string,
   args: UploaderArgs,
-  method: HTTP_METHOD,
 ): IRequestHeaders {
-  if (method === HTTP_METHOD.POST) {
     if (args.upstream !== '') {
       const proxyAgent = new HttpsProxyAgent(args.upstream)
       return {
@@ -182,40 +178,6 @@ export function generateRequestHeadersPOST(
         },
       },
     }
-  }
-
-  if (method === HTTP_METHOD.PUT) {
-    if (args.upstream !== '') {
-      const proxyAgent = new HttpsProxyAgent(args.upstream)
-      return {
-        url: `${args.upstream}/upload/v4?package=${getPackage(
-          source,
-        )}&token=${token}&${query}`,
-        options: {
-          method: 'put',
-          agent: proxyAgent,
-          headers: {
-            'X-Upload-Token': token,
-            'X-Reduced-Redundancy': 'false',
-          },
-        },
-      }
-    }
-    return {
-      url: `${uploadURL}/upload/v4?package=${getPackage(
-        source,
-      )}&token=${token}&${query}`, options: {
-        method: 'put',
-        headers: {
-          'X-Upload-Token': token,
-          'X-Reduced-Redundancy': 'false',
-        },
-      }
-
-    }
-  }
-
-  throw new Error(`Unsupported method requested: ${method}`)
 }
 
 export function generateRequestHeadersPUT(
