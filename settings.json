@@ -1,0 +1,21 @@
+Merging #840 (c49c0ef) into develop (e14a255) will increase coverage by 0.14%.
+The diff coverage is 80.00%.
+
+￼
+
+@@ Coverage Diff @@ ## develop #840 +/- ## ============================================= + Coverage 21.35% 21.50% +0.14% + Complexity 437 424 -13 ============================================= Files 152 149 -3 Lines 4875 4683 -192 Branches 732 712 -20 ============================================= - Hits 1041 1007 -34 + Misses 3747 3593 -154 + Partials 87 83 -4 
+
+FlagCoverage Δunit21.50% <80.00%> (+0.14%)⬆️
+
+Flags with carried forward coverage won't be shown. Click here to find out more.
+
+Impacted FilesCoverage Δ.../org/apache/m7adf7d/admin/common/util/Constants.java0.00% <ø> (ø).../admin/registry/config/impl/NoOpConfiguration.java0.00% <0.00%> (ø).../m7adf7d/admin/service/impl/OverrideServiceImpl.java0.28% <0.00%> (-0.28%)⬇️...che/m7adf7d/admin/service/impl/RouteServiceImpl.java43.17% <50.00%> (-0.25%)⬇️...egistry/config/impl/MultiDynamicConfiguration.java88.00% <88.00%> (ø)...va/org/apache/m7adf7d/admin/config/ConfigCenter.java87.50% <100.00%> (ø)...m7adf7d/admin/service/impl/ManagementServiceImpl.java71.42% <100.00%> (ø)...m7adf7d/admin/service/impl/MeshRouteServiceImpl.java96.87% <100.00%> (ø)...apache/m7adf7d/admin/service/RegistryServerSync.java84.72% <0.00%> (-5.56%)⬇️
+
+Continue to review full report at Codecov.
+
+Legend - Click here to learn more
+Δ = absolute <relative> (impact), ø = not affected, ? = missing data
+Powered by Codecov. Last update e14a255...c49c0ef. Read the comment docs.
+
+—
+
