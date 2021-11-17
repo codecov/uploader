@@ -337,7 +337,7 @@ export function getBlocklist(): string[] {
   return [...manualBlocklist(), ...globBlocklist()]
 }
 
-export function cleanCoverageFilePaths(projectRoot: string, paths: string[], ignoreGlobs: string[]) {
+export function cleanCoverageFilePaths(projectRoot: string, paths: string[], ignoreGlobs: string[]): string[] {
   UploadLogger.verbose(`Preparing to clean the following coverage paths: ${paths.toString()}`)
   const coverageFilePaths = [... new Set(paths.filter(file => {
     return fileExists(projectRoot, file)
