@@ -3,7 +3,6 @@ import fs from 'fs'
 import childProcess from 'child_process'
 import * as fileHelpers from '../../src/helpers/files'
 import mock from 'mock-fs'
-import path from 'path/posix'
 
 describe('File Helpers', () => {
   afterEach(() => {
