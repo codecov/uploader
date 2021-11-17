@@ -5,13 +5,14 @@ import { version } from '../package.json'
 import * as validateHelpers from './helpers/validate'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, logError, verbose } from './helpers/logger'
+import { info, logError, UploadLogger, verbose } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
+  cleanCoverageFilePaths,
   coverageFilePatterns,
   fetchGitRoot,
-  fileExists,
   fileHeader,
+  getBlocklist,
   getCoverageFiles,
   getFileListing,
   getFilePath,
@@ -21,6 +22,7 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
+import { arch } from 'os'
 
 /**
  *
@@ -76,6 +78,10 @@ function dryRun(
 export async function main(
   args: UploaderArgs,
 ): Promise<void | Record<string, unknown>> {
+
+  if (args.verbose) {
+    UploadLogger.setLogLevel('verbose')
+  }
 
   // Did user asking for changelog?
   if (args.changelog) {
@@ -170,9 +176,7 @@ export async function main(
   ))
 
   // Remove invalid and duplicate file paths
-  coverageFilePaths = [... new Set(coverageFilePaths.filter(file => {
-    return fileExists(args.dir || projectRoot, file)
-  }))]
+  coverageFilePaths = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths, getBlocklist())
 
   if (coverageFilePaths.length > 0) {
     info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +

@@ -5,12 +5,15 @@ import * as app from '../src'
 import { version } from '../package.json'
 import nock from 'nock'
 import fs from 'fs'
+import { UploadLogger } from '../src/helpers/logger'
 
 // Backup the env
 const realEnv = { ...process.env }
 
 describe('Uploader Core', () => {
   const env = process.env
+
+  UploadLogger.setLogLevel('verbose')
 
   beforeEach(() => {
     // https://bensmithgall.com/blog/jest-mock-trick if this works!

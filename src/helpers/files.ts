@@ -4,7 +4,8 @@ import fs from 'fs'
 import { readFile } from 'fs/promises'
 import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
-import { logError, verbose } from './logger'
+import { logError, UploadLogger, verbose } from './logger'
+import micromatch from "micromatch";
 
 export const MARKER_NETWORK_END = '\n<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
@@ -25,7 +26,7 @@ export async function getFileListing(
   return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
-export function manualBlacklist(): string[] {
+function manualBlocklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     '.DS_Store',
@@ -41,7 +42,7 @@ export function manualBlacklist(): string[] {
   ]
 }
 
-export function globBlacklist(): string[] {
+function globBlocklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     '__pycache__',
@@ -205,7 +206,7 @@ export async function getCoverageFiles(
   }), {
     cwd: projectRoot,
     dot: true,
-    ignore: [...manualBlacklist(), ...globBlacklist()],
+    ignore: getBlocklist(),
   })
 }
 
@@ -246,7 +247,7 @@ export function getAllFiles(
     files = glob
       .sync(['**/*', '**/.[!.]*'], {
         cwd: dirPath,
-        ignore: manualBlacklist().map(globstar),
+        ignore: manualBlocklist().map(globstar),
       })
   } else {
     files = stdout.split(/[\r\n]+/)
@@ -332,3 +333,26 @@ export function removeFile(projectRoot: string, filePath: string): void {
     }
   })
 }
+export function getBlocklist() {
+  return [...manualBlocklist(), ...globBlocklist()]
+}
+
+export function cleanCoverageFilePaths(projectRoot: string, paths: string[], ignoreGlobs: string[]) {
+  UploadLogger.verbose(`Preparing to clean the following coverage paths: ${paths.toString()}`)
+  const coverageFilePaths = [... new Set(paths.filter(file => {
+    return fileExists(projectRoot, file)
+  }))]
+
+  if (coverageFilePaths.length === 0) {
+    throw new Error('Error while cleaning paths. No paths matched existing files!')  
+  }
+
+  const ignoredFiles = micromatch(coverageFilePaths, ignoreGlobs)
+
+  const filesAfterCheckingIgnore = coverageFilePaths.filter(path => {
+    return !ignoredFiles.includes(path)
+  })
+
+  return filesAfterCheckingIgnore
+}
+

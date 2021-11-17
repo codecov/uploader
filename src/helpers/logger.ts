@@ -41,3 +41,30 @@ export function logError(message: string): void {
 export function info(message: string): void {
   console.log(`[${_getTimestamp()}] ['info'] ${message}`)
 }
+
+export class UploadLogger {
+  private static _instance: UploadLogger
+  logLevel = 'info'
+  
+  private constructor() {
+    // Intentionally empty
+  }
+
+  static init() {
+    if (!UploadLogger._instance) {
+      UploadLogger._instance = new UploadLogger()
+    }
+  }
+
+  static setLogLevel(level: string) {
+    UploadLogger.init()
+    UploadLogger._instance.logLevel = level
+  }
+
+  static verbose(message: string) {
+    UploadLogger.init()
+    if (UploadLogger._instance.logLevel === 'verbose') {
+      console.log(`[${_getTimestamp()}] ['verbose'] ${message}`)
+    }
+  }
+}
