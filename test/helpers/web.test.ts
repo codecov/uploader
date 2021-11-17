@@ -259,7 +259,6 @@ describe('displayChangelog()', () => {
 
 describe('generateRequestHeadersPOST()', () => {
   const args: UploaderArgs = { ...createEmptyArgs() }
-  const source = args.source || ''
 
   it('should return return the correct url when args.upstream is not set', () => {
     args.upstream = ''

@@ -31,11 +31,13 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
+    "@types/micromatch": "4.0.2",
     "fast-glob": "3.2.7",
     "glob": "7.2.0",
     "https-proxy-agent": "5.0.0",
     "js-yaml": "4.1.0",
     "line-reader": "0.4.0",
+    "micromatch": "4.0.4",
     "node-fetch": "2.6.6",
     "snake-case": "3.0.4",
     "validator": "13.7.0",
