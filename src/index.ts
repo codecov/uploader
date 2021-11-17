@@ -22,7 +22,6 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
-import { arch } from 'os'
 
 /**
  *
