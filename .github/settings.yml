@@ -5,3 +5,5 @@ repository:
   
   # The name of the repository
   name: uploader
+  
+  collaborators:
