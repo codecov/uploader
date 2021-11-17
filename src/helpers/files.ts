@@ -333,7 +333,7 @@ export function removeFile(projectRoot: string, filePath: string): void {
     }
   })
 }
-export function getBlocklist() {
+export function getBlocklist(): string[] {
   return [...manualBlocklist(), ...globBlocklist()]
 }
 
