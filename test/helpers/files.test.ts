@@ -281,6 +281,51 @@ describe('File Helpers', () => {
     })
   })
 
+  describe("cleanCoverageFilePaths()", () => {
+    it("works", async () => {
+      const paths = await fileHelpers.getCoverageFiles(
+        '.',
+        fileHelpers.coverageFilePatterns(),
+      )
+      const ignoreGlobs = fileHelpers.getBlocklist()
+
+      expect(() => fileHelpers.cleanCoverageFilePaths(process.cwd(), paths, ignoreGlobs)).not.toThrow()
+    })
+
+    it("returns the input array when passed an empty ignore array", async() => {
+      const paths = await fileHelpers.getCoverageFiles(
+        '.',
+        fileHelpers.coverageFilePatterns(),
+      )
+      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), paths, [])).toEqual(paths)
+    })
+
+    it("ignores an ignore filename", async() => {
+      const paths = await fileHelpers.getCoverageFiles(
+        '.',
+        fileHelpers.coverageFilePatterns(),
+      )
+      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), paths, ["coverage-summary.json"])).not.toContain(expect.stringContaining('coverage.txt'))
+    })
+
+    it("ignores an ignore filename glob", async() => {
+      const paths = await fileHelpers.getCoverageFiles(
+        '.',
+        fileHelpers.coverageFilePatterns(),
+      )
+      const foo = expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), paths, ["**/coverage*"])).not.toContainEqual(expect.stringMatching('coverage-summary.json'))
+      console.log(foo)
+    })
+
+    it("ignores an ignore filename globstar", async() => {
+      const paths = await fileHelpers.getCoverageFiles(
+        '.',
+        fileHelpers.coverageFilePatterns(),
+      )
+      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), paths, ["**/other/*"])).not.toContainEqual(expect.stringMatching('other'))
+    })
+  })
+
   it('can remove a file', () => {
     const fn = jest.spyOn(fs, 'unlink').mockImplementation(() => null)
     fileHelpers.removeFile('.', 'coverage.xml')
