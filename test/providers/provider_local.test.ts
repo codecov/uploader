@@ -11,7 +11,7 @@ describe('Local Params', () => {
   })
 
   describe('detect()', () => {
-    it('does not run with git not installed', () => {
+    it.skip('does not run with git not installed', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(spawnSync('git')).thenReturn({
         error: 'Git is not installed!',
