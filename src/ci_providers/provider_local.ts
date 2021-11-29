@@ -2,9 +2,8 @@ import { parseSlug } from '../helpers/git'
 import { isProgramInstalled, runExternalProgram } from '../helpers/util'
 import { IServiceParams, UploaderInputs } from '../types'
 
-// This provider requires git to be installed
 export function detect(): boolean {
-  return isProgramInstalled('git')
+  return true
 }
 
 function _getBuild(inputs: UploaderInputs): string {
