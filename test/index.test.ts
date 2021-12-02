@@ -188,10 +188,10 @@ describe('Uploader Core', () => {
       // intentionally empty
     })
     await app.main({
+      dryRun: 'true',
       name: 'customname',
       token: 'abcdefg',
       url: 'https://codecov.io',
-      dryRun: 'true',
       flags: '',
       slug: '',
       upstream: ''
@@ -220,6 +220,29 @@ describe('Uploader Core', () => {
     })
     expect(log).toHaveBeenCalledWith(
       expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
+    )
+  })
+
+  it('Can find only the single specifed file', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
+    await app.main({
+      dryRun: 'true',
+      file: 'test/fixtures/coverage.txt',
+      feature: 'search',
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      flags: '',
+      slug: '',
+      upstream: ''
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
+    )
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringMatching(/An example coverage other file/),
     )
   })
 
