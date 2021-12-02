@@ -28,8 +28,11 @@ Options:
                                         [string] [default: "https://codecov.io"]
   -c, --clean    Move discovered coverage reports to the trash
                                                       [boolean] [default: false]
-  -X, --feature  Toggle functionalities
-                 -X network       Disable uploading the file network    [string]
+  -X, --feature  Toggle functionalities.
+                 Separate multiple ones by comma: -X network,search
+                 -X network       Disable uploading the file network
+                 -X search        Disable searching for coverage files
+                                                                        [string]
   -Q, --source   Used internally by Codecov, this argument helps track wrappers
                  of the uploader (e.g. GitHub Action, CircleCI Orb)
                                                           [string] [default: ""]
