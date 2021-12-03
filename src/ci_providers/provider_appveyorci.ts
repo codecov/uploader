@@ -58,7 +58,7 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs) {
   const { args, environment: envs } = inputs
-  return args.sha || envs.APPVEYOR_REPO_COMMIT || ''
+  return args.sha || envs.APPVEYOR_PULL_REQUEST_HEAD_COMMIT || envs.APPVEYOR_REPO_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs) {
@@ -88,6 +88,7 @@ export function getEnvVarNames(): string[] {
     'APPVEYOR_BUILD_VERSION',
     'APPVEYOR_JOB_ID',
     'APPVEYOR_PROJECT_SLUG',
+    'APPVEYOR_PULL_REQUEST_HEAD_COMMIT',
     'APPVEYOR_PULL_REQUEST_NUMBER',
     'APPVEYOR_REPO_BRANCH',
     'APPVEYOR_REPO_COMMIT',
