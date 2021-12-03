@@ -3,8 +3,8 @@
  */
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-import { runExternalProgram } from "../helpers/util"
-import { info } from '../helpers/logger'
+import childProcess from 'child_process'
+import { info, UploadLogger } from '../helpers/logger'
 
 export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.GITHUB_ACTIONS)
@@ -66,12 +66,18 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
+  if (args.sha) return args.sha
+
   const pr = _getPR(inputs)
 
   let commit = envs.GITHUB_SHA
-  if (pr && pr !== '' && !args.sha) {
+  if (pr) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
-    const mergeCommitMessage = runExternalProgram('git', ['show', '--no-patch', '--format="%P"'])
+    const mergeCommitMessage = childProcess
+      .spawnSync('git', ['show', '--no-patch', '--format="%P"'])
+      .stdout.toString()
+      .trimRight()
+    UploadLogger.verbose(`Handling PR with parent hash(es) '${mergeCommitMessage}' of current commit.`)
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
       info(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
@@ -80,6 +86,8 @@ function _getSHA(inputs: UploaderInputs): string {
       info(
         '->  Issue detecting commit SHA. Please run actions/checkout with fetch-depth > 1 or set to 0',
       )
+    } else {
+      info(`    Commit with SHA ${commit} of PR ${pr} is not a merge commit`)
     }
   }
 
