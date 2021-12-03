@@ -294,7 +294,8 @@ describe('File Helpers', () => {
     })
 
     it("returns the input array when passed an empty ignore array", async() => {
-      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await paths, [])).toEqual(paths)
+      const pathsSync = await paths
+      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), pathsSync, [])).toEqual(pathsSync)
     })
 
     it("ignores an ignore filename", async() => {
