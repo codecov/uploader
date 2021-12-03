@@ -303,7 +303,7 @@ describe('File Helpers', () => {
     })
 
     it("ignores an ignore filename glob", async() => {
-      const foo = expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await paths, ["**/coverage*"])).not.toContainEqual(expect.stringMatching('coverage'))
+      const foo = expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await paths, ["**/coverage*"])).not.toContainEqual(expect.stringMatching('/coverage'))
       console.log(foo)
     })
 
