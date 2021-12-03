@@ -334,7 +334,7 @@ export function removeFile(projectRoot: string, filePath: string): void {
   })
 }
 export function getBlocklist(): string[] {
-  return [...manualBlocklist(), ...globBlocklist()]
+  return [...manualBlocklist(), ...globBlocklist()].map(p => '**/' + p)
 }
 
 export function cleanCoverageFilePaths(projectRoot: string, paths: string[], ignoreGlobs: string[]): string[] {
