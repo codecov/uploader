@@ -228,13 +228,13 @@ describe('File Helpers', () => {
 
     it('can return a list of coverage files with a pattern', async () => {
       expect(
-        await fileHelpers.getCoverageFiles('.', ['index.test.ts']),
-      ).toStrictEqual(['test/index.test.ts', 'test/providers/index.test.ts'])
+        await fileHelpers.getCoverageFiles('.', ['coverage.txt']),
+      ).toStrictEqual(['test/fixtures/coverage.txt', 'test/fixtures/other/coverage.txt'])
     })
     it('can return a list of coverage files with a negated pattern', async () => {
       expect(
-        await fileHelpers.getCoverageFiles('.', ['index.test.ts', '!test/providers']),
-      ).toStrictEqual(['test/index.test.ts'])
+        await fileHelpers.getCoverageFiles('.', ['coverage.txt', '!test/fixtures/other']),
+      ).toStrictEqual(['test/fixtures/coverage.txt'])
     })
     describe('coverage file patterns', () => {
       it('contains `jacoco*.xml`', () => {
