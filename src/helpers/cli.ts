@@ -160,6 +160,31 @@ const args: ICLIArgument[] = [
     description: `Used internally by Codecov, this argument helps track wrappers
       of the uploader (e.g. GitHub Action, CircleCI Orb)`,
   },
+  {
+    alias: 'g',
+    name: 'gcov',
+    type: 'boolean',
+    default: false,
+    description: 'Run with gcov support',
+  },
+  {
+    alias: 'gi',
+    name: 'gcovIgnore',
+    type: 'string',
+    description: 'Paths to ignore during gcov gathering',
+  },
+  {
+    alias: 'gI',
+    name: 'gcovInclude',
+    type: 'string',
+    description: 'Paths to include during gcov gathering',
+  },
+  {
+    alias: 'ga',
+    name: 'gcovArgs',
+    type: 'string',
+    description: 'Extra arguments to pass to gcov',
+  },
 ]
 
 export interface IYargsObject {

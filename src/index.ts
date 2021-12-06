@@ -22,6 +22,7 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
+import { generateGcovCoverageFiles } from './helpers/gcov'
 
 /**
  *
@@ -91,11 +92,12 @@ export async function main(
   /*
   Step 1: validate and sanitize inputs
   Step 2: detect if we are in a git repo
-  Step 3: get network (file listing)
-  Step 4: select coverage files (search or specify)
-  Step 5: generate upload file
-  Step 6: determine CI provider
-  Step 7: either upload or dry-run
+  Step 3: sanitize and set token
+  Step 4: get network (file listing)
+  Step 5: select coverage files (search or specify)
+  Step 6: generate upload file
+  Step 7: determine CI provider
+  Step 8: either upload or dry-run
   */
 
   // #region == Step 1: validate and sanitize inputs
@@ -153,6 +155,13 @@ export async function main(
   let requestedPaths: string[] = []
   
   // Look for files
+
+  if (args.gcov) {
+    verbose('Running gcov...', Boolean(args.verbose))
+
+    const gcovLogs = generateGcovCoverageFiles(projectRoot)
+    verbose(`${gcovLogs}`, Boolean(args.verbose))
+  }
   let coverageFilePaths: string[] = []
   if (args.file) {
     if (typeof args.file === 'string') {
