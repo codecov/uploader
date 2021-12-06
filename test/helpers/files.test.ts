@@ -27,7 +27,7 @@ describe('File Helpers', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn({ stdout: 'fish' })
     td.when(
-      spawnSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf-8' }),
+      spawnSync('git', ['rev-parse', '--show-toplevel']),
     ).thenReturn({ stdout: 'gitRoot' })
 
     expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')
