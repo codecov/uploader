@@ -1,4 +1,4 @@
-import childProcess from 'child_process'
+import { runExternalProgram } from './util'
 
 export function parseSlug(slug: string): string {
   // origin    https://github.com/torvalds/linux.git (fetch)
@@ -25,11 +25,8 @@ export function parseSlugFromRemoteAddr(remoteAddr?: string): string {
   let slug = ''
   if (!remoteAddr) {
     remoteAddr = (
-      childProcess.spawnSync('git', ['config', '--get', 'remote.origin.url'])
-        .stdout || ''
+      runExternalProgram('git', ['config', '--get', 'remote.origin.url']) || ''
     )
-      .toString()
-      .trimRight()
   }
   if (remoteAddr) {
     slug = parseSlug(remoteAddr)
