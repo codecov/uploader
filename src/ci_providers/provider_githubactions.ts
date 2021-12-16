@@ -3,7 +3,7 @@
  */
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
-import childProcess from 'child_process'
+import { runExternalProgram } from "../helpers/util"
 import { info, verbose } from '../helpers/logger'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -73,10 +73,7 @@ function _getSHA(inputs: UploaderInputs): string {
   let commit = envs.GITHUB_SHA
   if (pr) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
-    const mergeCommitMessage = childProcess
-      .spawnSync('git', ['show', '--no-patch', '--format="%P"'])
-      .stdout.toString()
-      .trimRight()
+    const mergeCommitMessage = runExternalProgram('git', ['show', '--no-patch', '--format="%P"'])
     verbose(`Handling PR with parent hash(es) '${mergeCommitMessage}' of current commit.`)
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]

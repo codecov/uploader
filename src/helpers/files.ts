@@ -1,10 +1,11 @@
-import childProcess, { spawnSync } from 'child_process'
+import { spawnSync } from 'child_process'
 import glob from 'fast-glob'
 import fs from 'fs'
 import { readFile } from 'fs/promises'
 import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
 import { logError, UploadLogger, verbose } from './logger'
+import { runExternalProgram } from './util'
 import micromatch from "micromatch";
 
 export const MARKER_NETWORK_END = '\n<<<<<< network\n'
@@ -213,10 +214,7 @@ export async function getCoverageFiles(
 export function fetchGitRoot(): string {
   try {
     return (
-      childProcess.spawnSync('git', ['rev-parse', '--show-toplevel'], {
-        encoding: 'utf-8',
-      }).stdout || process.cwd()
-    ).trimRight()
+      runExternalProgram('git', ['rev-parse', '--show-toplevel'])) || process.cwd()
   } catch (error) {
     throw new Error('Error fetching git root. Please try using the -R flag.')
   }
@@ -334,7 +332,7 @@ export function removeFile(projectRoot: string, filePath: string): void {
   })
 }
 export function getBlocklist(): string[] {
-  return [...manualBlocklist(), ...globBlocklist()]
+  return [...manualBlocklist(), ...globBlocklist()].map(globstar)
 }
 
 export function cleanCoverageFilePaths(projectRoot: string, paths: string[], ignoreGlobs: string[]): string[] {
