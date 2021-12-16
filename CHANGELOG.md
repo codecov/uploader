@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.14](https://github.com/codecov/uploader/compare/v0.1.13...v0.1.14) (2021-12-16)
+
+### Features
+
+- add option to not search for coverage files ([a4706ba](https://github.com/codecov/uploader/commit/a4706ba47e5d096dd42478cda94c5e88f63539cc))
+- add tests to check that scripts and config files are removed from coverage files by default ([2640001](https://github.com/codecov/uploader/commit/26400015e2ed3a54ff2b8927ac9bd5c62c582db4))
+- enhance logging of github action merge commit message ([5d656a4](https://github.com/codecov/uploader/commit/5d656a4635ca3934e13e0c6837c591ae83214bf1)), closes [#525](https://github.com/codecov/uploader/issues/525)
+
+### Bug Fixes
+
+- add missing subdir glob pattern for ignored file patterns ([7e0b4b5](https://github.com/codecov/uploader/commit/7e0b4b5142a93ff855196b7e13ef54ffc6755b20))
+- **deps:** update dependency yargs to v17.3.0 ([9ec7427](https://github.com/codecov/uploader/commit/9ec7427d892fca37bbbd394266b76f2f09a3622f))
+- sha usage on pull requests for appveyor ([301ac49](https://github.com/codecov/uploader/commit/301ac4948b7dc18bf37adcd1a5fa45d38716dedd))
+- tests expecting \*.ts being collected as coverage files ([640d32e](https://github.com/codecov/uploader/commit/640d32e7fef209caec698e117d5911c78287ef9d))
+
 ### [0.1.13](https://github.com/codecov/uploader/compare/v0.1.12...v0.1.13) (2021-11-17)
 
 ### Bug Fixes
