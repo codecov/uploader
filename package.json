@@ -52,7 +52,7 @@
     "@types/node-fetch": "2.5.12",
     "@types/validator": "13.6.4",
     "@types/yargs": "17.0.4",
-    "@typescript-eslint/eslint-plugin": "5.1.0",
+    "@typescript-eslint/eslint-plugin": "5.4.0",
     "@typescript-eslint/parser": "5.1.0",
     "eslint": "8.0.1",
     "eslint-config-prettier": "8.3.0",
