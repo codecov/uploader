@@ -4,7 +4,7 @@
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 import childProcess from 'child_process'
-import { info, UploadLogger } from '../helpers/logger'
+import { info, verbose } from '../helpers/logger'
 
 export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.GITHUB_ACTIONS)
@@ -77,7 +77,7 @@ function _getSHA(inputs: UploaderInputs): string {
       .spawnSync('git', ['show', '--no-patch', '--format="%P"'])
       .stdout.toString()
       .trimRight()
-    UploadLogger.verbose(`Handling PR with parent hash(es) '${mergeCommitMessage}' of current commit.`)
+    verbose(`Handling PR with parent hash(es) '${mergeCommitMessage}' of current commit.`)
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
       info(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
