@@ -152,7 +152,6 @@ export async function main(
 
   // Look for files
   let coverageFilePaths: string[] = []
-  info('Searching for coverage files...')
   if (args.file) {
     if (typeof args.file === 'string') {
       coverageFilePaths = [args.file]
@@ -160,22 +159,25 @@ export async function main(
       coverageFilePaths = args.file
     }
   }
-  const isNegated = (path: string) => path.startsWith('!')
-  coverageFilePaths = coverageFilePaths.concat(await getCoverageFiles(
-    args.dir || projectRoot,
-    (() => {
-      const numOfNegatedPaths = coverageFilePaths.filter(isNegated).length
+  if (!args.feature || args.feature.split(',').includes('search') === false) {
+    info('Searching for coverage files...')
+    const isNegated = (path: string) => path.startsWith('!')
+    coverageFilePaths = coverageFilePaths.concat(await getCoverageFiles(
+      args.dir || projectRoot,
+      (() => {
+        const numOfNegatedPaths = coverageFilePaths.filter(isNegated).length
 
-      if (coverageFilePaths.length > numOfNegatedPaths) {
-        return coverageFilePaths
-      } else {
-        return coverageFilePaths.concat(coverageFilePatterns())
-      }
-    })(),
-  ))
+        if (coverageFilePaths.length > numOfNegatedPaths) {
+          return coverageFilePaths
+        } else {
+          return coverageFilePaths.concat(coverageFilePatterns())
+        }
+      })(),
+    ))
 
-  // Remove invalid and duplicate file paths
-  coverageFilePaths = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths, getBlocklist())
+    // Remove invalid and duplicate file paths
+    coverageFilePaths = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths, getBlocklist())
+  }
 
   if (coverageFilePaths.length > 0) {
     info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +

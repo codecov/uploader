@@ -141,8 +141,9 @@ const args: ICLIArgument[] = [
     alias: 'X',
     name: 'feature',
     type: 'string',
-    description: `Toggle functionalities
-      -X network       Disable uploading the file network`,
+    description: `Toggle functionalities. Separate multiple ones by comma: -X network,search
+      -X network       Disable uploading the file network
+      -X search        Disable searching for coverage files`,
   },
   {
     alias: 'U',
