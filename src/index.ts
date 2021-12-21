@@ -6,6 +6,7 @@ import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
 import { info, logError, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
+import {compatibilityDivider, getBashScriptResult} from './helpers/compat'
 import {
   cleanCoverageFilePaths,
   coverageFilePatterns,
@@ -277,6 +278,15 @@ export async function main(
       .map(evar => `${evar}=${process.env[evar] || ''}\n`)
       .join('')
     uploadFile = uploadFile.concat(vars).concat(MARKER_ENV_END)
+  }
+  if (args.compatibilityMode) {
+    const bashResult = await getBashScriptResult();
+    if (bashResult) {
+      info(`Concatenating compatibility data`)
+      uploadFile = bashResult.concat(compatibilityDivider).concat(uploadFile);
+    } else {
+      info(`There was no result on compatibility data`)
+    }
   }
 
   const gzippedFile = zlib.gzipSync(uploadFile)
