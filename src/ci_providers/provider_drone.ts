@@ -14,7 +14,7 @@ function _getBuild(inputs: UploaderInputs): string {
 
 function _getBuildURL(inputs: UploaderInputs): string {
   const { environment: envs } = inputs
-  return envs.DRONE_BUILD_URL || ''
+  return envs.DRONE_BUILD_LINK || envs.DRONE_BUILD_URL || envs.CI_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
