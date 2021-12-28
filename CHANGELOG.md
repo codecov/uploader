@@ -17,6 +17,13 @@ All notable changes to this project will be documented in this file. See [standa
 - **deps:** update dependency yargs to v17.3.1 ([d45261a](https://github.com/codecov/uploader/commit/d45261a8bf6ce49aae713a12f0e38ae20c29d8d4))
 - remove unnecessary validation ([66337ed](https://github.com/codecov/uploader/commit/66337ed102a9cb7dd96645982c121d5e1b69e4a6))
 
+### [0.1.14](https://github.com/codecov/uploader/compare/v0.1.13...v0.1.14) (2021-12-28)
+
+### Bug Fixes
+
+- **deps:** update dependency yargs to v17.3.0 ([3aafada](https://github.com/codecov/uploader/commit/3aafada0396b2bf4e1c8c7771c3f6911e4859a03))
+- **deps:** update dependency yargs to v17.3.1 ([d45261a](https://github.com/codecov/uploader/commit/d45261a8bf6ce49aae713a12f0e38ae20c29d8d4))
+
 ### [0.1.13](https://github.com/codecov/uploader/compare/v0.1.12...v0.1.13) (2021-11-17)
 
 ### Bug Fixes
