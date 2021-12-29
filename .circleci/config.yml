@@ -471,7 +471,7 @@ jobs:
 
             echo $RELEASE_TAG > release_tag
 
-            ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
+            ./ghr -u codecov -r uploader $RELEASE_TAG out
 
       - persist_to_workspace:
           root: .
