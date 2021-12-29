@@ -451,13 +451,6 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Install GHR
-          command: >
-            wget
-            https://github.com/tcnksm/ghr/releases/download/v0.5.4/ghr_v0.5.4_linux_amd64.zip
-
-            unzip ghr_v0.5.4_linux_amd64.zip
-      - run:
           name: Make binaries executable
           command: |
             chmod +x out/*
@@ -471,7 +464,7 @@ jobs:
 
             echo $RELEASE_TAG > release_tag
 
-            ./ghr -u codecov -r uploader $RELEASE_TAG out
+            vendor/ghr -u codecov -r uploader $RELEASE_TAG out
 
       - persist_to_workspace:
           root: .
