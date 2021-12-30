@@ -15,7 +15,7 @@ const realArgs = argv.argv
 
 const start = Date.now()
 
-verbose(`Start of uploader: ${start}...`, Boolean(realArgs.verbose))
+verbose(`Start of uploader: ${start}...`, realArgs.verbose)
 main(realArgs)
   .then(() => {
     const end = Date.now()

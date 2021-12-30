@@ -1,46 +1,4 @@
-import { logError, info, verbose } from '../../src/helpers/logger'
-
-describe('Logger Helper - Legacy log() tests', () => {
-  afterEach(() => {
-    jest.clearAllMocks()
-  })
-
-  it('Should call logger with default options', () => {
-    // eslint-disable-next-line
-    jest.spyOn(console, 'log').mockImplementation(() => {})
-    info('message with no options')
-    expect(console.log).toHaveBeenCalledWith(
-      expect.stringMatching(/no options/),
-    )
-  })
-
-  it('Should not call logger with default options.level = debug and verbose not set', () => {
-    // eslint-disable-next-line
-    jest.spyOn(console, 'debug').mockImplementation(() => {})
-    verbose('message with debug level', undefined)
-    expect(console.debug).not.toHaveBeenCalled()
-  })
-
-  it('Should call logger with options.level = debug and verbose set', () => {
-    jest.spyOn(console, 'debug').mockImplementation(() => {
-      // Intentionally empty
-    })
-    verbose('message with debug level and verbose', true)
-    expect(console.debug).toHaveBeenCalledWith(
-      expect.stringMatching(/debug level and verbose/),
-    )
-  })
-
-  it('Should call logger with options.level = error', () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {
-      // Intentionally empty
-    })
-    logError('message with error level')
-    expect(console.error).toHaveBeenCalledWith(
-      expect.stringMatching(/error level/),
-    )
-  })
-})
+import { logError, info, verbose, UploadLogger } from '../../src/helpers/logger'
 
 describe('Logging methods', () => {
   afterEach(() => {
@@ -48,9 +6,7 @@ describe('Logging methods', () => {
   })
 
   it('should call console.error() when error() is called', () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {
-      // Intentionally empty
-    })
+    jest.spyOn(console, 'error').mockImplementation(() => { /* Intentionally empty */ })
     logError('this is a test error')
     expect(console.error).toHaveBeenCalledWith(
       expect.stringMatching(/\['error'\]/),
@@ -61,11 +17,26 @@ describe('Logging methods', () => {
     expect(console.error).toHaveBeenCalledWith(expect.stringMatching(/Z\]/))
   })
 
-  it('should call console.debug() when verbose() is called with shouldVerbose === true', () => {
-    jest.spyOn(console, 'debug').mockImplementation(() => {
-      // Intentionally empty
-    })
+  it('should not call console.debug() with default log level = info and verbose set to false', () => {
+    jest.spyOn(console, 'debug').mockImplementation(() => { /* Intentionally empty */ })
+    UploadLogger.setLogLevel('info')
+    verbose('this is a test verbose', false)
+    expect(console.debug).not.toHaveBeenCalled()
+  })
+
+  it('should call console.debug() with default log level = info and verbose set to true', () => {
+    jest.spyOn(console, 'debug').mockImplementation(() => { /* Intentionally empty */ })
+    UploadLogger.setLogLevel('info')
     verbose('this is a test verbose', true)
+    expect(console.debug).toHaveBeenCalledWith(
+      expect.stringMatching(/this is a test verbose/),
+    )
+  })
+
+  it('should call console.debug() when verbose() is called and log level = verbose', () => {
+    jest.spyOn(console, 'debug').mockImplementation(() => { /* Intentionally empty */ })
+    UploadLogger.setLogLevel('verbose')
+    UploadLogger.verbose('this is a test verbose')
     expect(console.debug).toHaveBeenCalledWith(
       expect.stringMatching(/\['verbose'\]/),
     )
@@ -75,18 +46,15 @@ describe('Logging methods', () => {
     expect(console.debug).toHaveBeenCalledWith(expect.stringMatching(/Z\]/))
   })
 
-  it('should not call console.debug() when verbose() is called without shouldVerbose', () => {
-    jest.spyOn(console, 'debug').mockImplementation(() => {
-      // Intentionally empty
-    })
-    verbose('this is a test verbose')
+  it('should not call console.debug() when verbose() is called and log level = info', () => {
+    jest.spyOn(console, 'debug').mockImplementation(() => { /* Intentionally empty */ })
+    UploadLogger.setLogLevel('info')
+    UploadLogger.verbose('this is a test verbose')
     expect(console.debug).not.toBeCalled()
   })
 
   it('should call console.log() when info() is called ', () => {
-    jest.spyOn(console, 'log').mockImplementation(() => {
-      // Intentionally empty
-    })
+    jest.spyOn(console, 'log').mockImplementation(() => { /* Intentionally empty */ })
     info('this is a test info')
     expect(console.log).toHaveBeenCalledWith(
       expect.stringMatching(/\['info'\]/),

@@ -5,7 +5,7 @@ import { version } from '../package.json'
 import * as validateHelpers from './helpers/validate'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, logError, UploadLogger, verbose } from './helpers/logger'
+import { info, logError, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
   cleanCoverageFilePaths,
@@ -136,7 +136,7 @@ export async function main(
   let uploadFile = ''
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
-    verbose('Start of network processing...', Boolean(args.verbose))
+    UploadLogger.verbose('Start of network processing...')
     let fileListing = ''
     try {
       fileListing = await getFileListing(projectRoot, args)
@@ -189,7 +189,7 @@ export async function main(
     throw new Error(noFilesError)
   }
 
-  verbose('End of network processing', Boolean(args.verbose))
+  UploadLogger.verbose('End of network processing')
   // #endregion
   // #region == Step 6: generate upload file
   // TODO: capture envs
@@ -251,9 +251,9 @@ export async function main(
 
   const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
 
-  verbose('Using the following upload parameters:', Boolean(args.verbose))
+  UploadLogger.verbose('Using the following upload parameters:')
   for (const parameter in buildParams) {
-    verbose(`${parameter}`, Boolean(args.verbose))
+    UploadLogger.verbose(`${parameter}`)
   }
 
   if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
@@ -271,19 +271,15 @@ export async function main(
       args.source || '',
     )}&token=*******&${query}`,
   )
-  verbose(
-    `Passed token was ${token.length} characters long`,
-    Boolean(args.verbose),
-  )
+  UploadLogger.verbose(`Passed token was ${token.length} characters long`)
   try {
-    verbose(
+    UploadLogger.verbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
         args.source || '',
       )}&${query}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
-        X-Reduced-Redundancy: 'false'`,
-      Boolean(args.verbose),
+        X-Reduced-Redundancy: 'false'`
     )
 
     const uploadURL = await webHelpers.uploadToCodecov(
@@ -294,13 +290,12 @@ export async function main(
       args,
     )
 
-    verbose(`Returned upload url: ${uploadURL}`, Boolean(args.verbose))
+    UploadLogger.verbose(`Returned upload url: ${uploadURL}`)
 
-    verbose(
+    UploadLogger.verbose(
       `${uploadURL.split('\n')[1]}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'`,
-      Boolean(args.verbose),
     )
     const result = await webHelpers.uploadToCodecovPUT(
       uploadURL,
