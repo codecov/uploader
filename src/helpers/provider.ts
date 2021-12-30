@@ -1,5 +1,5 @@
 import providers from '../ci_providers'
-import { info, logError, verbose } from '../helpers/logger'
+import { info, logError, UploadLogger } from '../helpers/logger'
 import { IServiceParams, UploaderInputs } from '../types'
 
 export function detectProvider(
@@ -41,15 +41,9 @@ export function walkProviders(inputs: UploaderInputs): IServiceParams {
   for (const provider of providers) {
     if (provider.detect(inputs.environment)) {
       info(`Detected ${provider.getServiceName()} as the CI provider.`)
-      verbose(
-        '-> Using the following env variables:',
-        Boolean(inputs.args.verbose),
-      )
+      UploadLogger.verbose('-> Using the following env variables:')
       for (const envVarName of provider.getEnvVarNames()) {
-        verbose(
-          `     ${envVarName}: ${inputs.environment[envVarName]}`,
-          Boolean(inputs.args.verbose),
-        )
+        UploadLogger.verbose(`     ${envVarName}: ${inputs.environment[envVarName]}`)
       }
       return provider.getServiceParams(inputs)
     }

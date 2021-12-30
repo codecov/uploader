@@ -4,7 +4,7 @@ import fs from 'fs'
 import { readFile } from 'fs/promises'
 import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
-import { logError, UploadLogger, verbose } from './logger'
+import { logError, UploadLogger } from './logger'
 import { runExternalProgram } from './util'
 import micromatch from "micromatch";
 
@@ -232,7 +232,7 @@ export function getAllFiles(
   dirPath: string,
   args: UploaderArgs,
 ): string[] {
-  verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
+  UploadLogger.verbose(`Searching for files in ${dirPath}`)
 
   const {
     stdout,
