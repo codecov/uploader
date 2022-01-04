@@ -16,6 +16,7 @@ import * as providerLocal from './provider_local'
 import * as providerTeamCity from './provider_teamcity'
 import * as providerTravisci from './provider_travisci'
 import * as providerWercker from './provider_wercker'
+import * as providerWoodpecker from './provider_woodpecker'
 
 // Please make sure provider_local is last
 const providerList: IProvider[] = [
@@ -34,6 +35,7 @@ const providerList: IProvider[] = [
   providerTeamCity,
   providerTravisci,
   providerWercker,
+  providerWoodpecker,
   providerLocal,
 ]
 

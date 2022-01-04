@@ -15,7 +15,7 @@ function _getTimestamp() {
  * @param {boolean} shouldVerbose - value of the verbose flag
  * @return void
  */
- export function verbose(message: string, shouldVerbose: boolean): void {
+export function verbose(message: string, shouldVerbose: boolean): void {
   if (shouldVerbose === true) {
     console.debug(`[${_getTimestamp()}] ['verbose'] ${message}`)
   }
