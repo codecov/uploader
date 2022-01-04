@@ -48,7 +48,7 @@
     "@types/jest": "27.4.0",
     "@types/js-yaml": "4.0.5",
     "@types/mock-fs": "4.13.1",
-    "@types/node": "16.11.18",
+    "@types/node": "16.11.19",
     "@types/node-fetch": "2.5.12",
     "@types/validator": "13.7.1",
     "@types/yargs": "17.0.8",

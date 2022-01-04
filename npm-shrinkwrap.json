@@ -29,7 +29,7 @@
         "@types/jest": "27.4.0",
         "@types/js-yaml": "4.0.5",
         "@types/mock-fs": "4.13.1",
-        "@types/node": "16.11.18",
+        "@types/node": "16.11.19",
         "@types/node-fetch": "2.5.12",
         "@types/validator": "13.7.1",
         "@types/yargs": "17.0.8",
@@ -1586,9 +1586,9 @@
       }
     },
     "node_modules/@types/node": {
-      "version": "16.11.18",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.18.tgz",
-      "integrity": "sha512-7N8AOYWWYuw0g+K+GKCmIwfU1VMHcexYNpLPYzFZ4Uq2W6C/ptfeC7XhXgy/4pcwhz/9KoS5yijMfnYQ0u0Udw==",
+      "version": "16.11.19",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.19.tgz",
+      "integrity": "sha512-BPAcfDPoHlRQNKktbsbnpACGdypPFBuX4xQlsWDE7B8XXcfII+SpOLay3/qZmCLb39kV5S1RTYwXdkx2lwLYng==",
       "dev": true
     },
     "node_modules/@types/node-fetch": {
@@ -10021,9 +10021,9 @@
       }
     },
     "@types/node": {
-      "version": "16.11.18",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.18.tgz",
-      "integrity": "sha512-7N8AOYWWYuw0g+K+GKCmIwfU1VMHcexYNpLPYzFZ4Uq2W6C/ptfeC7XhXgy/4pcwhz/9KoS5yijMfnYQ0u0Udw==",
+      "version": "16.11.19",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.19.tgz",
+      "integrity": "sha512-BPAcfDPoHlRQNKktbsbnpACGdypPFBuX4xQlsWDE7B8XXcfII+SpOLay3/qZmCLb39kV5S1RTYwXdkx2lwLYng==",
       "dev": true
     },
     "@types/node-fetch": {
