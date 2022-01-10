@@ -10,7 +10,7 @@
       "license": "ISC",
       "dependencies": {
         "@types/micromatch": "4.0.2",
-        "fast-glob": "3.2.7",
+        "fast-glob": "3.2.10",
         "https-proxy-agent": "5.0.0",
         "js-yaml": "4.1.0",
         "line-reader": "0.4.0",
@@ -3887,9 +3887,9 @@
       "dev": true
     },
     "node_modules/fast-glob": {
-      "version": "3.2.7",
-      "resolved": "https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.7.tgz",
-      "integrity": "sha512-rYGMRwip6lUMvYD3BTScMwT1HtAs2d71SMv66Vrxs0IekGZEjhM0pcMfjQPnknBt2zeCwQMEupiN02ZP4DiT1Q==",
+      "version": "3.2.10",
+      "resolved": "https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.10.tgz",
+      "integrity": "sha512-s9nFhFnvR63wls6/kM88kQqDhMu0AfdjqouE2l5GVQPbqLgyFjjU5ry/r2yKsJxpb9Py1EYNqieFrmMaX4v++A==",
       "dependencies": {
         "@nodelib/fs.stat": "^2.0.2",
         "@nodelib/fs.walk": "^1.2.3",
@@ -3898,7 +3898,7 @@
         "micromatch": "^4.0.4"
       },
       "engines": {
-        "node": ">=8"
+        "node": ">=8.6.0"
       }
     },
     "node_modules/fast-json-stable-stringify": {
@@ -11689,9 +11689,9 @@
       "dev": true
     },
     "fast-glob": {
-      "version": "3.2.7",
-      "resolved": "https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.7.tgz",
-      "integrity": "sha512-rYGMRwip6lUMvYD3BTScMwT1HtAs2d71SMv66Vrxs0IekGZEjhM0pcMfjQPnknBt2zeCwQMEupiN02ZP4DiT1Q==",
+      "version": "3.2.10",
+      "resolved": "https://registry.npmjs.org/fast-glob/-/fast-glob-3.2.10.tgz",
+      "integrity": "sha512-s9nFhFnvR63wls6/kM88kQqDhMu0AfdjqouE2l5GVQPbqLgyFjjU5ry/r2yKsJxpb9Py1EYNqieFrmMaX4v++A==",
       "requires": {
         "@nodelib/fs.stat": "^2.0.2",
         "@nodelib/fs.walk": "^1.2.3",
