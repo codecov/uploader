@@ -61,7 +61,7 @@
     "jest-spec-reporter": "1.0.17",
     "lint-staged": "12.1.7",
     "mock-fs": "5.1.2",
-    "nock": "13.2.1",
+    "nock": "13.2.2",
     "pkg": "5.3.3",
     "prettier": "2.5.1",
     "standard-version": "9.3.2",
