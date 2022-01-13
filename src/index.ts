@@ -2,7 +2,6 @@ import { UploaderArgs, UploaderInputs } from './types'
 
 import zlib from 'zlib'
 import { version } from '../package.json'
-import * as validateHelpers from './helpers/validate'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
 import { info, logError, UploadLogger } from './helpers/logger'
@@ -12,6 +11,7 @@ import {
   coverageFilePatterns,
   fetchGitRoot,
   fileHeader,
+  filterFilesAgainstBlockList,
   getBlocklist,
   getCoverageFiles,
   getFileListing,
@@ -150,15 +150,20 @@ export async function main(
   // #endregion
   // #region == Step 5: select coverage files (search or specify)
 
+  let requestedPaths: string[] = []
+  
   // Look for files
   let coverageFilePaths: string[] = []
   if (args.file) {
     if (typeof args.file === 'string') {
-      coverageFilePaths = [args.file]
+      requestedPaths = [args.file]
     } else {
-      coverageFilePaths = args.file
+      requestedPaths = args.file
     }
   }
+
+  coverageFilePaths = requestedPaths
+
   if (!args.feature || args.feature.split(',').includes('search') === false) {
     info('Searching for coverage files...')
     const isNegated = (path: string) => path.startsWith('!')
@@ -175,13 +180,43 @@ export async function main(
       })(),
     ))
 
-    // Remove invalid and duplicate file paths
-    coverageFilePaths = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths, getBlocklist())
+    // Generate what the file listing would be after the blocklist is applied
+
+    let coverageFilePathsAfterFilter = coverageFilePaths
+
+    if (coverageFilePaths.length > 0) { 
+      coverageFilePathsAfterFilter = filterFilesAgainstBlockList(coverageFilePaths, getBlocklist())
+    } 
+
+
+
+
+    // If args.file was passed, emit warning for 'filtered' filess
+
+    if (requestedPaths.length > 0) {
+      if (coverageFilePathsAfterFilter.length !== requestedPaths.length) {
+        info('Warning: Some files passed via the -f flag would normally be excluded from search.')
+        info('If Codecov encounters issues processing your reports, please review https://docs.codecov.com/docs/supported-report-formats')
+      }
+    } else {
+      // Overwrite coverageFilePaths with coverageFilePathsAfterFilter
+      info('Warning: Some files located via search were excluded from upload.')
+      info('If Codecov did not locate your files, please review https://docs.codecov.com/docs/supported-report-formats')
+
+      coverageFilePaths = coverageFilePathsAfterFilter
+    }
+
   }
 
+  let coverageFilePathsThatExist: string[] = []
+
   if (coverageFilePaths.length > 0) {
-    info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +
-        coverageFilePaths.join('\n  '))
+    coverageFilePathsThatExist = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths)
+  }
+
+  if (coverageFilePathsThatExist.length > 0) {
+    info(`=> Found ${coverageFilePathsThatExist.length} possible coverage files:\n  ` +
+    coverageFilePathsThatExist.join('\n  '))
   } else {
     const noFilesError = args.file ?
       'No coverage files found, exiting.' :
@@ -196,7 +231,7 @@ export async function main(
 
   // Get coverage report contents
   let coverageFileAdded = false
-  for (const coverageFile of coverageFilePaths) {
+  for (const coverageFile of coverageFilePathsThatExist) {
     let fileContents
     try {
       info(`Processing ${getFilePath(args.dir || projectRoot, coverageFile)}...`),
@@ -221,7 +256,7 @@ export async function main(
 
   // Cleanup
   if (args.clean) {
-    for (const coverageFile of coverageFilePaths) {
+    for (const coverageFile of coverageFilePathsThatExist) {
       removeFile(args.dir || projectRoot, coverageFile)
     }
   }

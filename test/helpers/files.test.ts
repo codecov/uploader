@@ -282,7 +282,7 @@ describe('File Helpers', () => {
     })
   })
 
-  describe("cleanCoverageFilePaths()", () => {
+  describe("filterFilesAgainstBlockList()", () => {
     const getPaths = () => fileHelpers.getCoverageFiles(
       '.',
       fileHelpers.coverageFilePatterns(),
@@ -290,35 +290,35 @@ describe('File Helpers', () => {
     it("works", async () => {
       const paths = await getPaths()
 
-      expect(() => fileHelpers.cleanCoverageFilePaths(process.cwd(), paths, getBlocklist())).not.toThrow()
+      expect(() => fileHelpers.filterFilesAgainstBlockList(paths, getBlocklist())).not.toThrow()
     })
 
     it("returns the input array when passed an empty ignore array", async () => {
       const paths = await getPaths()
-      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), paths, [])).toEqual(paths)
+      expect(fileHelpers.filterFilesAgainstBlockList(paths, [])).toEqual(paths)
     })
 
     it("ignores an ignore filename", async () => {
-      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await getPaths(), ["coverage-summary.json"])).not.toContain(expect.stringContaining('coverage-summary.json'))
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), ["coverage-summary.json"])).not.toContain(expect.stringContaining('coverage-summary.json'))
     })
 
     it("ignores an ignore filename glob", async () => {
-      const foo = expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await getPaths(), ["**/coverage*"])).not.toContainEqual(expect.stringMatching('/coverage'))
+      const foo = expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), ["**/coverage*"])).not.toContainEqual(expect.stringMatching('/coverage'))
       console.log(foo)
     })
 
     it("ignores an ignore filename globstar", async () => {
-      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await getPaths(), ["**/other/*"])).not.toContainEqual(expect.stringMatching('other'))
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), ["**/other/*"])).not.toContainEqual(expect.stringMatching('other'))
     })
 
     it("ignores shell scripts by default", async () => {
-      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.sh'))
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.sh'))
     })
     it("ignores powershell scripts by default", async () => {
-      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.ps1'))
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.ps1'))
     })
     it("ignores codecov configs by default", async () => {
-      expect(fileHelpers.cleanCoverageFilePaths(process.cwd(), await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching(/^\.?codecov\.ya?ml/))
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching(/^\.?codecov\.ya?ml/))
     })
   })
 
