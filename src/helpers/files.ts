@@ -174,6 +174,7 @@ export function coverageFilePatterns(): string[] {
     'gcov.info',
     '*.gcov',
     '*.lst',
+    'test_cov.xml',
   ]
 }
 
