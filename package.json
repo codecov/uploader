@@ -1,9 +1,11 @@
 {
-  "name": "codecov",
+  "name": "@codecov/uploader",
   "version": "0.1.15",
   "description": "Codecov Report Uploader",
   "private": true,
-  "bin": "dist/bin/codecov.js",
+  "bin": {
+    "codecov": "dist/bin/codecov.js"
+  },
   "scripts": {
     "lint": "eslint \"src/**/*.ts\"",
     "test": "npm run lint && npm run build && jest --runInBand",
