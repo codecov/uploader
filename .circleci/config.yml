@@ -51,6 +51,7 @@ jobs:
             - out
             - coverage
             - package.json
+            - vendor
 
   build-alpine:
     docker:
