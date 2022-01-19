@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.15](https://github.com/codecov/uploader/compare/v0.1.13...v0.1.15) (2022-01-18)
+
+### Features
+
+- add bullseye coverage file name to coverageFilePatterns ([3650e46](https://github.com/codecov/uploader/commit/3650e4671156d4136e7911017e377ccc851a9dcc))
+- add woodpecker provider ([074dd43](https://github.com/codecov/uploader/commit/074dd433592227b51020f3866c83703e64b7b6cb))
+
+### Bug Fixes
+
+- **deps:** update dependency fast-glob to v3.2.10 ([61f2ea2](https://github.com/codecov/uploader/commit/61f2ea2532284ed71180ff82dd6ea52edc02c0f4))
+- **deps:** update dependency node-fetch to v2.6.7 ([6a98237](https://github.com/codecov/uploader/commit/6a98237132a9608b4585986a6f29bbb23af81636))
+- **deps:** update dependency yargs to v17.3.0 ([3aafada](https://github.com/codecov/uploader/commit/3aafada0396b2bf4e1c8c7771c3f6911e4859a03))
+- **deps:** update dependency yargs to v17.3.1 ([d45261a](https://github.com/codecov/uploader/commit/d45261a8bf6ce49aae713a12f0e38ae20c29d8d4))
+- remove unnecessary validation ([66337ed](https://github.com/codecov/uploader/commit/66337ed102a9cb7dd96645982c121d5e1b69e4a6))
+
 ### [0.1.14](https://github.com/codecov/uploader/compare/v0.1.13...v0.1.14) (2021-12-28)
 
 ### Bug Fixes

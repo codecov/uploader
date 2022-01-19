@@ -4,7 +4,7 @@ import fs from 'fs'
 import { readFile } from 'fs/promises'
 import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
-import { logError, UploadLogger, verbose } from './logger'
+import { logError, UploadLogger } from './logger'
 import { runExternalProgram } from './util'
 import micromatch from "micromatch";
 
@@ -174,6 +174,7 @@ export function coverageFilePatterns(): string[] {
     'gcov.info',
     '*.gcov',
     '*.lst',
+    'test_cov.xml',
   ]
 }
 
@@ -232,7 +233,7 @@ export function getAllFiles(
   dirPath: string,
   args: UploaderArgs,
 ): string[] {
-  verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
+  UploadLogger.verbose(`Searching for files in ${dirPath}`)
 
   const {
     stdout,
@@ -335,7 +336,15 @@ export function getBlocklist(): string[] {
   return [...manualBlocklist(), ...globBlocklist()].map(globstar)
 }
 
-export function cleanCoverageFilePaths(projectRoot: string, paths: string[], ignoreGlobs: string[]): string[] {
+export function filterFilesAgainstBlockList(paths: string[], ignoreGlobs: string[]): string[] {
+  const ignoredFiles = micromatch(paths, ignoreGlobs)
+
+  return paths.filter(path => {
+    return !ignoredFiles.includes(path)
+  })
+}
+
+export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): string[] {
   UploadLogger.verbose(`Preparing to clean the following coverage paths: ${paths.toString()}`)
   const coverageFilePaths = [... new Set(paths.filter(file => {
     return fileExists(projectRoot, file)
@@ -345,12 +354,6 @@ export function cleanCoverageFilePaths(projectRoot: string, paths: string[], ign
     throw new Error('Error while cleaning paths. No paths matched existing files!')  
   }
 
-  const ignoredFiles = micromatch(coverageFilePaths, ignoreGlobs)
-
-  const filesAfterCheckingIgnore = coverageFilePaths.filter(path => {
-    return !ignoredFiles.includes(path)
-  })
-
-  return filesAfterCheckingIgnore
+  return coverageFilePaths
 }
 

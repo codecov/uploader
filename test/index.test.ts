@@ -275,6 +275,47 @@ describe('Uploader Core', () => {
     )
   })
 
+  it('will process blocked files, if passed via -f', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
+    await app.main({
+      dryRun: 'true',
+      file: [
+        'test/fixtures/.coverage',
+      ],
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      flags: '',
+      slug: '',
+      upstream: ''
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/fixtures\/\.coverage\.\.\./),
+    )
+  })
+
+  it('will not process blocked files if not passed via -f', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
+    await app.main({
+      dryRun: 'true',
+      file: [
+      ],
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      flags: '',
+      slug: '',
+      upstream: ''
+    })
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/fixtures\/other\/\.coverage\.\.\./),
+    )
+  })
+
   it('Can handle glob files', async () => {
     const log = jest.spyOn(console, 'log').mockImplementation(() => {
       // intentionally empty

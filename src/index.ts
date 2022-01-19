@@ -2,16 +2,16 @@ import { UploaderArgs, UploaderInputs } from './types'
 
 import zlib from 'zlib'
 import { version } from '../package.json'
-import * as validateHelpers from './helpers/validate'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, logError, UploadLogger, verbose } from './helpers/logger'
+import { info, logError, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
   cleanCoverageFilePaths,
   coverageFilePatterns,
   fetchGitRoot,
   fileHeader,
+  filterFilesAgainstBlockList,
   getBlocklist,
   getCoverageFiles,
   getFileListing,
@@ -105,7 +105,7 @@ export async function main(
   const inputs: UploaderInputs = { args, environment: envs }
 
   let uploadHost: string
-  if (args.url && validateHelpers.validateURL(args.url)) {
+  if (args.url) {
     uploadHost = args.url
   } else {
     uploadHost = 'https://codecov.io'
@@ -136,7 +136,7 @@ export async function main(
   let uploadFile = ''
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
-    verbose('Start of network processing...', Boolean(args.verbose))
+    UploadLogger.verbose('Start of network processing...')
     let fileListing = ''
     try {
       fileListing = await getFileListing(projectRoot, args)
@@ -150,15 +150,20 @@ export async function main(
   // #endregion
   // #region == Step 5: select coverage files (search or specify)
 
+  let requestedPaths: string[] = []
+  
   // Look for files
   let coverageFilePaths: string[] = []
   if (args.file) {
     if (typeof args.file === 'string') {
-      coverageFilePaths = [args.file]
+      requestedPaths = [args.file]
     } else {
-      coverageFilePaths = args.file
+      requestedPaths = args.file
     }
   }
+
+  coverageFilePaths = requestedPaths
+
   if (!args.feature || args.feature.split(',').includes('search') === false) {
     info('Searching for coverage files...')
     const isNegated = (path: string) => path.startsWith('!')
@@ -175,13 +180,43 @@ export async function main(
       })(),
     ))
 
-    // Remove invalid and duplicate file paths
-    coverageFilePaths = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths, getBlocklist())
+    // Generate what the file listing would be after the blocklist is applied
+
+    let coverageFilePathsAfterFilter = coverageFilePaths
+
+    if (coverageFilePaths.length > 0) { 
+      coverageFilePathsAfterFilter = filterFilesAgainstBlockList(coverageFilePaths, getBlocklist())
+    } 
+
+
+
+
+    // If args.file was passed, emit warning for 'filtered' filess
+
+    if (requestedPaths.length > 0) {
+      if (coverageFilePathsAfterFilter.length !== requestedPaths.length) {
+        info('Warning: Some files passed via the -f flag would normally be excluded from search.')
+        info('If Codecov encounters issues processing your reports, please review https://docs.codecov.com/docs/supported-report-formats')
+      }
+    } else {
+      // Overwrite coverageFilePaths with coverageFilePathsAfterFilter
+      info('Warning: Some files located via search were excluded from upload.')
+      info('If Codecov did not locate your files, please review https://docs.codecov.com/docs/supported-report-formats')
+
+      coverageFilePaths = coverageFilePathsAfterFilter
+    }
+
   }
 
+  let coverageFilePathsThatExist: string[] = []
+
   if (coverageFilePaths.length > 0) {
-    info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +
-        coverageFilePaths.join('\n  '))
+    coverageFilePathsThatExist = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths)
+  }
+
+  if (coverageFilePathsThatExist.length > 0) {
+    info(`=> Found ${coverageFilePathsThatExist.length} possible coverage files:\n  ` +
+    coverageFilePathsThatExist.join('\n  '))
   } else {
     const noFilesError = args.file ?
       'No coverage files found, exiting.' :
@@ -189,14 +224,14 @@ export async function main(
     throw new Error(noFilesError)
   }
 
-  verbose('End of network processing', Boolean(args.verbose))
+  UploadLogger.verbose('End of network processing')
   // #endregion
   // #region == Step 6: generate upload file
   // TODO: capture envs
 
   // Get coverage report contents
   let coverageFileAdded = false
-  for (const coverageFile of coverageFilePaths) {
+  for (const coverageFile of coverageFilePathsThatExist) {
     let fileContents
     try {
       info(`Processing ${getFilePath(args.dir || projectRoot, coverageFile)}...`),
@@ -221,7 +256,7 @@ export async function main(
 
   // Cleanup
   if (args.clean) {
-    for (const coverageFile of coverageFilePaths) {
+    for (const coverageFile of coverageFilePathsThatExist) {
       removeFile(args.dir || projectRoot, coverageFile)
     }
   }
@@ -251,9 +286,9 @@ export async function main(
 
   const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
 
-  verbose('Using the following upload parameters:', Boolean(args.verbose))
+  UploadLogger.verbose('Using the following upload parameters:')
   for (const parameter in buildParams) {
-    verbose(`${parameter}`, Boolean(args.verbose))
+    UploadLogger.verbose(`${parameter}`)
   }
 
   if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
@@ -271,19 +306,15 @@ export async function main(
       args.source || '',
     )}&token=*******&${query}`,
   )
-  verbose(
-    `Passed token was ${token.length} characters long`,
-    Boolean(args.verbose),
-  )
+  UploadLogger.verbose(`Passed token was ${token.length} characters long`)
   try {
-    verbose(
+    UploadLogger.verbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
         args.source || '',
       )}&${query}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
-        X-Reduced-Redundancy: 'false'`,
-      Boolean(args.verbose),
+        X-Reduced-Redundancy: 'false'`
     )
 
     const uploadURL = await webHelpers.uploadToCodecov(
@@ -294,13 +325,12 @@ export async function main(
       args,
     )
 
-    verbose(`Returned upload url: ${uploadURL}`, Boolean(args.verbose))
+    UploadLogger.verbose(`Returned upload url: ${uploadURL}`)
 
-    verbose(
+    UploadLogger.verbose(
       `${uploadURL.split('\n')[1]}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'`,
-      Boolean(args.verbose),
     )
     const result = await webHelpers.uploadToCodecovPUT(
       uploadURL,
