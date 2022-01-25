@@ -33,7 +33,6 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
-    "@types/micromatch": "4.0.2",
     "fast-glob": "3.2.11",
     "https-proxy-agent": "5.0.0",
     "js-yaml": "4.1.0",
@@ -49,6 +48,7 @@
     "@commitlint/config-conventional": "16.0.0",
     "@types/jest": "27.4.0",
     "@types/js-yaml": "4.0.5",
+    "@types/micromatch": "4.0.2",
     "@types/mock-fs": "4.13.1",
     "@types/node": "16.11.21",
     "@types/node-fetch": "2.5.12",
