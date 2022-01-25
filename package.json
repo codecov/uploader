@@ -34,7 +34,7 @@
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
     "@types/micromatch": "4.0.2",
-    "fast-glob": "3.2.10",
+    "fast-glob": "3.2.11",
     "https-proxy-agent": "5.0.0",
     "js-yaml": "4.1.0",
     "line-reader": "0.4.0",
