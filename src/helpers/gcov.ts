@@ -15,6 +15,5 @@ export async function generateGcovCoverageFiles(projectRoot: string, include: st
     if (!files.length) {
         throw new Error('No gcov files found')
     }
-    const gcovLog = runExternalProgram('gcov', ['-pb', gcovArgs, files.join(' ')]);
-    return gcovLog
+    return runExternalProgram('gcov', ['-pb', gcovArgs, ...files]);
 }
