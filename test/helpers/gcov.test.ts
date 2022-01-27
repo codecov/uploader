@@ -9,23 +9,30 @@ describe('generateGcovCoverageFiles()', () => {
     })
 
     it('should find and run on test/fixtures/gcov/main.gcno', () => {
+        const output = `File 'main.c'\nLines executed:0.00% of 11\nBranches executed:0.00% of 4\nTaken at least once:0.00% of 4\nCalls executed:0.00% of 5\nCreating 'main.c.gcov'\n\nLines executed:0.00% of 11`
+        const spawnSync = td.replace(childProcess, 'spawnSync')
+        td.when(spawnSync('gcov')).thenReturn({
+            stdout: 'gcov installed',
+            error: null
+        })
+        td.when(spawnSync('gcov', td.matchers.contains('test/fixtures/gcov/main.gcno'))).thenReturn({
+            stdout: output,
+            error: null
+        })
         const projectRoot = process.cwd()
-        expect(generateGcovCoverageFiles(projectRoot)).toBe(`File 'main.c'
-Lines executed:0.00% of 11
-Branches executed:0.00% of 4
-Taken at least once:0.00% of 4
-Calls executed:0.00% of 5
-Creating 'main.c.gcov'
-
-Lines executed:0.00% of 11`)
+        expect(generateGcovCoverageFiles(projectRoot)).toBe(output)
     })
     it('should find no gcno files and return an error', () => {
+        const spawnSync = td.replace(childProcess, 'spawnSync')
+        td.when(spawnSync('gcov')).thenReturn({
+            stdout: 'gcov installed',
+            error: null
+        })
         const projectRoot = process.cwd()
         expect(() => { generateGcovCoverageFiles(projectRoot, [], ['test']) }).toThrowError(/No gcov files found/)
 
 
     })
-
     it('should pass gcov arguments directly through', () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('gcov')).thenReturn({
@@ -38,6 +45,21 @@ Lines executed:0.00% of 11`)
 
         const projectRoot = process.cwd()
         expect(generateGcovCoverageFiles(projectRoot, [], [], 'NEWGCOVARG')).toEqual("Matched")
+    })
+
+    it('should return an error when no gcno files found', () => {
+        const spawnSync = td.replace(childProcess, 'spawnSync')
+        td.when(spawnSync('gcov')).thenReturn({
+            stdout: 'gcov installed',
+            error: null
+        })
+        td.when(spawnSync('gcov', td.matchers.contains('test'))).thenReturn({
+            stdout: 'No executable lines'
+        })
+        const projectRoot = process.cwd()
+        expect(() => { generateGcovCoverageFiles(projectRoot, [], ['test']) }).toThrowError(/No gcov files found/)
+
+
     })
 
     it('should return an error when gcov is not installed', () => {

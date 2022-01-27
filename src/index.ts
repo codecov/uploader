@@ -157,10 +157,10 @@ export async function main(
   // Look for files
 
   if (args.gcov) {
-    verbose('Running gcov...', Boolean(args.verbose))
+    UploadLogger.verbose('Running gcov...')
 
     const gcovLogs = generateGcovCoverageFiles(projectRoot)
-    verbose(`${gcovLogs}`, Boolean(args.verbose))
+    UploadLogger.verbose(`${gcovLogs}`)
   }
   let coverageFilePaths: string[] = []
   if (args.file) {
