@@ -158,9 +158,13 @@ export async function main(
 
   if (args.gcov) {
     UploadLogger.verbose('Running gcov...')
-
-    const gcovLogs = generateGcovCoverageFiles(projectRoot)
-    UploadLogger.verbose(`${gcovLogs}`)
+    try {
+      const gcovLogs = await generateGcovCoverageFiles(projectRoot)
+      UploadLogger.verbose(`${gcovLogs}`)
+    }
+    catch (error) {
+      throw new Error(`${error}`)
+    }
   }
   let coverageFilePaths: string[] = []
   if (args.file) {

@@ -20,19 +20,9 @@ describe('generateGcovCoverageFiles()', () => {
             error: null
         })
         const projectRoot = process.cwd()
-        expect(generateGcovCoverageFiles(projectRoot)).toBe(output)
+        return generateGcovCoverageFiles(projectRoot).then(result => expect(result).toBe(output));
     })
-    it('should find no gcno files and return an error', () => {
-        const spawnSync = td.replace(childProcess, 'spawnSync')
-        td.when(spawnSync('gcov')).thenReturn({
-            stdout: 'gcov installed',
-            error: null
-        })
-        const projectRoot = process.cwd()
-        expect(() => { generateGcovCoverageFiles(projectRoot, [], ['test']) }).toThrowError(/No gcov files found/)
 
-
-    })
     it('should pass gcov arguments directly through', () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('gcov')).thenReturn({
@@ -44,7 +34,7 @@ describe('generateGcovCoverageFiles()', () => {
         })
 
         const projectRoot = process.cwd()
-        expect(generateGcovCoverageFiles(projectRoot, [], [], 'NEWGCOVARG')).toEqual("Matched")
+        return generateGcovCoverageFiles(projectRoot, [], [], 'NEWGCOVARG').then(result => expect(result).toBe("Matched"))
     })
 
     it('should return an error when no gcno files found', () => {
@@ -57,9 +47,7 @@ describe('generateGcovCoverageFiles()', () => {
             stdout: 'No executable lines'
         })
         const projectRoot = process.cwd()
-        expect(() => { generateGcovCoverageFiles(projectRoot, [], ['test']) }).toThrowError(/No gcov files found/)
-
-
+        return expect(generateGcovCoverageFiles(projectRoot, [], ['test'])).rejects.toThrow(/No gcov files found/)
     })
 
     it('should return an error when gcov is not installed', () => {
@@ -67,6 +55,6 @@ describe('generateGcovCoverageFiles()', () => {
         td.when(spawnSync('gcov')).thenReturn({ error: "Command 'gcov' not found" })
 
         const projectRoot = process.cwd()
-        expect(() => generateGcovCoverageFiles(projectRoot, [], [], 'NEWGCOVARG')).toThrowError(/gcov is not installed/)
+        return expect(generateGcovCoverageFiles(projectRoot, [], [], 'NEWGCOVARG')).rejects.toThrow(/gcov is not installed/)
     })
 })

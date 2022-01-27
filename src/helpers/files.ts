@@ -27,7 +27,7 @@ export async function getFileListing(
   return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
-function manualBlocklist(): string[] {
+export function manualBlocklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     '.DS_Store',
