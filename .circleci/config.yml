@@ -473,7 +473,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:370.0.0-slim
+      - image: google/cloud-sdk:371.0.0-slim
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
