@@ -61,7 +61,7 @@
     "husky": "7.0.4",
     "jest": "27.4.7",
     "jest-spec-reporter": "1.0.17",
-    "lint-staged": "12.3.2",
+    "lint-staged": "12.3.3",
     "mock-fs": "5.1.2",
     "nock": "13.2.2",
     "pkg": "5.5.2",
