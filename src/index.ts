@@ -299,6 +299,7 @@ export async function main(
 
   if (args.dryRun) {
     dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    return
   }
 
   info(
