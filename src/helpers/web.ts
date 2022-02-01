@@ -5,6 +5,8 @@ import { version } from '../../package.json'
 import {
   IRequestHeaders,
   IServiceParams,
+  PostResults,
+  PutResults,
   UploaderArgs,
   UploaderInputs,
 } from '../types'
@@ -49,17 +51,16 @@ export function getPackage(source: string): string {
   }
 }
 
+
 export async function uploadToCodecovPUT(
-  uploadURL: string,
+  putAndResultUrlPair: PostResults, 
   uploadFile: string | Buffer,
   args: UploaderArgs
-): Promise<{ status: string; resultURL: string }> {
+): Promise<PutResults> {
   info('Uploading...')
 
-  const { putURL, resultURL } = parsePOSTResults(uploadURL)
-
   const requestHeaders = generateRequestHeadersPUT(
-    putURL,
+    putAndResultUrlPair.putURL,
     uploadFile,
     args,
   )
@@ -72,18 +73,18 @@ export async function uploadToCodecovPUT(
     )
   }
 
-  return { status: 'success', resultURL }
+  return { status: 'success', resultURL: putAndResultUrlPair.resultURL }
 }
 
-export async function uploadToCodecov(
-  uploadURL: string,
+export async function uploadToCodecovPOST(
+  postURL: URL,
   token: string,
   query: string,
   source: string,
   args: UploaderArgs,
 ): Promise<string> {
   const requestHeaders = generateRequestHeadersPOST(
-    uploadURL,
+    postURL,
     token,
     query,
     source,
@@ -112,17 +113,18 @@ export function generateQuery(queryParams: Partial<IServiceParams>): string {
   ).toString()
 }
 
-export function parsePOSTResults(uploadURL: string): {
-  putURL: string
-  resultURL: string
-} {
+
+
+export function parsePOSTResults(putAndResultUrlPair: string): PostResults {
+  info(putAndResultUrlPair)
+
   // JS for [[:graph:]] https://www.regular-expressions.info/posixbrackets.html
   const re = /([\x21-\x7E]+)[\r\n]?/gm
 
-  const matches = uploadURL.match(re)
+  const matches = putAndResultUrlPair.match(re)
 
   if (matches === null) {
-    throw new Error(`Parsing results from POST failed: (${uploadURL})`)
+    throw new Error(`Parsing results from POST failed: (${putAndResultUrlPair})`)
   }
 
   if (matches?.length !== 2) {
@@ -131,8 +133,9 @@ export function parsePOSTResults(uploadURL: string): {
     )
   }
 
-  const putURL = matches[1]
-  const resultURL = matches[0].trimEnd() // This match may have trailing 0x0A and 0x0D that must be trimmed
+  const resultURL = new URL(matches[0].trimEnd())
+  const putURL = new URL(matches[1])
+   // This match may have trailing 0x0A and 0x0D that must be trimmed
 
   return { putURL, resultURL }
 }
@@ -143,7 +146,7 @@ export function displayChangelog(): void {
 }
 
 export function generateRequestHeadersPOST(
-  uploadURL: string,
+  postURL: URL,
   token: string,
   query: string,
   source: string,
@@ -152,9 +155,9 @@ export function generateRequestHeadersPOST(
     if (args.upstream !== '') {
       const proxyAgent = new HttpsProxyAgent(args.upstream)
       return {
-        url: `${uploadURL}/upload/v4?package=${getPackage(
+        url: new URL(`/upload/v4?package=${getPackage(
           source,
-        )}&token=${token}&${query}`,
+        )}&token=${token}&${query}`, postURL),
         options: {
           agent: proxyAgent,
           method: 'post',
@@ -167,9 +170,9 @@ export function generateRequestHeadersPOST(
     }
 
     return {
-      url: `${uploadURL}/upload/v4?package=${getPackage(
+      url: new URL(`/upload/v4?package=${getPackage(
         source,
-      )}&token=${token}&${query}`,
+      )}&token=${token}&${query}`, postURL),
       options: {
         method: 'post',
         headers: {
@@ -181,7 +184,7 @@ export function generateRequestHeadersPOST(
 }
 
 export function generateRequestHeadersPUT(
-  uploadURL: string,
+  uploadURL: URL,
   uploadFile: string | Buffer,
   args: UploaderArgs,
 ): IRequestHeaders {

@@ -298,7 +298,8 @@ export async function main(
   const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {
-    return dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    return
   }
 
   info(
@@ -317,28 +318,27 @@ export async function main(
         X-Reduced-Redundancy: 'false'`
     )
 
-    const uploadURL = await webHelpers.uploadToCodecov(
-      uploadHost,
+    const postURL = new URL(uploadHost)
+
+    const putAndResultUrlPair = await webHelpers.uploadToCodecovPOST(
+      postURL,
       token,
       query,
       args.source || '',
       args,
     )
 
-    UploadLogger.verbose(`Returned upload url: ${uploadURL}`)
+    const postResults = webHelpers.parsePOSTResults(putAndResultUrlPair)
 
-    UploadLogger.verbose(
-      `${uploadURL.split('\n')[1]}
-        Content-Type: 'text/plain'
-        Content-Encoding: 'gzip'`,
-    )
-    const result = await webHelpers.uploadToCodecovPUT(
-      uploadURL,
+    UploadLogger.verbose(`Returned upload url: ${postResults.putURL}`)
+
+    const statusAndResultPair = await webHelpers.uploadToCodecovPUT(
+      postResults,
       gzippedFile,
       args,
     )
-    info(JSON.stringify(result))
-    return result
+    info(JSON.stringify(statusAndResultPair))
+    return {resultURL: statusAndResultPair.resultURL.href, status: statusAndResultPair.status }
   } catch (error) {
     throw new Error(`Error uploading to ${uploadHost}: ${error}`)
   }
