@@ -265,7 +265,7 @@ jobs:
       - run:
           name: Run Linux binary -f (dry run)
           command: |
-            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux,Bar,Bat,Beetle -d -Z -v -e CIRCLE_BRANCH >> output_linux.txt
+            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v -e CIRCLE_BRANCH >> output_linux.txt
       - run:
           name: Run Linux binary auto-detect (dry run)
           command: |
@@ -275,6 +275,7 @@ jobs:
           command: |
             out/codecov-linux -F linux -Z -e CIRCLE_BRANCH
             out/codecov-linux -F "-linux" -Z -e CIRCLE_BRANCH
+            out/codecov-linux -F "Managed,linux,EditMode,Undo" -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
