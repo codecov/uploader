@@ -150,6 +150,7 @@ export function generateRequestHeadersPOST(
   args: UploaderArgs,
 ): IRequestHeaders {
     if (args.upstream !== '') {
+      info(`Using ${args.upstream} as the proxy for the PUT command`)
       const proxyAgent = new HttpsProxyAgent(args.upstream)
       return {
         url: `${uploadURL}/upload/v4?package=${getPackage(
@@ -187,6 +188,7 @@ export function generateRequestHeadersPUT(
 ): IRequestHeaders {
 
     if (args.upstream !== '') {
+      info(`Using ${args.upstream} as the proxy for the PUT command`)
       const proxyAgent = new HttpsProxyAgent(args.upstream)
       return {
         url: uploadURL,
