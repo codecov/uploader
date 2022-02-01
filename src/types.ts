@@ -60,11 +60,21 @@ export interface IServiceParams {
 }
 
 export interface IRequestHeaders {
-  url: string;
+  url: URL;
   options: {
     method: string,
     agent?: Agent
     body?: string | Buffer,
     headers: Record<string, string>
   } 
+}
+
+export interface PostResults {
+  putURL: URL
+  resultURL: URL
+}
+
+export interface PutResults {
+  status: string
+  resultURL: URL
 }
