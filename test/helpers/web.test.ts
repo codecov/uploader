@@ -339,13 +339,23 @@ describe('generateRequestHeadersPOST()', () => {
   test('when args.upstream is set, returns a log line', () => {
     // Arrange
     const args: UploaderArgs = { ...createEmptyArgs() , upstream: "https://codecov.local:3131"}
-    const spyLog = jest.spyOn(console, "log")
 
     // Act
     void generateRequestHeadersPOST("https://unreachable.codecov.local", "not a token", "", "", args)
 
     // Assert
-    expect(spyLog).toHaveBeenCalledWith(expect.stringContaining(`Using ${args.upstream} as the proxy for the PUT command`))
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining(`Using https://codecov.local:3131 as the proxy for the POST command`))
+  })
+
+  test('when args.upstream is passed basic credentials, does not log the credentials, only the host', () => {
+    // Arrange
+    const args: UploaderArgs = { ...createEmptyArgs() , upstream: "https://testUser:testPassword@codecov.local:3131"}
+
+    // Act
+    void generateRequestHeadersPOST("https://unreachable.codecov.local", "not a token", "", "", args)
+
+    // Assert
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Using codecov.local:3131 as the proxy for the POST command'))
   })
 })
 
@@ -353,12 +363,23 @@ describe('generateRequestHeadersPUT()', () => {
   test('when args.upstream is set, returns a log line', () => {
     // Arrange
     const args: UploaderArgs = { ...createEmptyArgs() , upstream: "https://codecov.local:3131"}
-    const spyLog = jest.spyOn(console, "log")
 
     // Act
     void generateRequestHeadersPUT("https://unreachable.codecov.local", "I'm a coverage file", args)
 
     // Assert
-    expect(spyLog).toHaveBeenCalledWith(expect.stringContaining(`Using ${args.upstream} as the proxy for the PUT command`))
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Using https://codecov.local:3131 as the proxy for the PUT command'))
+  })
+
+  test('when args.upstream is passed basic credentials, does not log the credentials, only the host', () => {
+    // Arrange
+    const args: UploaderArgs = { ...createEmptyArgs() , upstream: "https://testUser:testPassword@codecov.local:3131"}
+
+    // Act
+    void generateRequestHeadersPUT("https://unreachable.codecov.local", "I'm a coverage file", args)
+
+    // Assert
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('Using https://codecov.local:3131 as the proxy for the PUT command'))
   })
 })
+

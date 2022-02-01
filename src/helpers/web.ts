@@ -52,17 +52,13 @@ export function getPackage(source: string): string {
 export async function uploadToCodecovPUT(
   uploadURL: string,
   uploadFile: string | Buffer,
-  args: UploaderArgs
+  args: UploaderArgs,
 ): Promise<{ status: string; resultURL: string }> {
   info('Uploading...')
 
   const { putURL, resultURL } = parsePOSTResults(uploadURL)
 
-  const requestHeaders = generateRequestHeadersPUT(
-    putURL,
-    uploadFile,
-    args,
-  )
+  const requestHeaders = generateRequestHeadersPUT(putURL, uploadFile, args)
   const response = await fetch(requestHeaders.url, requestHeaders.options)
 
   if (response.status !== 200) {
@@ -149,29 +145,23 @@ export function generateRequestHeadersPOST(
   source: string,
   args: UploaderArgs,
 ): IRequestHeaders {
-    if (args.upstream !== '') {
-      info(`Using ${args.upstream} as the proxy for the PUT command`)
-      const proxyAgent = new HttpsProxyAgent(args.upstream)
-      return {
-        url: `${uploadURL}/upload/v4?package=${getPackage(
-          source,
-        )}&token=${token}&${query}`,
-        options: {
-          agent: proxyAgent,
-          method: 'post',
-          headers: {
-            'X-Upload-Token': token,
-            'X-Reduced-Redundancy': 'false',
-          },
-        },
-      }
+  if (args.upstream !== '') {
+    let displayURL: string
+    if (args.upstream.includes('@')) {
+      displayURL = args.upstream.split('@')[1]
+    } else {
+      displayURL = args.upstream
     }
 
+    info(`Using ${displayURL} as the proxy for the POST command`)
+
+    const proxyAgent = new HttpsProxyAgent(args.upstream)
     return {
       url: `${uploadURL}/upload/v4?package=${getPackage(
         source,
       )}&token=${token}&${query}`,
       options: {
+        agent: proxyAgent,
         method: 'post',
         headers: {
           'X-Upload-Token': token,
@@ -179,6 +169,20 @@ export function generateRequestHeadersPOST(
         },
       },
     }
+  }
+
+  return {
+    url: `${uploadURL}/upload/v4?package=${getPackage(
+      source,
+    )}&token=${token}&${query}`,
+    options: {
+      method: 'post',
+      headers: {
+        'X-Upload-Token': token,
+        'X-Reduced-Redundancy': 'false',
+      },
+    },
+  }
 }
 
 export function generateRequestHeadersPUT(
@@ -186,33 +190,39 @@ export function generateRequestHeadersPUT(
   uploadFile: string | Buffer,
   args: UploaderArgs,
 ): IRequestHeaders {
-
-    if (args.upstream !== '') {
-      info(`Using ${args.upstream} as the proxy for the PUT command`)
-      const proxyAgent = new HttpsProxyAgent(args.upstream)
-      return {
-        url: uploadURL,
-        options: {
-          method: 'put',
-          agent: proxyAgent,
-          body: uploadFile,
-          headers: {
-            'Content-Type': 'text/plain',
-            'Content-Encoding': 'gzip',
-          },
-        },
-      }
+  if (args.upstream !== '') {
+    let displayURL: string
+    if (args.upstream.includes('@')) {
+      displayURL = args.upstream.split('@')[1]
+    } else {
+      displayURL = args.upstream
     }
+
+    info(`Using ${displayURL} as the proxy for the PUT command`)
+
+    const proxyAgent = new HttpsProxyAgent(args.upstream)
     return {
-      url: uploadURL, options: {
+      url: uploadURL,
+      options: {
         method: 'put',
+        agent: proxyAgent,
         body: uploadFile,
         headers: {
           'Content-Type': 'text/plain',
           'Content-Encoding': 'gzip',
         },
-      }
-
+      },
     }
-  
+  }
+  return {
+    url: uploadURL,
+    options: {
+      method: 'put',
+      body: uploadFile,
+      headers: {
+        'Content-Type': 'text/plain',
+        'Content-Encoding': 'gzip',
+      },
+    },
+  }
 }
