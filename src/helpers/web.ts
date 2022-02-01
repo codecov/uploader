@@ -13,7 +13,6 @@ import {
 import { info } from './logger'
 import * as validateHelpers from './validate'
 import { HttpsProxyAgent } from 'https-proxy-agent'
-import { URL } from 'url'
 
 /**
  *
@@ -78,14 +77,14 @@ export async function uploadToCodecovPUT(
 }
 
 export async function uploadToCodecovPOST(
-  uploadURL: string,
+  postURL: URL,
   token: string,
   query: string,
   source: string,
   args: UploaderArgs,
 ): Promise<string> {
   const requestHeaders = generateRequestHeadersPOST(
-    uploadURL,
+    postURL,
     token,
     query,
     source,
@@ -147,7 +146,7 @@ export function displayChangelog(): void {
 }
 
 export function generateRequestHeadersPOST(
-  uploadURL: string,
+  postURL: URL,
   token: string,
   query: string,
   source: string,
@@ -156,9 +155,9 @@ export function generateRequestHeadersPOST(
     if (args.upstream !== '') {
       const proxyAgent = new HttpsProxyAgent(args.upstream)
       return {
-        url: new URL(`${uploadURL}/upload/v4?package=${getPackage(
+        url: new URL(`/upload/v4?package=${getPackage(
           source,
-        )}&token=${token}&${query}`),
+        )}&token=${token}&${query}`, postURL),
         options: {
           agent: proxyAgent,
           method: 'post',
@@ -171,9 +170,9 @@ export function generateRequestHeadersPOST(
     }
 
     return {
-      url: new URL(`${uploadURL}/upload/v4?package=${getPackage(
+      url: new URL(`/upload/v4?package=${getPackage(
         source,
-      )}&token=${token}&${query}`),
+      )}&token=${token}&${query}`, postURL),
       options: {
         method: 'post',
         headers: {

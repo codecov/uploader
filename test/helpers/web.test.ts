@@ -46,7 +46,7 @@ describe('Web Helpers', () => {
       .reply(200, 'testPOSTHTTP')
 
     const response = await uploadToCodecovPOST(
-      uploadURL,
+      new URL(uploadURL),
       token,
       query,
       source,
@@ -73,7 +73,7 @@ describe('Web Helpers', () => {
       .reply(200, 'testPOSTHTTPS')
 
     const response = await uploadToCodecovPOST(
-      uploadURL,
+      new URL(uploadURL),
       token,
       query,
       source,
@@ -280,7 +280,7 @@ describe('generateRequestHeadersPOST()', () => {
   it('should return return the correct url when args.upstream is not set', () => {
     args.upstream = ''
     const requestHeaders = generateRequestHeadersPOST(
-      'https:localhost.local',
+      new URL('https://localhost.local'),
       '134',
       'slug=testOrg/testUploader',
       'G',
@@ -299,7 +299,7 @@ describe('generateRequestHeadersPOST()', () => {
   it('should return return the correct url when args.upstream is set', () => {
     args.upstream = 'http://proxy.local'
     const requestHeaders = generateRequestHeadersPOST(
-      'https:localhost.local',
+      new URL('https:localhost.local'),
       '134',
       'slug=testOrg/testUploader',
       'G',

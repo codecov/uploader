@@ -318,8 +318,10 @@ export async function main(
         X-Reduced-Redundancy: 'false'`
     )
 
+    const postURL = new URL(uploadHost)
+
     const putAndResultUrlPair = await webHelpers.uploadToCodecovPOST(
-      uploadHost,
+      postURL,
       token,
       query,
       args.source || '',
