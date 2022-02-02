@@ -275,7 +275,8 @@ jobs:
           command: |
             out/codecov-linux -F linux -Z -e CIRCLE_BRANCH
             out/codecov-linux -F "-linux" -Z -e CIRCLE_BRANCH
-            out/codecov-linux -F "Managed,linux,EditMode,Undo" -Z -e CIRCLE_BRANCH
+            out/codecov-linux -F 'Mac,trunk' -n Mac_trunk
+            out/codecov-linux -F "Mac,trunk" -n "Mac_trunk"
 
       - persist_to_workspace:
           root: .
