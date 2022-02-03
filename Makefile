@@ -21,6 +21,7 @@ build:
 	rm -rf dist
 	npm run build
 	npm run build-linux
+	npm run build-linuxstatic
 	npm run build-macos
 
 build_alpine:

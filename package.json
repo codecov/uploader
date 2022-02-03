@@ -13,6 +13,7 @@
     "build:clean": "rm -rf dist",
     "build": "tsc  --build",
     "build-linux": "pkg . --targets linux --output out/codecov-linux",
+    "build-linuxstatic": "pkg . --targets linuxstatic --output out/codecov-linuxstatic",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
     "build-windows": "pkg . --targets win --output out/codecov.exe",
