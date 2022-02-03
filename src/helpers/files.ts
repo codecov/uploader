@@ -6,7 +6,7 @@ import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
 import { logError, UploadLogger } from './logger'
 import { runExternalProgram } from './util'
-import micromatch from "micromatch";
+import micromatch from "../vendor/micromatch/index.js";
 
 export const MARKER_NETWORK_END = '\n<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
@@ -27,7 +27,7 @@ export async function getFileListing(
   return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
-function manualBlocklist(): string[] {
+export function manualBlocklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     '.DS_Store',
@@ -337,11 +337,7 @@ export function getBlocklist(): string[] {
 }
 
 export function filterFilesAgainstBlockList(paths: string[], ignoreGlobs: string[]): string[] {
-  const ignoredFiles = micromatch(paths, ignoreGlobs)
-
-  return paths.filter(path => {
-    return !ignoredFiles.includes(path)
-  })
+  return micromatch.not(paths, ignoreGlobs, {contains: true, windows: true})
 }
 
 export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): string[] {
