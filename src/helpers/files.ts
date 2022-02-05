@@ -134,7 +134,6 @@ function globBlocklist(): string[] {
     '*codecov.yml',
     '*~',
     '.*coveragerc',
-    '.coverage*',
     'codecov.SHA256SUM',
     'codecov.SHA256SUM.sig',
     'coverage-summary.json',
