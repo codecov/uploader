@@ -337,7 +337,7 @@ export function getBlocklist(): string[] {
 }
 
 export function filterFilesAgainstBlockList(paths: string[], ignoreGlobs: string[]): string[] {
-  return micromatch.not(paths, ignoreGlobs, {contains: true, windows: true})
+  return micromatch.not(paths, ignoreGlobs, {windows: true})
 }
 
 export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): string[] {
