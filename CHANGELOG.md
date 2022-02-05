@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.17](https://github.com/codecov/uploader/compare/v0.1.16...v0.1.17) (2022-02-05)
+
+### Bug Fixes
+
+- include coverage files ([be55721](https://github.com/codecov/uploader/commit/be557213955389bd9ec7d19e2ddae0f3ce4566ff))
+
 ### [0.1.16](https://github.com/codecov/uploader/compare/v0.1.15...v0.1.16) (2022-02-03)
 
 ### Features
