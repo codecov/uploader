@@ -22,6 +22,7 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
+import { generateGcovCoverageFiles } from './helpers/gcov'
 
 /**
  *
@@ -91,11 +92,12 @@ export async function main(
   /*
   Step 1: validate and sanitize inputs
   Step 2: detect if we are in a git repo
-  Step 3: get network (file listing)
-  Step 4: select coverage files (search or specify)
-  Step 5: generate upload file
-  Step 6: determine CI provider
-  Step 7: either upload or dry-run
+  Step 3: sanitize and set token
+  Step 4: get network (file listing)
+  Step 5: select coverage files (search or specify)
+  Step 6: generate upload file
+  Step 7: determine CI provider
+  Step 8: either upload or dry-run
   */
 
   // #region == Step 1: validate and sanitize inputs
@@ -153,6 +155,13 @@ export async function main(
   let requestedPaths: string[] = []
   
   // Look for files
+
+  if (args.gcov) {
+    UploadLogger.verbose('Running gcov...')
+    const gcovLogs = await generateGcovCoverageFiles(projectRoot)
+    UploadLogger.verbose(`${gcovLogs}`)
+  }
+  
   let coverageFilePaths: string[] = []
   if (args.file) {
     if (typeof args.file === 'string') {
@@ -298,7 +307,8 @@ export async function main(
   const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {
-    return dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    return
   }
 
   info(
@@ -317,28 +327,27 @@ export async function main(
         X-Reduced-Redundancy: 'false'`
     )
 
-    const uploadURL = await webHelpers.uploadToCodecov(
-      uploadHost,
+    const postURL = new URL(uploadHost)
+
+    const putAndResultUrlPair = await webHelpers.uploadToCodecovPOST(
+      postURL,
       token,
       query,
       args.source || '',
       args,
     )
 
-    UploadLogger.verbose(`Returned upload url: ${uploadURL}`)
+    const postResults = webHelpers.parsePOSTResults(putAndResultUrlPair)
 
-    UploadLogger.verbose(
-      `${uploadURL.split('\n')[1]}
-        Content-Type: 'text/plain'
-        Content-Encoding: 'gzip'`,
-    )
-    const result = await webHelpers.uploadToCodecovPUT(
-      uploadURL,
+    UploadLogger.verbose(`Returned upload url: ${postResults.putURL}`)
+
+    const statusAndResultPair = await webHelpers.uploadToCodecovPUT(
+      postResults,
       gzippedFile,
       args,
     )
-    info(JSON.stringify(result))
-    return result
+    info(JSON.stringify(statusAndResultPair))
+    return {resultURL: statusAndResultPair.resultURL.href, status: statusAndResultPair.status }
   } catch (error) {
     throw new Error(`Error uploading to ${uploadHost}: ${error}`)
   }

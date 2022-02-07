@@ -27,7 +27,7 @@ export async function getFileListing(
   return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
-function manualBlocklist(): string[] {
+export function manualBlocklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     '.DS_Store',
@@ -337,7 +337,7 @@ export function getBlocklist(): string[] {
 }
 
 export function filterFilesAgainstBlockList(paths: string[], ignoreGlobs: string[]): string[] {
-  return micromatch.not(paths, ignoreGlobs, {contains: true, windows: true})
+  return micromatch.not(paths, ignoreGlobs, {windows: true})
 }
 
 export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): string[] {

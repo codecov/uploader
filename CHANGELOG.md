@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.17](https://github.com/codecov/uploader/compare/v0.1.16...v0.1.17) (2022-02-05)
+
+### Bug Fixes
+
+- include coverage files ([be55721](https://github.com/codecov/uploader/commit/be557213955389bd9ec7d19e2ddae0f3ce4566ff))
+
+### [0.1.16](https://github.com/codecov/uploader/compare/v0.1.15...v0.1.16) (2022-02-03)
+
+### Features
+
+- add support for gcov ([3eb8ad5](https://github.com/codecov/uploader/commit/3eb8ad5312b7f7ff31daaaa1d722cb77df38a7c3))
+
+### Bug Fixes
+
+- add check+test for gcov installed ([23d7349](https://github.com/codecov/uploader/commit/23d7349f738846cc78083aadc5863a43b534cadf))
+- async/await tests ([4a9212c](https://github.com/codecov/uploader/commit/4a9212cde3e93ca5cdb57a12ab6c7c3d5530852e))
+- **deps:** declare @types/micromatch in `devDependencies` ([e1da7e8](https://github.com/codecov/uploader/commit/e1da7e80eff514724db5361e299ea225de70a9d0))
+- **deps:** update dependency fast-glob to v3.2.11 ([932af5f](https://github.com/codecov/uploader/commit/932af5f638f6b6183b3ff13896cb1237a7a891b0))
+- mock remaining call to gcov so ci tests pass ([0757d00](https://github.com/codecov/uploader/commit/0757d00bacf6a3a0bdd031ef12cdd355364dc35c))
+- use async/await on generateGcovCoverageFiles ([8e23806](https://github.com/codecov/uploader/commit/8e23806241cba01d2f817eb94f2ed9ac859f361f))
+
 ### [0.1.15](https://github.com/codecov/uploader/compare/v0.1.13...v0.1.15) (2022-01-18)
 
 ### Features

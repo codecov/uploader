@@ -72,7 +72,7 @@ describe('Uploader Core', () => {
     })
     expect(result).toEqual({
       status: 'success',
-      resultURL: 'https://results.codecov.io',
+      resultURL: 'https://results.codecov.io/',
     })
   }, 30000)
 
@@ -151,7 +151,7 @@ describe('Uploader Core', () => {
       })
       expect(result).toEqual({
         status: 'success',
-        resultURL: 'https://results.codecov.io',
+        resultURL: 'https://results.codecov.io/',
       })
     }, 30000)
   })
@@ -179,7 +179,7 @@ describe('Uploader Core', () => {
     })
     expect(result).toEqual({
       status: 'success',
-      resultURL: 'https://results.codecov.io',
+      resultURL: 'https://results.codecov.io/',
     })
   }, 30000)
 

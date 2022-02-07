@@ -26,6 +26,10 @@ export interface UploaderArgs {
   upstream: string // Upstream proxy to connect to
   source?: string // Track wrappers of the uploader
   changelog?: string // Displays the changelog and exits
+  gcov?: string // Run with gcov support
+  gcovIgnore?: string // Paths to ignore during gcov gathering
+  gcovInclude?: string // Paths to include during gcov gathering
+  gcovArgs?: string // Extra arguments to pass to gcov
 }
 
 export type UploaderEnvs = NodeJS.Dict<string>
@@ -60,11 +64,21 @@ export interface IServiceParams {
 }
 
 export interface IRequestHeaders {
-  url: string;
+  url: URL;
   options: {
     method: string,
     agent?: Agent
     body?: string | Buffer,
     headers: Record<string, string>
   } 
+}
+
+export interface PostResults {
+  putURL: URL
+  resultURL: URL
+}
+
+export interface PutResults {
+  status: string
+  resultURL: URL
 }

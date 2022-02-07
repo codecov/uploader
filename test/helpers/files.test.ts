@@ -320,6 +320,15 @@ describe('File Helpers', () => {
     it("ignores codecov configs by default", async () => {
       expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching(/^\.?codecov\.ya?ml/))
     })
+
+    it.each([
+      "coverage.info",
+      "coverage.opencover.xml",
+      "gap-coverage.json",
+    ])("includes %s", (file) => {
+      expect(fileHelpers.filterFilesAgainstBlockList([file], getBlocklist()))
+        .toContainEqual(expect.stringMatching(file))
+    })
   })
 
   it('can remove a file', () => {

@@ -10,10 +10,10 @@ import {
   getPackage,
   parsePOSTResults,
   populateBuildParams,
-  uploadToCodecov,
+  uploadToCodecovPOST,
   uploadToCodecovPUT,
 } from '../../src/helpers/web'
-import { IServiceParams, UploaderArgs } from '../../src/types'
+import { IServiceParams, PostResults, UploaderArgs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
 describe('Web Helpers', () => {
@@ -45,11 +45,17 @@ describe('Web Helpers', () => {
       .query(true)
       .reply(200, 'testPOSTHTTP')
 
-    const response = await uploadToCodecov(uploadURL, token, query, source, {
-      flags: '',
-      slug: '',
-      upstream: '',
-    })
+    const response = await uploadToCodecovPOST(
+      new URL(uploadURL),
+      token,
+      query,
+      source,
+      {
+        flags: '',
+        slug: '',
+        upstream: '',
+      },
+    )
     try {
       expect(response).toBe('testPOSTHTTP')
     } catch (error) {
@@ -66,24 +72,32 @@ describe('Web Helpers', () => {
       .query(true)
       .reply(200, 'testPOSTHTTPS')
 
-    const response = await uploadToCodecov(uploadURL, token, query, source, {
-      flags: '',
-      slug: '',
-      upstream: '',
-    })
+    const response = await uploadToCodecovPOST(
+      new URL(uploadURL),
+      token,
+      query,
+      source,
+      {
+        flags: '',
+        slug: '',
+        upstream: '',
+      },
+    )
     expect(response).toBe('testPOSTHTTPS')
   })
 
   it('Can PUT to the storage endpoint', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => void {})
-    uploadURL = `https://results.codecov.io
-    https://codecov.io`
-    const response = await uploadToCodecovPUT(uploadURL, uploadFile, {
+    const postResults: PostResults = {
+      putURL: new URL('https://codecov.io'),
+      resultURL: new URL('https://results.codecov.io'),
+    }
+    const response = await uploadToCodecovPUT(postResults, uploadFile, {
       flags: '',
       slug: '',
       upstream: '',
     })
-    expect(response.resultURL).toEqual('https://results.codecov.io')
+    expect(response.resultURL.href).toStrictEqual('https://results.codecov.io/')
   })
 
   it('Can generate query URL', () => {
@@ -234,7 +248,7 @@ describe('Web Helpers', () => {
     })
 
     it('will return an object when parsing correctly and input has multiple linebreaks', () => {
-      const testURL = `dummyURL
+      const testURL = `https://result.codecov.local
       
       
       
@@ -242,9 +256,12 @@ describe('Web Helpers', () => {
       
       
       
-      OtherURL`
-      const expectedResults = { putURL: 'OtherURL', resultURL: 'dummyURL' }
-      expect(parsePOSTResults(testURL)).toEqual(expectedResults)
+      https://put.codecov.local`
+      const expectedResults = {
+        putURL: 'https://put.codecov.local/',
+        resultURL: 'https://result.codecov.local/',
+      }
+      expect(JSON.stringify(parsePOSTResults(testURL))).toStrictEqual(JSON.stringify(expectedResults))
     })
   })
 })
@@ -263,15 +280,15 @@ describe('generateRequestHeadersPOST()', () => {
   it('should return return the correct url when args.upstream is not set', () => {
     args.upstream = ''
     const requestHeaders = generateRequestHeadersPOST(
-      'https:localhost.local',
+      new URL('https://localhost.local'),
       '134',
       'slug=testOrg/testUploader',
       'G',
       args,
     )
 
-    expect(requestHeaders.url).toEqual(
-      `https:localhost.local/upload/v4?package=${getPackage(
+    expect(requestHeaders.url.href).toEqual(
+      `https://localhost.local/upload/v4?package=${getPackage(
         'G',
       )}&token=134&slug=testOrg/testUploader`,
     )
@@ -282,15 +299,15 @@ describe('generateRequestHeadersPOST()', () => {
   it('should return return the correct url when args.upstream is set', () => {
     args.upstream = 'http://proxy.local'
     const requestHeaders = generateRequestHeadersPOST(
-      'https:localhost.local',
+      new URL('https:localhost.local'),
       '134',
       'slug=testOrg/testUploader',
       'G',
       args,
     )
 
-    expect(requestHeaders.url).toEqual(
-      `https:localhost.local/upload/v4?package=${getPackage(
+    expect(requestHeaders.url.href).toEqual(
+      `https://localhost.local/upload/v4?package=${getPackage(
         'G',
       )}&token=134&slug=testOrg/testUploader`,
     )
@@ -308,12 +325,12 @@ describe('generateRequestHeadersPUT()', () => {
   it('should return return the correct url when args.upstream is not set', () => {
     args.upstream = ''
     const requestHeaders = generateRequestHeadersPUT(
-      'https:localhost.local',
+      new URL('https://localhost.local'),
       "I'm a coverage report!",
       args,
     )
 
-    expect(requestHeaders.url).toEqual('https:localhost.local')
+    expect(requestHeaders.url.href).toEqual('https://localhost.local/')
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
     expect(typeof requestHeaders.options.agent).toEqual('undefined')
   })
@@ -321,12 +338,12 @@ describe('generateRequestHeadersPUT()', () => {
   it('should return return the correct url when args.upstream is set', () => {
     args.upstream = 'http://proxy.local'
     const requestHeaders = generateRequestHeadersPUT(
-      'https:localhost.local',
+      new URL('https://localhost.local'),
       "I'm a coverage report!",
       args,
     )
 
-    expect(requestHeaders.url).toEqual('https:localhost.local')
+    expect(requestHeaders.url.href).toEqual('https://localhost.local/')
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
     expect(requestHeaders.options.agent).toMatchObject(
       new HttpsProxyAgent(args.upstream),
