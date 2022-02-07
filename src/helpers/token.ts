@@ -3,7 +3,7 @@ import yaml from 'js-yaml'
 import path from 'path'
 import { UploaderArgs, UploaderInputs } from '../types'
 import { DEFAULT_UPLOAD_HOST } from './constansts'
-import { info, logError, verbose } from './logger'
+import { info, logError, UploadLogger } from './logger'
 import { validateToken } from './validate'
 
 /**
@@ -26,7 +26,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
       // If this is self-hosted (-u is set), do not validate
       // This is because self-hosted can use a global upload token
       if (args.url !== DEFAULT_UPLOAD_HOST) {
-        verbose('Self-hosted install detected due to -u flag')
+        UploadLogger.verbose('Self-hosted install detected due to -u flag')
         info(`->  Token set by ${source}`)
         return token
       }
@@ -104,10 +104,7 @@ export function getTokenFromYaml(
           }
         }
       } catch (err) {
-        verbose(
-          `Error searching for upload token in ${filePath}: ${err}`,
-          Boolean(args.verbose),
-        )
+        UploadLogger.verbose(`Error searching for upload token in ${filePath}: ${err}`)
       }
     }
   }

@@ -9,8 +9,7 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.CODEBUILD_BUILD_ID || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs): string {
+function _getBuildURL(): string {
   return ''
 }
 
@@ -54,11 +53,11 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
+  if (args.slug !== '') return args.slug
   return (
-    args.slug ||
     (envs.CODEBUILD_SOURCE_REPO_URL
       ? envs.CODEBUILD_SOURCE_REPO_URL.toString()
-          .replace(/^.*github.com\//, '')
+          .replace(/^.*github.com\//, '') // lgtm [js/incomplete-hostname-regexp] - We want this to match all subdomains.
           .replace(/\.git$/, '')
       : '')
   )
@@ -68,7 +67,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
     job: _getJob(inputs.environment),
     pr: _getPR(inputs),

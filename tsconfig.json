@@ -3,6 +3,7 @@
     "target": "ESnext",
     "module": "commonjs",
     "declaration": true,
+    "allowJs": true,
     "sourceMap": true,
     "outDir": "dist",
     "rootDir": "./",

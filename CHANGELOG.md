@@ -2,6 +2,112 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.17](https://github.com/codecov/uploader/compare/v0.1.16...v0.1.17) (2022-02-05)
+
+### Bug Fixes
+
+- include coverage files ([be55721](https://github.com/codecov/uploader/commit/be557213955389bd9ec7d19e2ddae0f3ce4566ff))
+
+### [0.1.16](https://github.com/codecov/uploader/compare/v0.1.15...v0.1.16) (2022-02-03)
+
+### Features
+
+- add support for gcov ([3eb8ad5](https://github.com/codecov/uploader/commit/3eb8ad5312b7f7ff31daaaa1d722cb77df38a7c3))
+
+### Bug Fixes
+
+- add check+test for gcov installed ([23d7349](https://github.com/codecov/uploader/commit/23d7349f738846cc78083aadc5863a43b534cadf))
+- async/await tests ([4a9212c](https://github.com/codecov/uploader/commit/4a9212cde3e93ca5cdb57a12ab6c7c3d5530852e))
+- **deps:** declare @types/micromatch in `devDependencies` ([e1da7e8](https://github.com/codecov/uploader/commit/e1da7e80eff514724db5361e299ea225de70a9d0))
+- **deps:** update dependency fast-glob to v3.2.11 ([932af5f](https://github.com/codecov/uploader/commit/932af5f638f6b6183b3ff13896cb1237a7a891b0))
+- mock remaining call to gcov so ci tests pass ([0757d00](https://github.com/codecov/uploader/commit/0757d00bacf6a3a0bdd031ef12cdd355364dc35c))
+- use async/await on generateGcovCoverageFiles ([8e23806](https://github.com/codecov/uploader/commit/8e23806241cba01d2f817eb94f2ed9ac859f361f))
+
+### [0.1.15](https://github.com/codecov/uploader/compare/v0.1.13...v0.1.15) (2022-01-18)
+
+### Features
+
+- add bullseye coverage file name to coverageFilePatterns ([3650e46](https://github.com/codecov/uploader/commit/3650e4671156d4136e7911017e377ccc851a9dcc))
+- add woodpecker provider ([074dd43](https://github.com/codecov/uploader/commit/074dd433592227b51020f3866c83703e64b7b6cb))
+
+### Bug Fixes
+
+- **deps:** update dependency fast-glob to v3.2.10 ([61f2ea2](https://github.com/codecov/uploader/commit/61f2ea2532284ed71180ff82dd6ea52edc02c0f4))
+- **deps:** update dependency node-fetch to v2.6.7 ([6a98237](https://github.com/codecov/uploader/commit/6a98237132a9608b4585986a6f29bbb23af81636))
+- **deps:** update dependency yargs to v17.3.0 ([3aafada](https://github.com/codecov/uploader/commit/3aafada0396b2bf4e1c8c7771c3f6911e4859a03))
+- **deps:** update dependency yargs to v17.3.1 ([d45261a](https://github.com/codecov/uploader/commit/d45261a8bf6ce49aae713a12f0e38ae20c29d8d4))
+- remove unnecessary validation ([66337ed](https://github.com/codecov/uploader/commit/66337ed102a9cb7dd96645982c121d5e1b69e4a6))
+
+### [0.1.14](https://github.com/codecov/uploader/compare/v0.1.13...v0.1.14) (2021-12-28)
+
+### Bug Fixes
+
+- **deps:** update dependency yargs to v17.3.0 ([3aafada](https://github.com/codecov/uploader/commit/3aafada0396b2bf4e1c8c7771c3f6911e4859a03))
+- **deps:** update dependency yargs to v17.3.1 ([d45261a](https://github.com/codecov/uploader/commit/d45261a8bf6ce49aae713a12f0e38ae20c29d8d4))
+
+### [0.1.13](https://github.com/codecov/uploader/compare/v0.1.12...v0.1.13) (2021-11-17)
+
+### Bug Fixes
+
+- always use blocklist ([3582439](https://github.com/codecov/uploader/commit/35824398650981d9b08ff7a2a9bd2124af6f7512)), closes [#504](https://github.com/codecov/uploader/issues/504)
+
+### [0.1.12](https://github.com/codecov/uploader/compare/v0.1.11...v0.1.12) (2021-11-09)
+
+### Features
+
+- add proxy support ([cf66308](https://github.com/codecov/uploader/commit/cf663088d2e6c6a6683fcbb7aa4a97d51ea643f0))
+
+### [0.1.11](https://github.com/codecov/uploader/compare/v0.1.10...v0.1.11) (2021-11-03)
+
+### [0.1.10](https://github.com/codecov/uploader/compare/v0.1.9...v0.1.10) (2021-11-02)
+
+### Bug Fixes
+
+- **deps:** update dependency validator to v13.7.0 ([afe657a](https://github.com/codecov/uploader/commit/afe657a97ad0d68db2a8d18ac166c182ca4cb2ef))
+
+### [0.1.9](https://github.com/codecov/uploader/compare/v0.1.8...v0.1.9) (2021-11-01)
+
+### Features
+
+- add herokuci provider ([fdabd2e](https://github.com/codecov/uploader/commit/fdabd2ee3fc94a0d03565017bf54e18010b9daf6))
+- add network filter ([3bbc222](https://github.com/codecov/uploader/commit/3bbc22247f76d6ea33e6061fad22857c222a2ac0))
+- add network prefix ([4d5ee16](https://github.com/codecov/uploader/commit/4d5ee16bc0d96bca7b477017ba664f602b80b11f))
+- ignore `*.egg-info` ([54060a8](https://github.com/codecov/uploader/commit/54060a86a52bbeb6763454f4284fe290cb8760ef))
+
+### Bug Fixes
+
+- enable `dot` ([549894c](https://github.com/codecov/uploader/commit/549894ce2a2a0f2a3b93f4e88861d419f7b2a0be))
+- use correct variable for args so verbose logs show ([e8455ef](https://github.com/codecov/uploader/commit/e8455ef3cf717eeedceb2c43221a29f64264b077))
+
+### [0.1.8](https://github.com/codecov/uploader/compare/v0.1.7...v0.1.8) (2021-10-21)
+
+### Features
+
+- ignore `*.egg-info` ([6f26dc4](https://github.com/codecov/uploader/commit/6f26dc4d6a41008ff42ec725b39b5864d47407f0))
+
+### Bug Fixes
+
+- use correct variable for args so verbose logs show ([de5f4ef](https://github.com/codecov/uploader/commit/de5f4ef1ba8993f7f4655b3928e9619887b5faca))
+
+### [0.1.7](https://github.com/codecov/uploader/compare/v0.1.5...v0.1.7) (2021-10-19)
+
+### Bug Fixes
+
+- add in remote addr logic ([7f56b9a](https://github.com/codecov/uploader/commit/7f56b9ab6ad1a2206215b85aaf6a6142a50f75c8))
+- **deps:** update dependency typescript to v4.4.4 ([968433a](https://github.com/codecov/uploader/commit/968433aa59ecbc306d1d720342d016cb23d76840))
+- prefer `token` over `slug` ([2a0c1bc](https://github.com/codecov/uploader/commit/2a0c1bc8aea0d49474196933d60c1892ddaab9a6))
+- remove unreachable return ([2fc983d](https://github.com/codecov/uploader/commit/2fc983dd985165c66b6e0aaf1f548bdaaf12f432))
+- update azure test ([f7d5fe1](https://github.com/codecov/uploader/commit/f7d5fe1cc6822940e0f226320318a843c6424108))
+
+### [0.1.6](https://github.com/codecov/uploader/compare/v0.1.5...v0.1.6) (2021-10-14)
+
+### Bug Fixes
+
+- add in remote addr logic ([7f56b9a](https://github.com/codecov/uploader/commit/7f56b9ab6ad1a2206215b85aaf6a6142a50f75c8))
+- **deps:** update dependency typescript to v4.4.4 ([968433a](https://github.com/codecov/uploader/commit/968433aa59ecbc306d1d720342d016cb23d76840))
+- prefer `token` over `slug` ([2a0c1bc](https://github.com/codecov/uploader/commit/2a0c1bc8aea0d49474196933d60c1892ddaab9a6))
+- update azure test ([f7d5fe1](https://github.com/codecov/uploader/commit/f7d5fe1cc6822940e0f226320318a843c6424108))
+
 ### [0.1.5](https://github.com/codecov/uploader/compare/v0.1.4...v0.1.5) (2021-10-06)
 
 ### [0.1.4](https://github.com/codecov/uploader/compare/v0.1.3...v0.1.4) (2021-10-05)

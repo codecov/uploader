@@ -1,3 +1,6 @@
+/**
+ * https://docs.drone.io/runner/exec/configuration/reference/
+ */
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -11,7 +14,7 @@ function _getBuild(inputs: UploaderInputs): string {
 
 function _getBuildURL(inputs: UploaderInputs): string {
   const { environment: envs } = inputs
-  return envs.DRONE_BUILD_URL || ''
+  return envs.DRONE_BUILD_LINK || envs.DRONE_BUILD_URL || envs.CI_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
@@ -19,8 +22,7 @@ function _getBranch(inputs: UploaderInputs): string {
   return args.branch || envs.DRONE_BRANCH || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getJob(envs: UploaderEnvs): string {
+function _getJob(): string {
   return ''
 }
 
@@ -44,7 +46,8 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || envs.DRONE_REPO || ''
+  if (args.slug !== '') return args.slug
+  return envs.DRONE_REPO || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
@@ -53,7 +56,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

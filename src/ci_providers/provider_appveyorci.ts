@@ -38,7 +38,7 @@ function _getJob(envs: UploaderEnvs) {
     envs.APPVEYOR_PROJECT_SLUG &&
     envs.APPVEYOR_BUILD_VERSION
   ) {
-    return `${envs.APPVEYOR_ACCOUNT_NAME}%2F${envs.APPVEYOR_PROJECT_SLUG}%2F${envs.APPVEYOR_BUILD_VERSION}`
+    return `${envs.APPVEYOR_ACCOUNT_NAME}/${envs.APPVEYOR_PROJECT_SLUG}/${envs.APPVEYOR_BUILD_VERSION}`
   }
   return ''
 }
@@ -52,18 +52,19 @@ function _getService() {
   return 'appveyor'
 }
 
-export function getServiceName() {
+export function getServiceName(): string {
   return 'Appveyor CI'
 }
 
 function _getSHA(inputs: UploaderInputs) {
   const { args, environment: envs } = inputs
-  return args.sha || envs.APPVEYOR_REPO_COMMIT || ''
+  return args.sha || envs.APPVEYOR_PULL_REQUEST_HEAD_COMMIT || envs.APPVEYOR_REPO_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs) {
   const { args, environment: envs } = inputs
-  return args.slug || envs.APPVEYOR_REPO_NAME || ''
+  if (args.slug !== '') return args.slug
+  return envs.APPVEYOR_REPO_NAME || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
@@ -87,6 +88,7 @@ export function getEnvVarNames(): string[] {
     'APPVEYOR_BUILD_VERSION',
     'APPVEYOR_JOB_ID',
     'APPVEYOR_PROJECT_SLUG',
+    'APPVEYOR_PULL_REQUEST_HEAD_COMMIT',
     'APPVEYOR_PULL_REQUEST_NUMBER',
     'APPVEYOR_REPO_BRANCH',
     'APPVEYOR_REPO_COMMIT',

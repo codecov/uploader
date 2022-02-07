@@ -1,3 +1,7 @@
+/**
+ * https://cirrus-ci.org/guide/writing-tasks/#environment-variables
+ */
+import { setSlug } from '../helpers/provider'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -9,8 +13,7 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.CIRRUS_BUILD_ID || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs): string {
+function _getBuildURL(): string {
   return ''
 }
 
@@ -43,14 +46,14 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || envs.CIRRUS_REPO_FULL_NAME || ''
+  return setSlug(args.slug, envs.CIRRUS_REPO_OWNER, envs.CIRRUS_REPO_NAME)
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
     job: _getJob(inputs.environment),
     pr: _getPR(inputs),

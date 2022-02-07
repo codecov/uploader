@@ -11,7 +11,7 @@ jobs:
   build-linux-and-osx:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.13.1
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -51,11 +51,12 @@ jobs:
             - out
             - coverage
             - package.json
+            - vendor
 
   build-alpine:
     docker:
       # specify the version you desire here
-      - image: alpine:3.14.2
+      - image: alpine:3.15.0
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -119,7 +120,7 @@ jobs:
   test-alpine:
     docker:
       # specify the version you desire here
-      - image: alpine:3.14.2
+      - image: alpine:3.15.0
     steps:
       - run:
           name: Install git
@@ -152,6 +153,78 @@ jobs:
             - coverage-alpine
             - output_alpine.txt
 
+  test-alpine-proxy:
+    docker:
+      # specify the version you desire here
+      - image: alpine:3.15.0
+    steps:
+      - run:
+          name: Install git
+          command: |
+            apk update
+            apk add git squid
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Start Squid
+          command: squid
+      - run:
+          name: Run Alpine binary auto-detect (dry run)
+          command: |
+            out/codecov-alpine -U http://localhost:3128 -F alpine-proxy -v -d -Z -e CIRCLE_BRANCH >> output_alpine_proxy.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -U http://localhost:3128 -F alpine-proxy -v -Z -e CIRCLE_BRANCH
+
+      - store_artifacts:
+          path: output_alpine_proxy.txt
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine_proxy.txt
+
+  test-alpine-without-git:
+    docker:
+      # specify the version you desire here
+      - image: alpine:3.15.0
+    steps:
+      - run:
+          name: Install git
+          command: |
+            apk update
+            apk add git
+      - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
+      - run:
+          name: Remove .git directory
+          command: rm -rf .git
+      - run:
+          name: Run Alpine binary -f (dry run)
+          command: |
+            NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine_without_git.txt
+      - run:
+          name: Run Alpine binary auto-detect (dry run)
+          command: |
+            out/codecov-alpine -F alpine-without-git -v -d -Z -e CIRCLE_BRANCH >> output_alpine_without_git.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -F alpine-without-git -v -Z -e CIRCLE_BRANCH
+
+      - store_artifacts:
+          path: output_alpine.txt
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine_without_git.txt
+
   build-windows:
     executor: win/default
     steps:
@@ -183,7 +256,7 @@ jobs:
   test-linux:
     docker:
       # specify the version you desire here
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.13.1
     steps:
       - checkout
       - attach_workspace:
@@ -210,7 +283,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.13.1
     steps:
       - checkout
       - attach_workspace:
@@ -339,7 +412,7 @@ jobs:
 
   review:
     docker:
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.13.1
     steps:
       - attach_workspace:
           at: .
@@ -356,6 +429,10 @@ jobs:
       - store_artifacts:
           path: output_alpine.txt
       - store_artifacts:
+          path: output_alpine_proxy.txt
+      - store_artifacts:
+          path: output_alpine_without_git.txt
+      - store_artifacts:
           path: output_linux_without_git.txt
       - store_artifacts:
           path: output_osx.txt
@@ -370,17 +447,10 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:16.10.0
+      - image: circleci/node:16.13.1
     steps:
       - attach_workspace:
           at: .
-      - run:
-          name: Install GHR
-          command: >
-            wget
-            https://github.com/tcnksm/ghr/releases/download/v0.5.4/ghr_v0.5.4_linux_amd64.zip
-
-            unzip ghr_v0.5.4_linux_amd64.zip
       - run:
           name: Make binaries executable
           command: |
@@ -395,7 +465,7 @@ jobs:
 
             echo $RELEASE_TAG > release_tag
 
-            ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
+            vendor/ghr -u codecov -r uploader $RELEASE_TAG out
 
       - persist_to_workspace:
           root: .
@@ -403,7 +473,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:359.0.0-slim
+      - image: google/cloud-sdk:371.0.0-slim
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
@@ -422,6 +492,9 @@ jobs:
     machine: true
     steps:
       - checkout
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: .
       - run:
           name: Clone Autotest and Start Acceptance Testing Containers
           command: |
@@ -444,6 +517,8 @@ workflows:
           context:
             - 'DockerHub Push Context'
             - 'Github Checkout'
+          requires:
+            - build-alpine
       - build-linux-and-osx
       - build-alpine:
           requires:
@@ -451,6 +526,12 @@ workflows:
       - test-alpine:
           requires:
             - build-alpine
+      - test-alpine-proxy:
+          requires:
+            - build-alpine
+      - test-alpine-without-git:
+          requires:
+            - test-alpine
       - build-windows:
           requires:
             - build-linux-and-osx
@@ -474,7 +555,8 @@ workflows:
             - test-windows
       - review:
           requires:
-            - test-alpine
+            - test-alpine-proxy
+            - test-alpine-without-git
             - test-linux-without-git
             - test-macos-without-git
             - test-windows-without-git

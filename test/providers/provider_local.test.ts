@@ -3,6 +3,7 @@ import childProcess from 'child_process'
 
 import * as providerLocal from '../../src/ci_providers//provider_local'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Local Params', () => {
   afterEach(() => {
@@ -15,32 +16,12 @@ describe('Local Params', () => {
       td.when(spawnSync('git')).thenReturn({
         error: 'Git is not installed!',
       })
-      const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          url: '',
-          source: '',
-          flags: '',
-        },
-        environment: {
-          CI: 'true',
-        },
-      }
-      const detected = providerLocal.detect(inputs.environment)
+      const detected = providerLocal.detect()
       expect(detected).toBeFalsy()
     })
 
     it('does run with git installed', () => {
-      const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          url: '',
-          source: '',
-          flags: '',
-        },
-        environment: {},
-      }
-      const detected = providerLocal.detect(inputs.environment)
+      const detected = providerLocal.detect()
       expect(detected).toBeTruthy()
     })
   })
@@ -48,14 +29,13 @@ describe('Local Params', () => {
   it('returns on override args', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'main',
-        pr: '1',
-        sha: 'testingsha',
-        slug: 'owner/repo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'main',
+          pr: '1',
+          sha: 'testingsha',
+          slug: 'owner/repo',
+        },
       },
       environment: {},
     }
@@ -75,12 +55,7 @@ describe('Local Params', () => {
 
   it('returns errors on git command failures', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
@@ -107,12 +82,7 @@ describe('Local Params', () => {
 
   describe('getSlug()', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {},
     }
 

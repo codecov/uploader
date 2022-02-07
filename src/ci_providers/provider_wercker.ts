@@ -1,3 +1,4 @@
+import { setSlug } from '../helpers/provider'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -20,8 +21,7 @@ function _getBranch(inputs: UploaderInputs): string {
   return args.branch || envs.WERCKER_GIT_BRANCH || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getJob(envs: UploaderEnvs): string {
+function _getJob(): string {
   return ''
 }
 
@@ -45,7 +45,7 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || `${envs.WERCKER_GIT_OWNER}/${envs.WERCKER_GIT_REPOSITORY}`
+  return setSlug(args.slug, envs.WERCKER_GIT_OWNER, envs.WERCKER_GIT_REPOSITORY)
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
@@ -54,7 +54,7 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

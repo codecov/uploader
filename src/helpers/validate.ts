@@ -1,5 +1,4 @@
 import validator from 'validator'
-import { UploaderArgs } from '../types'
 
 /**
  *
@@ -21,11 +20,6 @@ export function validateFlags(flags: string): boolean {
   return mask.test(flags)
 }
 
-export function validateFileNamePath(path: string): boolean {
-  const mask = /^[\w/.,-]+$/
-  return mask.test(path)
-}
-
 /**
  * Validate that a SHA is the correct length and content
  * @param {string} commitSHA
@@ -41,16 +35,4 @@ export function validateSHA(
   return (
     commitSHA.length === requestedLength && validator.isAlphanumeric(commitSHA)
   )
-}
-
-export function checkValueType(
-  name: string,
-  value: unknown,
-  type: string,
-): void {
-  if (typeof value !== type) {
-    throw new Error(
-      `The value of ${name} is not of type ${type}, can not continue, please review: ${value}`,
-    )
-  }
 }

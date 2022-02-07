@@ -101,12 +101,15 @@ const args: ICLIArgument[] = [
     alias: 'd',
     name: 'dryRun',
     type: 'boolean',
+    default: false,
     description: "Don't upload files to Codecov",
   },
   {
     alias: 'r',
     name: 'slug',
-    description: 'Specify the slug manually (Enterprise use)',
+    type: 'string',
+    default: '',
+    description: 'Specify the slug manually',
   },
   {
     alias: 'u',
@@ -123,11 +126,31 @@ const args: ICLIArgument[] = [
     description: 'Move discovered coverage reports to the trash',
   },
   {
+    alias: 'i',
+    name: 'networkFiler',
+    type: 'string',
+    description: 'Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing',
+  },
+  {
+    alias: 'k',
+    name: 'networkPrefix',
+    type: 'string',
+    description: 'Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing',
+  },
+  {
     alias: 'X',
     name: 'feature',
     type: 'string',
-    description: `Toggle functionalities
-      -X network       Disable uploading the file network`,
+    description: `Toggle functionalities. Separate multiple ones by comma: -X network,search
+      -X network       Disable uploading the file network
+      -X search        Disable searching for coverage files`,
+  },
+  {
+    alias: 'U',
+    name: 'upstream',
+    type: 'string',
+    default: '',
+    description: 'The upstream http proxy server to connect through',
   },
   {
     alias: 'Q',
@@ -136,6 +159,31 @@ const args: ICLIArgument[] = [
     default: '',
     description: `Used internally by Codecov, this argument helps track wrappers
       of the uploader (e.g. GitHub Action, CircleCI Orb)`,
+  },
+  {
+    alias: 'g',
+    name: 'gcov',
+    type: 'boolean',
+    default: false,
+    description: 'Run with gcov support',
+  },
+  {
+    alias: 'gi',
+    name: 'gcovIgnore',
+    type: 'string',
+    description: 'Paths to ignore during gcov gathering',
+  },
+  {
+    alias: 'gI',
+    name: 'gcovInclude',
+    type: 'string',
+    description: 'Paths to include during gcov gathering',
+  },
+  {
+    alias: 'ga',
+    name: 'gcovArgs',
+    type: 'string',
+    description: 'Extra arguments to pass to gcov',
   },
 ]
 

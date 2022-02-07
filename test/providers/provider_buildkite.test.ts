@@ -1,6 +1,7 @@
 import td from 'testdouble'
 import * as providerBuildkite from '../../src/ci_providers/provider_buildkite'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Buildkite Params', () => {
   afterEach(() => {
@@ -9,17 +10,17 @@ describe('Buildkite Params', () => {
 
   describe('detect()', () => {
     it('does not run without Buildkite env variable', () => {
-      const inputs = {
-        args: {},
-        envs: {},
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
+        environment: {},
       }
-      const detected = providerBuildkite.detect(inputs.envs)
+      const detected = providerBuildkite.detect(inputs.environment)
       expect(detected).toBeFalsy()
     })
 
     it('does not run without Buildkite env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
+        args: { ...createEmptyArgs() },
         environment: {
           BUILDKITE: 'true',
         },
@@ -31,17 +32,13 @@ describe('Buildkite Params', () => {
 
   it('gets correct params on push', () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
+      args: { ...createEmptyArgs() },
       environment: {
         BUILDKITE: 'true',
         BUILDKITE_BUILD_NUMBER: '1',
         BUILDKITE_JOB_ID: '3',
-        BUILDKITE_PROJECT_SLUG: 'testRepo',
+        BUILDKITE_ORGANIZATION_SLUG: 'testOrg',
+        BUILDKITE_PIPELINE_SLUG: 'testRepo',
         BUILDKITE_BRANCH: 'main',
         BUILDKITE_COMMIT: 'testingsha',
         BUILDKITE_BUILD_URL: 'https://buildkite.com/testOrg/testRepo',
@@ -56,7 +53,7 @@ describe('Buildkite Params', () => {
       job: '3',
       pr: '',
       service: 'buildkite',
-      slug: 'testRepo',
+      slug: 'testOrg/testRepo',
     }
     const params = providerBuildkite.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -65,15 +62,14 @@ describe('Buildkite Params', () => {
   it('gets correct params for overrides', () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
       environment: {
         BUILDKITE: 'true',

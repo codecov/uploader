@@ -2,16 +2,17 @@ import { UploaderArgs, UploaderInputs } from './types'
 
 import zlib from 'zlib'
 import { version } from '../package.json'
-import * as validateHelpers from './helpers/validate'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, verbose } from './helpers/logger'
+import { info, logError, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
+  cleanCoverageFilePaths,
   coverageFilePatterns,
   fetchGitRoot,
-  fileExists,
   fileHeader,
+  filterFilesAgainstBlockList,
+  getBlocklist,
   getCoverageFiles,
   getFileListing,
   getFilePath,
@@ -21,6 +22,7 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
+import { generateGcovCoverageFiles } from './helpers/gcov'
 
 /**
  *
@@ -57,6 +59,8 @@ function dryRun(
  * @param {string} args.file Target file(s) to upload
  * @param {string} args.flags Flag the upload to group coverage metrics
  * @param {string} args.name Custom defined name of the upload. Visible in Codecov UI
+ * @param {string} args.networkFilter Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing
+ * @param {string} args.networkPrefix Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing
  * @param {string} args.parent The commit SHA of the parent for which you are uploading coverage.
  * @param {string} args.pr Specify the pull request number mannually
  * @param {string} args.token Codecov upload token
@@ -65,7 +69,7 @@ function dryRun(
  * @param {string} args.rootDir Specify the project root directory when not in a git repo
  * @param {boolean} args.nonZero Should errors exit with a non-zero (default: false)
  * @param {boolean} args.dryRun Don't upload files to Codecov
- * @param {string} args.slug Specify the slug manually (Enterprise use)
+ * @param {string} args.slug Specify the slug manually
  * @param {string} args.url Change the upload host (Enterprise use)
  * @param {boolean} args.clean Move discovered coverage reports to the trash
  * @param {string} args.feature Toggle features
@@ -74,6 +78,10 @@ function dryRun(
 export async function main(
   args: UploaderArgs,
 ): Promise<void | Record<string, unknown>> {
+
+  if (args.verbose) {
+    UploadLogger.setLogLevel('verbose')
+  }
 
   // Did user asking for changelog?
   if (args.changelog) {
@@ -84,21 +92,22 @@ export async function main(
   /*
   Step 1: validate and sanitize inputs
   Step 2: detect if we are in a git repo
-  Step 3: get network (file listing)
-  Step 4: select coverage files (search or specify)
-  Step 5: generate upload file
-  Step 6: determine CI provider
-  Step 7: either upload or dry-run
+  Step 3: sanitize and set token
+  Step 4: get network (file listing)
+  Step 5: select coverage files (search or specify)
+  Step 6: generate upload file
+  Step 7: determine CI provider
+  Step 8: either upload or dry-run
   */
 
-  // == Step 1: validate and sanitize inputs
+  // #region == Step 1: validate and sanitize inputs
   // TODO: clean and sanitize envs and args
   const envs = process.env
   // args
   const inputs: UploaderInputs = { args, environment: envs }
 
   let uploadHost: string
-  if (args.url && validateHelpers.validateURL(args.url)) {
+  if (args.url) {
     uploadHost = args.url
   } else {
     uploadHost = 'https://codecov.io'
@@ -106,7 +115,8 @@ export async function main(
 
   info(generateHeader(getVersion()))
 
-  // == Step 2: detect if we are in a git repo
+  // #endregion
+  // #region == Step 2: detect if we are in a git repo
   const projectRoot = args.rootDir || fetchGitRoot()
   if (projectRoot === '') {
     info(
@@ -116,17 +126,19 @@ export async function main(
 
   info(`=> Project root located at: ${projectRoot}`)
 
-  // == Step 3: sanitize and set token
+  // #endregion
+  // #region == Step 3: sanitize and set token
   const token = await getToken(inputs, projectRoot)
   if (token === '') {
     info('-> No token specified or token is empty')
   }
 
-  // == Step 4: get network
+  // #endregion
+  // #region == Step 4: get network
   let uploadFile = ''
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
-    verbose('Start of network processing...', Boolean(args.verbose))
+    UploadLogger.verbose('Start of network processing...')
     let fileListing = ''
     try {
       fileListing = await getFileListing(projectRoot, args)
@@ -137,40 +149,83 @@ export async function main(
     uploadFile = uploadFile.concat(fileListing).concat(MARKER_NETWORK_END)
   }
 
-  // == Step 5: select coverage files (search or specify)
+  // #endregion
+  // #region == Step 5: select coverage files (search or specify)
 
+  let requestedPaths: string[] = []
+  
   // Look for files
+
+  if (args.gcov) {
+    UploadLogger.verbose('Running gcov...')
+    const gcovLogs = await generateGcovCoverageFiles(projectRoot)
+    UploadLogger.verbose(`${gcovLogs}`)
+  }
+  
   let coverageFilePaths: string[] = []
-  info('Searching for coverage files...')
   if (args.file) {
     if (typeof args.file === 'string') {
-      coverageFilePaths = [args.file]
+      requestedPaths = [args.file]
     } else {
-      coverageFilePaths = args.file
+      requestedPaths = args.file
     }
   }
-  const isNegated = (path: string) => path.startsWith('!')
-  coverageFilePaths = coverageFilePaths.concat(await getCoverageFiles(
-    args.dir || projectRoot,
-    (() => {
-      const numOfNegatedPaths = coverageFilePaths.filter(isNegated).length
-      
-      if (coverageFilePaths.length > numOfNegatedPaths) {
-        return coverageFilePaths
-      } else {
-        return coverageFilePaths.concat(coverageFilePatterns())
-      }
-    })(),
-  ))
 
-  // Remove invalid and duplicate file paths
-  coverageFilePaths = [... new Set(coverageFilePaths.filter(file => {
-    return fileExists(args.dir || projectRoot, file)
-  }))]
+  coverageFilePaths = requestedPaths
+
+  if (!args.feature || args.feature.split(',').includes('search') === false) {
+    info('Searching for coverage files...')
+    const isNegated = (path: string) => path.startsWith('!')
+    coverageFilePaths = coverageFilePaths.concat(await getCoverageFiles(
+      args.dir || projectRoot,
+      (() => {
+        const numOfNegatedPaths = coverageFilePaths.filter(isNegated).length
+
+        if (coverageFilePaths.length > numOfNegatedPaths) {
+          return coverageFilePaths
+        } else {
+          return coverageFilePaths.concat(coverageFilePatterns())
+        }
+      })(),
+    ))
+
+    // Generate what the file listing would be after the blocklist is applied
+
+    let coverageFilePathsAfterFilter = coverageFilePaths
+
+    if (coverageFilePaths.length > 0) { 
+      coverageFilePathsAfterFilter = filterFilesAgainstBlockList(coverageFilePaths, getBlocklist())
+    } 
+
+
+
+
+    // If args.file was passed, emit warning for 'filtered' filess
+
+    if (requestedPaths.length > 0) {
+      if (coverageFilePathsAfterFilter.length !== requestedPaths.length) {
+        info('Warning: Some files passed via the -f flag would normally be excluded from search.')
+        info('If Codecov encounters issues processing your reports, please review https://docs.codecov.com/docs/supported-report-formats')
+      }
+    } else {
+      // Overwrite coverageFilePaths with coverageFilePathsAfterFilter
+      info('Warning: Some files located via search were excluded from upload.')
+      info('If Codecov did not locate your files, please review https://docs.codecov.com/docs/supported-report-formats')
+
+      coverageFilePaths = coverageFilePathsAfterFilter
+    }
+
+  }
+
+  let coverageFilePathsThatExist: string[] = []
 
   if (coverageFilePaths.length > 0) {
-    info(`=> Found ${coverageFilePaths.length} possible coverage files:\n  ` +
-        coverageFilePaths.join('\n  '))
+    coverageFilePathsThatExist = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths)
+  }
+
+  if (coverageFilePathsThatExist.length > 0) {
+    info(`=> Found ${coverageFilePathsThatExist.length} possible coverage files:\n  ` +
+    coverageFilePathsThatExist.join('\n  '))
   } else {
     const noFilesError = args.file ?
       'No coverage files found, exiting.' :
@@ -178,13 +233,14 @@ export async function main(
     throw new Error(noFilesError)
   }
 
-  verbose('End of network processing', Boolean(args.verbose))
-  // == Step 6: generate upload file
+  UploadLogger.verbose('End of network processing')
+  // #endregion
+  // #region == Step 6: generate upload file
   // TODO: capture envs
 
   // Get coverage report contents
   let coverageFileAdded = false
-  for (const coverageFile of coverageFilePaths) {
+  for (const coverageFile of coverageFilePathsThatExist) {
     let fileContents
     try {
       info(`Processing ${getFilePath(args.dir || projectRoot, coverageFile)}...`),
@@ -209,7 +265,7 @@ export async function main(
 
   // Cleanup
   if (args.clean) {
-    for (const coverageFile of coverageFilePaths) {
+    for (const coverageFile of coverageFilePathsThatExist) {
       removeFile(args.dir || projectRoot, coverageFile)
     }
   }
@@ -227,18 +283,32 @@ export async function main(
 
   const gzippedFile = zlib.gzipSync(uploadFile)
 
-  // == Step 7: determine CI provider
+  // #endregion
+  // #region == Step 7: determine CI provider
 
-const serviceParams = detectProvider(inputs)
+  const hasToken = token !== ''
 
-  // == Step 8: either upload or dry-run
+  const serviceParams = detectProvider(inputs, hasToken)
 
-  const query = webHelpers.generateQuery(
-    webHelpers.populateBuildParams(inputs, serviceParams),
-  )
+  // #endregion
+  // #region == Step 8: either upload or dry-run
+
+  const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
+
+  UploadLogger.verbose('Using the following upload parameters:')
+  for (const parameter in buildParams) {
+    UploadLogger.verbose(`${parameter}`)
+  }
+
+  if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
+    logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
+  }
+  
+  const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {
-    return dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    return
   }
 
   info(
@@ -246,43 +316,42 @@ const serviceParams = detectProvider(inputs)
       args.source || '',
     )}&token=*******&${query}`,
   )
-  verbose(
-    `Passed token was ${token.length} characters long`,
-    Boolean(args.verbose),
-  )
+  UploadLogger.verbose(`Passed token was ${token.length} characters long`)
   try {
-    verbose(
+    UploadLogger.verbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
         args.source || '',
       )}&${query}
         Content-Type: 'text/plain'
         Content-Encoding: 'gzip'
-        X-Reduced-Redundancy: 'false'`,
-      Boolean(args.verbose),
+        X-Reduced-Redundancy: 'false'`
     )
 
-    const uploadURL = await webHelpers.uploadToCodecov(
-      uploadHost,
+    const postURL = new URL(uploadHost)
+
+    const putAndResultUrlPair = await webHelpers.uploadToCodecovPOST(
+      postURL,
       token,
       query,
-      gzippedFile,
       args.source || '',
+      args,
     )
 
-    verbose(`Returned upload url: ${uploadURL}`, Boolean(args.verbose))
+    const postResults = webHelpers.parsePOSTResults(putAndResultUrlPair)
 
-    verbose(
-      `${uploadURL.split('\n')[1]}
-        Content-Type: 'text/plain'
-        Content-Encoding: 'gzip'`,
-      Boolean(args.verbose),
+    UploadLogger.verbose(`Returned upload url: ${postResults.putURL}`)
+
+    const statusAndResultPair = await webHelpers.uploadToCodecovPUT(
+      postResults,
+      gzippedFile,
+      args,
     )
-    const result = await webHelpers.uploadToCodecovPUT(uploadURL, gzippedFile)
-    info(JSON.stringify(result))
-    return result
+    info(JSON.stringify(statusAndResultPair))
+    return {resultURL: statusAndResultPair.resultURL.href, status: statusAndResultPair.status }
   } catch (error) {
     throw new Error(`Error uploading to ${uploadHost}: ${error}`)
   }
+  // #endregion
 }
 
 /**

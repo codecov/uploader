@@ -1,0 +1,11 @@
+codecov:
+  notify:
+    after_n_builds: 9
+    wait_for_ci: yes
+
+comment:
+  layout: 'diff, flags, files'
+
+ignore:
+  - 'src/ci_providers/provider_template.js'
+  - 'test/**/*'

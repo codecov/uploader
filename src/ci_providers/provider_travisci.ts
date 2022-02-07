@@ -9,8 +9,7 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.TRAVIS_JOB_NUMBER || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs): string {
+function _getBuildURL(): string {
   return ''
 }
 
@@ -48,14 +47,15 @@ function _getSHA(inputs: UploaderInputs): string {
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.slug || envs.TRAVIS_REPO_SLUG || ''
+  if (args.slug !== '') return args.slug
+  return envs.TRAVIS_REPO_SLUG || ''
 }
 
 export function getServiceParams(inputs: UploaderInputs): IServiceParams {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
     job: _getJob(inputs.environment),
     pr: _getPR(inputs),

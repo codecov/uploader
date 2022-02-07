@@ -1,10 +1,18 @@
 import { snakeCase } from 'snake-case'
-import superagent from 'superagent'
+import fetch from 'node-fetch'
 
 import { version } from '../../package.json'
-import { IServiceParams, UploaderArgs, UploaderInputs } from '../types'
-import { info, logError, verbose } from './logger'
+import {
+  IRequestHeaders,
+  IServiceParams,
+  PostResults,
+  PutResults,
+  UploaderArgs,
+  UploaderInputs,
+} from '../types'
+import { info } from './logger'
 import * as validateHelpers from './validate'
+import { HttpsProxyAgent } from 'https-proxy-agent'
 
 /**
  *
@@ -25,7 +33,7 @@ export function populateBuildParams(
   if (typeof args.flags === 'object') {
     flags = [...args.flags]
   } else {
-    flags = (args.flags || '').split(',')
+    flags = String(args.flags || '').split(',')
   }
   serviceParams.flags = flags
     .filter(flag => validateHelpers.validateFlags(flag))
@@ -43,64 +51,55 @@ export function getPackage(source: string): string {
   }
 }
 
+
 export async function uploadToCodecovPUT(
-  uploadURL: string,
+  putAndResultUrlPair: PostResults, 
   uploadFile: string | Buffer,
-): Promise<{ status: string; resultURL: string }> {
+  args: UploaderArgs
+): Promise<PutResults> {
   info('Uploading...')
 
-  const { putURL, resultURL } = parsePOSTResults(uploadURL)
+  const requestHeaders = generateRequestHeadersPUT(
+    putAndResultUrlPair.putURL,
+    uploadFile,
+    args,
+  )
+  const response = await fetch(requestHeaders.url, requestHeaders.options)
 
-  try {
-    const result = await superagent
-      .put(`${putURL}`)
-      .retry()
-      .send(uploadFile)
-      .set('Content-Type', 'text/plain')
-      .set('Content-Encoding', 'gzip')
-
-    if (result.status === 200) {
-      return { status: 'success', resultURL }
-    }
-    throw new Error(`${result.status}, ${result.body}`)
-  } catch (error) {
-    throw new Error(`Error PUTing file to storage: ${error}`)
+  if (response.status !== 200) {
+    const data = await response.text()
+    throw new Error(
+      `There was an error fetching the storage URL during PUT: ${response.status} - ${response.statusText} - ${data}`,
+    )
   }
+
+  return { status: 'success', resultURL: putAndResultUrlPair.resultURL }
 }
 
-interface SuperAgentResponse extends superagent.Response {
-  res?: {
-    text: string
-  }
-}
-
-export async function uploadToCodecov(
-  uploadURL: string,
+export async function uploadToCodecovPOST(
+  postURL: URL,
   token: string,
   query: string,
-  uploadFile: string | Buffer,
   source: string,
+  args: UploaderArgs,
 ): Promise<string> {
-  const result: SuperAgentResponse = await superagent
-    .post(
-      `${uploadURL}/upload/v4?package=${getPackage(
-        source,
-      )}&token=${token}&${query}`,
-    )
-    .retry()
-    .set('X-Upload-Token', token)
-    .set('X-Reduced-Redundancy', 'false')
-    .on('error', err => {
-      logError(
-        `Error POSTing to ${uploadURL}: ${err.status} ${err.response?.text}`,
-      )
-    })
-    .ok(res => res.status === 200)
+  const requestHeaders = generateRequestHeadersPOST(
+    postURL,
+    token,
+    query,
+    source,
+    args,
+  )
+  const response = await fetch(requestHeaders.url, requestHeaders.options)
 
-  if (result.res) {
-    return result.res.text
+  if (response.status !== 200) {
+    const data = await response.text()
+    throw new Error(
+      `There was an error fetching the storage URL during POST: ${response.status} - ${response.statusText} - ${data}`,
+    )
   }
-  throw new Error(`There was an error fetching the storage URL during POST`)
+
+  return await response.text()
 }
 
 /**
@@ -109,30 +108,34 @@ export async function uploadToCodecov(
  * @returns {string}
  */
 export function generateQuery(queryParams: Partial<IServiceParams>): string {
-  return new URLSearchParams(Object.entries(queryParams)
-    .map(([key, value]) => [snakeCase(key), value])
+  return new URLSearchParams(
+    Object.entries(queryParams).map(([key, value]) => [snakeCase(key), value]),
   ).toString()
 }
 
-export function parsePOSTResults(uploadURL: string): {
-  putURL: string
-  resultURL: string
-} {
+
+
+export function parsePOSTResults(putAndResultUrlPair: string): PostResults {
+  info(putAndResultUrlPair)
+
   // JS for [[:graph:]] https://www.regular-expressions.info/posixbrackets.html
   const re = /([\x21-\x7E]+)[\r\n]?/gm
 
-  const matches = uploadURL.match(re)
+  const matches = putAndResultUrlPair.match(re)
 
   if (matches === null) {
-    throw new Error(`Parsing results from POST failed: (${uploadURL})`)
+    throw new Error(`Parsing results from POST failed: (${putAndResultUrlPair})`)
   }
 
   if (matches?.length !== 2) {
-    throw new Error(`Incorrect number of urls when parsing results from POST: ${matches.length}`)
+    throw new Error(
+      `Incorrect number of urls when parsing results from POST: ${matches.length}`,
+    )
   }
 
-  const putURL = matches[1]
-  const resultURL = matches[0].trimEnd() // This match may have trailing 0x0A and 0x0D that must be trimmed
+  const resultURL = new URL(matches[0].trimEnd())
+  const putURL = new URL(matches[1])
+   // This match may have trailing 0x0A and 0x0D that must be trimmed
 
   return { putURL, resultURL }
 }
@@ -140,4 +143,77 @@ export function parsePOSTResults(uploadURL: string): {
 export function displayChangelog(): void {
   info(`The change log for this version (v${version}) can be found at`)
   info(`https://github.com/codecov/uploader/blob/v${version}/CHANGELOG.md`)
+}
+
+export function generateRequestHeadersPOST(
+  postURL: URL,
+  token: string,
+  query: string,
+  source: string,
+  args: UploaderArgs,
+): IRequestHeaders {
+    if (args.upstream !== '') {
+      const proxyAgent = new HttpsProxyAgent(args.upstream)
+      return {
+        url: new URL(`/upload/v4?package=${getPackage(
+          source,
+        )}&token=${token}&${query}`, postURL),
+        options: {
+          agent: proxyAgent,
+          method: 'post',
+          headers: {
+            'X-Upload-Token': token,
+            'X-Reduced-Redundancy': 'false',
+          },
+        },
+      }
+    }
+
+    return {
+      url: new URL(`/upload/v4?package=${getPackage(
+        source,
+      )}&token=${token}&${query}`, postURL),
+      options: {
+        method: 'post',
+        headers: {
+          'X-Upload-Token': token,
+          'X-Reduced-Redundancy': 'false',
+        },
+      },
+    }
+}
+
+export function generateRequestHeadersPUT(
+  uploadURL: URL,
+  uploadFile: string | Buffer,
+  args: UploaderArgs,
+): IRequestHeaders {
+
+    if (args.upstream !== '') {
+      const proxyAgent = new HttpsProxyAgent(args.upstream)
+      return {
+        url: uploadURL,
+        options: {
+          method: 'put',
+          agent: proxyAgent,
+          body: uploadFile,
+          headers: {
+            'Content-Type': 'text/plain',
+            'Content-Encoding': 'gzip',
+          },
+        },
+      }
+    }
+    return {
+      url: uploadURL, options: {
+        method: 'put',
+        body: uploadFile,
+        headers: {
+          'Content-Type': 'text/plain',
+          'Content-Encoding': 'gzip',
+        },
+      }
+
+    }
+  
 }
