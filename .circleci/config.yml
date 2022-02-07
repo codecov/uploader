@@ -85,7 +85,7 @@ jobs:
           name: Confirm that alpine node binary is static
           command: |
             apk add file
-            file node
+            (file node | grep 'static') || exit ${?}
 
       - run:
           name: Create pkg-cache directory and copy static NodeJS binary
@@ -262,6 +262,10 @@ jobs:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
           at: .
+      - run:
+          name: Confirm that linux uploader binary is static
+          command: |
+            (file out/codecov-linux | grep 'static') || exit ${?}
       - run:
           name: Run Linux binary -f (dry run)
           command: |
