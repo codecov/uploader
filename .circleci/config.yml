@@ -504,6 +504,7 @@ jobs:
           command: |
             cd ..
             git clone --depth 5 git@github.com:codecov/autotest.git > /dev/null 2>&1
+            echo "Successfully cloned"
             cd autotest/
             echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
             docker-compose -f docker-compose-acceptance.yml up -d > /dev/null 2>&1
