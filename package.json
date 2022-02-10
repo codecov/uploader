@@ -50,7 +50,7 @@
     "@types/js-yaml": "4.0.5",
     "@types/micromatch": "4.0.2",
     "@types/mock-fs": "4.13.1",
-    "@types/node": "16.11.22",
+    "@types/node": "16.11.24",
     "@types/node-fetch": "2.5.12",
     "@types/validator": "13.7.1",
     "@types/yargs": "17.0.8",

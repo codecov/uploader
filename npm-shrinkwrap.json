@@ -29,7 +29,7 @@
         "@types/js-yaml": "4.0.5",
         "@types/micromatch": "4.0.2",
         "@types/mock-fs": "4.13.1",
-        "@types/node": "16.11.22",
+        "@types/node": "16.11.24",
         "@types/node-fetch": "2.5.12",
         "@types/validator": "13.7.1",
         "@types/yargs": "17.0.8",
@@ -1512,9 +1512,9 @@
       }
     },
     "node_modules/@types/node": {
-      "version": "16.11.22",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.22.tgz",
-      "integrity": "sha512-DYNtJWauMQ9RNpesl4aVothr97/tIJM8HbyOXJ0AYT1Z2bEjLHyfjOBPAQQVMLf8h3kSShYfNk8Wnto8B2zHUA==",
+      "version": "16.11.24",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.24.tgz",
+      "integrity": "sha512-Ezv33Rl4mIi6YdSHfIRNBd4Q9kUe5okiaw/ikvJiJDmuQZNW5kfdg7+oQPF8NO6sTcr3woIpj3jANzTXdvEZXA==",
       "dev": true
     },
     "node_modules/@types/node-fetch": {
@@ -10127,9 +10127,9 @@
       }
     },
     "@types/node": {
-      "version": "16.11.22",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.22.tgz",
-      "integrity": "sha512-DYNtJWauMQ9RNpesl4aVothr97/tIJM8HbyOXJ0AYT1Z2bEjLHyfjOBPAQQVMLf8h3kSShYfNk8Wnto8B2zHUA==",
+      "version": "16.11.24",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.24.tgz",
+      "integrity": "sha512-Ezv33Rl4mIi6YdSHfIRNBd4Q9kUe5okiaw/ikvJiJDmuQZNW5kfdg7+oQPF8NO6sTcr3woIpj3jANzTXdvEZXA==",
       "dev": true
     },
     "@types/node-fetch": {
