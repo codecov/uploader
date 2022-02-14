@@ -41,6 +41,8 @@ jobs:
       # run tests!
       - run: make build
 
+      - store_test_results
+
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
           # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
@@ -64,7 +66,7 @@ jobs:
       # - image: circleci/mongo:3.4.4
 
     working_directory: ~/repo
-
+    parallelism: 3
     steps:
       - checkout
       - attach_workspace:
@@ -106,6 +108,8 @@ jobs:
       - run:
           name: Build uploader binary on alpine
           command: make build_alpine
+
+      - store_test_results
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
