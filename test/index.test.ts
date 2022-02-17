@@ -296,6 +296,28 @@ describe('Uploader Core', () => {
     )
   })
 
+  it('will process blocked files, if passed via -f and search is disabled', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
+    await app.main({
+      dryRun: 'true',
+      file: [
+        'test/fixtures/.coverage',
+      ],
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      flags: '',
+      slug: '',
+      upstream: '',
+      feature: 'search'
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/fixtures\/\.coverage\.\.\./),
+    )
+  })
+
   it('will not process blocked files if not passed via -f', async () => {
     const log = jest.spyOn(console, 'log').mockImplementation(() => {
       // intentionally empty
