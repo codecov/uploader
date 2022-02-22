@@ -17,9 +17,10 @@ function _getBuildURL(): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args } = inputs
-  if (args.branch) {
-    return args.branch
+  const { args, environment: envs } = inputs
+  const branch = args.branch || envs.GIT_BRANCH || envs.BRANCH_NAME || ''
+  if (branch !== '' && branch !== undefined) {
+    return branch
   }
   try {
     const branchName = runExternalProgram('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
@@ -51,9 +52,10 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs) {
-  const { args } = inputs
-  if (args.sha) {
-    return args.sha
+  const { args, environment: envs } = inputs
+  const sha = args.sha || envs.GIT_COMMIT || ''
+  if (sha !== '' && sha !== undefined) {
+    return sha
   }
   try {
     const sha = runExternalProgram('git', ['rev-parse', 'HEAD'])
@@ -90,5 +92,10 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
 }
 
 export function getEnvVarNames(): string[] {
-  return ['CI']
+  return [
+    'BRANCH_NAME',
+    'CI',
+    'GIT_BRANCH',
+    'GIT_COMMIT',
+  ]
 }

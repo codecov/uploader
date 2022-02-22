@@ -53,6 +53,34 @@ describe('Local Params', () => {
     expect(params).toMatchObject(expected)
   })
 
+  it('returns on override args + env vars', () => {
+    const inputs: UploaderInputs = {
+      args: {
+        ...createEmptyArgs(),
+        ...{
+          pr: '1',
+          slug: 'owner/repo',
+        },
+      },
+      environment: {
+        GIT_COMMIT: 'testingsha',
+        GIT_BRANCH: 'main'
+      },
+    }
+    const expected: IServiceParams = {
+      branch: 'main',
+      build: '',
+      buildURL: '',
+      commit: 'testingsha',
+      job: '',
+      pr: '1',
+      service: '',
+      slug: 'owner/repo',
+    }
+    const params = providerLocal.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
   it('returns errors on git command failures', () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
