@@ -19,7 +19,7 @@ function _getBuildURL(): string {
 function _getBranch(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
   const branch = args.branch || envs.GIT_BRANCH || envs.BRANCH_NAME || ''
-  if (branch !== '' && branch !== undefined) {
+  if (branch !== '') {
     return branch
   }
   try {
@@ -54,7 +54,7 @@ export function getServiceName(): string {
 function _getSHA(inputs: UploaderInputs) {
   const { args, environment: envs } = inputs
   const sha = args.sha || envs.GIT_COMMIT || ''
-  if (sha !== '' && sha !== undefined) {
+  if (sha !== '') {
     return sha
   }
   try {
