@@ -187,7 +187,7 @@ describe('Azure Pipelines CI Params', () => {
     }
     const execFileSync = td.replace(childProcess, 'execFileSync')
     td.when(
-      execFileSync('git', ['show', '--no-patch', '--format="%P"']),
+      execFileSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn(
       'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
     )
