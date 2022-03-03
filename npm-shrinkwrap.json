@@ -32,11 +32,11 @@
         "@types/node": "16.11.26",
         "@types/node-fetch": "2.6.1",
         "@types/validator": "13.7.1",
-        "@types/yargs": "17.0.8",
+        "@types/yargs": "17.0.9",
         "@typescript-eslint/eslint-plugin": "5.13.0",
         "@typescript-eslint/parser": "5.13.0",
         "eslint": "8.10.0",
-        "eslint-config-prettier": "8.4.0",
+        "eslint-config-prettier": "8.5.0",
         "husky": "7.0.4",
         "jest": "27.5.1",
         "jest-spec-reporter": "1.0.17",
@@ -1559,9 +1559,9 @@
       "dev": true
     },
     "node_modules/@types/yargs": {
-      "version": "17.0.8",
-      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.8.tgz",
-      "integrity": "sha512-wDeUwiUmem9FzsyysEwRukaEdDNcwbROvQ9QGRKaLI6t+IltNzbn4/i4asmB10auvZGQCzSQ6t0GSczEThlUXw==",
+      "version": "17.0.9",
+      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.9.tgz",
+      "integrity": "sha512-Ci8+4/DOtkHRylcisKmVMtmVO5g7weUVCKcsu1sJvF1bn0wExTmbHmhFKj7AnEm0de800iovGhdSKzYnzbaHpg==",
       "dev": true,
       "dependencies": {
         "@types/yargs-parser": "*"
@@ -3552,9 +3552,9 @@
       }
     },
     "node_modules/eslint-config-prettier": {
-      "version": "8.4.0",
-      "resolved": "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-8.4.0.tgz",
-      "integrity": "sha512-CFotdUcMY18nGRo5KGsnNxpznzhkopOcOo0InID+sgQssPrzjvsyKZPvOgymTFeHrFuC3Tzdf2YndhXtULK9Iw==",
+      "version": "8.5.0",
+      "resolved": "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-8.5.0.tgz",
+      "integrity": "sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==",
       "dev": true,
       "bin": {
         "eslint-config-prettier": "bin/cli.js"
@@ -10175,9 +10175,9 @@
       "dev": true
     },
     "@types/yargs": {
-      "version": "17.0.8",
-      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.8.tgz",
-      "integrity": "sha512-wDeUwiUmem9FzsyysEwRukaEdDNcwbROvQ9QGRKaLI6t+IltNzbn4/i4asmB10auvZGQCzSQ6t0GSczEThlUXw==",
+      "version": "17.0.9",
+      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.9.tgz",
+      "integrity": "sha512-Ci8+4/DOtkHRylcisKmVMtmVO5g7weUVCKcsu1sJvF1bn0wExTmbHmhFKj7AnEm0de800iovGhdSKzYnzbaHpg==",
       "dev": true,
       "requires": {
         "@types/yargs-parser": "*"
@@ -11676,9 +11676,9 @@
       }
     },
     "eslint-config-prettier": {
-      "version": "8.4.0",
-      "resolved": "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-8.4.0.tgz",
-      "integrity": "sha512-CFotdUcMY18nGRo5KGsnNxpznzhkopOcOo0InID+sgQssPrzjvsyKZPvOgymTFeHrFuC3Tzdf2YndhXtULK9Iw==",
+      "version": "8.5.0",
+      "resolved": "https://registry.npmjs.org/eslint-config-prettier/-/eslint-config-prettier-8.5.0.tgz",
+      "integrity": "sha512-obmWKLUNCnhtQRKc+tmnYuQl0pFU1ibYJQ5BGhTVB08bHe9wC8qUeG7c08dj9XX+AuPj1YSGSQIHl1pnDHZR0Q==",
       "dev": true,
       "requires": {}
     },
