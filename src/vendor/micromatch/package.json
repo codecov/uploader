@@ -40,13 +40,6 @@
     "braces": "^3.0.1",
     "picomatch": "^2.2.3"
   },
-  "devDependencies": {
-    "fill-range": "^7.0.1",
-    "gulp-format-md": "^2.0.0",
-    "minimatch": "^3.0.4",
-    "mocha": "^9.1.2",
-    "time-require": "github:jonschlinkert/time-require"
-  },
   "keywords": [
     "bash",
     "bracket",
