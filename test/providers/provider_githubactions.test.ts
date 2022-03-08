@@ -92,7 +92,7 @@ describe('GitHub Actions Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn({
       stdout: 'testingsha',
     })
@@ -127,7 +127,7 @@ describe('GitHub Actions Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn({
       stdout:
         'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
@@ -166,7 +166,7 @@ describe('GitHub Actions Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn({ stdout: 'testsha' })
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -199,7 +199,7 @@ describe('GitHub Actions Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn({ stdout: '' })
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
