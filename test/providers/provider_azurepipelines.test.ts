@@ -140,7 +140,6 @@ describe('Azure Pipelines CI Params', () => {
       environment: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
-        BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
         BUILD_SOURCEVERSION: 'testingsha',
         SYSTEM_BUILD_BUILDID: '1',
