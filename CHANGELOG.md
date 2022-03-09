@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.18](https://github.com/codecov/uploader/compare/v0.1.17...v0.1.18) (2022-03-09)
+
+### Bug Fixes
+
+- Add missing mock-calls to AzP provider tests ([26e3476](https://github.com/codecov/uploader/commit/26e3476ed21719ac71932d0d6b6d2c8d2812894e))
+- AzP provider test (get remote slug) ([f36c3ac](https://github.com/codecov/uploader/commit/f36c3ac0fd307c9c812a03ad32b84d0a43ef0031))
+- **build:** add linuxstatic target and build output ([2307529](https://github.com/codecov/uploader/commit/23075294e5902ff56037a59916cccefa0a28b1a1))
+- **build:** check for static linux binary in circle ([30d6420](https://github.com/codecov/uploader/commit/30d64204bc1450527af88b9d8856991ad2a6666c))
+- Detection of merge commits on Github Actions and AzP ([e3b4177](https://github.com/codecov/uploader/commit/e3b4177b594b0fc850437f205cd927c047fc9127))
+- provider_local accepts envvars ([6d7c934](https://github.com/codecov/uploader/commit/6d7c934fce5e336a075b36281ded264f297e0f1a))
+- src/vendor/micromatch/package.json to reduce vulnerabilities ([60fc3c1](https://github.com/codecov/uploader/commit/60fc3c1ca2d3cd58cb4ea8b7963f5866080c44e1))
+
 ### [0.1.17](https://github.com/codecov/uploader/compare/v0.1.16...v0.1.17) (2022-02-05)
 
 ### Bug Fixes
