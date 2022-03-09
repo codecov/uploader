@@ -73,7 +73,7 @@ function _getSHA(inputs: UploaderInputs): string {
   let commit = envs.GITHUB_SHA
   if (pr) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
-    const mergeCommitMessage = runExternalProgram('git', ['show', '--no-patch', '--format="%P"'])
+    const mergeCommitMessage = runExternalProgram('git', ['show', '--no-patch', '--format=%P'])
     UploadLogger.verbose(`Handling PR with parent hash(es) '${mergeCommitMessage}' of current commit.`)
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
