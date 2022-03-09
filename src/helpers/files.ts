@@ -347,6 +347,7 @@ export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): st
   }))]
 
   if (coverageFilePaths.length === 0) {
+    logError(`None of the following appear to exist as files: ${paths.toString()}`)
     throw new Error('Error while cleaning paths. No paths matched existing files!')  
   }
 
