@@ -18,3 +18,11 @@ export function runExternalProgram(
 export function isSetAndNotEmpty(val: string | undefined): boolean {
   return typeof val !== 'undefined' && val !== ''
 }
+
+export function argAsArray<T>(args?: T | T[]): T[] {
+  const result: T[] = []
+  if (typeof args === "undefined") {
+    return result
+  }
+  return result.concat(args)
+}

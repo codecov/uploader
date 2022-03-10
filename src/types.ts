@@ -27,9 +27,9 @@ export interface UploaderArgs {
   source?: string // Track wrappers of the uploader
   changelog?: string // Displays the changelog and exits
   gcov?: string // Run with gcov support
-  gcovIgnore?: string // Paths to ignore during gcov gathering
-  gcovInclude?: string // Paths to include during gcov gathering
-  gcovArgs?: string // Extra arguments to pass to gcov
+  gcovIgnore?:  string | string[] // Paths to ignore during gcov gathering
+  gcovInclude?:  string | string[] // Paths to include during gcov gathering
+  gcovArgs?:  string | string[] // Extra arguments to pass to gcov
 }
 
 export type UploaderEnvs = NodeJS.Dict<string>
