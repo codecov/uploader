@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.19](https://github.com/codecov/uploader/compare/v0.1.18...v0.1.19) (2022-03-10)
+
+### Bug Fixes
+
+- add helper arg array method, pass in extra gcov args ([57459e3](https://github.com/codecov/uploader/commit/57459e3b98ea9855da67f7d3c9ac6cd2a8e1c398))
+
 ### [0.1.18](https://github.com/codecov/uploader/compare/v0.1.17...v0.1.18) (2022-03-09)
 
 ### Bug Fixes
