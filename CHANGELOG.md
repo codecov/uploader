@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.20](https://github.com/codecov/uploader/compare/v0.1.18...v0.1.20) (2022-03-21)
+
+### Features
+
+- add bitrise provider ([f02e1cf](https://github.com/codecov/uploader/commit/f02e1cf307bf076b01b323f4e01c4a3d7b006c53))
+
+### Bug Fixes
+
+- add helper arg array method, pass in extra gcov args ([57459e3](https://github.com/codecov/uploader/commit/57459e3b98ea9855da67f7d3c9ac6cd2a8e1c398))
+
 ### [0.1.19](https://github.com/codecov/uploader/compare/v0.1.18...v0.1.19) (2022-03-10)
 
 ### Bug Fixes
