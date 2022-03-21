@@ -3,6 +3,7 @@ import { IProvider } from '../types'
 import * as providerAppveyorci from './provider_appveyorci'
 import * as providerAzurepipelines from './provider_azurepipelines'
 import * as providerBitbucket from './provider_bitbucket'
+import * as providerBitrise from './provider_bitrise'
 import * as providerBuildkite from './provider_buildkite'
 import * as providerCircleci from './provider_circleci'
 import * as providerCirrus from './provider_cirrus'
@@ -23,6 +24,7 @@ const providerList: IProvider[] = [
   providerAppveyorci,
   providerAzurepipelines,
   providerBitbucket,
+  providerBitrise,
   providerBuildkite,
   providerCircleci,
   providerCirrus,
