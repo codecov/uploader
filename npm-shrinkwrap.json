@@ -1,12 +1,12 @@
 {
   "name": "@codecov/uploader",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "@codecov/uploader",
-      "version": "0.1.19",
+      "version": "0.1.20",
       "license": "ISC",
       "dependencies": {
         "fast-glob": "3.2.11",
