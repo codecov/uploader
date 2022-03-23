@@ -10,72 +10,85 @@ const args: ICLIArgument[] = [
   {
     alias: 'CL',
     name: 'changelog',
+    type: 'boolean',
     description: 'Display a link for the current changelog'
   },
   {
     alias: 'b',
     name: 'build',
+    type: 'string',
     description: 'Specify the build number manually',
   },
   {
     alias: 'B',
     name: 'branch',
+    type: 'string',
     description: 'Specify the branch manually',
   },
   {
     alias: 'e',
     name: 'env',
+    type: 'string',
     description:
       'Specify environment variables to be included with this build.\nAlso accepting environment variables: CODECOV_ENV=VAR,VAR2',
   },
   {
     alias: 'C',
     name: 'sha',
+    type: 'string',
     description: 'Specify the commit SHA mannually',
   },
   {
     alias: 'f',
     name: 'file',
+    type: 'string',
     description: 'Target file(s) to upload',
   },
   {
     alias: 'F',
     name: 'flags',
+    type: 'string',
     default: '',
     description: 'Flag the upload to group coverage metrics',
   },
   {
     alias: 'n',
     name: 'name',
+    type: 'string',
     default: '',
     description: 'Custom defined name of the upload. Visible in Codecov UI',
   },
   {
     alias: 'N',
     name: 'parent',
+    type: 'string',
     description:
       "The commit SHA of the parent for which you are uploading coverage. If not present, the parent will be determined using the API of your repository provider. When using the repository provider's API, the parent is determined via finding the closest ancestor to the commit.",
   },
   {
     alias: 'P',
     name: 'pr',
+    type: 'string',
     description: 'Specify the pull request number mannually',
   },
   {
     alias: 's',
     name: 'dir',
+    type: 'string',
     description:
       'Directory to search for coverage reports.\nAlready searches project root and current working directory',
   },
   {
     alias: 't',
     name: 'token',
+    type: 'string',
     default: '',
     description: 'Codecov upload token',
   },
   {
     alias: 'T',
     name: 'tag',
+    type: 'string',
     default: '',
     description: 'Specify the git tag',
   },
@@ -88,6 +101,7 @@ const args: ICLIArgument[] = [
   {
     alias: 'R',
     name: 'rootDir',
+    type: 'string',
     description: 'Specify the project root directory when not in a git repo',
   },
   {
