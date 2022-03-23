@@ -12,6 +12,7 @@ describe('CLI Helper', () => {
       alias: 'b',
       description: 'Specify the build number manually',
       name: 'build',
+      type: 'string',
     })
   })
 })
