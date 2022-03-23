@@ -1,6 +1,7 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    "docker:pinDigests"
   ],
   "reviewers": [
     "codecov/open-source"
@@ -9,8 +10,7 @@
     {
       "matchDepTypes": ["devDependencies"],
       "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "devDependencies (non-major)",
-      "pinDigests": "true"
+      "groupName": "devDependencies (non-major)"
     }
-    ]
+  ]
 }
