@@ -56,7 +56,7 @@ jobs:
   build-alpine:
     docker:
       # specify the version you desire here
-      - image: alpine:3.15.1
+      - image: alpine:3.15.2
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -120,7 +120,7 @@ jobs:
   test-alpine:
     docker:
       # specify the version you desire here
-      - image: alpine:3.15.1
+      - image: alpine:3.15.2
     steps:
       - run:
           name: Install git
@@ -156,7 +156,7 @@ jobs:
   test-alpine-proxy:
     docker:
       # specify the version you desire here
-      - image: alpine:3.15.1
+      - image: alpine:3.15.2
     steps:
       - run:
           name: Install git
@@ -190,7 +190,7 @@ jobs:
   test-alpine-without-git:
     docker:
       # specify the version you desire here
-      - image: alpine:3.15.1
+      - image: alpine:3.15.2
     steps:
       - run:
           name: Install git
