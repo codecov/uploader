@@ -1,7 +1,7 @@
 export interface ICLIArgument {
   name: string
   alias: string
-  type?: string
+  type: string
   default?: string | boolean
   description: string
 }
