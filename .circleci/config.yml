@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  win: circleci/windows@2.4.1
+  win: circleci/windows@3.0.0
 
 jobs:
   build-linux-and-osx:
@@ -56,7 +56,7 @@ jobs:
   build-alpine:
     docker:
       # specify the version you desire here
-      - image: alpine:3.15.0
+      - image: alpine:3.15.2
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -120,7 +120,7 @@ jobs:
   test-alpine:
     docker:
       # specify the version you desire here
-      - image: alpine:3.15.0
+      - image: alpine:3.15.2
     steps:
       - run:
           name: Install git
@@ -156,7 +156,7 @@ jobs:
   test-alpine-proxy:
     docker:
       # specify the version you desire here
-      - image: alpine:3.15.0
+      - image: alpine:3.15.2
     steps:
       - run:
           name: Install git
@@ -190,7 +190,7 @@ jobs:
   test-alpine-without-git:
     docker:
       # specify the version you desire here
-      - image: alpine:3.15.0
+      - image: alpine:3.15.2
     steps:
       - run:
           name: Install git
@@ -226,7 +226,7 @@ jobs:
             - output_alpine_without_git.txt
 
   build-windows:
-    executor: win/default
+    executor: win/windows
     steps:
       - checkout
       - attach_workspace:
@@ -360,7 +360,7 @@ jobs:
             - output_osx_without_git.txt
 
   test-windows:
-    executor: win/default
+    executor: win/windows
     steps:
       - checkout
       - attach_workspace:
@@ -389,7 +389,7 @@ jobs:
             - output_win.txt
 
   test-windows-without-git:
-    executor: win/default
+    executor: win/windows
     steps:
       - checkout
       - run:
@@ -477,7 +477,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:376.0.0-slim
+      - image: google/cloud-sdk:378.0.0-slim
     steps:
       - attach_workspace:
           # Must be absolute path or relative path from working_directory
