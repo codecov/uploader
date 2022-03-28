@@ -12,5 +12,8 @@
       "matchUpdateTypes": ["patch", "minor"],
       "groupName": "devDependencies (non-major)"
     }
-  ]
+  ],
+  "circleci" : {
+    "pinDigests": true
+  }
 }
