@@ -5,7 +5,7 @@
 version: 2.1
 
 orbs:
-  win: circleci/windows@3.0.0
+  win: circleci/windows@4.0.0
 
 jobs:
   build-linux-and-osx:
@@ -226,7 +226,7 @@ jobs:
             - output_alpine_without_git.txt
 
   build-windows:
-    executor: win/windows
+    executor: win/default
     steps:
       - checkout
       - attach_workspace:
@@ -360,7 +360,7 @@ jobs:
             - output_osx_without_git.txt
 
   test-windows:
-    executor: win/windows
+    executor: win/default
     steps:
       - checkout
       - attach_workspace:
@@ -389,7 +389,7 @@ jobs:
             - output_win.txt
 
   test-windows-without-git:
-    executor: win/windows
+    executor: win/default
     steps:
       - checkout
       - run:
