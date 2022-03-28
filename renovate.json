@@ -1,7 +1,8 @@
 {
   "extends": [
     "config:base",
-    "docker:pinDigests"
+    "docker:pinDigests",
+    "helpers:pinGitHubActionDigests"
   ],
   "reviewers": [
     "codecov/open-source"
