@@ -23,6 +23,7 @@ import {
   removeFile,
 } from './helpers/files'
 import { generateGcovCoverageFiles } from './helpers/gcov'
+import { argAsArray } from './helpers/util'
 
 /**
  *
@@ -158,18 +159,15 @@ export async function main(
 
   if (args.gcov) {
     UploadLogger.verbose('Running gcov...')
-    const gcovLogs = await generateGcovCoverageFiles(projectRoot)
+    const gcovInclude: string[] = argAsArray(args.gcovInclude)
+    const gcovIgnore: string[] = argAsArray(args.gcovIgnore)
+    const gcovArgs: string[] = argAsArray(args.gcovArgs)
+    const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs)
     UploadLogger.verbose(`${gcovLogs}`)
   }
   
   let coverageFilePaths: string[] = []
-  if (args.file) {
-    if (typeof args.file === 'string') {
-      requestedPaths = [args.file]
-    } else {
-      requestedPaths = args.file
-    }
-  }
+  requestedPaths = argAsArray(args.file)
 
   coverageFilePaths = requestedPaths
 
