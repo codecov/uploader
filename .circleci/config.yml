@@ -389,7 +389,7 @@ jobs:
             - output_win.txt
 
   test-windows-without-git:
-    executor: win/windows
+    executor: win/default
     steps:
       - checkout
       - run:
