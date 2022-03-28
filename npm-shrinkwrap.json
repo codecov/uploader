@@ -13,7 +13,6 @@
         "https-proxy-agent": "5.0.0",
         "js-yaml": "4.1.0",
         "line-reader": "0.4.0",
-        "micromatch": "4.0.4",
         "node-fetch": "2.6.7",
         "snake-case": "3.0.4",
         "validator": "13.7.0",
@@ -6150,12 +6149,12 @@
       }
     },
     "node_modules/micromatch": {
-      "version": "4.0.4",
-      "resolved": "https://registry.npmjs.org/micromatch/-/micromatch-4.0.4.tgz",
-      "integrity": "sha512-pRmzw/XUcwXGpD9aI9q/0XOwLNygjETJ8y0ao0wdqprrzDa4YnxLcz7fQRZr8voh8V10kGhABbNcHVk5wHgWwg==",
+      "version": "4.0.5",
+      "resolved": "https://registry.npmjs.org/micromatch/-/micromatch-4.0.5.tgz",
+      "integrity": "sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==",
       "dependencies": {
-        "braces": "^3.0.1",
-        "picomatch": "^2.2.3"
+        "braces": "^3.0.2",
+        "picomatch": "^2.3.1"
       },
       "engines": {
         "node": ">=8.6"
@@ -6225,9 +6224,9 @@
       }
     },
     "node_modules/minimist": {
-      "version": "1.2.5",
-      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz",
-      "integrity": "sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==",
+      "version": "1.2.6",
+      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz",
+      "integrity": "sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==",
       "dev": true
     },
     "node_modules/minimist-options": {
@@ -7592,9 +7591,9 @@
       ]
     },
     "node_modules/simple-get": {
-      "version": "3.1.0",
-      "resolved": "https://registry.npmjs.org/simple-get/-/simple-get-3.1.0.tgz",
-      "integrity": "sha512-bCR6cP+aTdScaQCnQKbPKtJOKDp/hj9EDLJo3Nw4y1QksqaovlW/bnptB6/c1e+qmNIDHRK+oXFDdEqBT8WzUA==",
+      "version": "3.1.1",
+      "resolved": "https://registry.npmjs.org/simple-get/-/simple-get-3.1.1.tgz",
+      "integrity": "sha512-CQ5LTKGfCpvE1K0n2us+kuMPbk/q0EKl82s4aheV9oXjFEz6W/Y7oQFVJuU6QG77hRT4Ghb5RURteF5vnWjupA==",
       "dev": true,
       "dependencies": {
         "decompress-response": "^4.2.0",
@@ -13637,12 +13636,12 @@
       "integrity": "sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg=="
     },
     "micromatch": {
-      "version": "4.0.4",
-      "resolved": "https://registry.npmjs.org/micromatch/-/micromatch-4.0.4.tgz",
-      "integrity": "sha512-pRmzw/XUcwXGpD9aI9q/0XOwLNygjETJ8y0ao0wdqprrzDa4YnxLcz7fQRZr8voh8V10kGhABbNcHVk5wHgWwg==",
+      "version": "4.0.5",
+      "resolved": "https://registry.npmjs.org/micromatch/-/micromatch-4.0.5.tgz",
+      "integrity": "sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==",
       "requires": {
-        "braces": "^3.0.1",
-        "picomatch": "^2.2.3"
+        "braces": "^3.0.2",
+        "picomatch": "^2.3.1"
       }
     },
     "mime-db": {
@@ -13688,9 +13687,9 @@
       }
     },
     "minimist": {
-      "version": "1.2.5",
-      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.5.tgz",
-      "integrity": "sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==",
+      "version": "1.2.6",
+      "resolved": "https://registry.npmjs.org/minimist/-/minimist-1.2.6.tgz",
+      "integrity": "sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==",
       "dev": true
     },
     "minimist-options": {
@@ -14691,9 +14690,9 @@
       "dev": true
     },
     "simple-get": {
-      "version": "3.1.0",
-      "resolved": "https://registry.npmjs.org/simple-get/-/simple-get-3.1.0.tgz",
-      "integrity": "sha512-bCR6cP+aTdScaQCnQKbPKtJOKDp/hj9EDLJo3Nw4y1QksqaovlW/bnptB6/c1e+qmNIDHRK+oXFDdEqBT8WzUA==",
+      "version": "3.1.1",
+      "resolved": "https://registry.npmjs.org/simple-get/-/simple-get-3.1.1.tgz",
+      "integrity": "sha512-CQ5LTKGfCpvE1K0n2us+kuMPbk/q0EKl82s4aheV9oXjFEz6W/Y7oQFVJuU6QG77hRT4Ghb5RURteF5vnWjupA==",
       "dev": true,
       "requires": {
         "decompress-response": "^4.2.0",
