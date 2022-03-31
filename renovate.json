@@ -3,6 +3,7 @@
     "config:base",
     "docker:pinDigests",
     "npm:unpublishSafe"
+    "helpers:pinGitHubActionDigests"
   ],
   "reviewers": [
     "codecov/open-source"
