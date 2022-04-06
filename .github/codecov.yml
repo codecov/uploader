@@ -1,4 +1,5 @@
 codecov:
+  require_ci_to_pass: false
   notify:
     after_n_builds: 9
     wait_for_ci: yes
