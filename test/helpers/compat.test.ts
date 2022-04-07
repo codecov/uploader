@@ -20,7 +20,7 @@ describe('getBashScriptResult()', () => {
         })
         td.when(fs.readFile(td.matchers.anything())).thenResolve("content");
         td.when(fs.writeFile("arbitrarypath", td.matchers.anything())).thenResolve(null);
-        td.when(runExternalProgram("arbitrarypath", ["-d"])).thenReturn("def==!!==!!==&CODECOVDRYRUNSEPARATORabc\nhjksdabda94#$%!<>==mkdsa===!!==!!==&CODECOVDRYRUNSEPARATOR\ndsajdsajbdadubueb4we9bcc");
+        td.when(runExternalProgram("arbitrarypath", ["-d"])).thenReturn(`def${MAGIC_LINE}abc\nhjksdabda94#$%!<>==mkdsa=${MAGIC_LINE}\ndsajdsajbdadubueb4we9bcc`);
         const subjectModule = await import('../../src/helpers/compat')
         expect(await subjectModule.getBashScriptResult()).toBe(expectedOutput)
     })
