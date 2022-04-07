@@ -18,7 +18,7 @@ export async function getBashScriptResult(): Promise<string | undefined> {
     logError("Unable to run bash script");
     return "";
   } finally {
-    cleanup();
+    await cleanup();
   }
 }
 
