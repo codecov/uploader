@@ -6,7 +6,7 @@ import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
 import { info, logError, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
-import {compatibilityDivider, getBashScriptResult} from './helpers/compat'
+import { compatibilityDivider, getBashScriptResult } from './helpers/compat'
 import {
   cleanCoverageFilePaths,
   coverageFilePatterns,
