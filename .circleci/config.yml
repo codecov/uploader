@@ -1,22 +1,12 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2.1
 
 orbs:
-  win: circleci/windows@2.4.1
+  win: circleci/windows@4.0.0
 
 jobs:
   build-linux-and-osx:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:16.13.1
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
+      - image: cimg/node:17.8.0@sha256:32d18d03b5bbb7130e29c45e5e0f39242f01ee79a37d634844085bed535eb138
 
     working_directory: ~/repo
 
@@ -35,18 +25,12 @@ jobs:
             - node_modules
           key: v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
-      # run tests!
       - run: make test
 
-      # run tests!
       - run: make build
 
-      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
           root: .
-          # Must be relative path from root
           paths:
             - out
             - coverage
@@ -55,20 +39,13 @@ jobs:
 
   build-alpine:
     docker:
-      # specify the version you desire here
-      - image: alpine:3.15.1
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
+      - image: alpine:3.15.4@sha256:4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454
 
     working_directory: ~/repo
 
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
 
       - run:
@@ -107,20 +84,15 @@ jobs:
           name: Build uploader binary on alpine
           command: make build_alpine
 
-      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
           root: .
-          # Must be relative path from root
           paths:
             - out/codecov-alpine
             - coverage-alpine
 
   test-alpine:
     docker:
-      # specify the version you desire here
-      - image: alpine:3.15.1
+      - image: alpine:3.15.4@sha256:4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454
     steps:
       - run:
           name: Install git
@@ -129,7 +101,6 @@ jobs:
             apk add git
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Run Alpine binary -f (dry run)
@@ -155,8 +126,7 @@ jobs:
 
   test-alpine-proxy:
     docker:
-      # specify the version you desire here
-      - image: alpine:3.15.1
+      - image: alpine:3.15.4@sha256:4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454
     steps:
       - run:
           name: Install git
@@ -165,7 +135,6 @@ jobs:
             apk add git squid
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Start Squid
@@ -189,8 +158,7 @@ jobs:
 
   test-alpine-without-git:
     docker:
-      # specify the version you desire here
-      - image: alpine:3.15.1
+      - image: alpine:3.15.4@sha256:4edbd2beb5f78b1014028f4fbb99f3237d9561100b6881aabbf5acce2c4f9454
     steps:
       - run:
           name: Install git
@@ -199,7 +167,6 @@ jobs:
             apk add git
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Remove .git directory
@@ -225,42 +192,12 @@ jobs:
           paths:
             - output_alpine_without_git.txt
 
-  build-windows:
-    executor: win/default
-    steps:
-      - checkout
-      - attach_workspace:
-          # Must be absolute path or relative path from working_directory
-          at: .
-      # https://superuser.com/a/1620000/54442
-      - run:
-          name: Install and set Node 16.x
-          command: |
-            $ErrorActionPreference="Stop"
-            nvm arch
-            nvm install 16 all
-            nvm use 16
-      - run:
-          name: Build Windows Binary
-          command: |
-            $ErrorActionPreference="Stop"
-            node --version
-            npm ci; npm test; npm run build; npm run build-windows
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - out
-            - coverage
-
   test-linux:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:16.13.1
+      - image: cimg/node:17.8.0@sha256:32d18d03b5bbb7130e29c45e5e0f39242f01ee79a37d634844085bed535eb138
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Confirm that linux uploader binary is static
@@ -287,11 +224,10 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: circleci/node:16.13.1
+      - image: cimg/node:17.8.0@sha256:32d18d03b5bbb7130e29c45e5e0f39242f01ee79a37d634844085bed535eb138
     steps:
       - checkout
       - attach_workspace:
-          # TODO: Determine why we use the cwd on Linex and not on other operating systems.
           at: .
       - run:
           name: Remove .git directory
@@ -359,6 +295,33 @@ jobs:
           paths:
             - output_osx_without_git.txt
 
+  build-windows:
+    executor: win/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      # https://superuser.com/a/1620000/54442
+      - run:
+          name: Install and set Node 16.x
+          command: |
+            $ErrorActionPreference="Stop"
+            nvm arch
+            nvm install 16 all
+            nvm use 16
+      - run:
+          name: Build Windows Binary
+          command: |
+            $ErrorActionPreference="Stop"
+            node --version
+            npm ci; npm test; npm run build; npm run build-windows
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - out
+            - coverage
+
   test-windows:
     executor: win/default
     steps:
@@ -396,7 +359,6 @@ jobs:
           name: Remove .git directory
           command: del -Recurse -Force .git
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Run Windows binary (dry-run)
@@ -416,7 +378,7 @@ jobs:
 
   review:
     docker:
-      - image: circleci/node:16.13.1
+      - image: cimg/node:17.8.0@sha256:32d18d03b5bbb7130e29c45e5e0f39242f01ee79a37d634844085bed535eb138
     steps:
       - attach_workspace:
           at: .
@@ -451,7 +413,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:16.13.1
+      - image: cimg/node:17.8.0@sha256:32d18d03b5bbb7130e29c45e5e0f39242f01ee79a37d634844085bed535eb138
     steps:
       - attach_workspace:
           at: .
@@ -477,10 +439,9 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:376.0.0-slim
+      - image: google/cloud-sdk:380.0.0-slim@sha256:1cd61926f514ce46ba533f55df3dfdffa2ee4f9794cd56d4701d4febeb6018aa
     steps:
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Push release tag to pubsub
@@ -498,7 +459,6 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Clone Autotest and Start Acceptance Testing Containers
