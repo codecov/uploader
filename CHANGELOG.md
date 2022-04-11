@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.21](https://github.com/codecov/uploader/compare/v0.1.20...v0.1.21) (2022-04-11)
+
+### Bug Fixes
+
+- **deps:** update dependency micromatch to v4.0.5 ([449cccd](https://github.com/codecov/uploader/commit/449cccd75c630542914e120978c9fe6f46884bda))
+- **deps:** update dependency yargs to v17.4.0 ([ab27903](https://github.com/codecov/uploader/commit/ab27903013d79718862fc1f9450029d8b7c04c11))
+- include directories and files that start with . with gcov ([a51ca72](https://github.com/codecov/uploader/commit/a51ca72e23bd053627571988af31673c969ae96f))
+
 ### [0.1.20](https://github.com/codecov/uploader/compare/v0.1.18...v0.1.20) (2022-03-21)
 
 ### Features
