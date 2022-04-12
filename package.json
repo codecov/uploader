@@ -19,7 +19,7 @@
     "prepare": "husky install",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "release": "npm run lint && standard-version --sign"
+    "release": "standard-version --sign"
   },
   "repository": {
     "type": "git",
@@ -76,7 +76,7 @@
       "prettier --write",
       "eslint --fix"
     ],
-    "**/*.{json,md,yml,yaml,html}": [
+    "**/*.{json,yml,yaml,html}": [
       "prettier --write"
     ]
   }
