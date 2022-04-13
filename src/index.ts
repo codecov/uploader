@@ -23,6 +23,7 @@ import {
   removeFile,
 } from './helpers/files'
 import { generateGcovCoverageFiles } from './helpers/gcov'
+import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
 
 /**
@@ -154,7 +155,7 @@ export async function main(
   // #region == Step 5: select coverage files (search or specify)
 
   let requestedPaths: string[] = []
-  
+
   // Look for files
 
   if (args.gcov) {
@@ -165,7 +166,18 @@ export async function main(
     const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs)
     UploadLogger.verbose(`${gcovLogs}`)
   }
-  
+
+  if (args.xcode) {
+    if (!args.xcodeArchivePath) {
+      logError('Please specify xcodeArchivePath to run the Codecov uploader with xcode support')
+      info('Likely specified as the -resultBundlePath and should end in .xcresult')
+    } else {
+      const xcodeArchivePaths: string[] = argAsArray(args.xcodeArchivePath)
+      const xcodeLogs = await generateXcodeCoverageFiles(xcodeArchivePaths)
+      UploadLogger.verbose(`${xcodeLogs}`)
+    }
+  }
+
   let coverageFilePaths: string[] = []
   requestedPaths = argAsArray(args.file)
 
@@ -191,9 +203,9 @@ export async function main(
 
     let coverageFilePathsAfterFilter = coverageFilePaths
 
-    if (coverageFilePaths.length > 0) { 
+    if (coverageFilePaths.length > 0) {
       coverageFilePathsAfterFilter = filterFilesAgainstBlockList(coverageFilePaths, getBlocklist())
-    } 
+    }
 
 
 
@@ -301,7 +313,7 @@ export async function main(
   if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
     logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
   }
-  
+
   const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {

@@ -185,6 +185,19 @@ const args: ICLIArgument[] = [
     type: 'string',
     description: 'Extra arguments to pass to gcov',
   },
+  {
+    alias: 'x',
+    name: 'xcode',
+    type: 'boolean',
+    default: false,
+    description: 'Run with xcode support',
+  },
+  {
+    alias: 'xp',
+    name: 'xcodeArchivePath',
+    type: 'string',
+    description: 'Specify the xcode archive path. Likely specified as the -resultBundlePath and should end in .xcresult',
+  },
 ]
 
 export interface IYargsObject {
