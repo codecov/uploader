@@ -39,6 +39,7 @@
     "line-reader": "0.4.0",
     "node-fetch": "2.6.7",
     "snake-case": "3.0.4",
+    "tmp-promise": "^3.0.3",
     "validator": "13.7.0",
     "yargs": "17.4.0"
   },
@@ -51,6 +52,7 @@
     "@types/mock-fs": "4.13.1",
     "@types/node": "16.11.26",
     "@types/node-fetch": "2.6.1",
+    "@types/tmp": "^0.2.3",
     "@types/validator": "13.7.2",
     "@types/yargs": "17.0.10",
     "@typescript-eslint/eslint-plugin": "5.16.0",

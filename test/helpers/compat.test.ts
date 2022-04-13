@@ -1,6 +1,7 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 import * as util from '../../src/helpers/util'
+import MAGIC_LINE from '../../src/helpers/compat'
 
 
 describe('getBashScriptResult()', () => {
