@@ -185,13 +185,6 @@ const args: ICLIArgument[] = [
     type: 'string',
     description: 'Extra arguments to pass to gcov',
   },
-  {
-    alias: 'p',
-    default: false,
-    description: 'Run with coveragepy support',
-    name: 'coveragepy',
-    type: 'boolean',
-  },
 ]
 
 export interface IYargsObject {

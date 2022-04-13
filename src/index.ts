@@ -167,11 +167,9 @@ export async function main(
     UploadLogger.verbose(`${gcovLogs}`)
   }
 
-  if (args.coveragepy) {
-    UploadLogger.verbose('Running coverage xml...')
-    const coveragePyLogs = await generateCoveragePyFile()
-    UploadLogger.verbose(`${coveragePyLogs}`)
-  }
+  UploadLogger.verbose('Running coverage xml...')
+  const coveragePyLogs = await generateCoveragePyFile()
+  UploadLogger.verbose(`${coveragePyLogs}`)
 
   let coverageFilePaths: string[] = []
   requestedPaths = argAsArray(args.file)

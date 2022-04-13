@@ -1,8 +1,10 @@
 import { isProgramInstalled, runExternalProgram } from "./util"
+import { UploadLogger } from './logger'
 
 export async function generateCoveragePyFile(): Promise<string> {
     if (!isProgramInstalled('coverage')) {
-        throw new Error('coveragepy is not installed, cannot convert file format')
+        UploadLogger.verbose(`coveragepy is not installed, skipping coverage xml conversion`)
+        return '';
     }
 
     return runExternalProgram('coverage', ['xml']);

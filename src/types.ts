@@ -5,7 +5,6 @@ export interface UploaderArgs {
   build?: string // Specify the build number manually
   changelog?: string // Displays the changelog and exits
   clean?: string // Move discovered coverage reports to the trash
-  coveragepy?: string // Run with coveragepy support
   dir?: string // Directory to search for coverage reports.
   dryRun?: string // Don't upload files to Codecov
   env?: string // Specify environment variables to be included with this build

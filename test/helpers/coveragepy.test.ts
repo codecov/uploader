@@ -21,10 +21,10 @@ describe('generateCoveragePyFile()', () => {
         expect(await generateCoveragePyFile()).toBe('xml')
     })
 
-    it('should return an error when coveragepy is not installed', async () => {
+    it('should return a log when coveragepy is not installed', async () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('coverage')).thenReturn({ error: "command not found: coverage" })
 
-        await expect(generateCoveragePyFile()).rejects.toThrowError(/coveragepy is not installed/)
+        expect(await generateCoveragePyFile()).toBe('')
     })
 })
