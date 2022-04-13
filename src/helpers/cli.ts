@@ -190,7 +190,7 @@ const args: ICLIArgument[] = [
     name: 'compatibilityMode',
     type: 'boolean',
     default: false,
-    description: `Uses bash uploader internally`,
+    description: 'Uses bash uploader internally',
   },
 ]
 
