@@ -186,7 +186,7 @@ const args: ICLIArgument[] = [
     description: 'Extra arguments to pass to gcov',
   },
   {
-    alias: 'x',
+    alias: 'xc',
     name: 'xcode',
     type: 'boolean',
     default: false,

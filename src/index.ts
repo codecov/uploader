@@ -169,8 +169,7 @@ export async function main(
 
   if (args.xcode) {
     if (!args.xcodeArchivePath) {
-      logError('Please specify xcodeArchivePath to run the Codecov uploader with xcode support')
-      info('Likely specified as the -resultBundlePath and should end in .xcresult')
+      throw new Error('Please specify xcodeArchivePath to run the Codecov uploader with xcode support')
     } else {
       const xcodeArchivePaths: string[] = argAsArray(args.xcodeArchivePath)
       const xcodeLogs = await generateXcodeCoverageFiles(xcodeArchivePaths)
