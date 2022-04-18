@@ -39,7 +39,7 @@ function getFileList(archivePath: string): string[] {
   return fileList.split('\n').filter(i => i !== '')
 }
 
-function getCoverageInfo (archivePath: string, filePath: string): string {
+function getCoverageInfo(archivePath: string, filePath: string): string {
   return runExternalProgram('xcrun', ['xccov', 'view', '--archive', archivePath, '--file', filePath])
 }
 
