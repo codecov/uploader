@@ -85,5 +85,5 @@ export interface PutResults {
   resultURL: URL
 }
 
-export type XcodeCoverageFileReport = NodeJS.Dict<string>
-export type XcodeCoverageReport = NodeJS.Dict<XcodeCoverageFileReport>
+export type XcodeCoverageFileReport = Record<string, string>
+export type XcodeCoverageReport = Record<string, XcodeCoverageFileReport>
