@@ -1,6 +1,7 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 import { generateCoveragePyFile } from '../../src/helpers/coveragepy'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 
 describe('generateCoveragePyFile()', () => {
     afterEach(() => {
@@ -13,7 +14,7 @@ describe('generateCoveragePyFile()', () => {
             stdout: 'coverage installed',
             error: null
         })
-        td.when(spawnSync('coverage', td.matchers.contains('xml'))).thenReturn({
+        td.when(spawnSync('coverage', td.matchers.contains('xml'), { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
             stdout: 'xml',
             error: null
         })
