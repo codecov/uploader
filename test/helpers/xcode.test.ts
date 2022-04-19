@@ -22,13 +22,13 @@ describe('generateXcodeCoverageFiles()', () => {
             error: null
         })
 
-        expect(await generateXcodeCoverageFiles(['../fixtures/xcode/test.xcresult'])).toBe('./coverage-report-test.json')
+        expect(await generateXcodeCoverageFiles('../fixtures/xcode/test.xcresult')).toBe('./coverage-report-test.json')
     })
 
     it('should return an error when xcode is not installed', async () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('xcrun')).thenReturn({ error: "Command 'xcrun' not found" })
 
-        await expect(generateXcodeCoverageFiles([])).rejects.toThrowError(/xcrun is not installed/)
+        await expect(generateXcodeCoverageFiles('')).rejects.toThrowError(/xcrun is not installed/)
     })
 })

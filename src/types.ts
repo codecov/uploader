@@ -85,5 +85,5 @@ export interface PutResults {
   resultURL: URL
 }
 
-export type XcodeCoverageFileReport = Record<string, string>
+export type XcodeCoverageFileReport = Record<string, string | null>
 export type XcodeCoverageReport = Record<string, XcodeCoverageFileReport>

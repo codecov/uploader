@@ -15,16 +15,15 @@ export async function generateXcodeCoverageFiles(archivePath: string): Promise<s
 
   const coverage: XcodeCoverageReport = {}
   const report = { coverage: coverage }
-  const path = archivePath[0]
 
-  getFileList(path).forEach(repoFilePath => {
+  getFileList(archivePath).forEach(repoFilePath => {
     UploadLogger.verbose(`Converting ${repoFilePath}...`)
-    const coverageInfo = getCoverageInfo(path, repoFilePath)
+    const coverageInfo = getCoverageInfo(archivePath, repoFilePath)
     const coverageJson = convertCoverage(coverageInfo)
     report.coverage[repoFilePath] = coverageJson
   })
 
-  let pathFilename = path.split('/').pop()
+  let pathFilename = archivePath.split('/').pop()
   if (pathFilename) {
     pathFilename = pathFilename.split('.xcresult')[0]
   }
@@ -51,7 +50,7 @@ function convertCoverage (coverageInfo: string): XcodeCoverageFileReport {
     if (lineNum && Number.isInteger(Number(lineNum))) {
       const lineHits = lineInfo.trimStart().split(' ')[0].trim()
       if (lineHits === '*') {
-        obj[String(lineNum.trim())] = undefined
+        obj[String(lineNum.trim())] = null
       } else {
         obj[String(lineNum.trim())] = lineHits
       }
