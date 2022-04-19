@@ -1,6 +1,7 @@
 import childProcess from 'child_process'
 import td from 'testdouble'
 import * as providerBitbucket from '../../src/ci_providers//provider_bitbucket'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
@@ -132,7 +133,7 @@ describe('Bitbucket Params', () => {
     }
 
     const execFileSync = td.replace(childProcess, 'spawnSync')
-    td.when(execFileSync('git', ['rev-parse', 'testingsha12'])).thenReturn(
+    td.when(execFileSync('git', ['rev-parse', 'testingsha12'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn(
       { stdout: 'newtestsha'},
     )
     const params = providerBitbucket.getServiceParams(inputs)

@@ -22,36 +22,18 @@ describe('Get tokens', () => {
 
   describe('From yaml', () => {
     it('Returns empty with no yaml file', () => {
-      const args: UploaderArgs = {
-        ...createEmptyArgs(),
-        ...{
-          verbose: 'true',
-        },
-      }
-      expect(tokenHelpers.getTokenFromYaml('.', args)).toBe('')
+      expect(tokenHelpers.getTokenFromYaml('.')).toBe('')
     })
 
     it('Returns the correct token from file', () => {
-      const args: UploaderArgs = {
-        ...createEmptyArgs(),
-        ...{
-          verbose: 'true',
-        },
-      }
-      expect(tokenHelpers.getTokenFromYaml(fixturesDir, args)).toBe('faketoken')
+      expect(tokenHelpers.getTokenFromYaml(fixturesDir)).toBe('faketoken')
     })
 
     it('Returns deprecation error from codecov_token', () => {
-      const args: UploaderArgs = {
-        ...createEmptyArgs(),
-        ...{
-          verbose: 'true',
-        },
-      }
       jest.spyOn(console, 'error').mockImplementation(() => {
         // Intentionally empty
       })
-      expect(tokenHelpers.getTokenFromYaml(invalidFixturesDir, args)).toBe('')
+      expect(tokenHelpers.getTokenFromYaml(invalidFixturesDir)).toBe('')
 
       expect(console.error).toHaveBeenCalledWith(
         expect.stringContaining("'codecov_token' is a deprecated field"),

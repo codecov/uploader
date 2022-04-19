@@ -2,6 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerLocal from '../../src/ci_providers//provider_local'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
@@ -91,7 +92,7 @@ describe('Local Params', () => {
       providerLocal.getServiceParams(inputs)
     }).toThrow()
 
-    td.when(spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'])).thenReturn(
+    td.when(spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn(
       {
         stdout: 'main',
       },
@@ -100,7 +101,7 @@ describe('Local Params', () => {
       providerLocal.getServiceParams(inputs)
     }).toThrow()
 
-    td.when(spawnSync('git', ['rev-parse', 'HEAD'])).thenReturn({
+    td.when(spawnSync('git', ['rev-parse', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
       stdout: 'testSHA',
     })
     expect(() => {
@@ -117,16 +118,16 @@ describe('Local Params', () => {
     it('can get the slug from a git url', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        spawnSync('git', ['config', '--get', 'remote.origin.url']),
+        spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({
         stdout: 'git@github.com:testOrg/testRepo.git',
       })
       td.when(
-        spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD']),
+        spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({
         stdout: 'main',
       })
-      td.when(spawnSync('git', ['rev-parse', 'HEAD'])).thenReturn({
+      td.when(spawnSync('git', ['rev-parse', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
         stdout: 'testSHA',
       })
       expect(providerLocal.getServiceParams(inputs).slug).toBe(
@@ -137,16 +138,16 @@ describe('Local Params', () => {
     it('can get the slug from an http(s) url', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        spawnSync('git', ['config', '--get', 'remote.origin.url']),
+        spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({
         stdout: 'notaurl',
       })
       td.when(
-        spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD']),
+        spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({
         stdout: 'main',
       })
-      td.when(spawnSync('git', ['rev-parse', 'HEAD'])).thenReturn({
+      td.when(spawnSync('git', ['rev-parse', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
         stdout: 'testSHA',
       })
       expect(() => {
@@ -157,16 +158,16 @@ describe('Local Params', () => {
     it('errors on a malformed slug', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        spawnSync('git', ['config', '--get', 'remote.origin.url']),
+        spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({
         stdout: 'http://github.com/testOrg/testRepo.git',
       })
       td.when(
-        spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD']),
+        spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({
         stdout: 'main',
       })
-      td.when(spawnSync('git', ['rev-parse', 'HEAD'])).thenReturn({
+      td.when(spawnSync('git', ['rev-parse', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
         stdout: 'testSHA',
       })
       expect(providerLocal.getServiceParams(inputs).slug).toBe(

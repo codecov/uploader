@@ -2,6 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerGitLabci from '../../src/ci_providers//provider_gitlabci'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
@@ -51,7 +52,7 @@ describe('GitLabCI Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+      spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
     const params = providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -135,7 +136,7 @@ describe('GitLabCI Params', () => {
       inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        spawnSync('git', ['config', '--get', 'remote.origin.url']),
+        spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({ stdout: 'https://gitlab.com/testOrg/testRepo.git' })
 
       const params = providerGitLabci.getServiceParams(inputs)
@@ -146,7 +147,7 @@ describe('GitLabCI Params', () => {
       inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        spawnSync('git', ['config', '--get', 'remote.origin.url']),
+        spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({ stdout: 'git@gitlab.com:/' })
 
       const params = providerGitLabci.getServiceParams(inputs)
@@ -157,7 +158,7 @@ describe('GitLabCI Params', () => {
       inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
-        spawnSync('git', ['config', '--get', 'remote.origin.url']),
+        spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({ stdout: '' })
 
       const params = providerGitLabci.getServiceParams(inputs)
