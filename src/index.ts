@@ -172,7 +172,7 @@ export async function main(
       throw new Error('Please specify xcodeArchivePath to run the Codecov uploader with xcode support')
     } else {
       const xcodeArchivePath: string = args.xcodeArchivePath
-      const xcodeLogs = await generateXcodeCoverageFiles(xcodeArchivePaths)
+      const xcodeLogs = await generateXcodeCoverageFiles(xcodeArchivePath)
       UploadLogger.verbose(`${xcodeLogs}`)
     }
   }
