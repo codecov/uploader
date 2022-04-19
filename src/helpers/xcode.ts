@@ -7,7 +7,7 @@ import {
 } from '../types'
 import { isProgramInstalled, runExternalProgram } from "./util"
 
-export async function generateXcodeCoverageFiles(archivePath: string[]): Promise<string> {
+export async function generateXcodeCoverageFiles(archivePath: string): Promise<string> {
   if (!isProgramInstalled('xcrun')) {
       throw new Error('xcrun is not installed, cannot process files')
   }
