@@ -24,6 +24,7 @@ import {
 } from './helpers/files'
 import { generateCoveragePyFile } from './helpers/coveragepy'
 import { generateGcovCoverageFiles } from './helpers/gcov'
+import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
 
 /**
@@ -165,6 +166,16 @@ export async function main(
     const gcovArgs: string[] = argAsArray(args.gcovArgs)
     const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs)
     UploadLogger.verbose(`${gcovLogs}`)
+  }
+
+  if (args.xcode) {
+    if (!args.xcodeArchivePath) {
+      throw new Error('Please specify xcodeArchivePath to run the Codecov uploader with xcode support')
+    } else {
+      const xcodeArchivePath: string = args.xcodeArchivePath
+      const xcodeLogs = await generateXcodeCoverageFiles(xcodeArchivePath)
+      UploadLogger.verbose(`${xcodeLogs}`)
+    }
   }
 
   try {

@@ -2,10 +2,12 @@ import Module from 'module'
 
 import * as app from '../src'
 
-import { version } from '../package.json'
-import nock from 'nock'
+import childProcess from 'child_process'
 import fs from 'fs'
+import nock from 'nock'
+import td from 'testdouble'
 import { UploadLogger } from '../src/helpers/logger'
+import { version } from '../package.json'
 
 // Backup the env
 const realEnv = { ...process.env }
@@ -30,6 +32,7 @@ describe('Uploader Core', () => {
   afterEach(() => {
     process.env = env
     jest.restoreAllMocks()
+    td.reset()
   })
 
   it('Can return version', () => {
