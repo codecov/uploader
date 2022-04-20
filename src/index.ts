@@ -167,9 +167,11 @@ export async function main(
     UploadLogger.verbose(`${gcovLogs}`)
   }
 
-  UploadLogger.verbose('Running coverage xml...')
-  const coveragePyLogs = await generateCoveragePyFile()
-  UploadLogger.verbose(`${coveragePyLogs}`)
+  try {
+    await generateCoveragePyFile()
+  } catch (error) {
+    UploadLogger.verbose(`Skipping coveragepy conversion: ${error}`)
+  }
 
   let coverageFilePaths: string[] = []
   requestedPaths = argAsArray(args.file)

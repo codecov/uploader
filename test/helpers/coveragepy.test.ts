@@ -26,6 +26,6 @@ describe('generateCoveragePyFile()', () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('coverage')).thenReturn({ error: "command not found: coverage" })
 
-        expect(await generateCoveragePyFile()).toBe('')
+        await expect(generateCoveragePyFile()).rejects.toThrowError(/coveragepy is not installed/)
     })
 })

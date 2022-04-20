@@ -1,11 +1,11 @@
 import { isProgramInstalled, runExternalProgram } from "./util"
-import { UploadLogger } from './logger'
+import { info } from './logger'
 
 export async function generateCoveragePyFile(): Promise<string> {
     if (!isProgramInstalled('coverage')) {
-        UploadLogger.verbose(`coveragepy is not installed, skipping coverage xml conversion`)
-        return '';
+        throw new Error('coveragepy is not installed')
     }
 
+    info('Running coverage xml...')
     return runExternalProgram('coverage', ['xml']);
 }
