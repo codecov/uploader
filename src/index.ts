@@ -22,6 +22,7 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
+import { generateCoveragePyFile } from './helpers/coveragepy'
 import { generateGcovCoverageFiles } from './helpers/gcov'
 import { argAsArray } from './helpers/util'
 
@@ -154,7 +155,7 @@ export async function main(
   // #region == Step 5: select coverage files (search or specify)
 
   let requestedPaths: string[] = []
-  
+
   // Look for files
 
   if (args.gcov) {
@@ -165,7 +166,13 @@ export async function main(
     const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs)
     UploadLogger.verbose(`${gcovLogs}`)
   }
-  
+
+  try {
+    await generateCoveragePyFile()
+  } catch (error) {
+    UploadLogger.verbose(`Skipping coveragepy conversion: ${error}`)
+  }
+
   let coverageFilePaths: string[] = []
   requestedPaths = argAsArray(args.file)
 
@@ -191,9 +198,9 @@ export async function main(
 
     let coverageFilePathsAfterFilter = coverageFilePaths
 
-    if (coverageFilePaths.length > 0) { 
+    if (coverageFilePaths.length > 0) {
       coverageFilePathsAfterFilter = filterFilesAgainstBlockList(coverageFilePaths, getBlocklist())
-    } 
+    }
 
 
 
@@ -301,7 +308,7 @@ export async function main(
   if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
     logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
   }
-  
+
   const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {
