@@ -2,6 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerJenkinsci from '../../src/ci_providers//provider_jenkinsci'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
@@ -60,7 +61,7 @@ describe('Jenkins CI Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+      spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
     const params = providerJenkinsci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -80,7 +81,7 @@ describe('Jenkins CI Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+      spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
 
     const params = providerJenkinsci.getServiceParams(inputs)

@@ -1,7 +1,7 @@
 import fs from 'fs'
 import yaml from 'js-yaml'
 import path from 'path'
-import { UploaderArgs, UploaderInputs } from '../types'
+import { UploaderInputs } from '../types'
 import { DEFAULT_UPLOAD_HOST } from './constansts'
 import { info, logError, UploadLogger } from './logger'
 import { validateToken } from './validate'
@@ -17,7 +17,7 @@ export function getToken(inputs: UploaderInputs, projectRoot: string): string {
   const options = [
     [args.token, 'arguments'],
     [envs.CODECOV_TOKEN, 'environment variables'],
-    [getTokenFromYaml(projectRoot, args), 'Codecov yaml config'],
+    [getTokenFromYaml(projectRoot), 'Codecov yaml config'],
   ]
 
   for (const [token, source] of options) {
@@ -65,7 +65,6 @@ function yamlParse(input: object | string | number): ICodecovYAML {
 
 export function getTokenFromYaml(
   projectRoot: string,
-  args: UploaderArgs,
 ): string {
   const dirNames = ['', '.github', 'dev']
 
