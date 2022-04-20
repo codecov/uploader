@@ -1,4 +1,4 @@
-import fs from 'fs'
+import fs from 'fs/promises'
 
 import { info, UploadLogger } from '../helpers/logger'
 import {
@@ -29,7 +29,7 @@ export async function generateXcodeCoverageFiles(archivePath: string): Promise<s
   }
   const filename = `./coverage-report-${pathFilename}.json`
   UploadLogger.verbose(`Writing coverage to ${filename}`)
-  fs.writeFileSync(filename, JSON.stringify(report))
+  await fs.writeFile(filename, JSON.stringify(report))
   return filename
 }
 
@@ -42,13 +42,16 @@ function getCoverageInfo(archivePath: string, filePath: string): string {
   return runExternalProgram('xcrun', ['xccov', 'view', '--archive', archivePath, '--file', filePath])
 }
 
-function convertCoverage (coverageInfo: string): XcodeCoverageFileReport {
+function convertCoverage(coverageInfo: string): XcodeCoverageFileReport {
   const coverageInfoArr = coverageInfo.split('\n')
   const obj: XcodeCoverageFileReport = {}
   coverageInfoArr.forEach(line => {
     const [lineNum, lineInfo] = line.split(':')
     if (lineNum && Number.isInteger(Number(lineNum))) {
-      const lineHits = lineInfo.trimStart().split(' ')[0].trim()
+      const lineHits = lineInfo?.trimStart().split(' ')[0]?.trim()
+      if (typeof lineHits !== 'string') {
+        return
+      }
       if (lineHits === '*') {
         obj[String(lineNum.trim())] = null
       } else {

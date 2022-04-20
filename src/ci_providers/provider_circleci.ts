@@ -43,7 +43,7 @@ function _getSlug(inputs: UploaderInputs): string {
   }
 
   if (isSetAndNotEmpty(envs.CIRCLE_REPOSITORY_URL)) {
-    return `${envs.CIRCLE_REPOSITORY_URL?.split(':')[1].split('.git')[0]}`
+    return `${envs.CIRCLE_REPOSITORY_URL?.split(':')[1]?.split('.git')[0]}`
   }
   return slug
 }

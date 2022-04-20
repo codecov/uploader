@@ -1,5 +1,6 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { generateXcodeCoverageFiles } from '../../src/helpers/xcode'
 
 describe('generateXcodeCoverageFiles()', () => {
@@ -13,11 +14,11 @@ describe('generateXcodeCoverageFiles()', () => {
             stdout: 'xcrun installed',
             error: null
         })
-        td.when(spawnSync('xcrun', td.matchers.contains('--file-list'))).thenReturn({
+        td.when(spawnSync('xcrun', td.matchers.contains('--file-list'), { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
             stdout: '../fixtures/xcode/UI/View1.swift',
             error: null
         })
-        td.when(spawnSync('xcrun', td.matchers.contains('--file'))).thenReturn({
+        td.when(spawnSync('xcrun', td.matchers.contains('--file'), { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
             stdout: '  1: *\n  2: 0',
             error: null
         })
