@@ -22,6 +22,7 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
+import { generateCoveragePyFile } from './helpers/coveragepy'
 import { generateGcovCoverageFiles } from './helpers/gcov'
 import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
@@ -175,6 +176,12 @@ export async function main(
       const xcodeLogs = await generateXcodeCoverageFiles(xcodeArchivePath)
       UploadLogger.verbose(`${xcodeLogs}`)
     }
+  }
+
+  try {
+    await generateCoveragePyFile()
+  } catch (error) {
+    UploadLogger.verbose(`Skipping coveragepy conversion: ${error}`)
   }
 
   let coverageFilePaths: string[] = []
