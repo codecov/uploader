@@ -53,7 +53,7 @@ export function getPackage(source: string): string {
 
 
 export async function uploadToCodecovPUT(
-  putAndResultUrlPair: PostResults, 
+  putAndResultUrlPair: PostResults,
   uploadFile: string | Buffer,
   args: UploaderArgs
 ): Promise<PutResults> {
@@ -133,6 +133,11 @@ export function parsePOSTResults(putAndResultUrlPair: string): PostResults {
     )
   }
 
+  if (matches[0] === undefined || matches[1] === undefined) {
+    throw new Error(
+      `Invalid URLs received when parsing results from POST: ${matches[0]},${matches[1]}`
+    )
+  }
   const resultURL = new URL(matches[0].trimEnd())
   const putURL = new URL(matches[1])
    // This match may have trailing 0x0A and 0x0D that must be trimmed
@@ -215,5 +220,5 @@ export function generateRequestHeadersPUT(
       }
 
     }
-  
+
 }

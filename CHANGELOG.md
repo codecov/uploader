@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.0](https://github.com/codecov/uploader/compare/v0.1.21...v0.2.0) (2022-04-21)
+
+
+### Features
+
+* add coveragepy xml support ([8353edb](https://github.com/codecov/uploader/commit/8353edbd82e9dd2b9eea607beaa701f3ecef9300))
+* add xcode support ([c5e1c70](https://github.com/codecov/uploader/commit/c5e1c70051523d6bb015cbd2e337a4f1df58ef60))
+
+
+### Bug Fixes
+
+* add more readable number ([d15ccef](https://github.com/codecov/uploader/commit/d15ccef55d84094abfc986bac7b3b53b1263acae))
+* add tests for coveragepy ([de90c56](https://github.com/codecov/uploader/commit/de90c56614de8eea5d46aee25f106598cccd534d))
+* automagic xml ([626b76b](https://github.com/codecov/uploader/commit/626b76b76caa03ddfc6adf9310d3a22ac04619c4))
+* bump package.json ([e5aedde](https://github.com/codecov/uploader/commit/e5aeddefc7f50d2d17ef3e859d021d6d7aca7420))
+* increase spawnsync buffer ([a758b90](https://github.com/codecov/uploader/commit/a758b905f41d47c4ff453312384943dbd0b1ff5e))
+* refactor logging and catching ([f782e4f](https://github.com/codecov/uploader/commit/f782e4fc8ba98c499ad27748a5bfc306f56404cd))
+* resolve comments ([2bea407](https://github.com/codecov/uploader/commit/2bea407585348ef97350de84bb027e4838096a68))
+* update tests with buffer arg ([af8bea4](https://github.com/codecov/uploader/commit/af8bea413a2b01253b8dc8bc7825a3d873043594))
+* update types for xcode ([a5c363e](https://github.com/codecov/uploader/commit/a5c363ee707290419869a3c3ade1ebabb5aa25a9))
+
 ### [0.1.22](https://github.com/codecov/uploader/compare/v0.1.21...v0.1.22) (2022-04-12)
 
 

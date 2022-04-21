@@ -2,6 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerGitHubactions from '../../src/ci_providers//provider_githubactions'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
@@ -92,7 +93,7 @@ describe('GitHub Actions Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format=%P']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
       stdout: 'testingsha',
     })
@@ -127,7 +128,7 @@ describe('GitHub Actions Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format=%P']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
       stdout:
         'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
@@ -166,7 +167,7 @@ describe('GitHub Actions Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format=%P']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'testsha' })
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -199,7 +200,7 @@ describe('GitHub Actions Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format=%P']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
     const params = providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)

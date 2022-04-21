@@ -1,5 +1,6 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
@@ -51,7 +52,7 @@ describe('HerokuCI Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+      spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
     const params = providerHerokuci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -80,7 +81,7 @@ describe('HerokuCI Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+      spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
     const params = providerHerokuci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
