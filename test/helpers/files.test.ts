@@ -3,6 +3,7 @@ import fs from 'fs'
 import childProcess from 'child_process'
 import * as fileHelpers from '../../src/helpers/files'
 import { getBlocklist } from '../../src/helpers/files'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import mock from 'mock-fs'
 
 describe('File Helpers', () => {
@@ -28,7 +29,7 @@ describe('File Helpers', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn({ stdout: 'fish' })
     td.when(
-      spawnSync('git', ['rev-parse', '--show-toplevel']),
+      spawnSync('git', ['rev-parse', '--show-toplevel'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'gitRoot' })
 
     expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')

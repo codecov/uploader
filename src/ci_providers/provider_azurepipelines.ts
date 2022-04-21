@@ -66,7 +66,7 @@ function _getSHA(inputs: UploaderInputs): string {
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
       info(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
-      commit = mergeCommit
+      commit = mergeCommit || ''
     }
   }
 
