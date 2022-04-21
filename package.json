@@ -40,7 +40,7 @@
     "node-fetch": "2.6.7",
     "snake-case": "3.0.4",
     "validator": "13.7.0",
-    "yargs": "17.4.0"
+    "yargs": "17.4.1"
   },
   "devDependencies": {
     "@commitlint/cli": "16.2.3",
