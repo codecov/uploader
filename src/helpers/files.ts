@@ -235,11 +235,11 @@ export function getAllFiles(
 ): string[] {
   UploadLogger.verbose(`Searching for files in ${dirPath}`)
 
-  const {
-    stdout,
-    status,
-    error,
-  } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
+  const { stdout, status, error } = spawnSync(
+    'git',
+    ['-C', dirPath, 'ls-files'],
+    { encoding: 'utf8', maxBuffer: 100 * 1024 * 1024 },
+  )
 
   let files = []
   if (error instanceof Error || status !== 0) {
