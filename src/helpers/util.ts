@@ -1,6 +1,6 @@
 import childprocess from 'child_process'
-import { SPAWNPROCESSBUFFERSIZE } from './constansts.js'
-export { SPAWNPROCESSBUFFERSIZE } from './constansts.js'
+import { SPAWNPROCESSBUFFERSIZE } from './constansts'
+export { SPAWNPROCESSBUFFERSIZE } from './constansts'
 
 
 
