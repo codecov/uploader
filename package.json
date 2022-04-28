@@ -43,13 +43,13 @@
     "yargs": "17.4.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "16.2.3",
-    "@commitlint/config-conventional": "16.2.1",
+    "@commitlint/cli": "16.2.4",
+    "@commitlint/config-conventional": "16.2.4",
     "@types/jest": "27.4.1",
     "@types/js-yaml": "4.0.5",
     "@types/micromatch": "4.0.2",
     "@types/mock-fs": "4.13.1",
-    "@types/node": "16.11.29",
+    "@types/node": "16.11.31",
     "@types/node-fetch": "2.6.1",
     "@types/validator": "13.7.2",
     "@types/yargs": "17.0.10",
