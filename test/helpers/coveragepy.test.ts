@@ -11,6 +11,11 @@ describe('generateCoveragePyFile()', () => {
     })
 
     it('should run when coveragepy is asked for', async () => {
+        const fixturesCoveragePyDir = path.join(
+            fileHelpers.fetchGitRoot(),
+            'test/fixtures/coveragepy',
+        )
+
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('coverage')).thenReturn({
             stdout: 'coverage installed',
@@ -21,8 +26,7 @@ describe('generateCoveragePyFile()', () => {
             error: null
         })
 
-        const projectRoot = process.cwd()
-        expect(await generateCoveragePyFile(projectRoot, [])).toBe('xml')
+        expect(await generateCoveragePyFile(fixturesCoveragePyDir, [])).toBe('xml')
     })
 
     it('should return if a file is provided', async () => {
