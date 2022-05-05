@@ -178,14 +178,15 @@ export async function main(
     }
   }
 
+  let coverageFilePaths: string[] = []
+  requestedPaths = argAsArray(args.file)
+
   try {
-    await generateCoveragePyFile()
+    const coveragePyLogs = await generateCoveragePyFile(projectRoot, requestedPaths)
+    UploadLogger.verbose(`${coveragePyLogs}`)
   } catch (error) {
     UploadLogger.verbose(`Skipping coveragepy conversion: ${error}`)
   }
-
-  let coverageFilePaths: string[] = []
-  requestedPaths = argAsArray(args.file)
 
   coverageFilePaths = requestedPaths
 

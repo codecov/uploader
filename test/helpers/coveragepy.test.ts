@@ -1,6 +1,8 @@
-import td from 'testdouble'
+import path from 'path'
 import childProcess from 'child_process'
+import td from 'testdouble'
 import { generateCoveragePyFile } from '../../src/helpers/coveragepy'
+import * as fileHelpers from '../../src/helpers/files'
 import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 
 describe('generateCoveragePyFile()', () => {
@@ -19,13 +21,41 @@ describe('generateCoveragePyFile()', () => {
             error: null
         })
 
-        expect(await generateCoveragePyFile()).toBe('xml')
+        const projectRoot = process.cwd()
+        expect(await generateCoveragePyFile(projectRoot, [])).toBe('xml')
+    })
+
+    it('should return if a file is provided', async () => {
+        const spawnSync = td.replace(childProcess, 'spawnSync')
+        td.when(spawnSync('coverage')).thenReturn({
+            stdout: 'coverage installed',
+            error: null
+        })
+
+        const projectRoot = process.cwd()
+        expect(await generateCoveragePyFile(projectRoot, ['fakefile'])).toBe('Skipping coveragepy, files already specified')
     })
 
     it('should return a log when coveragepy is not installed', async () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('coverage')).thenReturn({ error: "command not found: coverage" })
 
-        await expect(generateCoveragePyFile()).rejects.toThrowError(/coveragepy is not installed/)
+        const projectRoot = process.cwd()
+        expect(await generateCoveragePyFile(projectRoot, [])).toBe('coveragepy is not installed')
+    })
+
+    it('should return a log when there are no dotcoverage files', async () => {
+        const fixturesYamlDir = path.join(
+            fileHelpers.fetchGitRoot(),
+            'test/fixtures/yaml',
+        )
+
+        const spawnSync = td.replace(childProcess, 'spawnSync')
+        td.when(spawnSync('coverage')).thenReturn({
+            stdout: 'coverage installed',
+            error: null
+        })
+
+        expect(await generateCoveragePyFile(fixturesYamlDir, [])).toBe('Skipping coveragepy, no .coverage file found.')
     })
 })
