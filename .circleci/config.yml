@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  win: circleci/windows@4.0.0
+  win: circleci/windows@4.1.1
 
 jobs:
   build-linux-and-osx:
@@ -439,7 +439,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:381.0.0-slim@sha256:ea7b1824492df16b411489045f3d59bff365f9ac2c9c80f238e1115fd502c0e3
+      - image: google/cloud-sdk:384.0.1-slim@sha256:be1f4039ffd7ffc363fd063ddc33c2361d86b5979d1fb0195f6d624f0eba12e6
     steps:
       - attach_workspace:
           at: .

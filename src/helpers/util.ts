@@ -1,6 +1,8 @@
 import childprocess from 'child_process'
+import { SPAWNPROCESSBUFFERSIZE } from './constansts'
+export { SPAWNPROCESSBUFFERSIZE } from './constansts'
 
-export const SPAWNPROCESSBUFFERSIZE = 1_048_576 * 10 // 10 MiB
+
 
 export function isProgramInstalled(programName: string): boolean {
   return !childprocess.spawnSync(programName).error

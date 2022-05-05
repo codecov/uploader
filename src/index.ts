@@ -138,7 +138,7 @@ export async function main(
 
   // #endregion
   // #region == Step 4: get network
-  let uploadFile = ''
+  const uploadFileChunks: Buffer[] = []
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
     UploadLogger.verbose('Start of network processing...')
@@ -149,7 +149,8 @@ export async function main(
       throw new Error(`Error getting file listing: ${error}`)
     }
 
-    uploadFile = uploadFile.concat(fileListing).concat(MARKER_NETWORK_END)
+    uploadFileChunks.push(Buffer.from(fileListing))
+    uploadFileChunks.push(Buffer.from(MARKER_NETWORK_END))
   }
 
   // #endregion
@@ -178,14 +179,15 @@ export async function main(
     }
   }
 
+  let coverageFilePaths: string[] = []
+  requestedPaths = argAsArray(args.file)
+
   try {
-    await generateCoveragePyFile()
+    const coveragePyLogs = await generateCoveragePyFile(projectRoot, requestedPaths)
+    UploadLogger.verbose(`${coveragePyLogs}`)
   } catch (error) {
     UploadLogger.verbose(`Skipping coveragepy conversion: ${error}`)
   }
-
-  let coverageFilePaths: string[] = []
-  requestedPaths = argAsArray(args.file)
 
   coverageFilePaths = requestedPaths
 
@@ -269,10 +271,9 @@ export async function main(
       continue
     }
 
-    uploadFile = uploadFile
-      .concat(fileHeader(coverageFile))
-      .concat(fileContents)
-      .concat(MARKER_FILE_END)
+    uploadFileChunks.push(Buffer.from(fileHeader(coverageFile)))
+    uploadFileChunks.push(Buffer.from(fileContents))
+    uploadFileChunks.push(Buffer.from(MARKER_FILE_END))
     coverageFileAdded = true
   }
   if (!coverageFileAdded) {
@@ -294,9 +295,11 @@ export async function main(
       .filter(Boolean)
       .map(evar => `${evar}=${process.env[evar] || ''}\n`)
       .join('')
-    uploadFile = uploadFile.concat(vars).concat(MARKER_ENV_END)
+    uploadFileChunks.push(Buffer.from(vars))
+    uploadFileChunks.push(Buffer.from(MARKER_ENV_END))
   }
 
+  const uploadFile = Buffer.concat(uploadFileChunks)
   const gzippedFile = zlib.gzipSync(uploadFile)
 
   // #endregion
@@ -323,7 +326,7 @@ export async function main(
   const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {
-    dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    dryRun(uploadHost, token, query, uploadFile.toString(), args.source || '')
     return
   }
 
