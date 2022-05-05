@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.2](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.2) (2022-05-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency https-proxy-agent to v5.0.1 ([90a68c0](https://github.com/codecov/uploader/commit/90a68c021b0cc7f098fb644934b1d29771e4fd88))
+* **deps:** update dependency yargs to v17.4.1 ([d0d9548](https://github.com/codecov/uploader/commit/d0d95483cc1aa5a7da86969af3f42d7824d280ef))
+* increase maxBuffer of spawnSync ([c121446](https://github.com/codecov/uploader/commit/c12144697e95051b061488feae60db4b98d600c2))
+* store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
+
 ### [0.2.1](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.1) (2022-05-05)
 
 
