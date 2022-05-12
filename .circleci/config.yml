@@ -478,12 +478,12 @@ workflows:
 
   'Build and Test':
     jobs:
-      - standards-coverage-comparison:
-          context:
-            - 'DockerHub Push Context'
-            - 'Github Checkout'
-          requires:
-            - build-alpine
+#       - standards-coverage-comparison:
+#           context:
+#             - 'DockerHub Push Context'
+#             - 'Github Checkout'
+#           requires:
+#             - build-alpine
       - build-linux-and-osx
       - build-alpine:
           requires:
