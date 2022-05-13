@@ -336,7 +336,8 @@ export async function main(
     )}&token=*******&${query}`,
   )
   UploadLogger.verbose(`Passed token was ${token.length} characters long`)
-  try {
+  let putAndResultUrlPair
+  let postResults
     UploadLogger.verbose(
       `${uploadHost}/upload/v4?package=${webHelpers.getPackage(
         args.source || '',
@@ -346,18 +347,24 @@ export async function main(
         X-Reduced-Redundancy: 'false'`
     )
 
-    const postURL = new URL(uploadHost)
+  const postURL = new URL(uploadHost)
 
-    const putAndResultUrlPair = await webHelpers.uploadToCodecovPOST(
+  info('meow')
+
+  try {
+    putAndResultUrlPair = await webHelpers.uploadToCodecovPOST(
       postURL,
       token,
       query,
       args.source || '',
       args,
     )
+    info('meow2')
+    info(putAndResultUrlPair)
 
-    const postResults = webHelpers.parsePOSTResults(putAndResultUrlPair)
+    postResults = webHelpers.parsePOSTResults(putAndResultUrlPair)
 
+    info('byah')
     UploadLogger.verbose(`Returned upload url: ${postResults.putURL}`)
 
     const statusAndResultPair = await webHelpers.uploadToCodecovPUT(
@@ -366,9 +373,10 @@ export async function main(
       args,
     )
     info(JSON.stringify(statusAndResultPair))
+    info('yummy')
     return {resultURL: statusAndResultPair.resultURL.href, status: statusAndResultPair.status }
   } catch (error) {
-    throw new Error(`Error uploading to ${uploadHost}: ${error}`)
+    throw new Error(`Error uploading to ${uploadHost}: ${error} = ${postURL?.toString()} - ${putAndResultUrlPair} - ${postResults?.putURL.toString()}`)
   }
   // #endregion
 }

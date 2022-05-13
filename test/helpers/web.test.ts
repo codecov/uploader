@@ -1,5 +1,9 @@
-import { HttpsProxyAgent } from 'https-proxy-agent'
-import nock from 'nock'
+import {
+  MockAgent,
+  MockClient,
+  ProxyAgent,
+  setGlobalDispatcher,
+} from 'undici'
 
 import { version } from '../../package.json'
 import {
@@ -22,6 +26,9 @@ describe('Web Helpers', () => {
   let uploadFile: string
   let query: string
   let source: string
+
+  let mockAgent: MockAgent
+  let mockClient: MockClient
   beforeEach(() => {
     token = '123-abc-890-xyz'
     uploadFile = 'some content'
@@ -29,7 +36,15 @@ describe('Web Helpers', () => {
     source = ''
 
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
-    nock('https://codecov.io').put('/').query(true).reply(200, 'testPUT')
+    mockAgent = new MockAgent({ connections: 1 })
+    mockClient = mockAgent.get('http://localhost:3000')
+    mockClient.intercept({
+      body: 'true',
+      path: '/',
+      method: 'PUT',
+    }).reply(200, 'testPUT')
+
+    setGlobalDispatcher(mockAgent)
   })
 
   afterEach(() => {
@@ -39,11 +54,23 @@ describe('Web Helpers', () => {
 
   it('Can POST to the uploader endpoint (HTTP)', async () => {
     uploadURL = 'http://codecov.io'
-    // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
-    nock('http://codecov.io')
-      .post('/upload/v4')
-      .query(true)
-      .reply(200, 'testPOSTHTTP')
+    mockClient.intercept({
+      method: 'POST',
+      path: '/upload/v4?package=uploader-0.2.2&token=123-abc-890-xyz&hello',
+    }).reply(200, 'testPOSTHTTP')
+
+    mockClient.intercept({
+      method: 'GET',
+      path: '/byah',
+    }).reply(401, 'meowmeow')
+
+    const response1 = await mockClient.request({
+      method: 'GET',
+      path: '/byah'
+    })
+
+    expect(response1.statusCode).toBe(401)
+    expect(await response1.body.text()).toBe('meowmeow')
 
     const response = await uploadToCodecovPOST(
       new URL(uploadURL),
@@ -59,10 +86,11 @@ describe('Web Helpers', () => {
     try {
       expect(response).toBe('testPOSTHTTP')
     } catch (error) {
+      throw new Error(`${response} - ${error}`)
       console.trace(error)
     }
   })
-
+/*
   it('Can POST to the uploader endpoint (HTTPS)', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => void {})
     uploadURL = 'https://codecov.io'
@@ -136,7 +164,7 @@ describe('Web Helpers', () => {
     expect(generateQuery(queryParams)).toBe(
       'branch=testBranch&commit=commitSHA&build=4&build_url=https%3A%2F%2Fci-providor.local%2Fjob%2Fxyz&name=testName&tag=tagV1&slug=testOrg%2FtestRepo&service=testingCI&flags=unit%2Cuploader&pr=&job=6',
     )
-  }) */
+  })
 
   it('can populateBuildParams() from args', () => {
     const result = populateBuildParams(
@@ -249,13 +277,13 @@ describe('Web Helpers', () => {
 
     it('will return an object when parsing correctly and input has multiple linebreaks', () => {
       const testURL = `https://result.codecov.local
-      
-      
-      
-      
-      
-      
-      
+
+
+
+
+
+
+
       https://put.codecov.local`
       const expectedResults = {
         putURL: 'https://put.codecov.local/',
@@ -264,6 +292,7 @@ describe('Web Helpers', () => {
       expect(JSON.stringify(parsePOSTResults(testURL))).toStrictEqual(JSON.stringify(expectedResults))
     })
   })
+  */
 })
 
 describe('displayChangelog()', () => {
@@ -293,7 +322,7 @@ describe('generateRequestHeadersPOST()', () => {
       )}&token=134&slug=testOrg/testUploader`,
     )
     expect(typeof requestHeaders.options.body).toEqual('undefined')
-    expect(typeof requestHeaders.options.agent).toEqual('undefined')
+    expect(typeof requestHeaders.agent).toEqual('undefined')
   })
 
   it('should return return the correct url when args.upstream is set', () => {
@@ -313,8 +342,8 @@ describe('generateRequestHeadersPOST()', () => {
     )
 
     expect(typeof requestHeaders.options.body).toEqual('undefined')
-    expect(requestHeaders.options.agent).toMatchObject(
-      new HttpsProxyAgent(args.upstream),
+    expect(requestHeaders.agent).toMatchObject(
+      new ProxyAgent(args.upstream),
     )
   })
 })
@@ -332,7 +361,7 @@ describe('generateRequestHeadersPUT()', () => {
 
     expect(requestHeaders.url.href).toEqual('https://localhost.local/')
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
-    expect(typeof requestHeaders.options.agent).toEqual('undefined')
+    expect(typeof requestHeaders.agent).toEqual('undefined')
   })
 
   it('should return return the correct url when args.upstream is set', () => {
@@ -345,8 +374,8 @@ describe('generateRequestHeadersPUT()', () => {
 
     expect(requestHeaders.url.href).toEqual('https://localhost.local/')
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
-    expect(requestHeaders.options.agent).toMatchObject(
-      new HttpsProxyAgent(args.upstream),
+    expect(requestHeaders.agent).toMatchObject(
+      new ProxyAgent(args.upstream),
     )
   })
 })
