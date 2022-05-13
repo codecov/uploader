@@ -54,6 +54,7 @@ describe('Web Helpers', () => {
 
   it('Can POST to the uploader endpoint (HTTP)', async () => {
     uploadURL = 'http://codecov.io'
+    mockClient = mockAgent.get(uploadURL)
     mockClient.intercept({
       method: 'POST',
       path: '/upload/v4?package=uploader-0.2.2&token=123-abc-890-xyz&hello',
