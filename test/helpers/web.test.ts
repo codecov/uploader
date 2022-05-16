@@ -37,13 +37,6 @@ describe('Web Helpers', () => {
 
     // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
     mockAgent = new MockAgent({ connections: 1 })
-    mockClient = mockAgent.get('http://localhost:3000')
-    mockClient.intercept({
-      body: 'true',
-      path: '/',
-      method: 'PUT',
-    }).reply(200, 'testPUT')
-
     setGlobalDispatcher(mockAgent)
   })
 
@@ -57,21 +50,8 @@ describe('Web Helpers', () => {
     mockClient = mockAgent.get(uploadURL)
     mockClient.intercept({
       method: 'POST',
-      path: '/upload/v4?package=uploader-0.2.2&token=123-abc-890-xyz&hello',
+      path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
     }).reply(200, 'testPOSTHTTP')
-
-    mockClient.intercept({
-      method: 'GET',
-      path: '/byah',
-    }).reply(401, 'meowmeow')
-
-    const response1 = await mockClient.request({
-      method: 'GET',
-      path: '/byah'
-    })
-
-    expect(response1.statusCode).toBe(401)
-    expect(await response1.body.text()).toBe('meowmeow')
 
     const response = await uploadToCodecovPOST(
       new URL(uploadURL),
@@ -91,15 +71,15 @@ describe('Web Helpers', () => {
       console.trace(error)
     }
   })
-/*
+
   it('Can POST to the uploader endpoint (HTTPS)', async () => {
     jest.spyOn(console, 'log').mockImplementation(() => void {})
     uploadURL = 'https://codecov.io'
-    // deepcode ignore WrongNumberOfArgs/test: believe this is a false positive
-    nock('https://codecov.io')
-      .post('/upload/v4')
-      .query(true)
-      .reply(200, 'testPOSTHTTPS')
+    mockClient = mockAgent.get(uploadURL)
+    mockClient.intercept({
+      method: 'POST',
+      path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+    }).reply(200, 'testPOSTHTTPS')
 
     const response = await uploadToCodecovPOST(
       new URL(uploadURL),
@@ -121,6 +101,13 @@ describe('Web Helpers', () => {
       putURL: new URL('https://codecov.io'),
       resultURL: new URL('https://results.codecov.io'),
     }
+
+    mockClient = mockAgent.get(postResults.putURL.href)
+    mockClient.intercept({
+      method: 'PUT',
+      path: postResults.putURL.href,
+    }).reply(200, postResults.resultURL.href)
+
     const response = await uploadToCodecovPUT(postResults, uploadFile, {
       flags: '',
       slug: '',
@@ -165,7 +152,7 @@ describe('Web Helpers', () => {
     expect(generateQuery(queryParams)).toBe(
       'branch=testBranch&commit=commitSHA&build=4&build_url=https%3A%2F%2Fci-providor.local%2Fjob%2Fxyz&name=testName&tag=tagV1&slug=testOrg%2FtestRepo&service=testingCI&flags=unit%2Cuploader&pr=&job=6',
     )
-  })
+  }) */
 
   it('can populateBuildParams() from args', () => {
     const result = populateBuildParams(
@@ -293,7 +280,6 @@ describe('Web Helpers', () => {
       expect(JSON.stringify(parsePOSTResults(testURL))).toStrictEqual(JSON.stringify(expectedResults))
     })
   })
-  */
 })
 
 describe('displayChangelog()', () => {

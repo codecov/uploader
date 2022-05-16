@@ -70,7 +70,7 @@ export async function uploadToCodecovPUT(
   if (requestHeaders.agent) {
     setGlobalDispatcher(requestHeaders.agent)
   }
-  const response = await request(requestHeaders.url, requestHeaders.options)
+  const response = await request(requestHeaders.url.origin, requestHeaders.options)
 
   if (response.statusCode !== 200) {
     const data = await response.body.text()
@@ -201,8 +201,8 @@ export function generateRequestHeadersPUT(
         'Content-Encoding': 'gzip',
       },
       method: 'PUT',
-      origin: uploadURL.origin,
-      path: uploadURL.pathname,
+      origin: uploadURL,
+      path: `${uploadURL.pathname}${uploadURL.search}`,
     },
   }
 }
