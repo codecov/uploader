@@ -75,7 +75,7 @@ export async function uploadToCodecovPUT(
   if (response.statusCode !== 200) {
     const data = await response.body.text()
     throw new Error(
-     `There was an error fetching the storage URL during PUT: ${response.statusCode} - ${data}`,
+      `There was an error fetching the storage URL during PUT: ${response.statusCode} - ${data}`,
     )
   }
 
@@ -104,7 +104,7 @@ export async function uploadToCodecovPOST(
   if (response.statusCode !== 200) {
     const data = await response.body.text()
     throw new Error(
-      `There was an error fetching the storage URL during POST: ${response.statusCode} ??- ${data} ??- ${requestHeaders.url.origin} ??- ${requestHeaders.options.path} //`,
+      `There was an error fetching the storage URL during POST: ${response.statusCode} - ${data}`,
     )
   }
 

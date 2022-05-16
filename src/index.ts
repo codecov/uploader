@@ -355,6 +355,7 @@ export async function main(
       args.source || '',
       args,
     )
+
     const postResults = webHelpers.parsePOSTResults(putAndResultUrlPair)
 
     UploadLogger.verbose(`Returned upload url: ${postResults.putURL}`)
@@ -364,6 +365,7 @@ export async function main(
       gzippedFile,
       args,
     )
+    info(JSON.stringify(statusAndResultPair))
     return {resultURL: statusAndResultPair.resultURL.href, status: statusAndResultPair.status }
   } catch (error) {
     throw new Error(`Error uploading to ${uploadHost}: ${error}`)
