@@ -12,6 +12,8 @@ import * as app from '../src'
 
 import { version } from '../package.json'
 import { UploadLogger } from '../src/helpers/logger'
+import { detectProvider } from '../src/helpers/provider'
+import * as webHelpers from '../src/helpers/web'
 
 // Backup the env
 const realEnv = { ...process.env }
@@ -67,7 +69,7 @@ describe('Uploader Core', () => {
     process.env.CI = 'true'
     process.env.CIRCLECI = 'true'
 
-    const params = {
+    const args = {
       flags: '',
       name: 'customname',
       slug: '',
@@ -75,10 +77,15 @@ describe('Uploader Core', () => {
       upstream: '',
       url: 'https://codecov.io',
     }
+    const inputs = { args, environment: envs }
+    const serviceParams = detectProvider(inputs, args.token != '')
+    const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
+    const query = webHelpers.generateQuery(buildParams)
+
     mockClient = mockAgent.get('https://codecov.io')
     mockClient.intercept({
       method: 'POST',
-      path: `/upload/v4?package=uploader-${version}&token=${params.token}&branch=&build=&build_url=&commit=&job=&pr=&service=circleci&slug=&name=${params.name}&tag=&flags=&parent=`,
+      path: `/upload/v4?package=uploader-${version}&token=${params.token}&${query}`,
     }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
     mockClient.intercept({
@@ -86,7 +93,7 @@ describe('Uploader Core', () => {
       path: '/',
     }).reply(200, 'success')
 
-    const result = await app.main(params)
+    const result = await app.main(args)
     expect(result).toEqual({
       status: 'success',
       resultURL: 'https://results.codecov.io/',
@@ -150,7 +157,7 @@ describe('Uploader Core', () => {
       process.env.CI = 'true'
       process.env.CIRCLECI = 'true'
 
-      const params = {
+      const args = {
         flags: 'a-flag',
         token: 'abcdefg',
         url: 'https://codecov.io',
@@ -159,11 +166,15 @@ describe('Uploader Core', () => {
         slug: '',
         upstream: ''
       }
+      const inputs = { args, environment: envs }
+      const serviceParams = detectProvider(inputs, args.token != '')
+      const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
+      const query = webHelpers.generateQuery(buildParams)
 
       mockClient = mockAgent.get('https://codecov.io')
       mockClient.intercept({
         method: 'POST',
-        path: `/upload/v4?package=uploader-${version}&token=${params.token}&branch=&build=&build_url=&commit=&job=&pr=&service=circleci&slug=&name=&tag=&flags=${params.flags}&parent=`,
+        path: `/upload/v4?package=uploader-${version}&token=${params.token}&${query}`,
       }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
       mockClient.intercept({
@@ -171,7 +182,7 @@ describe('Uploader Core', () => {
         path: '/',
       }).reply(200, 'success')
 
-      const result = await app.main(params)
+      const result = await app.main(args)
       expect(result).toEqual({
         status: 'success',
         resultURL: 'https://results.codecov.io/',
@@ -184,7 +195,7 @@ describe('Uploader Core', () => {
     process.env.CIRCLECI = 'true'
 
     const parent = '2x4bqz123abc'
-    const params = {
+    const args = {
       token: 'abcdefg',
       url: 'https://codecov.io',
       parent,
@@ -192,11 +203,15 @@ describe('Uploader Core', () => {
       slug: '',
       upstream: ''
     }
+    const inputs = { args, environment: envs }
+    const serviceParams = detectProvider(inputs, args.token != '')
+    const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
+    const query = webHelpers.generateQuery(buildParams)
 
     mockClient = mockAgent.get('https://codecov.io')
     mockClient.intercept({
       method: 'POST',
-      path: `/upload/v4?package=uploader-${version}&token=${params.token}&branch=&build=&build_url=&commit=&job=&pr=&service=circleci&slug=&name=&tag=&flags=${params.flags}&parent=${params.parent}`,
+      path: `/upload/v4?package=uploader-${version}&token=${params.token}&${query}`,
     }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
     mockClient.intercept({
