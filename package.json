@@ -50,7 +50,6 @@
     "@types/micromatch": "4.0.2",
     "@types/mock-fs": "4.13.1",
     "@types/node": "16.11.31",
-    "@types/node-fetch": "2.6.1",
     "@types/validator": "13.7.2",
     "@types/yargs": "17.0.10",
     "@typescript-eslint/eslint-plugin": "5.21.0",
