@@ -1,4 +1,4 @@
-import { Agent } from "https";
+import { Dispatcher, ProxyAgent } from "undici";
 
 export interface UploaderArgs {
   branch?: string // Specify the branch manually
@@ -66,13 +66,9 @@ export interface IServiceParams {
 }
 
 export interface IRequestHeaders {
-  url: URL;
-  options: {
-    method: string,
-    agent?: Agent
-    body?: string | Buffer,
-    headers: Record<string, string>
-  }
+  agent?: ProxyAgent
+  url: URL
+  options: Dispatcher.RequestOptions
 }
 
 export interface PostResults {
