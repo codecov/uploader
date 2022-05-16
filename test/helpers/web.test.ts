@@ -102,10 +102,10 @@ describe('Web Helpers', () => {
       resultURL: new URL('https://results.codecov.io'),
     }
 
-    mockClient = mockAgent.get(postResults.putURL.href)
+    mockClient = mockAgent.get(postResults.putURL.origin)
     mockClient.intercept({
       method: 'PUT',
-      path: postResults.putURL.href,
+      path: '/',
     }).reply(200, postResults.resultURL.href)
 
     const response = await uploadToCodecovPUT(postResults, uploadFile, {

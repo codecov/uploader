@@ -75,7 +75,7 @@ export async function uploadToCodecovPUT(
   if (response.statusCode !== 200) {
     const data = await response.body.text()
     throw new Error(
-     `There was an error fetching the storage URL during PUT: ${response.statusCode} - ${data} - ${requestHeaders.options.origin} - ${requestHeaders.options.path}`,
+     `There was an error fetching the storage URL during PUT: ${response.statusCode} - ${data}`,
     )
   }
 
@@ -99,13 +99,12 @@ export async function uploadToCodecovPOST(
   if (requestHeaders.agent) {
     setGlobalDispatcher(requestHeaders.agent)
   }
-  info(`${requestHeaders.url.origin} - ${requestHeaders.options.path}`)
   const response = await request(requestHeaders.url.origin, requestHeaders.options)
 
   if (response.statusCode !== 200) {
     const data = await response.body.text()
     throw new Error(
-      `There was an error fetching the storage URL during POST: ${response.statusCode} - ${data} - ${requestHeaders.options.origin} - ${requestHeaders.options.path} - ${requestHeaders.options.body}`,
+      `There was an error fetching the storage URL during POST: ${response.statusCode} ??- ${data} ??- ${requestHeaders.url.origin} ??- ${requestHeaders.options.path} //`,
     )
   }
 

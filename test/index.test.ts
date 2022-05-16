@@ -1,13 +1,17 @@
 import Module from 'module'
 
+import fs from 'fs'
+import td from 'testdouble'
+import {
+  MockAgent,
+  MockClient,
+  setGlobalDispatcher,
+} from 'undici'
+
 import * as app from '../src'
 
-import childProcess from 'child_process'
-import fs from 'fs'
-import nock from 'nock'
-import td from 'testdouble'
-import { UploadLogger } from '../src/helpers/logger'
 import { version } from '../package.json'
+import { UploadLogger } from '../src/helpers/logger'
 
 // Backup the env
 const realEnv = { ...process.env }
@@ -16,6 +20,9 @@ describe('Uploader Core', () => {
   const env = process.env
 
   UploadLogger.setLogLevel('verbose')
+
+  let mockAgent: MockAgent
+  let mockClient: MockClient
 
   beforeEach(() => {
     // https://bensmithgall.com/blog/jest-mock-trick if this works!
@@ -27,6 +34,9 @@ describe('Uploader Core', () => {
 
     jest.mock('process', () => mockProcess())
     jest.resetAllMocks()
+
+    mockAgent = new MockAgent({ connections: 1 })
+    setGlobalDispatcher(mockAgent)
   })
 
   afterEach(() => {
@@ -38,7 +48,6 @@ describe('Uploader Core', () => {
   it('Can return version', () => {
     expect(app.getVersion()).toBe(version)
   })
-
   it('Can display header', () => {
     expect(app.generateHeader(app.getVersion())).toBe(`
      _____          _
@@ -58,21 +67,26 @@ describe('Uploader Core', () => {
     process.env.CI = 'true'
     process.env.CIRCLECI = 'true'
 
-    nock('https://codecov.io')
-      .post('/upload/v4')
-      .query(parsedObj => parsedObj.name === 'customname')
-      .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
-
-    nock('https://codecov.io').put('/').reply(200, 'success')
-
-    const result = await app.main({
-      name: 'customname',
-      token: 'abcdefg',
-      url: 'https://codecov.io',
+    const params = {
       flags: '',
+      name: 'customname',
       slug: '',
-      upstream: ''
-    })
+      token: 'abcdefg',
+      upstream: '',
+      url: 'https://codecov.io',
+    }
+    mockClient = mockAgent.get('https://codecov.io')
+    mockClient.intercept({
+      method: 'POST',
+      path: `/upload/v4?package=uploader-${version}&token=${params.token}&branch=&build=&build_url=&commit=&job=&pr=&service=circleci&slug=&name=${params.name}&tag=&flags=&parent=`,
+    }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
+
+    mockClient.intercept({
+      method: 'PUT',
+      path: '/',
+    }).reply(200, 'success')
+
+    const result = await app.main(params)
     expect(result).toEqual({
       status: 'success',
       resultURL: 'https://results.codecov.io/',
@@ -136,14 +150,7 @@ describe('Uploader Core', () => {
       process.env.CI = 'true'
       process.env.CIRCLECI = 'true'
 
-      nock('https://codecov.io')
-        .post('/upload/v4')
-        .query(actualQueryObject => actualQueryObject.flags === 'a-flag')
-        .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
-
-      nock('https://codecov.io').put('/').reply(200, 'success')
-
-      const result = await app.main({
+      const params = {
         flags: 'a-flag',
         token: 'abcdefg',
         url: 'https://codecov.io',
@@ -151,7 +158,20 @@ describe('Uploader Core', () => {
         source: '',
         slug: '',
         upstream: ''
-      })
+      }
+
+      mockClient = mockAgent.get('https://codecov.io')
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${params.token}&branch=&build=&build_url=&commit=&job=&pr=&service=circleci&slug=&name=&tag=&flags=${params.flags}&parent=`,
+      }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: '/',
+      }).reply(200, 'success')
+
+      const result = await app.main(params)
       expect(result).toEqual({
         status: 'success',
         resultURL: 'https://results.codecov.io/',
@@ -164,22 +184,27 @@ describe('Uploader Core', () => {
     process.env.CIRCLECI = 'true'
 
     const parent = '2x4bqz123abc'
-
-    nock('https://codecov.io')
-      .post('/upload/v4')
-      .query(actualQueryObject => actualQueryObject.parent === parent)
-      .reply(200, 'https://results.codecov.io\nhttps://codecov.io')
-
-    nock('https://codecov.io').put('/').reply(200, 'success')
-
-    const result = await app.main({
+    const params = {
       token: 'abcdefg',
       url: 'https://codecov.io',
       parent,
       flags: '',
       slug: '',
       upstream: ''
-    })
+    }
+
+    mockClient = mockAgent.get('https://codecov.io')
+    mockClient.intercept({
+      method: 'POST',
+      path: `/upload/v4?package=uploader-${version}&token=${params.token}&branch=&build=&build_url=&commit=&job=&pr=&service=circleci&slug=&name=&tag=&flags=${params.flags}&parent=${params.parent}`,
+    }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
+
+    mockClient.intercept({
+      method: 'PUT',
+      path: '/',
+    }).reply(200, 'success')
+
+    const result = await app.main(params)
     expect(result).toEqual({
       status: 'success',
       resultURL: 'https://results.codecov.io/',
