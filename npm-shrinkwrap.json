@@ -14,7 +14,7 @@
         "js-yaml": "4.1.0",
         "line-reader": "0.4.0",
         "snake-case": "3.0.4",
-        "undici": "5.1.1",
+        "undici": "5.2.0",
         "validator": "13.7.0",
         "yargs": "17.5.0"
       },
@@ -8544,9 +8544,9 @@
       }
     },
     "node_modules/undici": {
-      "version": "5.1.1",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-5.1.1.tgz",
-      "integrity": "sha512-CmK9JzLSMGx+2msOao8LhkKn3J7eKo2M50v0KZQ2XbiHcGqLS1HiIj01ceIm3jbUYlspw/FTSb6nMdSNyvVyaQ==",
+      "version": "5.2.0",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-5.2.0.tgz",
+      "integrity": "sha512-XY6+NS3WH9b3TKOHeNz2CjR+qrVz/k4fO9g3etPpLozRvULoQmZ1+dk9JbIz40ehn27xzFk4jYVU2MU3Nle62A==",
       "engines": {
         "node": ">=12.18"
       }
@@ -15418,9 +15418,9 @@
       "optional": true
     },
     "undici": {
-      "version": "5.1.1",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-5.1.1.tgz",
-      "integrity": "sha512-CmK9JzLSMGx+2msOao8LhkKn3J7eKo2M50v0KZQ2XbiHcGqLS1HiIj01ceIm3jbUYlspw/FTSb6nMdSNyvVyaQ=="
+      "version": "5.2.0",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-5.2.0.tgz",
+      "integrity": "sha512-XY6+NS3WH9b3TKOHeNz2CjR+qrVz/k4fO9g3etPpLozRvULoQmZ1+dk9JbIz40ehn27xzFk4jYVU2MU3Nle62A=="
     },
     "universalify": {
       "version": "2.0.0",
