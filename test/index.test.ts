@@ -77,7 +77,7 @@ describe('Uploader Core', () => {
       upstream: '',
       url: 'https://codecov.io',
     }
-    const inputs = { args, environment: envs }
+    const inputs = { args, environment: process.env }
     const serviceParams = detectProvider(inputs, args.token != '')
     const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
     const query = webHelpers.generateQuery(buildParams)
@@ -85,7 +85,7 @@ describe('Uploader Core', () => {
     mockClient = mockAgent.get('https://codecov.io')
     mockClient.intercept({
       method: 'POST',
-      path: `/upload/v4?package=uploader-${version}&token=${params.token}&${query}`,
+      path: `/upload/v4?package=uploader-${version}&token=${args.token}&${query}`,
     }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
     mockClient.intercept({
@@ -166,7 +166,7 @@ describe('Uploader Core', () => {
         slug: '',
         upstream: ''
       }
-      const inputs = { args, environment: envs }
+      const inputs = { args, environment: process.env }
       const serviceParams = detectProvider(inputs, args.token != '')
       const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
       const query = webHelpers.generateQuery(buildParams)
@@ -174,7 +174,7 @@ describe('Uploader Core', () => {
       mockClient = mockAgent.get('https://codecov.io')
       mockClient.intercept({
         method: 'POST',
-        path: `/upload/v4?package=uploader-${version}&token=${params.token}&${query}`,
+        path: `/upload/v4?package=uploader-${version}&token=${args.token}&${query}`,
       }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
       mockClient.intercept({
@@ -203,7 +203,7 @@ describe('Uploader Core', () => {
       slug: '',
       upstream: ''
     }
-    const inputs = { args, environment: envs }
+    const inputs = { args, environment: process.env }
     const serviceParams = detectProvider(inputs, args.token != '')
     const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
     const query = webHelpers.generateQuery(buildParams)
@@ -211,7 +211,7 @@ describe('Uploader Core', () => {
     mockClient = mockAgent.get('https://codecov.io')
     mockClient.intercept({
       method: 'POST',
-      path: `/upload/v4?package=uploader-${version}&token=${params.token}&${query}`,
+      path: `/upload/v4?package=uploader-${version}&token=${args.token}&${query}`,
     }).reply(200, 'https://results.codecov.io\nhttps://codecov.io')
 
     mockClient.intercept({
@@ -219,7 +219,7 @@ describe('Uploader Core', () => {
       path: '/',
     }).reply(200, 'success')
 
-    const result = await app.main(params)
+    const result = await app.main(args)
     expect(result).toEqual({
       status: 'success',
       resultURL: 'https://results.codecov.io/',
