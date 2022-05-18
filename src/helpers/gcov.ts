@@ -11,7 +11,7 @@ export async function generateGcovCoverageFiles(projectRoot: string, include: st
     const globstar = (pattern: string) => `**/${pattern}`
     const gcovInclude = ['*.gcno', ...include].map(globstar)
     const gcovIgnore = [...manualBlocklist(), ...ignore].map(globstar)
-    const files = await glob(gcovInclude, {cwd: projectRoot, ignore: gcovIgnore, onlyFiles: true})
+    const files = await glob(gcovInclude, {cwd: projectRoot, dot: true, ignore: gcovIgnore, onlyFiles: true})
     if (!files.length) {
         throw new Error('No gcov files found')
     }

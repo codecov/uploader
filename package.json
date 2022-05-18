@@ -1,6 +1,6 @@
 {
   "name": "@codecov/uploader",
-  "version": "0.1.20",
+  "version": "0.2.3",
   "description": "Codecov Report Uploader",
   "private": true,
   "bin": {
@@ -19,7 +19,7 @@
     "prepare": "husky install",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch",
-    "release": "npm run lint && standard-version --sign"
+    "release": "standard-version --sign"
   },
   "repository": {
     "type": "git",
@@ -34,39 +34,38 @@
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
     "fast-glob": "3.2.11",
-    "https-proxy-agent": "5.0.0",
+    "https-proxy-agent": "5.0.1",
     "js-yaml": "4.1.0",
     "line-reader": "0.4.0",
-    "node-fetch": "2.6.7",
     "snake-case": "3.0.4",
+    "undici": "5.2.0",
     "validator": "13.7.0",
-    "yargs": "17.4.0"
+    "yargs": "17.5.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "16.2.3",
-    "@commitlint/config-conventional": "16.2.1",
+    "@commitlint/cli": "16.2.4",
+    "@commitlint/config-conventional": "16.2.4",
     "@types/jest": "27.4.1",
     "@types/js-yaml": "4.0.5",
     "@types/micromatch": "4.0.2",
     "@types/mock-fs": "4.13.1",
-    "@types/node": "16.11.26",
-    "@types/node-fetch": "2.6.1",
+    "@types/node": "16.11.31",
     "@types/validator": "13.7.2",
     "@types/yargs": "17.0.10",
-    "@typescript-eslint/eslint-plugin": "5.16.0",
-    "@typescript-eslint/parser": "5.16.0",
-    "eslint": "8.12.0",
+    "@typescript-eslint/eslint-plugin": "5.21.0",
+    "@typescript-eslint/parser": "5.21.0",
+    "eslint": "8.14.0",
     "eslint-config-prettier": "8.5.0",
     "husky": "7.0.4",
     "jest": "27.5.1",
     "jest-spec-reporter": "1.0.17",
-    "lint-staged": "12.3.7",
+    "lint-staged": "12.4.1",
     "mock-fs": "5.1.2",
     "nock": "13.2.4",
-    "pkg": "5.5.2",
-    "prettier": "2.6.1",
+    "pkg": "5.6.0",
+    "prettier": "2.6.2",
     "standard-version": "9.3.2",
-    "testdouble": "3.16.4",
+    "testdouble": "3.16.5",
     "testdouble-jest": "2.0.0",
     "ts-jest": "27.1.4",
     "typescript": "4.6.3"
@@ -76,7 +75,7 @@
       "prettier --write",
       "eslint --fix"
     ],
-    "**/*.{json,md,yml,yaml,html}": [
+    "**/*.{json,yml,yaml,html}": [
       "prettier --write"
     ]
   }

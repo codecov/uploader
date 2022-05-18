@@ -2,6 +2,75 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.3](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.3) (2022-05-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency https-proxy-agent to v5.0.1 ([90a68c0](https://github.com/codecov/uploader/commit/90a68c021b0cc7f098fb644934b1d29771e4fd88))
+* **deps:** update dependency undici to v5.2.0 ([e7fb541](https://github.com/codecov/uploader/commit/e7fb54164013773066c144140344dcd5f88b0eba))
+* **deps:** update dependency yargs to v17.4.1 ([d0d9548](https://github.com/codecov/uploader/commit/d0d95483cc1aa5a7da86969af3f42d7824d280ef))
+* **deps:** update dependency yargs to v17.5.0 ([5911bb5](https://github.com/codecov/uploader/commit/5911bb541a0474cbeb6ad01b095f154a0ea0b7dd))
+* increase maxBuffer of spawnSync ([c121446](https://github.com/codecov/uploader/commit/c12144697e95051b061488feae60db4b98d600c2))
+* store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
+
+### [0.2.2](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.2) (2022-05-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency https-proxy-agent to v5.0.1 ([90a68c0](https://github.com/codecov/uploader/commit/90a68c021b0cc7f098fb644934b1d29771e4fd88))
+* **deps:** update dependency yargs to v17.4.1 ([d0d9548](https://github.com/codecov/uploader/commit/d0d95483cc1aa5a7da86969af3f42d7824d280ef))
+* increase maxBuffer of spawnSync ([c121446](https://github.com/codecov/uploader/commit/c12144697e95051b061488feae60db4b98d600c2))
+* store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
+
+### [0.2.1](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.1) (2022-05-05)
+
+
+### Bug Fixes
+
+* **deps:** update dependency https-proxy-agent to v5.0.1 ([90a68c0](https://github.com/codecov/uploader/commit/90a68c021b0cc7f098fb644934b1d29771e4fd88))
+* **deps:** update dependency yargs to v17.4.1 ([d0d9548](https://github.com/codecov/uploader/commit/d0d95483cc1aa5a7da86969af3f42d7824d280ef))
+* increase maxBuffer of spawnSync ([c121446](https://github.com/codecov/uploader/commit/c12144697e95051b061488feae60db4b98d600c2))
+* store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
+* fix coveragepy autorun ([0773002](https://github.com/codecov/uploader/commit/0773002388faad66cf155ef36d968d718c03cd87))
+
+### [0.2.0](https://github.com/codecov/uploader/compare/v0.1.21...v0.2.0) (2022-04-21)
+
+
+### Features
+
+* add coveragepy xml support ([8353edb](https://github.com/codecov/uploader/commit/8353edbd82e9dd2b9eea607beaa701f3ecef9300))
+* add xcode support ([c5e1c70](https://github.com/codecov/uploader/commit/c5e1c70051523d6bb015cbd2e337a4f1df58ef60))
+
+
+### Bug Fixes
+
+* add more readable number ([d15ccef](https://github.com/codecov/uploader/commit/d15ccef55d84094abfc986bac7b3b53b1263acae))
+* add tests for coveragepy ([de90c56](https://github.com/codecov/uploader/commit/de90c56614de8eea5d46aee25f106598cccd534d))
+* automagic xml ([626b76b](https://github.com/codecov/uploader/commit/626b76b76caa03ddfc6adf9310d3a22ac04619c4))
+* bump package.json ([e5aedde](https://github.com/codecov/uploader/commit/e5aeddefc7f50d2d17ef3e859d021d6d7aca7420))
+* increase spawnsync buffer ([a758b90](https://github.com/codecov/uploader/commit/a758b905f41d47c4ff453312384943dbd0b1ff5e))
+* refactor logging and catching ([f782e4f](https://github.com/codecov/uploader/commit/f782e4fc8ba98c499ad27748a5bfc306f56404cd))
+* resolve comments ([2bea407](https://github.com/codecov/uploader/commit/2bea407585348ef97350de84bb027e4838096a68))
+* update tests with buffer arg ([af8bea4](https://github.com/codecov/uploader/commit/af8bea413a2b01253b8dc8bc7825a3d873043594))
+* update types for xcode ([a5c363e](https://github.com/codecov/uploader/commit/a5c363ee707290419869a3c3ade1ebabb5aa25a9))
+
+### [0.1.22](https://github.com/codecov/uploader/compare/v0.1.21...v0.1.22) (2022-04-12)
+
+
+### Bug Fixes
+
+* bump package.json ([e5aedde](https://github.com/codecov/uploader/commit/e5aeddefc7f50d2d17ef3e859d021d6d7aca7420))
+
+### [0.1.21](https://github.com/codecov/uploader/compare/v0.1.20...v0.1.21) (2022-04-11)
+
+### Bug Fixes
+
+- **deps:** update dependency micromatch to v4.0.5 ([449cccd](https://github.com/codecov/uploader/commit/449cccd75c630542914e120978c9fe6f46884bda))
+- **deps:** update dependency yargs to v17.4.0 ([ab27903](https://github.com/codecov/uploader/commit/ab27903013d79718862fc1f9450029d8b7c04c11))
+- include directories and files that start with . with gcov ([a51ca72](https://github.com/codecov/uploader/commit/a51ca72e23bd053627571988af31673c969ae96f))
+
 ### [0.1.20](https://github.com/codecov/uploader/compare/v0.1.18...v0.1.20) (2022-03-21)
 
 ### Features

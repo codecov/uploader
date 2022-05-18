@@ -39,7 +39,7 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
-  return args.sha || envs.CI_BUILD_REF || envs.CI_COMMIT_SHA || ''
+  return args.sha || envs.CI_MERGE_REQUEST_SOURCE_BRANCH_SHA || envs.CI_BUILD_REF || envs.CI_COMMIT_SHA || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
@@ -75,6 +75,7 @@ export function getEnvVarNames(): string[] {
     'CI_COMMIT_REF_NAME',
     'CI_COMMIT_SHA',
     'CI_JOB_ID',
+    'CI_MERGE_REQUEST_SOURCE_BRANCH_SHA',
     'CI_PROJECT_PATH',
     'CI_REPOSITORY_URL',
     'GITLAB_CI',

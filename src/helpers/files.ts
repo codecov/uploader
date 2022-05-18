@@ -7,6 +7,7 @@ import { UploaderArgs } from '../types'
 import { logError, UploadLogger } from './logger'
 import { runExternalProgram } from './util'
 import micromatch from "../vendor/micromatch/index.js";
+import { SPAWNPROCESSBUFFERSIZE } from './constansts'
 
 export const MARKER_NETWORK_END = '\n<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
@@ -217,7 +218,7 @@ export function fetchGitRoot(): string {
     return (
       runExternalProgram('git', ['rev-parse', '--show-toplevel'])) || process.cwd()
   } catch (error) {
-    throw new Error('Error fetching git root. Please try using the -R flag.')
+    throw new Error(`Error fetching git root. Please try using the -R flag. ${error}`)
   }
 }
 
@@ -235,11 +236,11 @@ export function getAllFiles(
 ): string[] {
   UploadLogger.verbose(`Searching for files in ${dirPath}`)
 
-  const {
-    stdout,
-    status,
-    error,
-  } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
+  const { stdout, status, error } = spawnSync(
+    'git',
+    ['-C', dirPath, 'ls-files'],
+    { encoding: 'utf8', maxBuffer: SPAWNPROCESSBUFFERSIZE },
+  )
 
   let files = []
   if (error instanceof Error || status !== 0) {
@@ -259,7 +260,7 @@ export function getAllFiles(
   if (args.networkPrefix) {
     files = files.map(file => String(args.networkPrefix) + file)
   }
-  
+
   return files
 }
 
@@ -348,7 +349,7 @@ export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): st
 
   if (coverageFilePaths.length === 0) {
     logError(`None of the following appear to exist as files: ${paths.toString()}`)
-    throw new Error('Error while cleaning paths. No paths matched existing files!')  
+    throw new Error('Error while cleaning paths. No paths matched existing files!')
   }
 
   return coverageFilePaths

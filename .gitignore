@@ -70,3 +70,4 @@ codecov.exe
 .DS_Store
 .idea/*
 .dccache
+.coverage

@@ -20,6 +20,7 @@ function _getBranch(inputs: UploaderInputs): string {
   return (
     args.branch ||
     envs.ghprbSourceBranch ||
+    envs.CHANGE_BRANCH ||
     envs.GIT_BRANCH ||
     envs.BRANCH_NAME ||
     ''
@@ -45,6 +46,9 @@ export function getServiceName(): string {
 
 function _getSHA(inputs: UploaderInputs): string {
   const { args, environment: envs } = inputs
+  // Note that the value of GIT_COMMIT may not be accurate if Jenkins
+  // is merging `master` in to the working branch first. In these cases
+  // there is no envvar representing the actual submitted commit
   return args.sha || envs.ghprbActualCommit || envs.GIT_COMMIT || ''
 }
 

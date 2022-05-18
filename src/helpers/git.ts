@@ -9,14 +9,14 @@ export function parseSlug(slug: string): string {
 
   if (slug.match('http')) {
     // Type is http(s)
-    const phaseOne = slug.split('//')[1].replace('.git', '')
-    const phaseTwo = phaseOne.split('/')
+    const phaseOne = slug.split('//')[1]?.replace('.git', '') || ''
+    const phaseTwo = phaseOne?.split('/') || ''
     const cleanSlug = `${phaseTwo[1]}/${phaseTwo[2]}`
     return cleanSlug
   } else if (slug.match('@')) {
     // Type is git
-    const cleanSlug = slug.split(':')[1].replace('.git', '')
-    return cleanSlug
+    const cleanSlug = slug.split(':')[1]?.replace('.git', '')
+    return cleanSlug || ''
   }
   throw new Error(`Unable to parse slug URL: ${slug}`)
 }
