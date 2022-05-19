@@ -2,7 +2,7 @@
   "extends": [
     "config:base",
     "docker:pinDigests",
-    "npm:unpublishSafe"
+    "npm:unpublishSafe",
     "helpers:pinGitHubActionDigests"
   ],
   "reviewers": [
