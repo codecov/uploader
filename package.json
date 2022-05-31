@@ -35,7 +35,6 @@
   "dependencies": {
     "fast-glob": "3.2.11",
     "js-yaml": "4.1.0",
-    "line-reader": "0.4.0",
     "snake-case": "3.0.4",
     "undici": "5.2.0",
     "validator": "13.7.0",

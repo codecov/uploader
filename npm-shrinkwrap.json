@@ -11,7 +11,6 @@
       "dependencies": {
         "fast-glob": "3.2.11",
         "js-yaml": "4.1.0",
-        "line-reader": "0.4.0",
         "snake-case": "3.0.4",
         "undici": "5.2.0",
         "validator": "13.7.0",
@@ -5706,11 +5705,6 @@
       "engines": {
         "node": ">=10"
       }
-    },
-    "node_modules/line-reader": {
-      "version": "0.4.0",
-      "resolved": "https://registry.npmjs.org/line-reader/-/line-reader-0.4.0.tgz",
-      "integrity": "sha1-F+RIGNoKwzVnW6MAlU+U72cOZv0="
     },
     "node_modules/lines-and-columns": {
       "version": "1.2.4",
@@ -13270,11 +13264,6 @@
       "resolved": "https://registry.npmjs.org/lilconfig/-/lilconfig-2.0.4.tgz",
       "integrity": "sha512-bfTIN7lEsiooCocSISTWXkiWJkRqtL9wYtYy+8EK3Y41qh3mpwPU0ycTOgjdY9ErwXCc8QyrQp82bdL0Xkm9yA==",
       "dev": true
-    },
-    "line-reader": {
-      "version": "0.4.0",
-      "resolved": "https://registry.npmjs.org/line-reader/-/line-reader-0.4.0.tgz",
-      "integrity": "sha1-F+RIGNoKwzVnW6MAlU+U72cOZv0="
     },
     "lines-and-columns": {
       "version": "1.2.4",
