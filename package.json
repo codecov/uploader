@@ -34,7 +34,6 @@
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
     "fast-glob": "3.2.11",
-    "https-proxy-agent": "5.0.1",
     "js-yaml": "4.1.0",
     "snake-case": "3.0.4",
     "undici": "5.2.0",
@@ -60,7 +59,6 @@
     "jest-spec-reporter": "1.0.17",
     "lint-staged": "12.4.1",
     "mock-fs": "5.1.2",
-    "nock": "13.2.4",
     "pkg": "5.6.0",
     "prettier": "2.6.2",
     "standard-version": "9.3.2",
