@@ -11,7 +11,7 @@ export function parseSlug(slug: string): string {
     // Type is http(s) or ssh
     const phaseOne = slug.split('//')[1]?.replace('.git', '') || ''
     const phaseTwo = phaseOne?.split('/') || ''
-    const cleanSlug = `${phaseTwo[1]}/${phaseTwo[2]}`
+    const cleanSlug = phaseTwo.length > 2 ? `${phaseTwo[1]}/${phaseTwo[2]}` : ''
     return cleanSlug
   } else if (slug.match('@')) {
     // Type is git
