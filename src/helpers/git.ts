@@ -7,8 +7,8 @@ export function parseSlug(slug: string): string {
     return ''
   }
 
-  if (slug.match('http')) {
-    // Type is http(s)
+  if (slug.match('http:') || slug.match('https:') || slug.match('ssh:')) {
+    // Type is http(s) or ssh
     const phaseOne = slug.split('//')[1]?.replace('.git', '') || ''
     const phaseTwo = phaseOne?.split('/') || ''
     const cleanSlug = `${phaseTwo[1]}/${phaseTwo[2]}`
