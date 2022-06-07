@@ -15,7 +15,7 @@ export async function generateGcovCoverageFiles(projectRoot: string, include: st
     if (!files.length) {
         throw new Error('No gcov files found')
     }
-    if (gcovExecutable == 'gcov') {
+    if (gcovExecutable === 'gcov') {
         gcovArgs.unshift('-pb')
     }
     return runExternalProgram(gcovExecutable, [...gcovArgs, ...files]);
