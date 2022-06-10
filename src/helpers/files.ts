@@ -150,6 +150,7 @@ function globBlocklist(): string[] {
     'test-result-*-codecoverage.json',
     'test_*_coverage.txt',
     'testrunner-coverage*',
+    '*.*js',
   ]
 }
 
