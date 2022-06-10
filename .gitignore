@@ -71,3 +71,5 @@ codecov.exe
 .idea/*
 .dccache
 .coverage
+# File genrated as part of XCode tests
+coverage-report-test.json
