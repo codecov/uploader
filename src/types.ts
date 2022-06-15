@@ -20,9 +20,9 @@ export interface UploaderArgs {
   networkPrefix?: string // Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing
   nonZero?: string // Should errors exit with a non-zero (default: false)
   parent?: string // The commit SHA of the parent for which you are uploading coverage.
-  pr?: string // Specify the pull request number mannually
+  pr?: string // Specify the pull request number manually
   rootDir?: string // Specify the project root directory when not in a git repo
-  sha?: string // Specify the commit SHA mannually
+  sha?: string // Specify the commit SHA manually
   slug: string // Specify the slug manually
   source?: string // Track wrappers of the uploader
   tag?: string // Specify the git tag
