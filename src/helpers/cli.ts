@@ -27,7 +27,7 @@ const args: ICLIArgument[] = [
   {
     alias: 'C',
     name: 'sha',
-    description: 'Specify the commit SHA mannually',
+    description: 'Specify the commit SHA manually',
   },
   {
     alias: 'CL',
@@ -108,7 +108,7 @@ const args: ICLIArgument[] = [
   {
     alias: 'P',
     name: 'pr',
-    description: 'Specify the pull request number mannually',
+    description: 'Specify the pull request number manually',
   },
   {
     alias: 'Q',
