@@ -1,4 +1,4 @@
-import * as assert from 'assert/strict'
+import { default as assert } from 'assert/strict'
 import { spawnSync } from 'child_process'
 import glob from 'fast-glob'
 import fs from 'fs'
