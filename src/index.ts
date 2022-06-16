@@ -180,7 +180,13 @@ export async function main(
   }
 
   let coverageFilePaths: string[] = []
-  requestedPaths = argAsArray(args.file)
+  if (args.file) {
+    if (typeof args.file === 'string') {
+      requestedPaths = [args.file]
+    } else {
+      requestedPaths = args.file
+    }
+  }
 
   try {
     const coveragePyLogs = await generateCoveragePyFile(projectRoot, requestedPaths)
