@@ -1,3 +1,4 @@
+import * as assert from 'assert/strict'
 import { spawnSync } from 'child_process'
 import glob from 'fast-glob'
 import fs from 'fs'
@@ -199,9 +200,16 @@ export async function getCoverageFiles(
   return glob(coverageFilePatterns.map((pattern: string) => {
     const parts = []
 
+    try {
+      assert.notStrictEqual(pattern, EMPTY_STRING)
+      assert.notStrictEqual(pattern, '!')
+    } catch {
+      return EMPTY_STRING // Will cause `glob` to throw an error
+    }
+
     if (isNegated(pattern)) {
       parts.push('!')
-      parts.push(globstar(pattern.substr(1)))
+      parts.push(globstar(pattern.substring(1)))
     } else {
       parts.push(globstar(pattern))
     }
