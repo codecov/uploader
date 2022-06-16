@@ -238,6 +238,22 @@ describe('File Helpers', () => {
         await fileHelpers.getCoverageFiles('.', ['coverage.txt', '!test/fixtures/other']),
       ).toStrictEqual(['test/fixtures/coverage.txt'])
     })
+    it('throws an error if passed an empty pattern', async () => {
+      const EMPTY_STRING = '' as const
+
+      await expect(
+        fileHelpers.getCoverageFiles('.', [
+          EMPTY_STRING,
+        ]),
+      ).rejects.toThrowError();
+    })
+    it('throws an error if passed an empty negated pattern', async () => {
+      await expect(
+        fileHelpers.getCoverageFiles('.', [
+          '!', // Empty
+        ]),
+      ).rejects.toThrowError();
+    })
     describe('coverage file patterns', () => {
       it('contains `jacoco*.xml`', () => {
         expect(fileHelpers.coverageFilePatterns()).toContain('jacoco*.xml')
