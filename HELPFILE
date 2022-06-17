@@ -3,7 +3,7 @@ Options:
   -B, --branch      Specify the branch manually
   -e, --env         Specify environment variables to be included with this build.
                     Also accepting environment variables: CODECOV_ENV=VAR,VAR2
-  -C, --sha         Specify the commit SHA mannually
+  -C, --sha         Specify the commit SHA manually
   -f, --file        Target file(s) to upload
   -F, --flags       Flag the upload to group coverage metrics         [default: ""]
   -n, --name        Custom defined name of the upload. Visible in Codecov UI
@@ -13,7 +13,7 @@ Options:
                     the API of your repository provider. When using the repository
                     provider's API, the parent is determined via finding the
                     closest ancestor to the commit.
-  -P, --pr          Specify the pull request number mannually
+  -P, --pr          Specify the pull request number manually
   -s, --dir         Directory to search for coverage reports.
                     Already searches project root and current working directory
   -t, --token       Codecov upload token                              [default: ""]

@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.4](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.4) (2022-06-10)
+
+
+### Features
+
+* ignore files ending in .*js ([#798](https://github.com/codecov/uploader/issues/798)) ([1cd0d23](https://github.com/codecov/uploader/commit/1cd0d23322988a9af7f06d7fd8681ce4e5558b5c))
+
+
+### Bug Fixes
+
+* **deps:** update dependency https-proxy-agent to v5.0.1 ([90a68c0](https://github.com/codecov/uploader/commit/90a68c021b0cc7f098fb644934b1d29771e4fd88))
+* **deps:** update dependency undici to v5.2.0 ([e7fb541](https://github.com/codecov/uploader/commit/e7fb54164013773066c144140344dcd5f88b0eba))
+* **deps:** update dependency undici to v5.4.0 ([#777](https://github.com/codecov/uploader/issues/777)) ([9ff8396](https://github.com/codecov/uploader/commit/9ff83961ca0e09acf4d0f137ad9d65e5f4089f4d))
+* **deps:** update dependency yargs to v17.4.1 ([d0d9548](https://github.com/codecov/uploader/commit/d0d95483cc1aa5a7da86969af3f42d7824d280ef))
+* **deps:** update dependency yargs to v17.5.0 ([5911bb5](https://github.com/codecov/uploader/commit/5911bb541a0474cbeb6ad01b095f154a0ea0b7dd))
+* **deps:** update dependency yargs to v17.5.1 ([#764](https://github.com/codecov/uploader/issues/764)) ([fe181a2](https://github.com/codecov/uploader/commit/fe181a210765f6c6e6ddfe7c29c933b4e1329909))
+* increase maxBuffer of spawnSync ([c121446](https://github.com/codecov/uploader/commit/c12144697e95051b061488feae60db4b98d600c2))
+* store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
+
 ### [0.2.3](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.3) (2022-05-17)
 
 

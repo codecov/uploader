@@ -1,18 +1,18 @@
 {
   "name": "@codecov/uploader",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "@codecov/uploader",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "license": "ISC",
       "dependencies": {
         "fast-glob": "3.2.11",
         "js-yaml": "4.1.0",
         "snake-case": "3.0.4",
-        "undici": "5.4.0",
+        "undici": "5.5.1",
         "validator": "13.7.0",
         "yargs": "17.5.1"
       },
@@ -8510,9 +8510,9 @@
       }
     },
     "node_modules/undici": {
-      "version": "5.4.0",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-5.4.0.tgz",
-      "integrity": "sha512-A1SRXysDg7J+mVP46jF+9cKANw0kptqSFZ8tGyL+HBiv0K1spjxPX8Z4EGu+Eu6pjClJUBdnUPlxrOafR668/g==",
+      "version": "5.5.1",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-5.5.1.tgz",
+      "integrity": "sha512-MEvryPLf18HvlCbLSzCW0U00IMftKGI5udnjrQbC5D4P0Hodwffhv+iGfWuJwg16Y/TK11ZFK8i+BPVW2z/eAw==",
       "engines": {
         "node": ">=12.18"
       }
@@ -15359,9 +15359,9 @@
       "optional": true
     },
     "undici": {
-      "version": "5.4.0",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-5.4.0.tgz",
-      "integrity": "sha512-A1SRXysDg7J+mVP46jF+9cKANw0kptqSFZ8tGyL+HBiv0K1spjxPX8Z4EGu+Eu6pjClJUBdnUPlxrOafR668/g=="
+      "version": "5.5.1",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-5.5.1.tgz",
+      "integrity": "sha512-MEvryPLf18HvlCbLSzCW0U00IMftKGI5udnjrQbC5D4P0Hodwffhv+iGfWuJwg16Y/TK11ZFK8i+BPVW2z/eAw=="
     },
     "universalify": {
       "version": "2.0.0",
