@@ -33,6 +33,7 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
+    "ajv": "^8.11.0",
     "fast-glob": "3.2.11",
     "js-yaml": "4.1.0",
     "snake-case": "3.0.4",
