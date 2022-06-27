@@ -83,3 +83,7 @@ export interface PutResults {
 
 export type XcodeCoverageFileReport = Record<string, string | null>
 export type XcodeCoverageReport = Record<string, XcodeCoverageFileReport>
+
+export interface RepositoryYAML {
+  // TODO Finish interface
+}
