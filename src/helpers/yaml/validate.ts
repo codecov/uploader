@@ -1,11 +1,8 @@
-import type { ValidateFunction } from "ajv";
+import { default as Ajv, ValidateFunction } from 'ajv'
 
-import { default as Ajv } from "ajv";
+import { RepositoryYAML } from '../../types'
+import * as schema from './schema.json'
 
-import type { RepositoryYAML } from "../../types.js";
+const ajv = new Ajv()
 
-import * as schema from "./schema.json";
-
-const ajv = new Ajv();
-
-export const validate: ValidateFunction<RepositoryYAML> = ajv.compile(schema);
+export const validate: ValidateFunction<RepositoryYAML> = ajv.compile(schema)
