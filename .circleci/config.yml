@@ -301,20 +301,18 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
-      # https://superuser.com/a/1620000/54442
       - run:
-          name: Install and set Node 16.x
+          name: Run tests
           command: |
-            $ErrorActionPreference="Stop"
-            nvm arch
-            nvm install 16 all
-            nvm use 16
+            npm ci
+            npm test
+          shell: bash.exe
       - run:
           name: Build Windows Binary
           command: |
-            $ErrorActionPreference="Stop"
-            node --version
-            npm ci; npm test; npm run build; npm run build-windows
+            npm run build
+            npm run build-windows
+          shell: bash.exe
 
       - persist_to_workspace:
           root: .
