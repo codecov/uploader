@@ -15,12 +15,6 @@ export const MARKER_ENV_END = '<<<<<< ENV\n'
 
 const globstar = (pattern: string) => `**/${pattern}`
 
-/**
- *
- * @param {string} projectRoot
- * @param {Object} args
- * @returns {Promise<string>}
- */
 export async function getFileListing(
   projectRoot: string,
   args: UploaderArgs,
@@ -184,12 +178,6 @@ const EMPTY_STRING = '' as const
 
 const isNegated = (path: string) => path.startsWith('!')
 
-/**
- *
- * @param {string} projectRoot
- * @param {string[]} coverageFilePatterns
- * @returns {Promise<string[]>}
- */
 export async function getCoverageFiles(
   projectRoot: string,
   coverageFilePatterns: string[],
@@ -223,13 +211,6 @@ export function fetchGitRoot(): string {
   }
 }
 
-/**
- *
- * @param {string} projectRoot Root of the project
- * @param {string} dirPath Directory to search in
- * @param {Object} args
- * @returns {string[]}
- */
 export function getAllFiles(
   projectRoot: string,
   dirPath: string,
@@ -265,12 +246,6 @@ export function getAllFiles(
   return files
 }
 
-/**
- *
- * @param {string} projectRoot
- * @param {string} filePath
- * @returns {string}
- */
 export async function readCoverageFile(
   projectRoot: string,
   filePath: string,
@@ -282,31 +257,14 @@ export async function readCoverageFile(
   })
 }
 
-/**
- *
- * @param {string} projectRoot
- * @param {string} filePath
- * @returns boolean
- */
 export function fileExists(projectRoot: string, filePath: string): boolean {
   return fs.existsSync(getFilePath(projectRoot, filePath))
 }
 
-/**
- *
- * @param {string} filePath
- * @returns string
- */
 export function fileHeader(filePath: string): string {
   return `# path=${filePath}\n`
 }
 
-/**
- *
- * @param {string} projectRoot
- * @param {string} filePath
- * @returns {string}
- */
 export function getFilePath(projectRoot: string, filePath: string): string {
   if (
     filePath.startsWith('./') ||
@@ -322,11 +280,6 @@ export function getFilePath(projectRoot: string, filePath: string): string {
   return path.join(projectRoot, filePath)
 }
 
-/**
- *
- * @param {string} projectRoot
- * @param {string} filePath
- */
 export function removeFile(projectRoot: string, filePath: string): void {
   fs.unlink(getFilePath(projectRoot, filePath), err => {
     if (err) {
@@ -355,4 +308,3 @@ export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): st
 
   return coverageFilePaths
 }
-
