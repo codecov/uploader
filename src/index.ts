@@ -244,7 +244,7 @@ export async function main(
   let coverageFilePathsThatExist: string[] = []
 
   if (coverageFilePaths.length > 0) {
-    coverageFilePathsThatExist = cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths)
+    coverageFilePathsThatExist = await cleanCoverageFilePaths(args.dir || projectRoot, coverageFilePaths)
   }
 
   if (coverageFilePathsThatExist.length > 0) {

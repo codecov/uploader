@@ -257,7 +257,7 @@ export async function readCoverageFile(
   })
 }
 
-export function fileExists(projectRoot: string, filePath: string): boolean {
+export async function fileExists(projectRoot: string, filePath: string): Promise<boolean> {
   return fs.existsSync(getFilePath(projectRoot, filePath))
 }
 
@@ -295,7 +295,7 @@ export function filterFilesAgainstBlockList(paths: string[], ignoreGlobs: string
   return micromatch.not(paths, ignoreGlobs, {windows: true})
 }
 
-export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): string[] {
+export async function cleanCoverageFilePaths(projectRoot: string, paths: string[]): Promise<string[]> {
   UploadLogger.verbose(`Preparing to clean the following coverage paths: ${paths.toString()}`)
   const coverageFilePaths = [... new Set(paths.filter(file => {
     return fileExists(projectRoot, file)

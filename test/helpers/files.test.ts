@@ -244,14 +244,20 @@ describe('File Helpers', () => {
       })
     })
     describe('file exists', () => {
-      it('returns true if file exists', () => {
-        expect(fileHelpers.fileExists('', 'test/fixtures/coverage.txt'))
+      it('returns true if file exists', async () => {
+        await expect(
+          fileHelpers.fileExists('', 'test/fixtures/coverage.txt'),
+        ).resolves.toBe(true)
       })
-      it('returns false if file doesnt exist', () => {
-        expect(fileHelpers.fileExists('', 'test/fake/path/to/file.txt'))
+      it('returns false if file doesnt exist', async () => {
+        await expect(
+          fileHelpers.fileExists('', 'test/fake/path/to/file.txt'),
+        ).resolves.toBe(false)
       })
-      it('returns true if file exists in a directory', () => {
-        expect(fileHelpers.fileExists('test/fixtures', 'coverage.txt'))
+      it('returns true if file exists in a directory', async () => {
+        await expect(
+          fileHelpers.fileExists('test/fixtures', 'coverage.txt'),
+        ).resolves.toBe(true)
       })
     })
     describe('getFilePath()', () => {
