@@ -1,3 +1,4 @@
+import { fail } from 'assert/strict'
 import { spawnSync } from 'child_process'
 import glob from 'fast-glob'
 import fs from 'fs'
@@ -305,7 +306,21 @@ export async function cleanCoverageFilePaths(projectRoot: string, paths: string[
   const coverageFilePaths = [
     ...new Set(
       paths.filter((file, index) => {
-        const result = pathsMapResult[index] ?? fail()
+        const result: PromiseSettledResult<boolean> = pathsMapResult[index] ?? fail()
+
+        if (result.status === "fulfilled") {
+          const { value } = result
+
+          if (value !== true) {
+            // TODO Print warning that the file path does not exist
+          }
+
+          return value
+        } else {
+          // TODO Print rejection
+
+          return false
+        }
       }),
     ),
   ]
