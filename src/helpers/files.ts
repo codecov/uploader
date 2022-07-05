@@ -183,14 +183,12 @@ export async function getCoverageFiles(
   projectRoot: string,
   coverageFilePatterns: string[],
 ): Promise<string[]> {
-  const globstar = (pattern: string) => `**/${pattern}`
-
   return glob(coverageFilePatterns.map((pattern: string) => {
     const parts = []
 
     if (isNegated(pattern)) {
       parts.push('!')
-      parts.push(globstar(pattern.substr(1)))
+      parts.push(globstar(pattern.substring(1)))
     } else {
       parts.push(globstar(pattern))
     }
