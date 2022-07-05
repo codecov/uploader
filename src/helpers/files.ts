@@ -1,8 +1,8 @@
 import { fail } from 'assert/strict'
 import { spawnSync } from 'child_process'
 import glob from 'fast-glob'
-import fs from 'fs'
-import { readFile } from 'fs/promises'
+import fs, { constants, PathLike } from 'fs'
+import { access, readFile } from 'fs/promises'
 import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
 import { logError, UploadLogger } from './logger'
@@ -256,8 +256,12 @@ export async function readCoverageFile(
   })
 }
 
+async function exists(path: PathLike): Promise<boolean> {
+  return access(path, constants.R_OK).then(() => true).catch(() => false)
+}
+
 export async function fileExists(projectRoot: string, filePath: string): Promise<boolean> {
-  return fs.existsSync(getFilePath(projectRoot, filePath))
+  return exists(getFilePath(projectRoot, filePath))
 }
 
 export function fileHeader(filePath: string): string {
