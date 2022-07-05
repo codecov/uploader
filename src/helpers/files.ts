@@ -297,9 +297,13 @@ export function filterFilesAgainstBlockList(paths: string[], ignoreGlobs: string
 
 export async function cleanCoverageFilePaths(projectRoot: string, paths: string[]): Promise<string[]> {
   UploadLogger.verbose(`Preparing to clean the following coverage paths: ${paths.toString()}`)
-  const coverageFilePaths = [... new Set(paths.filter(file => {
-    return fileExists(projectRoot, file)
-  }))]
+  const coverageFilePaths = [
+    ...new Set(
+      paths.filter(file => {
+        return fileExists(projectRoot, file)
+      }),
+    ),
+  ]
 
   if (coverageFilePaths.length === 0) {
     logError(`None of the following appear to exist as files: ${paths.toString()}`)
