@@ -26,6 +26,7 @@ import { generateCoveragePyFile } from './helpers/coveragepy'
 import { generateGcovCoverageFiles } from './helpers/gcov'
 import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
+import { checkSlug } from './helpers/checkSlug'
 
 /**
  *
@@ -325,8 +326,10 @@ export async function main(
     UploadLogger.verbose(`${parameter}`)
   }
 
-  if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
-    logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
+  const validSlug =  checkSlug(buildParams.slug)
+  if (!validSlug) {
+    logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`);
+    process.exit(args.nonZero ? -1 : 0)
   }
 
   const query = webHelpers.generateQuery(buildParams)
