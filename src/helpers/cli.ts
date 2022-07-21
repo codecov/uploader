@@ -84,7 +84,7 @@ const args: ICLIArgument[] = [
   },
   {
     alias: 'i',
-    name: 'networkFiler',
+    name: 'networkFilter',
     type: 'string',
     description: 'Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing',
   },
