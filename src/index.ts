@@ -328,8 +328,7 @@ export async function main(
 
   const validSlug =  checkSlug(buildParams.slug)
   if (!validSlug) {
-    logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`);
-    process.exit(args.nonZero ? -1 : 0)
+    throw new Error(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
   }
 
   const query = webHelpers.generateQuery(buildParams)
