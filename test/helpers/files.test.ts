@@ -315,6 +315,16 @@ describe('File Helpers', () => {
     it("ignores shell scripts by default", async () => {
       expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.sh'))
     })
+
+    it("should ignore files ending with *.*js", async () => {
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.cjs'))
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.mjs'))
+    })
+
+    it("should ignore files ending with *.js", async () => {
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.js'))
+    })
+
     it("ignores powershell scripts by default", async () => {
       expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.ps1'))
     })

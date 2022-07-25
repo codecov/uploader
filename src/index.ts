@@ -4,7 +4,7 @@ import zlib from 'zlib'
 import { version } from '../package.json'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, logError, UploadLogger } from './helpers/logger'
+import { info, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
   cleanCoverageFilePaths,
@@ -26,6 +26,7 @@ import { generateCoveragePyFile } from './helpers/coveragepy'
 import { generateGcovCoverageFiles } from './helpers/gcov'
 import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
+import { checkSlug } from './helpers/checkSlug'
 
 /**
  *
@@ -58,14 +59,14 @@ function dryRun(
  * @param {string} args.branch Specify the branch manually
  * @param {string} args.dir Directory to search for coverage reports.
  * @param {string} args.env Specify environment variables to be included with this build
- * @param {string} args.sha Specify the commit SHA mannually
+ * @param {string} args.sha Specify the commit SHA manually
  * @param {string} args.file Target file(s) to upload
  * @param {string} args.flags Flag the upload to group coverage metrics
  * @param {string} args.name Custom defined name of the upload. Visible in Codecov UI
  * @param {string} args.networkFilter Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing
  * @param {string} args.networkPrefix Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing
  * @param {string} args.parent The commit SHA of the parent for which you are uploading coverage.
- * @param {string} args.pr Specify the pull request number mannually
+ * @param {string} args.pr Specify the pull request number manually
  * @param {string} args.token Codecov upload token
  * @param {string} args.tag Specify the git tag
  * @param {boolean} args.verbose Run with verbose logging
@@ -138,7 +139,7 @@ export async function main(
 
   // #endregion
   // #region == Step 4: get network
-  let uploadFile = ''
+  const uploadFileChunks: Buffer[] = []
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
     UploadLogger.verbose('Start of network processing...')
@@ -149,7 +150,8 @@ export async function main(
       throw new Error(`Error getting file listing: ${error}`)
     }
 
-    uploadFile = uploadFile.concat(fileListing).concat(MARKER_NETWORK_END)
+    uploadFileChunks.push(Buffer.from(fileListing))
+    uploadFileChunks.push(Buffer.from(MARKER_NETWORK_END))
   }
 
   // #endregion
@@ -178,14 +180,21 @@ export async function main(
     }
   }
 
+  let coverageFilePaths: string[] = []
+  if (args.file) {
+    if (typeof args.file === 'string') {
+      requestedPaths = [args.file]
+    } else {
+      requestedPaths = args.file
+    }
+  }
+
   try {
-    await generateCoveragePyFile()
+    const coveragePyLogs = await generateCoveragePyFile(projectRoot, requestedPaths)
+    UploadLogger.verbose(`${coveragePyLogs}`)
   } catch (error) {
     UploadLogger.verbose(`Skipping coveragepy conversion: ${error}`)
   }
-
-  let coverageFilePaths: string[] = []
-  requestedPaths = argAsArray(args.file)
 
   coverageFilePaths = requestedPaths
 
@@ -269,10 +278,9 @@ export async function main(
       continue
     }
 
-    uploadFile = uploadFile
-      .concat(fileHeader(coverageFile))
-      .concat(fileContents)
-      .concat(MARKER_FILE_END)
+    uploadFileChunks.push(Buffer.from(fileHeader(coverageFile)))
+    uploadFileChunks.push(Buffer.from(fileContents))
+    uploadFileChunks.push(Buffer.from(MARKER_FILE_END))
     coverageFileAdded = true
   }
   if (!coverageFileAdded) {
@@ -294,9 +302,11 @@ export async function main(
       .filter(Boolean)
       .map(evar => `${evar}=${process.env[evar] || ''}\n`)
       .join('')
-    uploadFile = uploadFile.concat(vars).concat(MARKER_ENV_END)
+    uploadFileChunks.push(Buffer.from(vars))
+    uploadFileChunks.push(Buffer.from(MARKER_ENV_END))
   }
 
+  const uploadFile = Buffer.concat(uploadFileChunks)
   const gzippedFile = zlib.gzipSync(uploadFile)
 
   // #endregion
@@ -316,14 +326,15 @@ export async function main(
     UploadLogger.verbose(`${parameter}`)
   }
 
-  if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
-    logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
+  const validSlug =  checkSlug(buildParams.slug)
+  if (!validSlug) {
+    throw new Error(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
   }
 
   const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {
-    dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    dryRun(uploadHost, token, query, uploadFile.toString(), args.source || '')
     return
   }
 

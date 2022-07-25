@@ -7,6 +7,7 @@ import { UploaderArgs } from '../types'
 import { logError, UploadLogger } from './logger'
 import { runExternalProgram } from './util'
 import micromatch from "../vendor/micromatch/index.js";
+import { SPAWNPROCESSBUFFERSIZE } from './constansts'
 
 export const MARKER_NETWORK_END = '\n<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
@@ -149,6 +150,7 @@ function globBlocklist(): string[] {
     'test-result-*-codecoverage.json',
     'test_*_coverage.txt',
     'testrunner-coverage*',
+    '*.*js',
   ]
 }
 
@@ -235,11 +237,11 @@ export function getAllFiles(
 ): string[] {
   UploadLogger.verbose(`Searching for files in ${dirPath}`)
 
-  const {
-    stdout,
-    status,
-    error,
-  } = spawnSync('git', ['-C', dirPath, 'ls-files'], { encoding: 'utf8' })
+  const { stdout, status, error } = spawnSync(
+    'git',
+    ['-C', dirPath, 'ls-files'],
+    { encoding: 'utf8', maxBuffer: SPAWNPROCESSBUFFERSIZE },
+  )
 
   let files = []
   if (error instanceof Error || status !== 0) {
