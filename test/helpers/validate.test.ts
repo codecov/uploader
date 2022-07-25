@@ -48,6 +48,15 @@ describe('Input Validators', () => {
     it('Should pass with a dash at the start', () => {
       expect(validate.validateFlags('-moo-foor')).toBe(true)
     })
+
+    it("should throw when they they not match the pattern", () => {
+      // arrange
+      const invalidFlagName = "flag/subflag"
+      const expectedErrorMessage = "Flags must consist only of alphanumeric characters, '_', '-', or '.' and not exceed 45 characters. Received flag/subflag"
+
+      // act
+      expect(() => validate.validateFlags(invalidFlagName)).toThrowError(expectedErrorMessage)
+    })
   })
 
   describe('validateSHA()', () => {
