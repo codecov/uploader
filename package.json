@@ -41,8 +41,8 @@
     "yargs": "17.5.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "16.2.4",
-    "@commitlint/config-conventional": "16.2.4",
+    "@commitlint/cli": "17.0.3",
+    "@commitlint/config-conventional": "17.0.3",
     "@types/jest": "27.4.1",
     "@types/js-yaml": "4.0.5",
     "@types/micromatch": "4.0.2",
