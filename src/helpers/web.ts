@@ -32,16 +32,6 @@ export function populateBuildParams(
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
 
-  let flags: string[]
-  if (typeof args.flags === 'object') {
-    flags = [...args.flags]
-  } else {
-    flags = String(args.flags || '').split(',')
-  }
-  serviceParams.flags = flags
-    .filter(flag => validateHelpers.validateFlags(flag))
-    .join(',')
-
   serviceParams.parent = args.parent || ''
   return serviceParams
 }
