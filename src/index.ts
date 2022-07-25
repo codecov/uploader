@@ -4,7 +4,7 @@ import zlib from 'zlib'
 import { version } from '../package.json'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, logError, UploadLogger } from './helpers/logger'
+import { info, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
   cleanCoverageFilePaths,
