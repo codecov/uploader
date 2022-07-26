@@ -83,6 +83,12 @@ const args: ICLIArgument[] = [
     description: 'Paths to include during gcov gathering',
   },
   {
+    alias: 'gx',
+    name: 'gcovExecutable',
+    type: 'string',
+    description: "gcov executable to run. Defaults to 'gcov'",
+  },
+  {
     alias: 'i',
     name: 'networkFilter',
     type: 'string',

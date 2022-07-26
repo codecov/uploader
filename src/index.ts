@@ -162,11 +162,13 @@ export async function main(
   // Look for files
 
   if (args.gcov) {
-    UploadLogger.verbose('Running gcov...')
     const gcovInclude: string[] = argAsArray(args.gcovInclude)
     const gcovIgnore: string[] = argAsArray(args.gcovIgnore)
     const gcovArgs: string[] = argAsArray(args.gcovArgs)
-    const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs)
+    const gcovExecutable: string = args.gcovExecutable || 'gcov'
+
+    UploadLogger.verbose(`Running ${gcovExecutable}...`)
+    const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs, gcovExecutable)
     UploadLogger.verbose(`${gcovLogs}`)
   }
 
