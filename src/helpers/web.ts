@@ -31,6 +31,12 @@ export function populateBuildParams(
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
 
+  if (typeof args.flags === "string") {
+    serviceParams.flags = args.flags
+  } else {
+    serviceParams.flags = args.flags.join(',')
+  }
+
   serviceParams.parent = args.parent || ''
   return serviceParams
 }
