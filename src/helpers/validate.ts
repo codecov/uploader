@@ -21,10 +21,14 @@ function isValidFlag(flag: string): boolean {
   return flag.length > 0 && mask.test(flag)
 }
 
-export function validateFlags(flag: string): boolean {
-  // eslint-disable-next-line no-useless-escape
-  const mask = /^[\w\.\-]{1,45}$/
-  return flag.length > 0 && mask.test(flag)
+export function validateFlags(flags: string[]): void {
+  const invalidFlags = flags.filter(isValidFlag)
+
+  if (invalidFlags.length > 0) {
+    throw new Error(
+      `Flags must consist only of alphanumeric characters, '_', '-', or '.' and not exceed 45 characters. Received ${flags}`,
+    )
+  }
 }
 
 /**
