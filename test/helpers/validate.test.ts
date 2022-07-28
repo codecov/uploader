@@ -35,18 +35,18 @@ describe('Input Validators', () => {
 
   describe('Flags', () => {
     it('Should pass without a dash', () => {
-      expect(validate.validateFlags('moo')).toBe(true)
+      expect(validate.isValidFlag('moo')).toBe(true)
     })
     it('Should pass with a dash', () => {
-      expect(validate.validateFlags('moo-foor')).toBe(true)
+      expect(validate.isValidFlag('moo-foor')).toBe(true)
     })
 
     it('Should pass with a period in the middle', () => {
-      expect(validate.validateFlags('moo.foor')).toBe(true)
+      expect(validate.isValidFlag('moo.foor')).toBe(true)
     })
 
     it('Should pass with a dash at the start', () => {
-      expect(validate.validateFlags('-moo-foor')).toBe(true)
+      expect(validate.isValidFlag('-moo-foor')).toBe(true)
     })
 
     it("should throw when they they not match the pattern", () => {
@@ -55,7 +55,7 @@ describe('Input Validators', () => {
       const expectedErrorMessage = "Flags must consist only of alphanumeric characters, '_', '-', or '.' and not exceed 45 characters. Received flag/subflag"
 
       // act
-      expect(() => validate.validateFlags(invalidFlagName)).toThrowError(expectedErrorMessage)
+      expect(() => validate.validateFlags([invalidFlagName])).toThrowError(expectedErrorMessage)
     })
   })
 
