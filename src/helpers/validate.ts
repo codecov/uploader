@@ -14,7 +14,7 @@ export function validateURL(url: string): boolean {
   return validator.isURL(url, { require_protocol: true })
 }
 
-function isValidFlag(flag: string): boolean {
+export function isValidFlag(flag: string): boolean {
   // eslint-disable-next-line no-useless-escape
   const mask = /^[\w\.\-]{1,45}$/
   return flag.length > 0 && mask.test(flag)
