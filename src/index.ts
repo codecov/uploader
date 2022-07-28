@@ -127,13 +127,7 @@ export async function main(
     flags = String(args.flags || '').split(',')
   }
 
-  const invalidFlags = flags.filter(flag => validateFlags(flag))
-
-  if (invalidFlags.length > 0) {
-    throw new Error(
-      `Flags must consist only of alphanumeric characters, '_', '-', or '.' and not exceed 45 characters. Received ${flags.join(',')}`,
-    )
-  }
+  validateFlags(flags)
 
   // #endregion
   // #region == Step 2: detect if we are in a git repo
