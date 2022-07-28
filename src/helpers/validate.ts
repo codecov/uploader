@@ -21,7 +21,7 @@ export function isValidFlag(flag: string): boolean {
 }
 
 export function validateFlags(flags: string[]): void {
-  const invalidFlags = flags.filter(isValidFlag)
+  const invalidFlags = flags.filter(flag => isValidFlag(flag) !== true)
 
   if (invalidFlags.length > 0) {
     throw new Error(
