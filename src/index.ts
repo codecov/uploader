@@ -27,6 +27,7 @@ import { generateGcovCoverageFiles } from './helpers/gcov'
 import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
 import { checkSlug } from './helpers/checkSlug'
+import { validateFlags } from './helpers/validate'
 
 /**
  *
@@ -118,6 +119,15 @@ export async function main(
   }
 
   info(generateHeader(getVersion()))
+
+  let flags: string[]
+  if (typeof args.flags === 'object') {
+    flags = [...args.flags]
+  } else {
+    flags = String(args.flags || '').split(',')
+  }
+
+  validateFlags(flags)
 
   // #endregion
   // #region == Step 2: detect if we are in a git repo
