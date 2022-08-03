@@ -12,7 +12,7 @@
         "fast-glob": "3.2.11",
         "js-yaml": "4.1.0",
         "snake-case": "3.0.4",
-        "undici": "5.8.0",
+        "undici": "5.8.1",
         "validator": "13.7.0",
         "yargs": "17.5.1"
       },
@@ -8699,9 +8699,9 @@
       }
     },
     "node_modules/undici": {
-      "version": "5.8.0",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-5.8.0.tgz",
-      "integrity": "sha512-1F7Vtcez5w/LwH2G2tGnFIihuWUlc58YidwLiCv+jR2Z50x0tNXpRRw7eOIJ+GvqCqIkg9SB7NWAJ/T9TLfv8Q==",
+      "version": "5.8.1",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-5.8.1.tgz",
+      "integrity": "sha512-iDRmWX4Zar/4A/t+1LrKQRm102zw2l9Wgat3LtTlTn8ykvMZmAmpq9tjyHEigx18FsY7IfATvyN3xSw9BDz0eA==",
       "engines": {
         "node": ">=12.18"
       }
@@ -15683,9 +15683,9 @@
       "optional": true
     },
     "undici": {
-      "version": "5.8.0",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-5.8.0.tgz",
-      "integrity": "sha512-1F7Vtcez5w/LwH2G2tGnFIihuWUlc58YidwLiCv+jR2Z50x0tNXpRRw7eOIJ+GvqCqIkg9SB7NWAJ/T9TLfv8Q=="
+      "version": "5.8.1",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-5.8.1.tgz",
+      "integrity": "sha512-iDRmWX4Zar/4A/t+1LrKQRm102zw2l9Wgat3LtTlTn8ykvMZmAmpq9tjyHEigx18FsY7IfATvyN3xSw9BDz0eA=="
     },
     "universalify": {
       "version": "2.0.0",
