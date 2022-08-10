@@ -446,8 +446,8 @@ jobs:
       - run:
           name: Push release tag to pubsub
           command: |
-            RELEASE_TAG=$(cat release_tag)
-            echo $RELEASE_TAG
+#            RELEASE_TAG=$(cat release_tag)
+#            echo $RELEASE_TAG
             gcloud auth activate-service-account
 #            gcloud --quiet config set project $GCLOUD_UPLOADER_PROJECT_ID
 #            gcloud pubsub topics publish $GCLOUD_UPLOADER_PUBSUB_TOPIC --message '{"release":"'"$RELEASE_TAG"'", "latest":true}'
