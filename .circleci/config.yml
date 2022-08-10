@@ -532,7 +532,7 @@ workflows:
           filters:
             branches:
               only: release
-       - release
+      - release
 #      - release:
 #          requires:
 #            - deploy
