@@ -449,8 +449,8 @@ jobs:
             RELEASE_TAG=$(cat release_tag)
             echo $RELEASE_TAG
             gcloud auth activate-service-account
-            gcloud --quiet config set project $GCLOUD_UPLOADER_PROJECT_ID
-            gcloud pubsub topics publish $GCLOUD_UPLOADER_PUBSUB_TOPIC --message '{"release":"'"$RELEASE_TAG"'", "latest":true}'
+#            gcloud --quiet config set project $GCLOUD_UPLOADER_PROJECT_ID
+#            gcloud pubsub topics publish $GCLOUD_UPLOADER_PUBSUB_TOPIC --message '{"release":"'"$RELEASE_TAG"'", "latest":true}'
           environment:
             CLOUDSDK_AUTH_ACCESS_TOKEN: ${GCLOUD_UPLOADER_SERVICE_KEY}
 
@@ -532,9 +532,10 @@ workflows:
           filters:
             branches:
               only: release
-      - release:
-          requires:
-            - deploy
-          filters:
-            branches:
-              only: release
+       - release
+#      - release:
+#          requires:
+#            - deploy
+#          filters:
+#            branches:
+#              only: release
