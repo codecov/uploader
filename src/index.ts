@@ -193,12 +193,16 @@ export async function main(
   }
 
   let coverageFilePaths: string[] = []
-  if (args.file) {
+  if (args.file !== undefined) {
     if (typeof args.file === 'string') {
       requestedPaths = [args.file]
     } else {
-      requestedPaths = args.file
+      requestedPaths = args.file // Already an array
     }
+
+    requestedPaths = requestedPaths.filter((path) => {
+      return Boolean(path) ?? info('Warning: Skipping an empty path passed to `-f`')
+    })
   }
 
   try {
