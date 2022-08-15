@@ -201,7 +201,7 @@ export async function main(
     }
 
     requestedPaths = requestedPaths.filter((path) => {
-      return Boolean(path) ?? info('Warning: Skipping an empty path passed to `-f`')
+      return Boolean(path) || info('Warning: Skipping an empty path passed to `-f`')
     })
   }
 
