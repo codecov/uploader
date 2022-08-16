@@ -83,8 +83,14 @@ const args: ICLIArgument[] = [
     description: 'Paths to include during gcov gathering',
   },
   {
+    alias: 'gx',
+    name: 'gcovExecutable',
+    type: 'string',
+    description: "gcov executable to run. Defaults to 'gcov'",
+  },
+  {
     alias: 'i',
-    name: 'networkFiler',
+    name: 'networkFilter',
     type: 'string',
     description: 'Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing',
   },
