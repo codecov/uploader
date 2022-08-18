@@ -211,6 +211,7 @@ export async function getCoverageFiles(
     cwd: projectRoot,
     dot: true,
     ignore: getBlocklist(),
+    suppressErrors: true,
   })
 }
 
@@ -249,6 +250,7 @@ export function getAllFiles(
       .sync(['**/*', '**/.[!.]*'], {
         cwd: dirPath,
         ignore: manualBlocklist().map(globstar),
+        suppressErrors: true,
       })
   } else {
     files = stdout.split(/[\r\n]+/)
