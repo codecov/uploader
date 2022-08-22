@@ -349,7 +349,7 @@ export async function main(
       const validSlug = checkSlug(buildParams.slug)
       if (!validSlug) {
         throw new Error(
-          `Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`,
+          `Slug must follow the format of "<owner>/<repo>". We detected "${buildParams.slug}"`,
         )
       }
     }
