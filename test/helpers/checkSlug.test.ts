@@ -24,16 +24,4 @@ describe('checkSlug()', () => {
         // assert
         expect(result).toEqual(expectedResult)
     })
-
-    it('should return false for a slug that is "undefined"', () => {
-        // arrange
-        const inputSlug = undefined
-        const expectedResult = false
-
-        // act
-        const result = checkSlug(inputSlug)
-
-        // assert
-        expect(result).toEqual(expectedResult)
-    })
 })
