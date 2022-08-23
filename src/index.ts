@@ -344,7 +344,9 @@ export async function main(
 
   if (!hasToken) {
     if (!buildParams.slug) {
-      throw new Error(`Slug must be set if a token is not passed`)
+      throw new Error(
+        'Slug must be set if a token is not passed. Consider passing a slug via `-r`',
+      )
     } else {
       const validSlug = checkSlug(buildParams.slug)
       if (!validSlug) {
