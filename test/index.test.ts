@@ -132,7 +132,7 @@ describe('Uploader Core', () => {
       jest.clearAllMocks()
     })
 
-    it('Can upload without token', async () => {
+    it('Can upload without token if slug is passed', async () => {
       jest.spyOn(process, 'exit')
       const log = jest.spyOn(console, 'log').mockImplementation(() => {
         // intentionally empty
@@ -143,11 +143,27 @@ describe('Uploader Core', () => {
         dryRun: 'true',
         env: 'SOMETHING,ANOTHER',
         flags: '',
-        slug: '',
+        slug: 'codecov/uploader',
         upstream: ''
       })
       expect(log).toHaveBeenCalledWith(
         expect.stringMatching('-> No token specified or token is empty'),
+      )
+    })
+
+    it('Cannot upload without token if slug is not passed', async () => {
+      const f = () => app.main({
+        name: 'customname',
+        url: 'https://codecov.io',
+        dryRun: 'true',
+        env: 'SOMETHING,ANOTHER',
+        flags: '',
+        slug: '',
+        upstream: ''
+      })
+      
+      await expect(f).rejects.toThrow(
+        'Slug must be set if a token is not passed',
       )
     })
   })
