@@ -310,7 +310,7 @@ export async function cleanCoverageFilePaths(projectRoot: string, paths: string[
   const coverageFilePaths = [
     ...new Set(
       paths.filter((file, index) => {
-        const result: PromiseSettledResult<boolean> = pathsMapResult[index] ?? fail()
+        const result: PromiseSettledResult<boolean> = pathsMapResult[index] ?? strict.fail()
 
         if (result.status === "fulfilled") {
           const { value } = result
