@@ -1,4 +1,4 @@
-import { fail } from 'assert/strict'
+import { strict } from 'assert'
 import { spawnSync } from 'child_process'
 import glob from 'fast-glob'
 import fs, { constants, PathLike } from 'fs'
