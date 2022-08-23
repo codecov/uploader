@@ -318,6 +318,31 @@ describe('Uploader Core', () => {
     )
   })
 
+  it('Can find multiple specified files as comma-separated', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
+    await app.main({
+      dryRun: 'true',
+      file: 'test/fixtures/coverage.txt,test/fixtures/other/coverage.txt,test/does/not/exist.txt',
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      flags: '',
+      slug: '',
+      upstream: ''
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/fixtures\/other\/coverage\.txt\.\.\./),
+    )
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/does\/not\/exist\.txt\.\.\./),
+    )
+  })
+
   it('will process blocked files, if passed via -f', async () => {
     const log = jest.spyOn(console, 'log').mockImplementation(() => {
       // intentionally empty
