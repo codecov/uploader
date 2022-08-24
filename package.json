@@ -1,6 +1,6 @@
 {
   "name": "@codecov/uploader",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Codecov Report Uploader",
   "private": true,
   "bin": {
