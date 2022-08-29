@@ -195,7 +195,7 @@ export async function main(
   let coverageFilePaths: string[] = []
   if (args.file !== undefined) {
     if (typeof args.file === 'string') {
-      requestedPaths = [args.file]
+      requestedPaths = args.file.split(',')
     } else {
       requestedPaths = args.file // Already an array
     }
