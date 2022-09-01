@@ -178,6 +178,7 @@ const args: ICLIArgument[] = [
     name: 'feature',
     type: 'string',
     description: `Toggle functionalities. Separate multiple ones by comma: -X network,search
+      -X fixes         Enable file fixes to ignore common lines from coverage (e.g. blank lines or empty brackets)
       -X network       Disable uploading the file network
       -X search        Disable searching for coverage files`,
   },
