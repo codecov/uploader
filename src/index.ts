@@ -329,7 +329,7 @@ export async function main(
     const fixes = await generateFixes(projectRoot)
     uploadFileChunks.push(Buffer.from(FIXES_HEADER))
     uploadFileChunks.push(Buffer.from(fixes))
-    uploadFileChunks.push(Buffer.from(MARKER_ENV_END))
+    uploadFileChunks.push(Buffer.from(MARKER_FILE_END))
     info('Finished generating file fixes')
   }
 

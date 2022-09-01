@@ -522,7 +522,7 @@ describe('Uploader Core', () => {
       upstream: ''
     })
     expect(console.log).toHaveBeenCalledWith(
-      expect.stringMatching(/# path=fixes\ntest\/fixtures\/fixes\/example.php:4,6,11,15,19,20\ntest\/fixtures\/gcov\/main.c:2,4,11,12,13,14,16,20/)
+      expect.stringMatching(/# path=fixes\ntest\/fixtures\/fixes\/example.php:4,6,11,15,19,20\ntest\/fixtures\/gcov\/main.c:2,4,11,12,13,14,16,20\n<<<<<< EOF/)
     )
   })
 })

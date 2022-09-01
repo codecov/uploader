@@ -62,6 +62,7 @@ async function getMatchedLines(file: string, matchers: RegExp[]): Promise<string
     for (const matcher of matchers) {
       if (line.match(matcher)) {
         matchedLines.push(lineNumber.toString())
+        break
       }
     }
     lineNumber++
