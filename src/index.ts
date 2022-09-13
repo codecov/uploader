@@ -23,6 +23,7 @@ import {
   removeFile,
 } from './helpers/files'
 import { generateCoveragePyFile } from './helpers/coveragepy'
+import { generateFixes, FIXES_HEADER } from './helpers/fixes'
 import { generateGcovCoverageFiles } from './helpers/gcov'
 import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
@@ -195,7 +196,7 @@ export async function main(
   let coverageFilePaths: string[] = []
   if (args.file !== undefined) {
     if (typeof args.file === 'string') {
-      requestedPaths = [args.file]
+      requestedPaths = args.file.split(',')
     } else {
       requestedPaths = args.file // Already an array
     }
@@ -320,6 +321,16 @@ export async function main(
       .join('')
     uploadFileChunks.push(Buffer.from(vars))
     uploadFileChunks.push(Buffer.from(MARKER_ENV_END))
+  }
+
+  // Fixes
+  if (args.feature && args.feature.split(',').includes('fixes') === true) {
+    info('Generating file fixes...')
+    const fixes = await generateFixes(projectRoot)
+    uploadFileChunks.push(Buffer.from(FIXES_HEADER))
+    uploadFileChunks.push(Buffer.from(fixes))
+    uploadFileChunks.push(Buffer.from(MARKER_FILE_END))
+    info('Finished generating file fixes')
   }
 
   const uploadFile = Buffer.concat(uploadFileChunks)

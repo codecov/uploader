@@ -73,3 +73,5 @@ codecov.exe
 .coverage
 # File genrated as part of XCode tests
 coverage-report-test.json
+
+*.coverage.txt
