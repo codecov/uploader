@@ -1,12 +1,12 @@
 {
   "name": "@codecov/uploader",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "@codecov/uploader",
-      "version": "0.3.1",
+      "version": "0.3.2",
       "license": "ISC",
       "dependencies": {
         "fast-glob": "3.2.11",
@@ -35,7 +35,7 @@
         "eslint-config-prettier": "8.5.0",
         "husky": "8.0.1",
         "jest": "27.5.1",
-        "jest-spec-reporter": "1.0.17",
+        "jest-spec-reporter": "^1.0.19",
         "lint-staged": "13.0.3",
         "mock-fs": "5.1.2",
         "pkg": "5.6.0",
@@ -5454,13 +5454,13 @@
       }
     },
     "node_modules/jest-spec-reporter": {
-      "version": "1.0.17",
-      "resolved": "https://registry.npmjs.org/jest-spec-reporter/-/jest-spec-reporter-1.0.17.tgz",
-      "integrity": "sha512-EG6+3iRhhQdFPZ55LqR51dJ+CsJi8ZF8IV91NBg6bAMTrO3PuQGsYyZ8DA2LIWouaami07yLMGIGFA/Mk6HFRA==",
+      "version": "1.0.19",
+      "resolved": "https://registry.npmjs.org/jest-spec-reporter/-/jest-spec-reporter-1.0.19.tgz",
+      "integrity": "sha512-fMzJO+B/7Gx+IAbi1AIoss4cRkGDegC3oHoXIqSDqEzh3VRtIUWbnJzhpV+r+jQm54Si/oGF4qE+utq+HVAEdA==",
       "dev": true,
       "dependencies": {
         "chalk": "4.1.1",
-        "moment": "2.29.1"
+        "moment": "2.29.4"
       }
     },
     "node_modules/jest-spec-reporter/node_modules/chalk": {
@@ -6424,9 +6424,9 @@
       }
     },
     "node_modules/moment": {
-      "version": "2.29.1",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz",
-      "integrity": "sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==",
+      "version": "2.29.4",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.29.4.tgz",
+      "integrity": "sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==",
       "dev": true,
       "engines": {
         "node": "*"
@@ -13270,13 +13270,13 @@
       }
     },
     "jest-spec-reporter": {
-      "version": "1.0.17",
-      "resolved": "https://registry.npmjs.org/jest-spec-reporter/-/jest-spec-reporter-1.0.17.tgz",
-      "integrity": "sha512-EG6+3iRhhQdFPZ55LqR51dJ+CsJi8ZF8IV91NBg6bAMTrO3PuQGsYyZ8DA2LIWouaami07yLMGIGFA/Mk6HFRA==",
+      "version": "1.0.19",
+      "resolved": "https://registry.npmjs.org/jest-spec-reporter/-/jest-spec-reporter-1.0.19.tgz",
+      "integrity": "sha512-fMzJO+B/7Gx+IAbi1AIoss4cRkGDegC3oHoXIqSDqEzh3VRtIUWbnJzhpV+r+jQm54Si/oGF4qE+utq+HVAEdA==",
       "dev": true,
       "requires": {
         "chalk": "4.1.1",
-        "moment": "2.29.1"
+        "moment": "2.29.4"
       },
       "dependencies": {
         "chalk": {
@@ -13988,9 +13988,9 @@
       "dev": true
     },
     "moment": {
-      "version": "2.29.1",
-      "resolved": "https://registry.npmjs.org/moment/-/moment-2.29.1.tgz",
-      "integrity": "sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==",
+      "version": "2.29.4",
+      "resolved": "https://registry.npmjs.org/moment/-/moment-2.29.4.tgz",
+      "integrity": "sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==",
       "dev": true
     },
     "ms": {
