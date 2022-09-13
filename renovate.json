@@ -1,6 +1,9 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    "docker:pinDigests",
+    "npm:unpublishSafe",
+    "helpers:pinGitHubActionDigests"
   ],
   "reviewers": [
     "codecov/open-source"
@@ -11,5 +14,8 @@
       "matchUpdateTypes": ["patch", "minor"],
       "groupName": "devDependencies (non-major)"
     }
-    ]
+  ],
+  "circleci" : {
+    "pinDigests": true
+  }
 }

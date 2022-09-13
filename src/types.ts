@@ -1,35 +1,38 @@
-import { Agent } from "https";
+import { Dispatcher, ProxyAgent } from "undici";
 
 export interface UploaderArgs {
-  build?: string // Specify the build number manually
   branch?: string // Specify the branch manually
+  build?: string // Specify the build number manually
+  changelog?: string // Displays the changelog and exits
+  clean?: string // Move discovered coverage reports to the trash
   dir?: string // Directory to search for coverage reports.
+  dryRun?: string // Don't upload files to Codecov
   env?: string // Specify environment variables to be included with this build
-  sha?: string // Specify the commit SHA mannually
+  feature?: string // Toggle features
   file?: string | string[] // Target file(s) to upload
   flags: string | string[] // Flag the upload to group coverage metrics
+  gcov?: string // Run with gcov support
+  gcovArgs?:  string | string[] // Extra arguments to pass to gcov
+  gcovIgnore?:  string | string[] // Paths to ignore during gcov gathering
+  gcovInclude?:  string | string[] // Paths to include during gcov gathering
+  gcovExecutable?: string // gcov executable to run.
   name?: string // Custom defined name of the upload. Visible in Codecov UI
   networkFilter?: string // Specify a prefix on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing
   networkPrefix?: string // Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing
-  parent?: string // The commit SHA of the parent for which you are uploading coverage.
-  pr?: string // Specify the pull request number mannually
-  token?: string // Codecov upload token
-  tag?: string // Specify the git tag
-  verbose?: string // Run with verbose logging
-  rootDir?: string // Specify the project root directory when not in a git repo
   nonZero?: string // Should errors exit with a non-zero (default: false)
-  dryRun?: string // Don't upload files to Codecov
+  parent?: string // The commit SHA of the parent for which you are uploading coverage.
+  pr?: string // Specify the pull request number manually
+  rootDir?: string // Specify the project root directory when not in a git repo
+  sha?: string // Specify the commit SHA manually
   slug: string // Specify the slug manually
-  url?: string // Change the upload host (Enterprise use)
-  clean?: string // Move discovered coverage reports to the trash
-  feature?: string // Toggle features
-  upstream: string // Upstream proxy to connect to
   source?: string // Track wrappers of the uploader
-  changelog?: string // Displays the changelog and exits
-  gcov?: string // Run with gcov support
-  gcovIgnore?: string // Paths to ignore during gcov gathering
-  gcovInclude?: string // Paths to include during gcov gathering
-  gcovArgs?: string // Extra arguments to pass to gcov
+  tag?: string // Specify the git tag
+  token?: string // Codecov upload token
+  upstream: string // Upstream proxy to connect to
+  url?: string // Change the upload host (Enterprise use)
+  verbose?: string // Run with verbose logging
+  xcode?: string // Run with xcode support
+  xcodeArchivePath?: string // Specify the xcode archive path. Likely specified as the -resultBundlePath and should end in .xcresult
 }
 
 export type UploaderEnvs = NodeJS.Dict<string>
@@ -64,13 +67,9 @@ export interface IServiceParams {
 }
 
 export interface IRequestHeaders {
-  url: URL;
-  options: {
-    method: string,
-    agent?: Agent
-    body?: string | Buffer,
-    headers: Record<string, string>
-  } 
+  agent?: ProxyAgent
+  url: URL
+  options: Dispatcher.RequestOptions
 }
 
 export interface PostResults {
@@ -82,3 +81,6 @@ export interface PutResults {
   status: string
   resultURL: URL
 }
+
+export type XcodeCoverageFileReport = Record<string, string | null>
+export type XcodeCoverageReport = Record<string, XcodeCoverageFileReport>

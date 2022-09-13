@@ -4,7 +4,7 @@ import zlib from 'zlib'
 import { version } from '../package.json'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, logError, UploadLogger } from './helpers/logger'
+import { info, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
   cleanCoverageFilePaths,
@@ -22,7 +22,13 @@ import {
   readCoverageFile,
   removeFile,
 } from './helpers/files'
+import { generateCoveragePyFile } from './helpers/coveragepy'
+import { generateFixes, FIXES_HEADER } from './helpers/fixes'
 import { generateGcovCoverageFiles } from './helpers/gcov'
+import { generateXcodeCoverageFiles } from './helpers/xcode'
+import { argAsArray } from './helpers/util'
+import { checkSlug } from './helpers/checkSlug'
+import { validateFlags } from './helpers/validate'
 
 /**
  *
@@ -55,14 +61,14 @@ function dryRun(
  * @param {string} args.branch Specify the branch manually
  * @param {string} args.dir Directory to search for coverage reports.
  * @param {string} args.env Specify environment variables to be included with this build
- * @param {string} args.sha Specify the commit SHA mannually
+ * @param {string} args.sha Specify the commit SHA manually
  * @param {string} args.file Target file(s) to upload
  * @param {string} args.flags Flag the upload to group coverage metrics
  * @param {string} args.name Custom defined name of the upload. Visible in Codecov UI
  * @param {string} args.networkFilter Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing
  * @param {string} args.networkPrefix Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing
  * @param {string} args.parent The commit SHA of the parent for which you are uploading coverage.
- * @param {string} args.pr Specify the pull request number mannually
+ * @param {string} args.pr Specify the pull request number manually
  * @param {string} args.token Codecov upload token
  * @param {string} args.tag Specify the git tag
  * @param {boolean} args.verbose Run with verbose logging
@@ -115,6 +121,15 @@ export async function main(
 
   info(generateHeader(getVersion()))
 
+  let flags: string[]
+  if (typeof args.flags === 'object') {
+    flags = [...args.flags]
+  } else {
+    flags = String(args.flags || '').split(',')
+  }
+
+  validateFlags(flags)
+
   // #endregion
   // #region == Step 2: detect if we are in a git repo
   const projectRoot = args.rootDir || fetchGitRoot()
@@ -135,7 +150,7 @@ export async function main(
 
   // #endregion
   // #region == Step 4: get network
-  let uploadFile = ''
+  const uploadFileChunks: Buffer[] = []
 
   if (!args.feature || args.feature.split(',').includes('network') === false) {
     UploadLogger.verbose('Start of network processing...')
@@ -146,29 +161,56 @@ export async function main(
       throw new Error(`Error getting file listing: ${error}`)
     }
 
-    uploadFile = uploadFile.concat(fileListing).concat(MARKER_NETWORK_END)
+    uploadFileChunks.push(Buffer.from(fileListing))
+    uploadFileChunks.push(Buffer.from(MARKER_NETWORK_END))
   }
 
   // #endregion
   // #region == Step 5: select coverage files (search or specify)
 
   let requestedPaths: string[] = []
-  
+
   // Look for files
 
   if (args.gcov) {
-    UploadLogger.verbose('Running gcov...')
-    const gcovLogs = await generateGcovCoverageFiles(projectRoot)
+    const gcovInclude: string[] = argAsArray(args.gcovInclude)
+    const gcovIgnore: string[] = argAsArray(args.gcovIgnore)
+    const gcovArgs: string[] = argAsArray(args.gcovArgs)
+    const gcovExecutable: string = args.gcovExecutable || 'gcov'
+
+    UploadLogger.verbose(`Running ${gcovExecutable}...`)
+    const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs, gcovExecutable)
     UploadLogger.verbose(`${gcovLogs}`)
   }
-  
-  let coverageFilePaths: string[] = []
-  if (args.file) {
-    if (typeof args.file === 'string') {
-      requestedPaths = [args.file]
+
+  if (args.xcode) {
+    if (!args.xcodeArchivePath) {
+      throw new Error('Please specify xcodeArchivePath to run the Codecov uploader with xcode support')
     } else {
-      requestedPaths = args.file
+      const xcodeArchivePath: string = args.xcodeArchivePath
+      const xcodeLogs = await generateXcodeCoverageFiles(xcodeArchivePath)
+      UploadLogger.verbose(`${xcodeLogs}`)
     }
+  }
+
+  let coverageFilePaths: string[] = []
+  if (args.file !== undefined) {
+    if (typeof args.file === 'string') {
+      requestedPaths = args.file.split(',')
+    } else {
+      requestedPaths = args.file // Already an array
+    }
+
+    requestedPaths = requestedPaths.filter((path) => {
+      return Boolean(path) || info('Warning: Skipping an empty path passed to `-f`')
+    })
+  }
+
+  try {
+    const coveragePyLogs = await generateCoveragePyFile(projectRoot, requestedPaths)
+    UploadLogger.verbose(`${coveragePyLogs}`)
+  } catch (error) {
+    UploadLogger.verbose(`Skipping coveragepy conversion: ${error}`)
   }
 
   coverageFilePaths = requestedPaths
@@ -193,9 +235,9 @@ export async function main(
 
     let coverageFilePathsAfterFilter = coverageFilePaths
 
-    if (coverageFilePaths.length > 0) { 
+    if (coverageFilePaths.length > 0) {
       coverageFilePathsAfterFilter = filterFilesAgainstBlockList(coverageFilePaths, getBlocklist())
-    } 
+    }
 
 
 
@@ -253,10 +295,9 @@ export async function main(
       continue
     }
 
-    uploadFile = uploadFile
-      .concat(fileHeader(coverageFile))
-      .concat(fileContents)
-      .concat(MARKER_FILE_END)
+    uploadFileChunks.push(Buffer.from(fileHeader(coverageFile)))
+    uploadFileChunks.push(Buffer.from(fileContents))
+    uploadFileChunks.push(Buffer.from(MARKER_FILE_END))
     coverageFileAdded = true
   }
   if (!coverageFileAdded) {
@@ -278,9 +319,21 @@ export async function main(
       .filter(Boolean)
       .map(evar => `${evar}=${process.env[evar] || ''}\n`)
       .join('')
-    uploadFile = uploadFile.concat(vars).concat(MARKER_ENV_END)
+    uploadFileChunks.push(Buffer.from(vars))
+    uploadFileChunks.push(Buffer.from(MARKER_ENV_END))
   }
 
+  // Fixes
+  if (args.feature && args.feature.split(',').includes('fixes') === true) {
+    info('Generating file fixes...')
+    const fixes = await generateFixes(projectRoot)
+    uploadFileChunks.push(Buffer.from(FIXES_HEADER))
+    uploadFileChunks.push(Buffer.from(fixes))
+    uploadFileChunks.push(Buffer.from(MARKER_FILE_END))
+    info('Finished generating file fixes')
+  }
+
+  const uploadFile = Buffer.concat(uploadFileChunks)
   const gzippedFile = zlib.gzipSync(uploadFile)
 
   // #endregion
@@ -300,14 +353,15 @@ export async function main(
     UploadLogger.verbose(`${parameter}`)
   }
 
-  if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
-    logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
+  const validSlug =  checkSlug(buildParams.slug)
+  if (!validSlug) {
+    throw new Error(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
   }
-  
+
   const query = webHelpers.generateQuery(buildParams)
 
   if (args.dryRun) {
-    dryRun(uploadHost, token, query, uploadFile, args.source || '')
+    dryRun(uploadHost, token, query, uploadFile.toString(), args.source || '')
     return
   }
 

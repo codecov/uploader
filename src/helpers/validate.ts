@@ -14,10 +14,20 @@ export function validateURL(url: string): boolean {
   return validator.isURL(url, { require_protocol: true })
 }
 
-export function validateFlags(flags: string): boolean {
+export function isValidFlag(flag: string): boolean {
   // eslint-disable-next-line no-useless-escape
   const mask = /^[\w\.\-]{1,45}$/
-  return mask.test(flags)
+  return flag.length === 0 || mask.test(flag)
+}
+
+export function validateFlags(flags: string[]): void {
+  const invalidFlags = flags.filter(flag => isValidFlag(flag) !== true)
+
+  if (invalidFlags.length > 0) {
+    throw new Error(
+      `Flags must consist only of alphanumeric characters, '_', '-', or '.' and not exceed 45 characters. Received ${flags}`,
+    )
+  }
 }
 
 /**

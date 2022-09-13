@@ -2,6 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerAzurepipelines from '../../src/ci_providers//provider_azurepipelines'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
@@ -53,7 +54,7 @@ describe('Azure Pipelines CI Params', () => {
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+      spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
 
     const params = providerAzurepipelines.getServiceParams(inputs)
@@ -87,6 +88,12 @@ describe('Azure Pipelines CI Params', () => {
       service: 'azure_pipelines',
       slug: 'testOrg/testRepo',
     }
+    const execFileSync = td.replace(childProcess, 'execFileSync')
+    td.when(
+      execFileSync('git', ['show', '--no-patch', '--format=%P']),
+    ).thenReturn(
+      'nonmergesha23456789012345678901234567890',
+    )
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -118,6 +125,12 @@ describe('Azure Pipelines CI Params', () => {
       service: 'azure_pipelines',
       slug: 'testOrg/testRepo',
     }
+    const execFileSync = td.replace(childProcess, 'execFileSync')
+    td.when(
+      execFileSync('git', ['show', '--no-patch', '--format=%P']),
+    ).thenReturn(
+      'nonmergesha23456789012345678901234567890',
+    )
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -128,11 +141,9 @@ describe('Azure Pipelines CI Params', () => {
       environment: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
-        BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
         BUILD_SOURCEVERSION: 'testingsha',
         SYSTEM_BUILD_BUILDID: '1',
-        SYSTEM_PULLREQUEST_PULLREQUESTID: '3',
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
         SYSTEM_TEAMPROJECT: 'testOrg',
       },
@@ -143,7 +154,7 @@ describe('Azure Pipelines CI Params', () => {
       buildURL: 'https://example.azure.comtestOrg/_build/results?buildId=2',
       commit: 'testingsha',
       job: '2',
-      pr: '3',
+      pr: '',
       project: 'testOrg',
       server_uri: 'https://example.azure.com',
       service: 'azure_pipelines',
@@ -152,7 +163,7 @@ describe('Azure Pipelines CI Params', () => {
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['config', '--get', 'remote.origin.url']),
+      spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
     const params = providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -187,7 +198,7 @@ describe('Azure Pipelines CI Params', () => {
     }
     const execFileSync = td.replace(childProcess, 'execFileSync')
     td.when(
-      execFileSync('git', ['show', '--no-patch', '--format="%P"']),
+      execFileSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn(
       'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
     )
