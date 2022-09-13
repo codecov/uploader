@@ -35,7 +35,7 @@ describe('generateGcovCoverageFiles()', () => {
         })
 
         const projectRoot = process.cwd()
-        expect(await generateGcovCoverageFiles(projectRoot, [], [], ['NEWGCOVARG'])).toEqual("Matched")
+        expect(await generateGcovCoverageFiles(projectRoot, [], [], ['NEWGCOVARG'], 'gcov')).toEqual("Matched")
     })
 
     it('should return an error when no gcno files found', async () => {
@@ -58,6 +58,6 @@ describe('generateGcovCoverageFiles()', () => {
         td.when(spawnSync('gcov')).thenReturn({ error: "Command 'gcov' not found" })
 
         const projectRoot = process.cwd()
-        await expect(generateGcovCoverageFiles(projectRoot, [], [], ['NEWGCOVARG'])).rejects.toThrowError(/gcov is not installed/)
+        await expect(generateGcovCoverageFiles(projectRoot, [], [], ['NEWGCOVARG'], 'gcov')).rejects.toThrowError(/gcov is not installed/)
     })
 })

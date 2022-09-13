@@ -15,6 +15,7 @@ export interface UploaderArgs {
   gcovArgs?:  string | string[] // Extra arguments to pass to gcov
   gcovIgnore?:  string | string[] // Paths to ignore during gcov gathering
   gcovInclude?:  string | string[] // Paths to include during gcov gathering
+  gcovExecutable?: string // gcov executable to run.
   name?: string // Custom defined name of the upload. Visible in Codecov UI
   networkFilter?: string // Specify a prefix on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing
   networkPrefix?: string // Specify a prefix on files listed in the network section of the Codecov report. Useful to help resolve path fixing

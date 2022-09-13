@@ -318,6 +318,31 @@ describe('Uploader Core', () => {
     )
   })
 
+  it('Can find multiple specified files as comma-separated', async () => {
+    const log = jest.spyOn(console, 'log').mockImplementation(() => {
+      // intentionally empty
+    })
+    await app.main({
+      dryRun: 'true',
+      file: 'test/fixtures/coverage.txt,test/fixtures/other/coverage.txt,test/does/not/exist.txt',
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      flags: '',
+      slug: '',
+      upstream: ''
+    })
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/fixtures\/coverage\.txt\.\.\./),
+    )
+    expect(log).toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/fixtures\/other\/coverage\.txt\.\.\./),
+    )
+    expect(log).not.toHaveBeenCalledWith(
+      expect.stringMatching(/Processing.*test\/does\/not\/exist\.txt\.\.\./),
+    )
+  })
+
   it('will process blocked files, if passed via -f', async () => {
     const log = jest.spyOn(console, 'log').mockImplementation(() => {
       // intentionally empty
@@ -482,6 +507,22 @@ describe('Uploader Core', () => {
     })
     expect(console.log).not.toHaveBeenCalledWith(
       expect.stringMatching(/<<<<<< network/),
+    )
+  })
+
+  it('Can create fixes', async () => {
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: 'true',
+      feature: 'fixes',
+      flags: '',
+      slug: '',
+      upstream: ''
+    })
+    expect(console.log).toHaveBeenCalledWith(
+      expect.stringMatching(/# path=fixes\ntest\/fixtures\/fixes\/example.php:4,6,11,15,19,20\ntest\/fixtures\/gcov\/main.c:2,4,11,12,13,14,16,20\n<<<<<< EOF/)
     )
   })
 })

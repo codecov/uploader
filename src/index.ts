@@ -4,7 +4,7 @@ import zlib from 'zlib'
 import { version } from '../package.json'
 import { detectProvider } from './helpers/provider'
 import * as webHelpers from './helpers/web'
-import { info, logError, UploadLogger } from './helpers/logger'
+import { info, UploadLogger } from './helpers/logger'
 import { getToken } from './helpers/token'
 import {
   cleanCoverageFilePaths,
@@ -23,9 +23,12 @@ import {
   removeFile,
 } from './helpers/files'
 import { generateCoveragePyFile } from './helpers/coveragepy'
+import { generateFixes, FIXES_HEADER } from './helpers/fixes'
 import { generateGcovCoverageFiles } from './helpers/gcov'
 import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
+import { checkSlug } from './helpers/checkSlug'
+import { validateFlags } from './helpers/validate'
 
 /**
  *
@@ -118,6 +121,15 @@ export async function main(
 
   info(generateHeader(getVersion()))
 
+  let flags: string[]
+  if (typeof args.flags === 'object') {
+    flags = [...args.flags]
+  } else {
+    flags = String(args.flags || '').split(',')
+  }
+
+  validateFlags(flags)
+
   // #endregion
   // #region == Step 2: detect if we are in a git repo
   const projectRoot = args.rootDir || fetchGitRoot()
@@ -161,11 +173,13 @@ export async function main(
   // Look for files
 
   if (args.gcov) {
-    UploadLogger.verbose('Running gcov...')
     const gcovInclude: string[] = argAsArray(args.gcovInclude)
     const gcovIgnore: string[] = argAsArray(args.gcovIgnore)
     const gcovArgs: string[] = argAsArray(args.gcovArgs)
-    const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs)
+    const gcovExecutable: string = args.gcovExecutable || 'gcov'
+
+    UploadLogger.verbose(`Running ${gcovExecutable}...`)
+    const gcovLogs = await generateGcovCoverageFiles(projectRoot, gcovInclude, gcovIgnore, gcovArgs, gcovExecutable)
     UploadLogger.verbose(`${gcovLogs}`)
   }
 
@@ -180,12 +194,16 @@ export async function main(
   }
 
   let coverageFilePaths: string[] = []
-  if (args.file) {
+  if (args.file !== undefined) {
     if (typeof args.file === 'string') {
-      requestedPaths = [args.file]
+      requestedPaths = args.file.split(',')
     } else {
-      requestedPaths = args.file
+      requestedPaths = args.file // Already an array
     }
+
+    requestedPaths = requestedPaths.filter((path) => {
+      return Boolean(path) || info('Warning: Skipping an empty path passed to `-f`')
+    })
   }
 
   try {
@@ -305,6 +323,16 @@ export async function main(
     uploadFileChunks.push(Buffer.from(MARKER_ENV_END))
   }
 
+  // Fixes
+  if (args.feature && args.feature.split(',').includes('fixes') === true) {
+    info('Generating file fixes...')
+    const fixes = await generateFixes(projectRoot)
+    uploadFileChunks.push(Buffer.from(FIXES_HEADER))
+    uploadFileChunks.push(Buffer.from(fixes))
+    uploadFileChunks.push(Buffer.from(MARKER_FILE_END))
+    info('Finished generating file fixes')
+  }
+
   const uploadFile = Buffer.concat(uploadFileChunks)
   const gzippedFile = zlib.gzipSync(uploadFile)
 
@@ -325,8 +353,9 @@ export async function main(
     UploadLogger.verbose(`${parameter}`)
   }
 
-  if (buildParams.slug !== '' && !buildParams.slug?.match(/\//)) {
-    logError(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
+  const validSlug =  checkSlug(buildParams.slug)
+  if (!validSlug) {
+    throw new Error(`Slug must follow the format of "<owner>/<repo>" or be blank. We detected "${buildParams.slug}"`)
   }
 
   const query = webHelpers.generateQuery(buildParams)

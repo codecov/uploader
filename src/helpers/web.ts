@@ -15,7 +15,6 @@ import {
   UploaderInputs,
 } from '../types'
 import { info } from './logger'
-import * as validateHelpers from './validate'
 
 /**
  *
@@ -32,15 +31,11 @@ export function populateBuildParams(
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
 
-  let flags: string[]
-  if (typeof args.flags === 'object') {
-    flags = [...args.flags]
+  if (typeof args.flags === "string") {
+    serviceParams.flags = args.flags
   } else {
-    flags = String(args.flags || '').split(',')
+    serviceParams.flags = args.flags.join(',')
   }
-  serviceParams.flags = flags
-    .filter(flag => validateHelpers.validateFlags(flag))
-    .join(',')
 
   serviceParams.parent = args.parent || ''
   return serviceParams

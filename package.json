@@ -1,6 +1,6 @@
 {
   "name": "@codecov/uploader",
-  "version": "0.2.4",
+  "version": "0.3.1",
   "description": "Codecov Report Uploader",
   "private": true,
   "bin": {
@@ -36,13 +36,13 @@
     "fast-glob": "3.2.11",
     "js-yaml": "4.1.0",
     "snake-case": "3.0.4",
-    "undici": "5.5.1",
+    "undici": "5.10.0",
     "validator": "13.7.0",
     "yargs": "17.5.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "16.2.4",
-    "@commitlint/config-conventional": "16.2.4",
+    "@commitlint/cli": "17.0.3",
+    "@commitlint/config-conventional": "17.0.3",
     "@types/jest": "27.4.1",
     "@types/js-yaml": "4.0.5",
     "@types/micromatch": "4.0.2",
@@ -54,7 +54,7 @@
     "@typescript-eslint/parser": "5.21.0",
     "eslint": "8.14.0",
     "eslint-config-prettier": "8.5.0",
-    "husky": "7.0.4",
+    "husky": "8.0.1",
     "jest": "27.5.1",
     "jest-spec-reporter": "1.0.17",
     "lint-staged": "13.0.3",

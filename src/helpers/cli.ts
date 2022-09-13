@@ -10,11 +10,13 @@ const args: ICLIArgument[] = [
   {
     alias: 'B',
     name: 'branch',
+    type: 'string',
     description: 'Specify the branch manually',
   },
   {
     alias: 'b',
     name: 'build',
+    type: 'number',
     description: 'Specify the build number manually',
   },
   {
@@ -27,11 +29,14 @@ const args: ICLIArgument[] = [
   {
     alias: 'C',
     name: 'sha',
+    type: 'string',
     description: 'Specify the commit SHA manually',
   },
   {
     alias: 'CL',
     name: 'changelog',
+    type: 'boolean',
+    default: false,
     description: 'Display a link for the current changelog'
   },
   {
@@ -49,11 +54,13 @@ const args: ICLIArgument[] = [
   {
     alias: 'f',
     name: 'file',
+    type: 'string',
     description: 'Target file(s) to upload',
   },
   {
     alias: 'F',
     name: 'flags',
+    type: 'string',
     default: '',
     description: 'Flag the upload to group coverage metrics',
   },
@@ -83,8 +90,14 @@ const args: ICLIArgument[] = [
     description: 'Paths to include during gcov gathering',
   },
   {
+    alias: 'gx',
+    name: 'gcovExecutable',
+    type: 'string',
+    description: "gcov executable to run. Defaults to 'gcov'",
+  },
+  {
     alias: 'i',
-    name: 'networkFiler',
+    name: 'networkFilter',
     type: 'string',
     description: 'Specify a filter on the files listed in the network section of the Codecov report. Useful for upload-specific path fixing',
   },
@@ -97,17 +110,20 @@ const args: ICLIArgument[] = [
   {
     alias: 'n',
     name: 'name',
+    type: 'string',
     default: '',
     description: 'Custom defined name of the upload. Visible in Codecov UI',
   },
   {
     alias: 'N',
     name: 'parent',
+    type: 'string',
     description: "The commit SHA of the parent for which you are uploading coverage. If not present, the parent will be determined using the API of your repository provider. When using the repository provider's API, the parent is determined via finding the closest ancestor to the commit.",
   },
   {
     alias: 'P',
     name: 'pr',
+    type: 'number',
     description: 'Specify the pull request number manually',
   },
   {
@@ -133,17 +149,20 @@ const args: ICLIArgument[] = [
   {
     alias: 's',
     name: 'dir',
+    type: 'string',
     description: 'Directory to search for coverage reports.\nAlready searches project root and current working directory',
   },
   {
     alias: 'T',
     name: 'tag',
+    type: 'string',
     default: '',
     description: 'Specify the git tag',
   },
   {
     alias: 't',
     name: 'token',
+    type: 'string',
     default: '',
     description: 'Codecov upload token',
   },
@@ -172,6 +191,7 @@ const args: ICLIArgument[] = [
     name: 'feature',
     type: 'string',
     description: `Toggle functionalities. Separate multiple ones by comma: -X network,search
+      -X fixes         Enable file fixes to ignore common lines from coverage (e.g. blank lines or empty brackets)
       -X network       Disable uploading the file network
       -X search        Disable searching for coverage files`,
   },
