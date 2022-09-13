@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.2](https://github.com/codecov/uploader/compare/v0.2.6...v0.3.2) (2022-09-13)
+
+
+### Features
+
+* create fixes on c-like and php files ([#869](https://github.com/codecov/uploader/issues/869)) ([29b240c](https://github.com/codecov/uploader/commit/29b240c07ca4bfc0312c66eb4d2fd78f2bf6c0db))
+
+
+### Bug Fixes
+
+* update micromatch regex ([#635](https://github.com/codecov/uploader/issues/635)) ([0bf804c](https://github.com/codecov/uploader/commit/0bf804c338aa0fc49d2a0656a4b1552014403f1f))
+* use proper end for fixes ([#872](https://github.com/codecov/uploader/issues/872)) ([e10ef7d](https://github.com/codecov/uploader/commit/e10ef7d4e7c05536d7a7c8e1d12d8dabf0456a9a))
+* **yargs:** specify types for every CLI option ([#878](https://github.com/codecov/uploader/issues/878)) ([74b1e86](https://github.com/codecov/uploader/commit/74b1e863f840584157a3f4b2a190ae89566e7be8))
+
 ### [0.3.1](https://github.com/codecov/uploader/compare/v0.2.0...v0.3.1) (2022-09-01)
 
 
