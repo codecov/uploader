@@ -1,4 +1,8 @@
 import childprocess from 'child_process'
+import { SPAWNPROCESSBUFFERSIZE } from './constansts'
+export { SPAWNPROCESSBUFFERSIZE } from './constansts'
+
+
 
 export function isProgramInstalled(programName: string): boolean {
   return !childprocess.spawnSync(programName).error
@@ -8,7 +12,11 @@ export function runExternalProgram(
   programName: string,
   optionalArguments: string[] = [],
 ): string {
-  const result = childprocess.spawnSync(programName, optionalArguments)
+  const result = childprocess.spawnSync(
+    programName,
+    optionalArguments,
+    { maxBuffer: SPAWNPROCESSBUFFERSIZE },
+  )
   if (result.error) {
     throw new Error(`Error running external program: ${result.error}`)
   }

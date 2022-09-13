@@ -3,6 +3,7 @@ import fs from 'fs'
 import childProcess from 'child_process'
 import * as fileHelpers from '../../src/helpers/files'
 import { getBlocklist } from '../../src/helpers/files'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import mock from 'mock-fs'
 
 describe('File Helpers', () => {
@@ -28,7 +29,7 @@ describe('File Helpers', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn({ stdout: 'fish' })
     td.when(
-      spawnSync('git', ['rev-parse', '--show-toplevel']),
+      spawnSync('git', ['rev-parse', '--show-toplevel'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'gitRoot' })
 
     expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')
@@ -314,6 +315,16 @@ describe('File Helpers', () => {
     it("ignores shell scripts by default", async () => {
       expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.sh'))
     })
+
+    it("should ignore files ending with *.*js", async () => {
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.cjs'))
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.mjs'))
+    })
+
+    it("should ignore files ending with *.js", async () => {
+      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.js'))
+    })
+
     it("ignores powershell scripts by default", async () => {
       expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.ps1'))
     })

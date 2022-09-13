@@ -27,7 +27,7 @@ export function detectProvider(
   } catch (error) {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
     if (typeof serviceParams !== 'undefined') {
-      logError(`Errow detecting repos setting using git: ${error}`)
+      logError(`Error detecting repos setting using git: ${error}`)
     } else {
       throw new Error(
         '\nUnable to detect SHA and slug, please specify them manually.\nSee the help for more details.',
