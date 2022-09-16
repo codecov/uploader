@@ -1,3 +1,4 @@
+import dns from 'node:dns'
 import { snakeCase } from 'snake-case'
 import {
   ProxyAgent,
@@ -65,6 +66,7 @@ export async function uploadToCodecovPUT(
   if (requestHeaders.agent) {
     setGlobalDispatcher(requestHeaders.agent)
   }
+  dns.setDefaultResultOrder('ipv4first');
   const response = await request(requestHeaders.url.origin, requestHeaders.options)
 
   if (response.statusCode !== 200) {
@@ -94,6 +96,7 @@ export async function uploadToCodecovPOST(
   if (requestHeaders.agent) {
     setGlobalDispatcher(requestHeaders.agent)
   }
+  dns.setDefaultResultOrder('ipv4first');
   const response = await request(requestHeaders.url.origin, requestHeaders.options)
 
   if (response.statusCode !== 200) {
