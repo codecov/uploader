@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.3.2](https://github.com/codecov/uploader/compare/v0.2.6...v0.3.2) (2022-09-13)
+### [0.3.2](https://github.com/codecov/uploader/compare/v0.3.1...v0.3.2) (2022-09-13)
 
 
 ### Features
@@ -16,7 +16,7 @@ All notable changes to this project will be documented in this file. See [standa
 * use proper end for fixes ([#872](https://github.com/codecov/uploader/issues/872)) ([e10ef7d](https://github.com/codecov/uploader/commit/e10ef7d4e7c05536d7a7c8e1d12d8dabf0456a9a))
 * **yargs:** specify types for every CLI option ([#878](https://github.com/codecov/uploader/issues/878)) ([74b1e86](https://github.com/codecov/uploader/commit/74b1e863f840584157a3f4b2a190ae89566e7be8))
 
-### [0.3.1](https://github.com/codecov/uploader/compare/v0.2.0...v0.3.1) (2022-09-01)
+### [0.3.1](https://github.com/codecov/uploader/compare/v0.3.0...v0.3.1) (2022-09-01)
 
 
 ### Features
@@ -51,7 +51,7 @@ All notable changes to this project will be documented in this file. See [standa
 * typo ([#812](https://github.com/codecov/uploader/issues/812)) ([3b2e37d](https://github.com/codecov/uploader/commit/3b2e37d290e429e7d12210e7e8dd56674f089a3c))
 * use proper end for fixes ([#872](https://github.com/codecov/uploader/issues/872)) ([e10ef7d](https://github.com/codecov/uploader/commit/e10ef7d4e7c05536d7a7c8e1d12d8dabf0456a9a))
 
-## [0.3.0](https://github.com/codecov/uploader/compare/v0.2.0...v0.3.0) (2022-09-01)
+## [0.3.0](https://github.com/codecov/uploader/compare/v0.2.6...v0.3.0) (2022-09-01)
 
 
 ### Features
@@ -85,7 +85,7 @@ All notable changes to this project will be documented in this file. See [standa
 * throw error when flags do not match pattern ([#831](https://github.com/codecov/uploader/issues/831)) ([cf2585c](https://github.com/codecov/uploader/commit/cf2585cef6ae72f1ac8fc0fba9ec645ae2750d7e)), closes [#829](https://github.com/codecov/uploader/issues/829) [#835](https://github.com/codecov/uploader/issues/835)
 * typo ([#812](https://github.com/codecov/uploader/issues/812)) ([3b2e37d](https://github.com/codecov/uploader/commit/3b2e37d290e429e7d12210e7e8dd56674f089a3c))
 
-### [0.2.6](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.6) (2022-08-24)
+### [0.2.6](https://github.com/codecov/uploader/compare/v0.2.5...v0.2.6) (2022-08-24)
 
 
 ### Features
@@ -118,7 +118,7 @@ All notable changes to this project will be documented in this file. See [standa
 * throw error when flags do not match pattern ([#831](https://github.com/codecov/uploader/issues/831)) ([cf2585c](https://github.com/codecov/uploader/commit/cf2585cef6ae72f1ac8fc0fba9ec645ae2750d7e)), closes [#829](https://github.com/codecov/uploader/issues/829) [#835](https://github.com/codecov/uploader/issues/835)
 * typo ([#812](https://github.com/codecov/uploader/issues/812)) ([3b2e37d](https://github.com/codecov/uploader/commit/3b2e37d290e429e7d12210e7e8dd56674f089a3c))
 
-### [0.2.5](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.5) (2022-08-01)
+### [0.2.5](https://github.com/codecov/uploader/compare/v0.2.4...v0.2.5) (2022-08-01)
 
 
 ### Features
@@ -164,7 +164,7 @@ All notable changes to this project will be documented in this file. See [standa
 * increase maxBuffer of spawnSync ([c121446](https://github.com/codecov/uploader/commit/c12144697e95051b061488feae60db4b98d600c2))
 * store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
 
-### [0.2.3](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.3) (2022-05-17)
+### [0.2.3](https://github.com/codecov/uploader/compare/v0.2.2...v0.2.3) (2022-05-17)
 
 
 ### Bug Fixes
@@ -197,7 +197,7 @@ All notable changes to this project will be documented in this file. See [standa
 * store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
 * fix coveragepy autorun ([0773002](https://github.com/codecov/uploader/commit/0773002388faad66cf155ef36d968d718c03cd87))
 
-### [0.2.0](https://github.com/codecov/uploader/compare/v0.1.21...v0.2.0) (2022-04-21)
+### [0.2.0](https://github.com/codecov/uploader/compare/v0.1.22...v0.2.0) (2022-04-21)
 
 
 ### Features
