@@ -6,7 +6,7 @@ orbs:
 jobs:
   build-linux-and-osx:
     docker:
-      - image: cimg/node:18.9.1@sha256:c141f4a945be5b944a13f090c3051ec855dcd0112ec01322bedf6d16c890ee62
+      - image: cimg/node:18.5.0
 
     working_directory: ~/repo
 
@@ -194,7 +194,7 @@ jobs:
 
   test-linux:
     docker:
-      - image: cimg/node:18.9.1@sha256:c141f4a945be5b944a13f090c3051ec855dcd0112ec01322bedf6d16c890ee62
+      - image: cimg/node:18.5.0
     steps:
       - checkout
       - attach_workspace:
@@ -224,7 +224,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: cimg/node:18.9.1@sha256:c141f4a945be5b944a13f090c3051ec855dcd0112ec01322bedf6d16c890ee62
+      - image: cimg/node:18.5.0
     steps:
       - checkout
       - attach_workspace:
@@ -378,7 +378,7 @@ jobs:
 
   review:
     docker:
-      - image: cimg/node:18.9.1@sha256:c141f4a945be5b944a13f090c3051ec855dcd0112ec01322bedf6d16c890ee62
+      - image: cimg/node:18.5.0
     steps:
       - attach_workspace:
           at: .
@@ -413,7 +413,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/node:18.9.1@sha256:c141f4a945be5b944a13f090c3051ec855dcd0112ec01322bedf6d16c890ee62
+      - image: cimg/node:18.5.0
     steps:
       - attach_workspace:
           at: .
