@@ -26,7 +26,7 @@
         "@types/js-yaml": "4.0.5",
         "@types/micromatch": "4.0.2",
         "@types/mock-fs": "4.13.1",
-        "@types/node": "16.11.61",
+        "@types/node": "16.11.62",
         "@types/validator": "13.7.7",
         "@types/yargs": "17.0.13",
         "@typescript-eslint/eslint-plugin": "5.38.1",
@@ -44,7 +44,7 @@
         "testdouble": "3.16.6",
         "testdouble-jest": "2.0.0",
         "ts-jest": "27.1.5",
-        "typescript": "4.8.3"
+        "typescript": "4.8.4"
       }
     },
     "node_modules/@babel/code-frame": {
@@ -1586,9 +1586,9 @@
       }
     },
     "node_modules/@types/node": {
-      "version": "16.11.61",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.61.tgz",
-      "integrity": "sha512-HSz3rzeislhVDZvmu65QZaEquYLQT52qcaDCMIX/SdOR8e+XgKbP7D8f8X36qEJBjlJvB1vURE4MGIi6Wnj5LA==",
+      "version": "16.11.62",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.62.tgz",
+      "integrity": "sha512-K/ggecSdwAAy2NUW4WKmF4Rc03GKbsfP+k326UWgckoS+Rzd2PaWbjk76dSmqdLQvLTJAO9axiTUJ6488mFsYQ==",
       "dev": true
     },
     "node_modules/@types/normalize-package-data": {
@@ -8668,9 +8668,9 @@
       }
     },
     "node_modules/typescript": {
-      "version": "4.8.3",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.8.3.tgz",
-      "integrity": "sha512-goMHfm00nWPa8UvR/CPSvykqf6dVV8x/dp0c5mFTMTIu0u0FlGWRioyy7Nn0PGAdHxpJZnuO/ut+PpQ8UiHAig==",
+      "version": "4.8.4",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.8.4.tgz",
+      "integrity": "sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==",
       "dev": true,
       "bin": {
         "tsc": "bin/tsc",
@@ -10349,9 +10349,9 @@
       }
     },
     "@types/node": {
-      "version": "16.11.61",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.61.tgz",
-      "integrity": "sha512-HSz3rzeislhVDZvmu65QZaEquYLQT52qcaDCMIX/SdOR8e+XgKbP7D8f8X36qEJBjlJvB1vURE4MGIi6Wnj5LA==",
+      "version": "16.11.62",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-16.11.62.tgz",
+      "integrity": "sha512-K/ggecSdwAAy2NUW4WKmF4Rc03GKbsfP+k326UWgckoS+Rzd2PaWbjk76dSmqdLQvLTJAO9axiTUJ6488mFsYQ==",
       "dev": true
     },
     "@types/normalize-package-data": {
@@ -15653,9 +15653,9 @@
       }
     },
     "typescript": {
-      "version": "4.8.3",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.8.3.tgz",
-      "integrity": "sha512-goMHfm00nWPa8UvR/CPSvykqf6dVV8x/dp0c5mFTMTIu0u0FlGWRioyy7Nn0PGAdHxpJZnuO/ut+PpQ8UiHAig==",
+      "version": "4.8.4",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-4.8.4.tgz",
+      "integrity": "sha512-QCh+85mCy+h0IGff8r5XWzOVSbBO+KfeYrMQh7NJ58QujwcE22u+NUSmUxqF+un70P9GXKxa2HCNiTTMJknyjQ==",
       "dev": true
     },
     "uglify-js": {
