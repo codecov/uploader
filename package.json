@@ -75,5 +75,8 @@
     "**/*.{json,yml,yaml,html}": [
       "prettier --write"
     ]
+  },
+  "volta": {
+    "node": "17.9.1"
   }
 }
