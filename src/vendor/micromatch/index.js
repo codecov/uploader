@@ -459,7 +459,7 @@ micromatch.parse = (patterns, options) => {
 
 micromatch.braces = (pattern, options) => {
   if (typeof pattern !== 'string') throw new TypeError('Expected a string')
-  if ((options && options.nobrace === true) || !/\{.*\}/.test(pattern)) {
+  if ((options && options.nobrace === true) || !/\^{(1,)[^\}]*/.test(pattern)) {
     return [pattern]
   }
   return braces(pattern, options)

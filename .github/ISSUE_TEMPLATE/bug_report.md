@@ -2,7 +2,8 @@
 name: Bug report
 about: Create a report to help us improve
 title: your_title
-labels: your_label
+labels:
+- bug
 assignees: your_username
 
 ---
