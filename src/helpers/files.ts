@@ -151,6 +151,8 @@ function globBlocklist(): string[] {
     'test_*_coverage.txt',
     'testrunner-coverage*',
     '*.*js',
+    '.yarn',
+    '*.zip',
   ]
 }
 
