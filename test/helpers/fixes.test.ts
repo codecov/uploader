@@ -50,6 +50,20 @@ describe('Fixes Helpers', () => {
     ).toBe('test/fixtures/fixes/example.php:4,6,11,15,19,20\n')
   })
 
+  it('provides proper fixes for go-like files', async () => {
+    const files = ['test/fixtures/fixes/example.go']
+    td.replace(childProcess, 'spawnSync', () => {
+      return {
+        stdout: files.join('\n'),
+        status: 0,
+        error: undefined,
+      }
+    })
+    expect(
+      await fixesHelpers.generateFixes('.')
+    ).toBe('test/fixtures/fixes/example.go:2,4,5,7,8,9,10,11,13,14,15,16,17,19,20,21,23,24,25,27,28,29,32,34\n')
+  })
+
   it('provides multiple fixes for files', async () => {
     const files = ['test/fixtures/fixes/example.php', 'test/fixtures/gcov/main.c']
     td.replace(childProcess, 'spawnSync', () => {
