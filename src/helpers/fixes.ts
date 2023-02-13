@@ -20,6 +20,12 @@ export async function generateFixes(projectRoot: string): Promise<string> {
   const SYNTAXBRACKET = /^\s*[{}]\s*(\/\/.*)?$/m
   // [ or ]
   const SYNTAXLIST = /^\s*[[\]]\s*(\/\/.*)?$/m
+  // //
+  const SYNTAXCOMMENT = /^\s*\/\/.*$/m
+  // /* or */
+  const SYNTAXBLOCK = /^\s*(\/\*|\*\/).*$/m
+  // func {
+  const SYNTAXGOFUNC = /^\s*func.*\{\s*$/mg
 
   for (const file of allFiles) {
     let lineAdjustments: string[] = []
@@ -38,6 +44,10 @@ export async function generateFixes(projectRoot: string): Promise<string> {
         file.match(/\.php$/)
     ) {
       lineAdjustments = await getMatchedLines(file, [SYNTAXBRACKET, SYNTAXLIST])
+    } else if (
+        file.match(/\.go$/)
+    ) {
+      lineAdjustments = await getMatchedLines(file, [EMPTYLINE, SYNTAXCOMMENT, SYNTAXBLOCK, SYNTAXBRACKET, SYNTAXGOFUNC])
     }
 
     if (lineAdjustments.length > 0) {

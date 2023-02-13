@@ -1,5 +1,5 @@
-export function checkSlug(slug: string | undefined): boolean {
-  if (slug !== '' && !slug?.match(/\//)) {
+export function checkSlug(slug: string): boolean {
+  if (slug !== '' && !slug.match(/\//)) {
     return false
   }
   return true

@@ -2,7 +2,36 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.3.1](https://github.com/codecov/uploader/compare/v0.2.0...v0.3.1) (2022-09-01)
+### [0.3.3](https://github.com/codecov/uploader/compare/v0.3.2...v0.3.3) (2023-01-26)
+
+
+### Features
+
+* golang report fixing ([55b65c2](https://github.com/codecov/uploader/commit/55b65c2e93767a7d71978e4b9a22a19d44a387a3))
+
+
+### Bug Fixes
+
+* core fixes test ([9b3fcdf](https://github.com/codecov/uploader/commit/9b3fcdf5fa1f195bcb9c62b77ba91757eb8ff294))
+* **deps:** update dependency fast-glob to v3.2.12 ([#880](https://github.com/codecov/uploader/issues/880)) ([40ff003](https://github.com/codecov/uploader/commit/40ff003e901ca8e9b779dad5ab5b0d1be3c3c62e))
+* exclude zip files and files in the yarn cache ([#905](https://github.com/codecov/uploader/issues/905)) ([1734fdb](https://github.com/codecov/uploader/commit/1734fdbd873817c40081c2e60f5ade7f17258fab))
+* revert and run this ish ([778e6d5](https://github.com/codecov/uploader/commit/778e6d5ef93af0906d1c14350f3917347521594a))
+
+### [0.3.2](https://github.com/codecov/uploader/compare/v0.3.1...v0.3.2) (2022-09-13)
+
+
+### Features
+
+* create fixes on c-like and php files ([#869](https://github.com/codecov/uploader/issues/869)) ([29b240c](https://github.com/codecov/uploader/commit/29b240c07ca4bfc0312c66eb4d2fd78f2bf6c0db))
+
+
+### Bug Fixes
+
+* update micromatch regex ([#635](https://github.com/codecov/uploader/issues/635)) ([0bf804c](https://github.com/codecov/uploader/commit/0bf804c338aa0fc49d2a0656a4b1552014403f1f))
+* use proper end for fixes ([#872](https://github.com/codecov/uploader/issues/872)) ([e10ef7d](https://github.com/codecov/uploader/commit/e10ef7d4e7c05536d7a7c8e1d12d8dabf0456a9a))
+* **yargs:** specify types for every CLI option ([#878](https://github.com/codecov/uploader/issues/878)) ([74b1e86](https://github.com/codecov/uploader/commit/74b1e863f840584157a3f4b2a190ae89566e7be8))
+
+### [0.3.1](https://github.com/codecov/uploader/compare/v0.3.0...v0.3.1) (2022-09-01)
 
 
 ### Features
@@ -37,7 +66,7 @@ All notable changes to this project will be documented in this file. See [standa
 * typo ([#812](https://github.com/codecov/uploader/issues/812)) ([3b2e37d](https://github.com/codecov/uploader/commit/3b2e37d290e429e7d12210e7e8dd56674f089a3c))
 * use proper end for fixes ([#872](https://github.com/codecov/uploader/issues/872)) ([e10ef7d](https://github.com/codecov/uploader/commit/e10ef7d4e7c05536d7a7c8e1d12d8dabf0456a9a))
 
-## [0.3.0](https://github.com/codecov/uploader/compare/v0.2.0...v0.3.0) (2022-09-01)
+## [0.3.0](https://github.com/codecov/uploader/compare/v0.2.6...v0.3.0) (2022-09-01)
 
 
 ### Features
@@ -71,7 +100,7 @@ All notable changes to this project will be documented in this file. See [standa
 * throw error when flags do not match pattern ([#831](https://github.com/codecov/uploader/issues/831)) ([cf2585c](https://github.com/codecov/uploader/commit/cf2585cef6ae72f1ac8fc0fba9ec645ae2750d7e)), closes [#829](https://github.com/codecov/uploader/issues/829) [#835](https://github.com/codecov/uploader/issues/835)
 * typo ([#812](https://github.com/codecov/uploader/issues/812)) ([3b2e37d](https://github.com/codecov/uploader/commit/3b2e37d290e429e7d12210e7e8dd56674f089a3c))
 
-### [0.2.6](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.6) (2022-08-24)
+### [0.2.6](https://github.com/codecov/uploader/compare/v0.2.5...v0.2.6) (2022-08-24)
 
 
 ### Features
@@ -104,7 +133,7 @@ All notable changes to this project will be documented in this file. See [standa
 * throw error when flags do not match pattern ([#831](https://github.com/codecov/uploader/issues/831)) ([cf2585c](https://github.com/codecov/uploader/commit/cf2585cef6ae72f1ac8fc0fba9ec645ae2750d7e)), closes [#829](https://github.com/codecov/uploader/issues/829) [#835](https://github.com/codecov/uploader/issues/835)
 * typo ([#812](https://github.com/codecov/uploader/issues/812)) ([3b2e37d](https://github.com/codecov/uploader/commit/3b2e37d290e429e7d12210e7e8dd56674f089a3c))
 
-### [0.2.5](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.5) (2022-08-01)
+### [0.2.5](https://github.com/codecov/uploader/compare/v0.2.4...v0.2.5) (2022-08-01)
 
 
 ### Features
@@ -150,7 +179,7 @@ All notable changes to this project will be documented in this file. See [standa
 * increase maxBuffer of spawnSync ([c121446](https://github.com/codecov/uploader/commit/c12144697e95051b061488feae60db4b98d600c2))
 * store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
 
-### [0.2.3](https://github.com/codecov/uploader/compare/v0.2.0...v0.2.3) (2022-05-17)
+### [0.2.3](https://github.com/codecov/uploader/compare/v0.2.2...v0.2.3) (2022-05-17)
 
 
 ### Bug Fixes
@@ -183,7 +212,7 @@ All notable changes to this project will be documented in this file. See [standa
 * store upload file contents on a Buffer ([0209be2](https://github.com/codecov/uploader/commit/0209be276dc9df75b41da8436f5d7209ae368a11))
 * fix coveragepy autorun ([0773002](https://github.com/codecov/uploader/commit/0773002388faad66cf155ef36d968d718c03cd87))
 
-### [0.2.0](https://github.com/codecov/uploader/compare/v0.1.21...v0.2.0) (2022-04-21)
+### [0.2.0](https://github.com/codecov/uploader/compare/v0.1.22...v0.2.0) (2022-04-21)
 
 
 ### Features
