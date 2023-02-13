@@ -3,8 +3,6 @@
 [![CircleCI](https://circleci.com/gh/codecov/uploader.svg?style=shield&circle-token=def755bf76a1d8c36436c3115530c7eac7fa30e0)](https://circleci.com/gh/codecov/uploader) [![codecov](https://codecov.io/gh/codecov/uploader/branch/master/graph/badge.svg?token=X1gImxfIya)](https://codecov.io/gh/codecov/uploader)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcodecov%2Fuploader.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fuploader?ref=badge_shield) [![Total alerts](https://img.shields.io/lgtm/alerts/g/codecov/uploader.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/codecov/uploader/alerts/)
 
-**Heads up!** This is a work in progress.
-
 > **!!! The project requires npm v7. You can check which version you have via `npm --version`. If you need to update it, run `npm install --global npm` (you should only need to do this once).**
 >
 > - The project requires Node.js v16
