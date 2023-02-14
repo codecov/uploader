@@ -48,6 +48,10 @@ export async function generateFixes(projectRoot: string): Promise<string> {
         file.match(/\.go$/)
     ) {
       lineAdjustments = await getMatchedLines(file, [EMPTYLINE, SYNTAXCOMMENT, SYNTAXBLOCK, SYNTAXBRACKET, SYNTAXGOFUNC])
+    } else if (
+        file.match(/\.kt$/)
+    ) {
+      lineAdjustments = await getMatchedLines(file, [SYNTAXBRACKET, SYNTAXCOMMENT])
     }
 
     if (lineAdjustments.length > 0) {
