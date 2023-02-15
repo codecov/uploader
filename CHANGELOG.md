@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.4](https://github.com/codecov/uploader/compare/v0.3.2...v0.3.4) (2023-02-15)
+
+
+### Features
+
+* golang report fixing ([55b65c2](https://github.com/codecov/uploader/commit/55b65c2e93767a7d71978e4b9a22a19d44a387a3))
+
+
+### Bug Fixes
+
+* add kotlin fixes ([14ab811](https://github.com/codecov/uploader/commit/14ab811bfebb68fdef4947264a4a2216aad53483))
+* core fixes test ([9b3fcdf](https://github.com/codecov/uploader/commit/9b3fcdf5fa1f195bcb9c62b77ba91757eb8ff294))
+* **deps:** update dependency fast-glob to v3.2.12 ([#880](https://github.com/codecov/uploader/issues/880)) ([40ff003](https://github.com/codecov/uploader/commit/40ff003e901ca8e9b779dad5ab5b0d1be3c3c62e))
+* **deps:** update dependency yargs to v17.6.2 ([30fb919](https://github.com/codecov/uploader/commit/30fb9192342a2f9e18af2d76e5fe3918ccd78ec6))
+* exclude zip files and files in the yarn cache ([#905](https://github.com/codecov/uploader/issues/905)) ([1734fdb](https://github.com/codecov/uploader/commit/1734fdbd873817c40081c2e60f5ade7f17258fab))
+* revert and run this ish ([778e6d5](https://github.com/codecov/uploader/commit/778e6d5ef93af0906d1c14350f3917347521594a))
+
 ### [0.3.3](https://github.com/codecov/uploader/compare/v0.3.2...v0.3.3) (2023-01-26)
 
 
