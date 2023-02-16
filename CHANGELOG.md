@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.3.5](https://github.com/codecov/uploader/compare/v0.3.3...v0.3.5) (2023-02-16)
+
+
+### Bug Fixes
+
+* **files:** exclude .go and .marker files ([#935](https://github.com/codecov/uploader/issues/935)) ([43924aa](https://github.com/codecov/uploader/commit/43924aa254b87f62bf07feba47d8c17a766a6d21))
+
 ### [0.3.4](https://github.com/codecov/uploader/compare/v0.3.2...v0.3.4) (2023-02-15)
 
 
