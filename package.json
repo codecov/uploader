@@ -36,7 +36,7 @@
     "fast-glob": "3.2.12",
     "js-yaml": "4.1.0",
     "snake-case": "3.0.4",
-    "undici": "5.10.0",
+    "undici": "5.19.1",
     "validator": "13.7.0",
     "yargs": "17.6.2"
   },
