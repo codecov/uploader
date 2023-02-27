@@ -226,6 +226,7 @@ describe('File Helpers', () => {
       expect(results).not.toContain('codecov.exe')
 
       expect(results).toContain('test/fixtures/other/fake.codecov.txt')
+      expect(results).toContain('test/fixtures/codecov_demobox_2023-02-27_01:03:34.cobertura.xml')
     })
 
     it('can return a list of coverage files with a pattern', async () => {

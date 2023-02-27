@@ -167,7 +167,7 @@ export function coverageFilePatterns(): string[] {
     'report.xml',
     '*.codecov.!(exe)',
     'codecov.!(exe)',
-    'cobertura.xml',
+    '*cobertura.xml',
     'excoveralls.json',
     'luacov.report.out',
     'coverage-final.json',
