@@ -38,3 +38,4 @@ Binaries for Windows, MacOS, and Linux will be in the `out/` directory.
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fcodecov%2Fuploader.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fcodecov%2Fuploader?ref=badge_large)
 .
+.
