@@ -6,7 +6,7 @@ orbs:
 jobs:
   build-linux-and-osx:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:18.14.2
 
     working_directory: ~/repo
 
@@ -18,6 +18,7 @@ jobs:
           keys:
             - v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
+      - run : node --version
       - run: npm install
 
       - save_cache:
