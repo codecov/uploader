@@ -8,17 +8,6 @@
   "reviewers": [
     "codecov/open-source"
   ],
-  "packageRules": [
-    {
-      "matchPackageNames": ["pkg"],
-      "allowedVersions": "5.6.0"
-    },    
-    {
-      "matchDepTypes": ["devDependencies"],
-      "matchUpdateTypes": ["patch", "minor"],
-      "groupName": "devDependencies (non-major)"
-    }
-  ],
   "circleci" : {
     "pinDigests": true
   }
