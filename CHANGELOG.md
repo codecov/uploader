@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.0](https://github.com/codecov/uploader/compare/v0.3.5...v0.4.0) (2023-03-21)
+
+
+### Features
+
+* add swift coverage conversions ([1f27f2d](https://github.com/codecov/uploader/commit/1f27f2d3306fa5e4349ae5d2da16649d5eac8026))
+
+
+### Bug Fixes
+
+* core fixes test ([9b3fcdf](https://github.com/codecov/uploader/commit/9b3fcdf5fa1f195bcb9c62b77ba91757eb8ff294))
+* **deps:** update dependency undici to v5.19.1 [security] ([b275e4b](https://github.com/codecov/uploader/commit/b275e4b832163ee6c464c9f530b89825b19aa218))
+* **deps:** update dependency undici to v5.20.0 ([846313b](https://github.com/codecov/uploader/commit/846313b8ce9bdd96b7f9323d77421e70acd1f411))
+* **deps:** update dependency validator to v13.9.0 ([62490d6](https://github.com/codecov/uploader/commit/62490d6195a9e71763e146625a4a77ac2e41efe6))
+* **deps:** update dependency yargs to v17.7.1 ([902d291](https://github.com/codecov/uploader/commit/902d2919f6d29afcb282af9ee4b8b1f65a61825a))
+* remove colons from file name ([f816650](https://github.com/codecov/uploader/commit/f816650892a7a570fa58dbdd64da743145813da2))
+
 ### [0.3.5](https://github.com/codecov/uploader/compare/v0.3.3...v0.3.5) (2023-02-16)
 
 
