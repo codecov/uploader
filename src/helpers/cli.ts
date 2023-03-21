@@ -200,13 +200,34 @@ const args: ICLIArgument[] = [
     name: 'xcode',
     type: 'boolean',
     default: false,
-    description: 'Run with xcode support',
+    description: '[Deprecating, please use xs] Run with xcode support',
   },
   {
     alias: 'xp',
     name: 'xcodeArchivePath',
     type: 'string',
-    description: 'Specify the xcode archive path. Likely specified as the -resultBundlePath and should end in .xcresult',
+    description: '[Deprecating, please use xs] Specify the xcode archive path. Likely specified as the -resultBundlePath and should end in .xcresult',
+  },
+  {
+    alias: 'xs',
+    name: 'swift',
+    type: 'boolean',
+    default: false,
+    description: 'Run with swift support',
+  },
+  {
+    alias: 'xsp',
+    name: 'swiftProject',
+    type: 'string',
+    default: '',
+    description: 'Specify the swift project'
+  },
+  {
+    alias: 'xc',
+    name: 'xcode',
+    type: 'boolean',
+    default: false,
+    description: 'Run with xcode support',
   },
   {
     alias: 'Z',
