@@ -26,6 +26,8 @@ export interface UploaderArgs {
   sha?: string // Specify the commit SHA manually
   slug: string // Specify the slug manually
   source?: string // Track wrappers of the uploader
+  swift?: string // Run with swift support
+  swiftProject?: string // Specify the swift project
   tag?: string // Specify the git tag
   token?: string // Codecov upload token
   upstream: string // Upstream proxy to connect to
