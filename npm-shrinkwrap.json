@@ -28,7 +28,7 @@
         "@types/mock-fs": "4.13.1",
         "@types/node": "18.15.5",
         "@types/validator": "13.7.14",
-        "@types/yargs": "17.0.13",
+        "@types/yargs": "17.0.23",
         "@typescript-eslint/eslint-plugin": "5.56.0",
         "@typescript-eslint/parser": "5.56.0",
         "eslint": "8.36.0",
@@ -1645,9 +1645,9 @@
       "dev": true
     },
     "node_modules/@types/yargs": {
-      "version": "17.0.13",
-      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.13.tgz",
-      "integrity": "sha512-9sWaruZk2JGxIQU+IhI1fhPYRcQ0UuTNuKuCW9bR5fp7qi2Llf7WDzNa17Cy7TKnh3cdxDOiyTu6gaLS0eDatg==",
+      "version": "17.0.23",
+      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.23.tgz",
+      "integrity": "sha512-yuogunc04OnzGQCrfHx+Kk883Q4X0aSwmYZhKjI21m+SVYzjIbrWl8dOOwSv5hf2Um2pdCOXWo9isteZTNXUZQ==",
       "dev": true,
       "dependencies": {
         "@types/yargs-parser": "*"
@@ -10500,9 +10500,9 @@
       "dev": true
     },
     "@types/yargs": {
-      "version": "17.0.13",
-      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.13.tgz",
-      "integrity": "sha512-9sWaruZk2JGxIQU+IhI1fhPYRcQ0UuTNuKuCW9bR5fp7qi2Llf7WDzNa17Cy7TKnh3cdxDOiyTu6gaLS0eDatg==",
+      "version": "17.0.23",
+      "resolved": "https://registry.npmjs.org/@types/yargs/-/yargs-17.0.23.tgz",
+      "integrity": "sha512-yuogunc04OnzGQCrfHx+Kk883Q4X0aSwmYZhKjI21m+SVYzjIbrWl8dOOwSv5hf2Um2pdCOXWo9isteZTNXUZQ==",
       "dev": true,
       "requires": {
         "@types/yargs-parser": "*"
