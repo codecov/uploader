@@ -357,8 +357,6 @@ export async function main(
   const uploadFile = Buffer.concat(uploadFileChunks)
   const gzippedFile = zlib.gzipSync(uploadFile)
 
-  // Cleanup
-
   // #endregion
   // #region == Step 7: determine CI provider
 
