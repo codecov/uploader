@@ -1,6 +1,8 @@
 /**
  * https://docs.github.com/en/actions/learn-github-actions/environment-variables
  */
+import { request } from 'undici'
+
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 import { runExternalProgram } from "../helpers/util"
@@ -15,8 +17,27 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.GITHUB_RUN_ID || ''
 }
 
-function _getBuildURL(inputs: UploaderInputs): string {
+async function _getJobId(inputs: UploaderInputs): Promise<string> {
+  const response = await request(
+    `https://api.github.com/repos/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}/jobs`
+  )
+  if (response.statusCode !== 200) {
+    return ''
+  }
+
+  const data = await response.body.text()
+  info(data)
+  return ''
+}
+
+async function _getBuildURL(inputs: UploaderInputs): Promise<string> {
   const { environment: envs } = inputs
+
+  const url = await _getJobId(inputs)
+  if (url !== '') {
+    return url
+  }
+
   return (
     `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(
       inputs,
