@@ -1,0 +1,3117 @@
+.editorconfig
+.eslintignore
+.eslintrc.js
+.prettierignore
+.prettierrc
+CHANGELOG.md
+CONTRIBUTING.md
+HELPFILE
+LICENSE
+MAINTAINING.md
+Makefile
+README.md
+commitlint.config.js
+jest.config.js
+npm-shrinkwrap.json
+output_osx.txt
+output_osx_without_git.txt
+package.json
+renovate.json
+tsconfig.json
+bin/codecov.ts
+coverage/base.css
+coverage/block-navigation.js
+coverage/cobertura-coverage.xml
+coverage/favicon.png
+coverage/index.html
+coverage/prettify.css
+coverage/prettify.js
+coverage/sort-arrow-sprite.png
+coverage/sorter.js
+out/codecov-linux
+out/codecov-macos
+src/index.ts
+src/types.ts
+test/dummy.codecov.exe
+test/index.test.ts
+test/test_helpers.ts
+coverage/src/index.html
+coverage/src/index.ts.html
+src/ci_providers/index.ts
+src/ci_providers/provider_appveyorci.ts
+src/ci_providers/provider_azurepipelines.ts
+src/ci_providers/provider_bitbucket.ts
+src/ci_providers/provider_bitrise.ts
+src/ci_providers/provider_buildkite.ts
+src/ci_providers/provider_circleci.ts
+src/ci_providers/provider_cirrus.ts
+src/ci_providers/provider_codebuild.ts
+src/ci_providers/provider_drone.ts
+src/ci_providers/provider_githubactions.ts
+src/ci_providers/provider_gitlabci.ts
+src/ci_providers/provider_herokuci.ts
+src/ci_providers/provider_jenkinsci.ts
+src/ci_providers/provider_local.ts
+src/ci_providers/provider_teamcity.ts
+src/ci_providers/provider_template.ts
+src/ci_providers/provider_travisci.ts
+src/ci_providers/provider_wercker.ts
+src/ci_providers/provider_woodpecker.ts
+src/helpers/checkSlug.ts
+src/helpers/cli.ts
+src/helpers/constansts.ts
+src/helpers/coveragepy.ts
+src/helpers/files.ts
+src/helpers/fixes.ts
+src/helpers/gcov.ts
+src/helpers/git.ts
+src/helpers/logger.ts
+src/helpers/provider.ts
+src/helpers/swift.ts
+src/helpers/token.ts
+src/helpers/util.ts
+src/helpers/validate.ts
+src/helpers/web.ts
+src/helpers/xcode.ts
+test/e2e/output.test.ts
+test/fixtures/.coverage
+test/fixtures/codecov.ps1
+test/fixtures/codecov.sh
+test/fixtures/codecov_demobox_2023-02-27_01-03-34.cobertura.xml
+test/fixtures/coverage-summary.json
+test/fixtures/coverage.cjs
+test/fixtures/coverage.go
+test/fixtures/coverage.js
+test/fixtures/coverage.mjs
+test/fixtures/coverage.txt
+test/fixtures/foo.coverage
+test/helpers/checkSlug.test.ts
+test/helpers/cli.test.ts
+test/helpers/coveragepy.test.ts
+test/helpers/files.test.ts
+test/helpers/fixes.test.ts
+test/helpers/gcov.test.ts
+test/helpers/git.test.ts
+test/helpers/logger.test.ts
+test/helpers/provider.test.ts
+test/helpers/swift.test.ts
+test/helpers/token.test.ts
+test/helpers/util.test.ts
+test/helpers/validate.test.ts
+test/helpers/web.test.ts
+test/helpers/xcode.test.ts
+test/providers/index.test.ts
+test/providers/provider_appveyorci.test.ts
+test/providers/provider_azurepipelines.test.ts
+test/providers/provider_bitbucket.test.ts
+test/providers/provider_bitrise.test.ts
+test/providers/provider_buildkite.test.ts
+test/providers/provider_circleci.test.ts
+test/providers/provider_cirrus.test.ts
+test/providers/provider_codebuild.test.ts
+test/providers/provider_drone.test.ts
+test/providers/provider_githubactions.test.ts
+test/providers/provider_gitlabci.test.ts
+test/providers/provider_herokuci.test.ts
+test/providers/provider_jenkinsci.test.ts
+test/providers/provider_local.test.ts
+test/providers/provider_teamcity.test.ts
+test/providers/provider_template.test.ts
+test/providers/provider_travisci.test.ts
+test/providers/provider_wercker.test.ts
+test/providers/provider_woodpecker.test.ts
+coverage/src/ci_providers/index.html
+coverage/src/ci_providers/index.ts.html
+coverage/src/ci_providers/provider_appveyorci.ts.html
+coverage/src/ci_providers/provider_azurepipelines.ts.html
+coverage/src/ci_providers/provider_bitbucket.ts.html
+coverage/src/ci_providers/provider_bitrise.ts.html
+coverage/src/ci_providers/provider_buildkite.ts.html
+coverage/src/ci_providers/provider_circleci.ts.html
+coverage/src/ci_providers/provider_cirrus.ts.html
+coverage/src/ci_providers/provider_codebuild.ts.html
+coverage/src/ci_providers/provider_drone.ts.html
+coverage/src/ci_providers/provider_githubactions.ts.html
+coverage/src/ci_providers/provider_gitlabci.ts.html
+coverage/src/ci_providers/provider_herokuci.ts.html
+coverage/src/ci_providers/provider_jenkinsci.ts.html
+coverage/src/ci_providers/provider_local.ts.html
+coverage/src/ci_providers/provider_teamcity.ts.html
+coverage/src/ci_providers/provider_travisci.ts.html
+coverage/src/ci_providers/provider_wercker.ts.html
+coverage/src/ci_providers/provider_woodpecker.ts.html
+coverage/src/helpers/checkSlug.ts.html
+coverage/src/helpers/cli.ts.html
+coverage/src/helpers/constansts.ts.html
+coverage/src/helpers/coveragepy.ts.html
+coverage/src/helpers/files.ts.html
+coverage/src/helpers/fixes.ts.html
+coverage/src/helpers/gcov.ts.html
+coverage/src/helpers/git.ts.html
+coverage/src/helpers/index.html
+coverage/src/helpers/logger.ts.html
+coverage/src/helpers/provider.ts.html
+coverage/src/helpers/swift.ts.html
+coverage/src/helpers/token.ts.html
+coverage/src/helpers/util.ts.html
+coverage/src/helpers/validate.ts.html
+coverage/src/helpers/web.ts.html
+coverage/src/helpers/xcode.ts.html
+test/fixtures/coveragepy/.coverage.test
+test/fixtures/fixes/example.go
+test/fixtures/fixes/example.php
+test/fixtures/gcov/main.c
+test/fixtures/gcov/main.gcno
+test/fixtures/gcov/makefile
+test/fixtures/invalid_yaml/codecov.yaml
+test/fixtures/other/codecov.ps1
+test/fixtures/other/codecov.sh
+test/fixtures/other/coverage-summary.json
+test/fixtures/other/coverage.txt
+test/fixtures/other/coverage.xml
+test/fixtures/other/fake.codecov.txt
+test/fixtures/yaml/.codecov.yaml
+test/fixtures/yaml/.codecov.yml
+test/fixtures/yaml/codecov.yaml
+test/fixtures/yaml/codecov.yml
+test/fixtures/xcode/UI/View1.swift
+test/fixtures/xcode/UI/View2.swift
+test/fixtures/xcode/test.xcresult/Info.plist
+test/fixtures/Library/Developer/Xcode/DerivedData/Build/Project2.xctest
+test/fixtures/Library/Developer/Xcode/DerivedData/Dir/Project.profdata
+test/fixtures/Library/Developer/Xcode/DerivedData/Build/Dir2/Project2.profdata
+test/fixtures/Library/Developer/Xcode/DerivedData/Dir/Project/Project.app
+<<<<<< network
+# path=coverage/cobertura-coverage.xml
+<?xml version="1.0" ?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+<coverage lines-valid="1133" lines-covered="1081" line-rate="0.9541" branches-valid="616" branches-covered="554" branch-rate="0.8993000000000001" timestamp="1679616934013" complexity="0" version="0.1">
+  <sources>
+    <source>/home/circleci/repo</source>
+  </sources>
+  <packages>
+    <package name="src" line-rate="0.8332999999999999" branch-rate="0.6962">
+      <classes>
+        <class name="index.ts" filename="src/index.ts" line-rate="0.8332999999999999" branch-rate="0.6962">
+          <methods>
+            <method name="dryRun" hits="16" signature="()V">
+              <lines>
+                <line number="42" hits="16"/>
+              </lines>
+            </method>
+            <method name="main" hits="20" signature="()V">
+              <lines>
+                <line number="87" hits="20"/>
+              </lines>
+            </method>
+            <method name="(anonymous_9)" hits="12" signature="()V">
+              <lines>
+                <line number="211" hits="12"/>
+              </lines>
+            </method>
+            <method name="(anonymous_10)" hits="10" signature="()V">
+              <lines>
+                <line number="227" hits="10"/>
+              </lines>
+            </method>
+            <method name="(anonymous_11)" hits="18" signature="()V">
+              <lines>
+                <line number="230" hits="18"/>
+              </lines>
+            </method>
+            <method name="(anonymous_12)" hits="6" signature="()V">
+              <lines>
+                <line number="327" hits="6"/>
+              </lines>
+            </method>
+            <method name="generateHeader" hits="21" signature="()V">
+              <lines>
+                <line number="433" hits="21"/>
+              </lines>
+            </method>
+            <method name="getVersion" hits="22" signature="()V">
+              <lines>
+                <line number="445" hits="22"/>
+              </lines>
+            </method>
+            <method name="(anonymous_15)" hits="0" signature="()V">
+              <lines>
+                <line number="449" hits="0"/>
+              </lines>
+            </method>
+            <method name="(anonymous_16)" hits="0" signature="()V">
+              <lines>
+                <line number="449" hits="0"/>
+              </lines>
+            </method>
+            <method name="(anonymous_17)" hits="0" signature="()V">
+              <lines>
+                <line number="449" hits="0"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="1" branch="false"/>
+            <line number="4" hits="1" branch="false"/>
+            <line number="5" hits="1" branch="false"/>
+            <line number="6" hits="1" branch="false"/>
+            <line number="7" hits="1" branch="false"/>
+            <line number="8" hits="1" branch="false"/>
+            <line number="9" hits="1" branch="false"/>
+            <line number="25" hits="1" branch="false"/>
+            <line number="26" hits="1" branch="false"/>
+            <line number="27" hits="1" branch="false"/>
+            <line number="28" hits="1" branch="false"/>
+            <line number="29" hits="1" branch="false"/>
+            <line number="30" hits="1" branch="false"/>
+            <line number="31" hits="1" branch="false"/>
+            <line number="32" hits="1" branch="false"/>
+            <line number="49" hits="16" branch="false"/>
+            <line number="50" hits="16" branch="false"/>
+            <line number="55" hits="16" branch="false"/>
+            <line number="87" hits="1" branch="false"/>
+            <line number="91" hits="20" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="92" hits="0" branch="false"/>
+            <line number="96" hits="20" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="97" hits="0" branch="false"/>
+            <line number="98" hits="0" branch="false"/>
+            <line number="114" hits="20" branch="false"/>
+            <line number="116" hits="20" branch="false"/>
+            <line number="119" hits="20" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="120" hits="20" branch="false"/>
+            <line number="122" hits="0" branch="false"/>
+            <line number="125" hits="20" branch="false"/>
+            <line number="128" hits="20" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="129" hits="0" branch="false"/>
+            <line number="131" hits="20" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="134" hits="20" branch="false"/>
+            <line number="138" hits="20" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="139" hits="20" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="140" hits="0" branch="false"/>
+            <line number="145" hits="20" branch="false"/>
+            <line number="149" hits="20" branch="false"/>
+            <line number="150" hits="20" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="151" hits="2" branch="false"/>
+            <line number="156" hits="20" branch="false"/>
+            <line number="158" hits="20" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="159" hits="19" branch="false"/>
+            <line number="160" hits="19" branch="false"/>
+            <line number="161" hits="19" branch="false"/>
+            <line number="162" hits="19" branch="false"/>
+            <line number="164" hits="0" branch="false"/>
+            <line number="167" hits="19" branch="false"/>
+            <line number="168" hits="19" branch="false"/>
+            <line number="174" hits="20" branch="false"/>
+            <line number="178" hits="20" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="179" hits="0" branch="false"/>
+            <line number="180" hits="0" branch="false"/>
+            <line number="181" hits="0" branch="false"/>
+            <line number="182" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="184" hits="0" branch="false"/>
+            <line number="185" hits="0" branch="false"/>
+            <line number="186" hits="0" branch="false"/>
+            <line number="189" hits="20" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="190" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="193" hits="20" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="194" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="195" hits="0" branch="false"/>
+            <line number="197" hits="0" branch="false"/>
+            <line number="198" hits="0" branch="false"/>
+            <line number="199" hits="0" branch="false"/>
+            <line number="203" hits="20" branch="false"/>
+            <line number="204" hits="20" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="205" hits="8" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="206" hits="3" branch="false"/>
+            <line number="208" hits="5" branch="false"/>
+            <line number="211" hits="8" branch="false"/>
+            <line number="212" hits="12" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="216" hits="20" branch="false"/>
+            <line number="217" hits="20" branch="false"/>
+            <line number="218" hits="20" branch="false"/>
+            <line number="220" hits="0" branch="false"/>
+            <line number="223" hits="20" branch="false"/>
+            <line number="225" hits="20" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="226" hits="18" branch="false"/>
+            <line number="227" hits="18" branch="false"/>
+            <line number="228" hits="18" branch="false"/>
+            <line number="231" hits="18" branch="false"/>
+            <line number="233" hits="18" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="234" hits="5" branch="false"/>
+            <line number="236" hits="13" branch="false"/>
+            <line number="243" hits="18" branch="false"/>
+            <line number="245" hits="18" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="246" hits="18" branch="false"/>
+            <line number="254" hits="18" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="255" hits="5" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="256" hits="2" branch="false"/>
+            <line number="257" hits="2" branch="false"/>
+            <line number="261" hits="13" branch="false"/>
+            <line number="262" hits="13" branch="false"/>
+            <line number="264" hits="13" branch="false"/>
+            <line number="269" hits="20" branch="false"/>
+            <line number="271" hits="20" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="272" hits="20" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="275" hits="20" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="276" hits="20" branch="false"/>
+            <line number="279" hits="0" branch="true" condition-coverage="0% (0/2)"/>
+            <line number="282" hits="0" branch="false"/>
+            <line number="285" hits="20" branch="false"/>
+            <line number="291" hits="20" branch="false"/>
+            <line number="292" hits="20" branch="false"/>
+            <line number="294" hits="98" branch="false"/>
+            <line number="295" hits="98" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="301" hits="0" branch="false"/>
+            <line number="302" hits="0" branch="false"/>
+            <line number="305" hits="98" branch="false"/>
+            <line number="306" hits="98" branch="false"/>
+            <line number="307" hits="98" branch="false"/>
+            <line number="308" hits="98" branch="false"/>
+            <line number="310" hits="20" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="311" hits="0" branch="false"/>
+            <line number="315" hits="20" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="316" hits="1" branch="false"/>
+            <line number="317" hits="3" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="322" hits="20" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="323" hits="3" branch="true" condition-coverage="33.33333333333333% (1/3)"/>
+            <line number="324" hits="3" branch="false"/>
+            <line number="327" hits="6" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="329" hits="3" branch="false"/>
+            <line number="330" hits="3" branch="false"/>
+            <line number="334" hits="20" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="335" hits="1" branch="false"/>
+            <line number="336" hits="1" branch="false"/>
+            <line number="337" hits="1" branch="false"/>
+            <line number="338" hits="1" branch="false"/>
+            <line number="339" hits="1" branch="false"/>
+            <line number="340" hits="1" branch="false"/>
+            <line number="343" hits="20" branch="false"/>
+            <line number="344" hits="20" branch="false"/>
+            <line number="349" hits="20" branch="false"/>
+            <line number="351" hits="20" branch="false"/>
+            <line number="356" hits="20" branch="false"/>
+            <line number="358" hits="20" branch="false"/>
+            <line number="359" hits="20" branch="false"/>
+            <line number="360" hits="240" branch="false"/>
+            <line number="363" hits="20" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="364" hits="2" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="365" hits="1" branch="false"/>
+            <line number="369" hits="1" branch="false"/>
+            <line number="370" hits="1" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="371" hits="0" branch="false"/>
+            <line number="378" hits="19" branch="false"/>
+            <line number="380" hits="19" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="381" hits="16" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="382" hits="16" branch="false"/>
+            <line number="385" hits="3" branch="false"/>
+            <line number="390" hits="3" branch="false"/>
+            <line number="391" hits="3" branch="false"/>
+            <line number="392" hits="3" branch="false"/>
+            <line number="401" hits="3" branch="false"/>
+            <line number="403" hits="3" branch="false"/>
+            <line number="411" hits="3" branch="false"/>
+            <line number="413" hits="3" branch="false"/>
+            <line number="415" hits="3" branch="false"/>
+            <line number="420" hits="3" branch="false"/>
+            <line number="421" hits="3" branch="false"/>
+            <line number="423" hits="0" branch="false"/>
+            <line number="433" hits="1" branch="false"/>
+            <line number="434" hits="21" branch="false"/>
+            <line number="445" hits="1" branch="false"/>
+            <line number="446" hits="22" branch="false"/>
+            <line number="449" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package name="src.ci_providers" line-rate="0.998" branch-rate="0.9472">
+      <classes>
+        <class name="index.ts" filename="src/ci_providers/index.ts" line-rate="1" branch-rate="1">
+          <methods>
+          </methods>
+          <lines>
+            <line number="3" hits="7" branch="false"/>
+            <line number="4" hits="7" branch="false"/>
+            <line number="5" hits="7" branch="false"/>
+            <line number="6" hits="7" branch="false"/>
+            <line number="7" hits="7" branch="false"/>
+            <line number="8" hits="7" branch="false"/>
+            <line number="9" hits="7" branch="false"/>
+            <line number="10" hits="7" branch="false"/>
+            <line number="11" hits="7" branch="false"/>
+            <line number="12" hits="7" branch="false"/>
+            <line number="13" hits="7" branch="false"/>
+            <line number="14" hits="7" branch="false"/>
+            <line number="15" hits="7" branch="false"/>
+            <line number="16" hits="7" branch="false"/>
+            <line number="17" hits="7" branch="false"/>
+            <line number="18" hits="7" branch="false"/>
+            <line number="19" hits="7" branch="false"/>
+            <line number="20" hits="7" branch="false"/>
+            <line number="23" hits="7" branch="false"/>
+            <line number="44" hits="7" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_appveyorci.ts" filename="src/ci_providers/provider_appveyorci.ts" line-rate="1" branch-rate="0.9309999999999999">
+          <methods>
+            <method name="detect" hits="33" signature="()V">
+              <lines>
+                <line number="3" hits="33"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="4" signature="()V">
+              <lines>
+                <line number="10" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="4" signature="()V">
+              <lines>
+                <line number="15" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="4" signature="()V">
+              <lines>
+                <line number="30" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="4" signature="()V">
+              <lines>
+                <line number="35" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="4" signature="()V">
+              <lines>
+                <line number="46" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="4" signature="()V">
+              <lines>
+                <line number="51" hits="4"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="55" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="4" signature="()V">
+              <lines>
+                <line number="59" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="4" signature="()V">
+              <lines>
+                <line number="64" hits="4"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="4" signature="()V">
+              <lines>
+                <line number="70" hits="4"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="83" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="8" branch="false"/>
+            <line number="4" hits="33" branch="false"/>
+            <line number="11" hits="4" branch="false"/>
+            <line number="12" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="16" hits="4" branch="false"/>
+            <line number="17" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="23" hits="2" branch="false"/>
+            <line number="27" hits="2" branch="false"/>
+            <line number="31" hits="4" branch="false"/>
+            <line number="32" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="36" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="41" hits="2" branch="false"/>
+            <line number="43" hits="2" branch="false"/>
+            <line number="47" hits="4" branch="false"/>
+            <line number="48" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="52" hits="4" branch="false"/>
+            <line number="55" hits="8" branch="false"/>
+            <line number="56" hits="5" branch="false"/>
+            <line number="60" hits="4" branch="false"/>
+            <line number="61" hits="4" branch="true" condition-coverage="75% (3/4)"/>
+            <line number="65" hits="4" branch="false"/>
+            <line number="66" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="67" hits="2" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="70" hits="8" branch="false"/>
+            <line number="71" hits="4" branch="false"/>
+            <line number="83" hits="8" branch="false"/>
+            <line number="84" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_azurepipelines.ts" filename="src/ci_providers/provider_azurepipelines.ts" line-rate="1" branch-rate="0.9687">
+          <methods>
+            <method name="detect" hits="29" signature="()V">
+              <lines>
+                <line number="6" hits="29"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="7" signature="()V">
+              <lines>
+                <line number="10" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="7" signature="()V">
+              <lines>
+                <line number="15" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="7" signature="()V">
+              <lines>
+                <line number="25" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="7" signature="()V">
+              <lines>
+                <line number="34" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="14" signature="()V">
+              <lines>
+                <line number="38" hits="14"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="7" signature="()V">
+              <lines>
+                <line number="48" hits="7"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="52" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="7" signature="()V">
+              <lines>
+                <line number="56" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getProject" hits="7" signature="()V">
+              <lines>
+                <line number="76" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getServerURI" hits="7" signature="()V">
+              <lines>
+                <line number="81" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="7" signature="()V">
+              <lines>
+                <line number="86" hits="7"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="7" signature="()V">
+              <lines>
+                <line number="97" hits="7"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="112" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="8" branch="false"/>
+            <line number="2" hits="8" branch="false"/>
+            <line number="3" hits="8" branch="false"/>
+            <line number="6" hits="8" branch="false"/>
+            <line number="7" hits="29" branch="false"/>
+            <line number="11" hits="7" branch="false"/>
+            <line number="12" hits="7" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="16" hits="7" branch="false"/>
+            <line number="17" hits="7" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="18" hits="4" branch="false"/>
+            <line number="22" hits="3" branch="false"/>
+            <line number="26" hits="7" branch="false"/>
+            <line number="27" hits="7" branch="false"/>
+            <line number="28" hits="7" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="29" hits="4" branch="false"/>
+            <line number="31" hits="7" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="35" hits="7" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="39" hits="14" branch="false"/>
+            <line number="40" hits="14" branch="false"/>
+            <line number="49" hits="7" branch="false"/>
+            <line number="52" hits="8" branch="false"/>
+            <line number="53" hits="5" branch="false"/>
+            <line number="57" hits="7" branch="false"/>
+            <line number="58" hits="7" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="60" hits="7" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="61" hits="4" branch="false"/>
+            <line number="62" hits="4" branch="false"/>
+            <line number="66" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="67" hits="1" branch="false"/>
+            <line number="68" hits="1" branch="false"/>
+            <line number="69" hits="1" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="73" hits="7" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="77" hits="7" branch="false"/>
+            <line number="78" hits="7" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="82" hits="7" branch="false"/>
+            <line number="83" hits="7" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="87" hits="7" branch="false"/>
+            <line number="88" hits="7" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="89" hits="5" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="97" hits="8" branch="false"/>
+            <line number="98" hits="7" branch="false"/>
+            <line number="112" hits="8" branch="false"/>
+            <line number="113" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_bitbucket.ts" filename="src/ci_providers/provider_bitbucket.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="detect" hits="30" signature="()V">
+              <lines>
+                <line number="5" hits="30"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="6" signature="()V">
+              <lines>
+                <line number="9" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="6" signature="()V">
+              <lines>
+                <line number="14" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="6" signature="()V">
+              <lines>
+                <line number="19" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="6" signature="()V">
+              <lines>
+                <line number="24" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="6" signature="()V">
+              <lines>
+                <line number="28" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="6" signature="()V">
+              <lines>
+                <line number="33" hits="6"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="37" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="6" signature="()V">
+              <lines>
+                <line number="41" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="6" signature="()V">
+              <lines>
+                <line number="52" hits="6"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="6" signature="()V">
+              <lines>
+                <line number="58" hits="6"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="71" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="8" branch="false"/>
+            <line number="2" hits="8" branch="false"/>
+            <line number="5" hits="8" branch="false"/>
+            <line number="6" hits="30" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="10" hits="6" branch="false"/>
+            <line number="11" hits="6" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="16" hits="6" branch="false"/>
+            <line number="20" hits="6" branch="false"/>
+            <line number="21" hits="6" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="25" hits="6" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="29" hits="6" branch="false"/>
+            <line number="30" hits="6" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="34" hits="6" branch="false"/>
+            <line number="37" hits="8" branch="false"/>
+            <line number="38" hits="5" branch="false"/>
+            <line number="42" hits="6" branch="false"/>
+            <line number="43" hits="6" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="45" hits="6" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="46" hits="1" branch="false"/>
+            <line number="49" hits="6" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="53" hits="6" branch="false"/>
+            <line number="54" hits="6" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="55" hits="4" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="58" hits="8" branch="false"/>
+            <line number="59" hits="6" branch="false"/>
+            <line number="71" hits="8" branch="false"/>
+            <line number="72" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_bitrise.ts" filename="src/ci_providers/provider_bitrise.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="detect" hits="30" signature="()V">
+              <lines>
+                <line number="5" hits="30"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="5" signature="()V">
+              <lines>
+                <line number="9" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="5" signature="()V">
+              <lines>
+                <line number="14" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="5" signature="()V">
+              <lines>
+                <line number="19" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="5" signature="()V">
+              <lines>
+                <line number="24" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="5" signature="()V">
+              <lines>
+                <line number="28" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="5" signature="()V">
+              <lines>
+                <line number="33" hits="5"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="37" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="5" signature="()V">
+              <lines>
+                <line number="41" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="5" signature="()V">
+              <lines>
+                <line number="46" hits="5"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="5" signature="()V">
+              <lines>
+                <line number="51" hits="5"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="64" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="8" branch="false"/>
+            <line number="5" hits="8" branch="false"/>
+            <line number="6" hits="30" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="10" hits="5" branch="false"/>
+            <line number="11" hits="5" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="15" hits="5" branch="false"/>
+            <line number="16" hits="5" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="20" hits="5" branch="false"/>
+            <line number="21" hits="5" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="25" hits="5" branch="false"/>
+            <line number="29" hits="5" branch="false"/>
+            <line number="30" hits="5" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="34" hits="5" branch="false"/>
+            <line number="37" hits="8" branch="false"/>
+            <line number="38" hits="5" branch="false"/>
+            <line number="42" hits="5" branch="false"/>
+            <line number="43" hits="5" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="47" hits="5" branch="false"/>
+            <line number="48" hits="5" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="51" hits="8" branch="false"/>
+            <line number="52" hits="5" branch="false"/>
+            <line number="64" hits="8" branch="false"/>
+            <line number="65" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_buildkite.ts" filename="src/ci_providers/provider_buildkite.ts" line-rate="0.96" branch-rate="0.9444">
+          <methods>
+            <method name="detect" hits="29" signature="()V">
+              <lines>
+                <line number="10" hits="29"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="3" signature="()V">
+              <lines>
+                <line number="20" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="3" signature="()V">
+              <lines>
+                <line number="31" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="3" signature="()V">
+              <lines>
+                <line number="41" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="3" signature="()V">
+              <lines>
+                <line number="52" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="3" signature="()V">
+              <lines>
+                <line number="62" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="3" signature="()V">
+              <lines>
+                <line number="72" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="81" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="3" signature="()V">
+              <lines>
+                <line number="90" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="3" signature="()V">
+              <lines>
+                <line number="103" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="3" signature="()V">
+              <lines>
+                <line number="113" hits="3"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="126" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="7" branch="false"/>
+            <line number="10" hits="7" branch="false"/>
+            <line number="11" hits="29" branch="false"/>
+            <line number="21" hits="3" branch="false"/>
+            <line number="22" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="32" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="42" hits="3" branch="false"/>
+            <line number="43" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="53" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="63" hits="3" branch="false"/>
+            <line number="64" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="72" hits="7" branch="false"/>
+            <line number="73" hits="3" branch="false"/>
+            <line number="81" hits="7" branch="false"/>
+            <line number="82" hits="5" branch="false"/>
+            <line number="91" hits="3" branch="false"/>
+            <line number="92" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="93" hits="3" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="95" hits="0" branch="false"/>
+            <line number="104" hits="3" branch="false"/>
+            <line number="105" hits="3" branch="false"/>
+            <line number="113" hits="7" branch="false"/>
+            <line number="114" hits="3" branch="false"/>
+            <line number="126" hits="7" branch="false"/>
+            <line number="127" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_circleci.ts" filename="src/ci_providers/provider_circleci.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="detect" hits="29" signature="()V">
+              <lines>
+                <line number="5" hits="29"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="26" signature="()V">
+              <lines>
+                <line number="9" hits="26"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="26" signature="()V">
+              <lines>
+                <line number="14" hits="26"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="28" signature="()V">
+              <lines>
+                <line number="19" hits="28"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="26" signature="()V">
+              <lines>
+                <line number="23" hits="26"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="26" signature="()V">
+              <lines>
+                <line number="28" hits="26"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="26" signature="()V">
+              <lines>
+                <line number="33" hits="26"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="26" signature="()V">
+              <lines>
+                <line number="51" hits="26"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="26" signature="()V">
+              <lines>
+                <line number="56" hits="26"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="26" signature="()V">
+              <lines>
+                <line number="61" hits="26"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="26" signature="()V">
+              <lines>
+                <line number="65" hits="26"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="24" signature="()V">
+              <lines>
+                <line number="78" hits="24"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="7" branch="false"/>
+            <line number="2" hits="7" branch="false"/>
+            <line number="5" hits="7" branch="false"/>
+            <line number="6" hits="29" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="10" hits="26" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="15" hits="26" branch="false"/>
+            <line number="19" hits="7" branch="false"/>
+            <line number="20" hits="28" branch="false"/>
+            <line number="24" hits="26" branch="false"/>
+            <line number="25" hits="26" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="29" hits="26" branch="false"/>
+            <line number="30" hits="26" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="34" hits="26" branch="false"/>
+            <line number="36" hits="26" branch="false"/>
+            <line number="41" hits="26" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="42" hits="24" branch="false"/>
+            <line number="45" hits="2" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="46" hits="1" branch="false"/>
+            <line number="48" hits="1" branch="false"/>
+            <line number="52" hits="26" branch="false"/>
+            <line number="53" hits="26" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="57" hits="26" branch="false"/>
+            <line number="58" hits="26" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="62" hits="26" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="65" hits="7" branch="false"/>
+            <line number="66" hits="26" branch="false"/>
+            <line number="78" hits="7" branch="false"/>
+            <line number="79" hits="24" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_cirrus.ts" filename="src/ci_providers/provider_cirrus.ts" line-rate="1" branch-rate="0.9285">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="7" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="3" signature="()V">
+              <lines>
+                <line number="11" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="3" signature="()V">
+              <lines>
+                <line number="16" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="3" signature="()V">
+              <lines>
+                <line number="20" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="3" signature="()V">
+              <lines>
+                <line number="25" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="3" signature="()V">
+              <lines>
+                <line number="29" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="3" signature="()V">
+              <lines>
+                <line number="34" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="38" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="3" signature="()V">
+              <lines>
+                <line number="42" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="3" signature="()V">
+              <lines>
+                <line number="47" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="3" signature="()V">
+              <lines>
+                <line number="52" hits="3"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="65" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="4" hits="7" branch="false"/>
+            <line number="7" hits="7" branch="false"/>
+            <line number="8" hits="6" branch="false"/>
+            <line number="12" hits="3" branch="false"/>
+            <line number="13" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="17" hits="3" branch="false"/>
+            <line number="21" hits="3" branch="false"/>
+            <line number="22" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="26" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="30" hits="3" branch="false"/>
+            <line number="31" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="35" hits="3" branch="false"/>
+            <line number="38" hits="7" branch="false"/>
+            <line number="39" hits="5" branch="false"/>
+            <line number="43" hits="3" branch="false"/>
+            <line number="44" hits="3" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="48" hits="3" branch="false"/>
+            <line number="49" hits="3" branch="false"/>
+            <line number="52" hits="7" branch="false"/>
+            <line number="53" hits="3" branch="false"/>
+            <line number="65" hits="7" branch="false"/>
+            <line number="66" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_codebuild.ts" filename="src/ci_providers/provider_codebuild.ts" line-rate="1" branch-rate="0.9047">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="3" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="3" signature="()V">
+              <lines>
+                <line number="7" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="3" signature="()V">
+              <lines>
+                <line number="12" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="3" signature="()V">
+              <lines>
+                <line number="16" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="3" signature="()V">
+              <lines>
+                <line number="26" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="3" signature="()V">
+              <lines>
+                <line number="30" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="3" signature="()V">
+              <lines>
+                <line number="41" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="45" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="3" signature="()V">
+              <lines>
+                <line number="49" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="3" signature="()V">
+              <lines>
+                <line number="54" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="3" signature="()V">
+              <lines>
+                <line number="66" hits="3"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="79" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="8" branch="false"/>
+            <line number="4" hits="6" branch="false"/>
+            <line number="8" hits="3" branch="false"/>
+            <line number="9" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="13" hits="3" branch="false"/>
+            <line number="17" hits="3" branch="false"/>
+            <line number="18" hits="3" branch="false"/>
+            <line number="27" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="31" hits="3" branch="false"/>
+            <line number="32" hits="3" branch="false"/>
+            <line number="42" hits="3" branch="false"/>
+            <line number="45" hits="8" branch="false"/>
+            <line number="46" hits="5" branch="false"/>
+            <line number="50" hits="3" branch="false"/>
+            <line number="51" hits="3" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="55" hits="3" branch="false"/>
+            <line number="56" hits="3" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="57" hits="1" branch="false"/>
+            <line number="66" hits="8" branch="false"/>
+            <line number="67" hits="3" branch="false"/>
+            <line number="79" hits="8" branch="false"/>
+            <line number="80" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_drone.ts" filename="src/ci_providers/provider_drone.ts" line-rate="1" branch-rate="0.8946999999999999">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="6" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="3" signature="()V">
+              <lines>
+                <line number="10" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="3" signature="()V">
+              <lines>
+                <line number="15" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="3" signature="()V">
+              <lines>
+                <line number="20" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="3" signature="()V">
+              <lines>
+                <line number="25" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="3" signature="()V">
+              <lines>
+                <line number="29" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="3" signature="()V">
+              <lines>
+                <line number="34" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="38" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="3" signature="()V">
+              <lines>
+                <line number="42" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="3" signature="()V">
+              <lines>
+                <line number="47" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="3" signature="()V">
+              <lines>
+                <line number="53" hits="3"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="66" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="6" hits="8" branch="false"/>
+            <line number="7" hits="6" branch="false"/>
+            <line number="11" hits="3" branch="false"/>
+            <line number="12" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="16" hits="3" branch="false"/>
+            <line number="17" hits="3" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="21" hits="3" branch="false"/>
+            <line number="22" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="26" hits="3" branch="false"/>
+            <line number="30" hits="3" branch="false"/>
+            <line number="31" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="35" hits="3" branch="false"/>
+            <line number="38" hits="8" branch="false"/>
+            <line number="39" hits="5" branch="false"/>
+            <line number="43" hits="3" branch="false"/>
+            <line number="44" hits="3" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="48" hits="3" branch="false"/>
+            <line number="49" hits="3" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="50" hits="2" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="53" hits="8" branch="false"/>
+            <line number="54" hits="3" branch="false"/>
+            <line number="66" hits="8" branch="false"/>
+            <line number="67" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_githubactions.ts" filename="src/ci_providers/provider_githubactions.ts" line-rate="1" branch-rate="0.9142">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="9" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="12" signature="()V">
+              <lines>
+                <line number="13" hits="12"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="6" signature="()V">
+              <lines>
+                <line number="18" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="6" signature="()V">
+              <lines>
+                <line number="27" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="6" signature="()V">
+              <lines>
+                <line number="42" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="10" signature="()V">
+              <lines>
+                <line number="46" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="6" signature="()V">
+              <lines>
+                <line number="59" hits="6"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="63" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="6" signature="()V">
+              <lines>
+                <line number="67" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="12" signature="()V">
+              <lines>
+                <line number="94" hits="12"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="6" signature="()V">
+              <lines>
+                <line number="100" hits="6"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="113" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="6" hits="8" branch="false"/>
+            <line number="7" hits="8" branch="false"/>
+            <line number="9" hits="8" branch="false"/>
+            <line number="10" hits="6" branch="false"/>
+            <line number="14" hits="12" branch="false"/>
+            <line number="15" hits="12" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="19" hits="6" branch="false"/>
+            <line number="20" hits="6" branch="false"/>
+            <line number="28" hits="6" branch="false"/>
+            <line number="29" hits="6" branch="false"/>
+            <line number="30" hits="6" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="32" hits="6" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="33" hits="1" branch="false"/>
+            <line number="36" hits="6" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="37" hits="3" branch="false"/>
+            <line number="39" hits="6" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="43" hits="6" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="47" hits="10" branch="false"/>
+            <line number="49" hits="10" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="50" hits="6" branch="false"/>
+            <line number="51" hits="6" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="52" hits="6" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="53" hits="6" branch="false"/>
+            <line number="56" hits="10" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="60" hits="6" branch="false"/>
+            <line number="63" hits="8" branch="false"/>
+            <line number="64" hits="5" branch="false"/>
+            <line number="68" hits="6" branch="false"/>
+            <line number="69" hits="6" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="71" hits="4" branch="false"/>
+            <line number="73" hits="4" branch="false"/>
+            <line number="74" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="75" hits="3" branch="false"/>
+            <line number="76" hits="3" branch="false"/>
+            <line number="77" hits="3" branch="false"/>
+            <line number="78" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="79" hits="1" branch="false"/>
+            <line number="80" hits="1" branch="false"/>
+            <line number="81" hits="1" branch="false"/>
+            <line number="82" hits="2" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="83" hits="1" branch="false"/>
+            <line number="87" hits="1" branch="false"/>
+            <line number="91" hits="4" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="95" hits="12" branch="false"/>
+            <line number="96" hits="12" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="97" hits="8" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="100" hits="8" branch="false"/>
+            <line number="101" hits="6" branch="false"/>
+            <line number="113" hits="8" branch="false"/>
+            <line number="114" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_gitlabci.ts" filename="src/ci_providers/provider_gitlabci.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="5" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="10" signature="()V">
+              <lines>
+                <line number="9" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="10" signature="()V">
+              <lines>
+                <line number="14" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="10" signature="()V">
+              <lines>
+                <line number="18" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="10" signature="()V">
+              <lines>
+                <line number="23" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="10" signature="()V">
+              <lines>
+                <line number="27" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="10" signature="()V">
+              <lines>
+                <line number="32" hits="10"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="36" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="10" signature="()V">
+              <lines>
+                <line number="40" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="10" signature="()V">
+              <lines>
+                <line number="45" hits="10"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="10" signature="()V">
+              <lines>
+                <line number="56" hits="10"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="69" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="8" branch="false"/>
+            <line number="5" hits="8" branch="false"/>
+            <line number="6" hits="6" branch="false"/>
+            <line number="10" hits="10" branch="false"/>
+            <line number="11" hits="10" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="15" hits="10" branch="false"/>
+            <line number="19" hits="10" branch="false"/>
+            <line number="20" hits="10" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="24" hits="10" branch="false"/>
+            <line number="28" hits="10" branch="false"/>
+            <line number="29" hits="10" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="33" hits="10" branch="false"/>
+            <line number="36" hits="8" branch="false"/>
+            <line number="37" hits="5" branch="false"/>
+            <line number="41" hits="10" branch="false"/>
+            <line number="42" hits="10" branch="true" condition-coverage="100% (5/5)"/>
+            <line number="46" hits="10" branch="false"/>
+            <line number="47" hits="10" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="48" hits="8" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="49" hits="8" branch="false"/>
+            <line number="56" hits="8" branch="false"/>
+            <line number="57" hits="10" branch="false"/>
+            <line number="69" hits="8" branch="false"/>
+            <line number="70" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_herokuci.ts" filename="src/ci_providers/provider_herokuci.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="4" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="4" signature="()V">
+              <lines>
+                <line number="8" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="4" signature="()V">
+              <lines>
+                <line number="13" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="4" signature="()V">
+              <lines>
+                <line number="17" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="4" signature="()V">
+              <lines>
+                <line number="22" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="4" signature="()V">
+              <lines>
+                <line number="26" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="4" signature="()V">
+              <lines>
+                <line number="31" hits="4"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="35" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="4" signature="()V">
+              <lines>
+                <line number="39" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="4" signature="()V">
+              <lines>
+                <line number="44" hits="4"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="4" signature="()V">
+              <lines>
+                <line number="50" hits="4"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="63" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="8" branch="false"/>
+            <line number="4" hits="8" branch="false"/>
+            <line number="5" hits="6" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="9" hits="4" branch="false"/>
+            <line number="10" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="14" hits="4" branch="false"/>
+            <line number="18" hits="4" branch="false"/>
+            <line number="19" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="23" hits="4" branch="false"/>
+            <line number="27" hits="4" branch="false"/>
+            <line number="28" hits="4" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="32" hits="4" branch="false"/>
+            <line number="35" hits="8" branch="false"/>
+            <line number="36" hits="5" branch="false"/>
+            <line number="40" hits="4" branch="false"/>
+            <line number="41" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="45" hits="4" branch="false"/>
+            <line number="46" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="47" hits="2" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="50" hits="8" branch="false"/>
+            <line number="51" hits="4" branch="false"/>
+            <line number="63" hits="8" branch="false"/>
+            <line number="64" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_jenkinsci.ts" filename="src/ci_providers/provider_jenkinsci.ts" line-rate="1" branch-rate="0.9545">
+          <methods>
+            <method name="detect" hits="7" signature="()V">
+              <lines>
+                <line number="4" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="4" signature="()V">
+              <lines>
+                <line number="8" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="4" signature="()V">
+              <lines>
+                <line number="13" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="4" signature="()V">
+              <lines>
+                <line number="18" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="4" signature="()V">
+              <lines>
+                <line number="30" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="4" signature="()V">
+              <lines>
+                <line number="34" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="4" signature="()V">
+              <lines>
+                <line number="39" hits="4"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="43" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="4" signature="()V">
+              <lines>
+                <line number="47" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="4" signature="()V">
+              <lines>
+                <line number="55" hits="4"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="4" signature="()V">
+              <lines>
+                <line number="61" hits="4"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="74" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="8" branch="false"/>
+            <line number="4" hits="8" branch="false"/>
+            <line number="5" hits="7" branch="false"/>
+            <line number="9" hits="4" branch="false"/>
+            <line number="10" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="14" hits="4" branch="false"/>
+            <line number="15" hits="4" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="19" hits="4" branch="false"/>
+            <line number="20" hits="4" branch="false"/>
+            <line number="31" hits="4" branch="false"/>
+            <line number="35" hits="4" branch="false"/>
+            <line number="36" hits="4" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="40" hits="4" branch="false"/>
+            <line number="43" hits="8" branch="false"/>
+            <line number="44" hits="5" branch="false"/>
+            <line number="48" hits="4" branch="false"/>
+            <line number="52" hits="4" branch="true" condition-coverage="75% (3/4)"/>
+            <line number="56" hits="4" branch="false"/>
+            <line number="57" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="58" hits="2" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="61" hits="8" branch="false"/>
+            <line number="62" hits="4" branch="false"/>
+            <line number="74" hits="8" branch="false"/>
+            <line number="75" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_local.ts" filename="src/ci_providers/provider_local.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="6" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="10" signature="()V">
+              <lines>
+                <line number="10" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="10" signature="()V">
+              <lines>
+                <line number="15" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="11" signature="()V">
+              <lines>
+                <line number="19" hits="11"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="9" signature="()V">
+              <lines>
+                <line number="35" hits="9"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="9" signature="()V">
+              <lines>
+                <line number="39" hits="9"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="9" signature="()V">
+              <lines>
+                <line number="45" hits="9"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="7" signature="()V">
+              <lines>
+                <line number="50" hits="7"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="10" signature="()V">
+              <lines>
+                <line number="54" hits="10"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="9" signature="()V">
+              <lines>
+                <line number="68" hits="9"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="11" signature="()V">
+              <lines>
+                <line number="81" hits="11"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="3" signature="()V">
+              <lines>
+                <line number="94" hits="3"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="8" branch="false"/>
+            <line number="2" hits="8" branch="false"/>
+            <line number="6" hits="8" branch="false"/>
+            <line number="7" hits="6" branch="false"/>
+            <line number="11" hits="10" branch="false"/>
+            <line number="12" hits="10" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="16" hits="10" branch="false"/>
+            <line number="20" hits="11" branch="false"/>
+            <line number="21" hits="11" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="22" hits="11" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="23" hits="2" branch="false"/>
+            <line number="25" hits="9" branch="false"/>
+            <line number="26" hits="9" branch="false"/>
+            <line number="27" hits="8" branch="false"/>
+            <line number="29" hits="1" branch="false"/>
+            <line number="36" hits="9" branch="false"/>
+            <line number="40" hits="9" branch="false"/>
+            <line number="41" hits="9" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="46" hits="9" branch="false"/>
+            <line number="50" hits="8" branch="false"/>
+            <line number="51" hits="7" branch="false"/>
+            <line number="55" hits="10" branch="false"/>
+            <line number="56" hits="10" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="57" hits="10" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="58" hits="5" branch="false"/>
+            <line number="60" hits="5" branch="false"/>
+            <line number="61" hits="5" branch="false"/>
+            <line number="62" hits="4" branch="false"/>
+            <line number="64" hits="1" branch="false"/>
+            <line number="69" hits="9" branch="false"/>
+            <line number="70" hits="9" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="71" hits="4" branch="false"/>
+            <line number="73" hits="5" branch="false"/>
+            <line number="74" hits="5" branch="false"/>
+            <line number="75" hits="4" branch="false"/>
+            <line number="77" hits="2" branch="false"/>
+            <line number="81" hits="8" branch="false"/>
+            <line number="82" hits="11" branch="false"/>
+            <line number="94" hits="8" branch="false"/>
+            <line number="95" hits="3" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_teamcity.ts" filename="src/ci_providers/provider_teamcity.ts" line-rate="1" branch-rate="0.9285">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="4" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="4" signature="()V">
+              <lines>
+                <line number="8" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="4" signature="()V">
+              <lines>
+                <line number="13" hits="4"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="18" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="4" signature="()V">
+              <lines>
+                <line number="22" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="4" signature="()V">
+              <lines>
+                <line number="27" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="4" signature="()V">
+              <lines>
+                <line number="32" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="4" signature="()V">
+              <lines>
+                <line number="38" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="4" signature="()V">
+              <lines>
+                <line number="43" hits="4"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="4" signature="()V">
+              <lines>
+                <line number="48" hits="4"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="4" signature="()V">
+              <lines>
+                <line number="52" hits="4"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="65" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="8" branch="false"/>
+            <line number="4" hits="8" branch="false"/>
+            <line number="5" hits="6" branch="false"/>
+            <line number="9" hits="4" branch="false"/>
+            <line number="14" hits="4" branch="false"/>
+            <line number="18" hits="8" branch="false"/>
+            <line number="19" hits="5" branch="false"/>
+            <line number="23" hits="4" branch="false"/>
+            <line number="24" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="28" hits="4" branch="false"/>
+            <line number="29" hits="4" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="33" hits="4" branch="false"/>
+            <line number="34" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="35" hits="2" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="39" hits="4" branch="false"/>
+            <line number="40" hits="4" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="44" hits="4" branch="false"/>
+            <line number="45" hits="4" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="49" hits="4" branch="false"/>
+            <line number="52" hits="8" branch="false"/>
+            <line number="53" hits="4" branch="false"/>
+            <line number="65" hits="8" branch="false"/>
+            <line number="66" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_travisci.ts" filename="src/ci_providers/provider_travisci.ts" line-rate="1" branch-rate="0.875">
+          <methods>
+            <method name="detect" hits="9" signature="()V">
+              <lines>
+                <line number="3" hits="9"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="5" signature="()V">
+              <lines>
+                <line number="7" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="5" signature="()V">
+              <lines>
+                <line number="12" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="5" signature="()V">
+              <lines>
+                <line number="16" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="5" signature="()V">
+              <lines>
+                <line number="26" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="5" signature="()V">
+              <lines>
+                <line number="30" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="5" signature="()V">
+              <lines>
+                <line number="35" hits="5"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="39" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="5" signature="()V">
+              <lines>
+                <line number="43" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="5" signature="()V">
+              <lines>
+                <line number="48" hits="5"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="5" signature="()V">
+              <lines>
+                <line number="54" hits="5"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="67" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="3" hits="8" branch="false"/>
+            <line number="4" hits="9" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="8" hits="5" branch="false"/>
+            <line number="9" hits="5" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="13" hits="5" branch="false"/>
+            <line number="17" hits="5" branch="false"/>
+            <line number="19" hits="5" branch="false"/>
+            <line number="20" hits="5" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="21" hits="2" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="23" hits="5" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="27" hits="5" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="31" hits="5" branch="false"/>
+            <line number="32" hits="5" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="36" hits="5" branch="false"/>
+            <line number="39" hits="8" branch="false"/>
+            <line number="40" hits="5" branch="false"/>
+            <line number="44" hits="5" branch="false"/>
+            <line number="45" hits="5" branch="true" condition-coverage="75% (3/4)"/>
+            <line number="49" hits="5" branch="false"/>
+            <line number="50" hits="5" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="51" hits="3" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="54" hits="8" branch="false"/>
+            <line number="55" hits="5" branch="false"/>
+            <line number="67" hits="8" branch="false"/>
+            <line number="68" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_wercker.ts" filename="src/ci_providers/provider_wercker.ts" line-rate="1" branch-rate="0.9229999999999999">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="4" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="3" signature="()V">
+              <lines>
+                <line number="8" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="3" signature="()V">
+              <lines>
+                <line number="13" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="3" signature="()V">
+              <lines>
+                <line number="18" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="3" signature="()V">
+              <lines>
+                <line number="24" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="3" signature="()V">
+              <lines>
+                <line number="28" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="3" signature="()V">
+              <lines>
+                <line number="33" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="37" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="3" signature="()V">
+              <lines>
+                <line number="41" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="3" signature="()V">
+              <lines>
+                <line number="46" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="3" signature="()V">
+              <lines>
+                <line number="51" hits="3"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="64" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="7" branch="false"/>
+            <line number="4" hits="7" branch="false"/>
+            <line number="5" hits="6" branch="false"/>
+            <line number="9" hits="3" branch="false"/>
+            <line number="10" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="14" hits="3" branch="false"/>
+            <line number="15" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="19" hits="3" branch="false"/>
+            <line number="21" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="25" hits="3" branch="false"/>
+            <line number="29" hits="3" branch="false"/>
+            <line number="30" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="34" hits="3" branch="false"/>
+            <line number="37" hits="7" branch="false"/>
+            <line number="38" hits="5" branch="false"/>
+            <line number="42" hits="3" branch="false"/>
+            <line number="43" hits="3" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="47" hits="3" branch="false"/>
+            <line number="48" hits="3" branch="false"/>
+            <line number="51" hits="7" branch="false"/>
+            <line number="52" hits="3" branch="false"/>
+            <line number="64" hits="7" branch="false"/>
+            <line number="65" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider_woodpecker.ts" filename="src/ci_providers/provider_woodpecker.ts" line-rate="1" branch-rate="0.9129999999999999">
+          <methods>
+            <method name="detect" hits="6" signature="()V">
+              <lines>
+                <line number="6" hits="6"/>
+              </lines>
+            </method>
+            <method name="_getBuild" hits="3" signature="()V">
+              <lines>
+                <line number="10" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBuildURL" hits="3" signature="()V">
+              <lines>
+                <line number="15" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getBranch" hits="3" signature="()V">
+              <lines>
+                <line number="20" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getJob" hits="3" signature="()V">
+              <lines>
+                <line number="25" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getPR" hits="3" signature="()V">
+              <lines>
+                <line number="30" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getService" hits="3" signature="()V">
+              <lines>
+                <line number="35" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceName" hits="5" signature="()V">
+              <lines>
+                <line number="39" hits="5"/>
+              </lines>
+            </method>
+            <method name="_getSHA" hits="3" signature="()V">
+              <lines>
+                <line number="43" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getTag" hits="3" signature="()V">
+              <lines>
+                <line number="48" hits="3"/>
+              </lines>
+            </method>
+            <method name="_getSlug" hits="3" signature="()V">
+              <lines>
+                <line number="53" hits="3"/>
+              </lines>
+            </method>
+            <method name="getServiceParams" hits="3" signature="()V">
+              <lines>
+                <line number="59" hits="3"/>
+              </lines>
+            </method>
+            <method name="getEnvVarNames" hits="1" signature="()V">
+              <lines>
+                <line number="73" hits="1"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="6" hits="8" branch="false"/>
+            <line number="7" hits="6" branch="false"/>
+            <line number="11" hits="3" branch="false"/>
+            <line number="12" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="16" hits="3" branch="false"/>
+            <line number="17" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="21" hits="3" branch="false"/>
+            <line number="22" hits="3" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="26" hits="3" branch="false"/>
+            <line number="27" hits="3" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="31" hits="3" branch="false"/>
+            <line number="32" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="36" hits="3" branch="false"/>
+            <line number="39" hits="8" branch="false"/>
+            <line number="40" hits="5" branch="false"/>
+            <line number="44" hits="3" branch="false"/>
+            <line number="45" hits="3" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="49" hits="3" branch="false"/>
+            <line number="50" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="54" hits="3" branch="false"/>
+            <line number="55" hits="3" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="56" hits="2" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="59" hits="8" branch="false"/>
+            <line number="60" hits="3" branch="false"/>
+            <line number="73" hits="8" branch="false"/>
+            <line number="74" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+    <package name="src.helpers" line-rate="0.9484999999999999" branch-rate="0.8859999999999999">
+      <classes>
+        <class name="checkSlug.ts" filename="src/helpers/checkSlug.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="checkSlug" hits="3" signature="()V">
+              <lines>
+                <line number="1" hits="3"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="2" branch="false"/>
+            <line number="2" hits="3" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="3" hits="1" branch="false"/>
+            <line number="5" hits="2" branch="false"/>
+          </lines>
+        </class>
+        <class name="cli.ts" filename="src/helpers/cli.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="addArguments" hits="1" signature="()V">
+              <lines>
+                <line number="245" hits="1"/>
+              </lines>
+            </method>
+            <method name="(anonymous_1)" hits="35" signature="()V">
+              <lines>
+                <line number="246" hits="35"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="9" hits="1" branch="false"/>
+            <line number="245" hits="1" branch="false"/>
+            <line number="246" hits="1" branch="false"/>
+            <line number="247" hits="35" branch="false"/>
+          </lines>
+        </class>
+        <class name="constansts.ts" filename="src/helpers/constansts.ts" line-rate="1" branch-rate="1">
+          <methods>
+          </methods>
+          <lines>
+            <line number="1" hits="25" branch="false"/>
+            <line number="3" hits="25" branch="false"/>
+          </lines>
+        </class>
+        <class name="coveragepy.ts" filename="src/helpers/coveragepy.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="generateCoveragePyFile" hits="24" signature="()V">
+              <lines>
+                <line number="6" hits="24"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="2" branch="false"/>
+            <line number="3" hits="2" branch="false"/>
+            <line number="4" hits="2" branch="false"/>
+            <line number="6" hits="2" branch="false"/>
+            <line number="7" hits="24" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="8" hits="21" branch="false"/>
+            <line number="11" hits="3" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="12" hits="1" branch="false"/>
+            <line number="15" hits="2" branch="false"/>
+            <line number="19" hits="2" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="20" hits="1" branch="false"/>
+            <line number="23" hits="1" branch="false"/>
+            <line number="24" hits="1" branch="false"/>
+          </lines>
+        </class>
+        <class name="files.ts" filename="src/helpers/files.ts" line-rate="0.9473" branch-rate="0.8332999999999999">
+          <methods>
+            <method name="(anonymous_1)" hits="7110" signature="()V">
+              <lines>
+                <line number="16" hits="7110"/>
+              </lines>
+            </method>
+            <method name="getFileListing" hits="27" signature="()V">
+              <lines>
+                <line number="24" hits="27"/>
+              </lines>
+            </method>
+            <method name="manualBlocklist" hits="66" signature="()V">
+              <lines>
+                <line number="31" hits="66"/>
+              </lines>
+            </method>
+            <method name="globBlocklist" hits="60" signature="()V">
+              <lines>
+                <line number="47" hits="60"/>
+              </lines>
+            </method>
+            <method name="coverageFilePatterns" hits="26" signature="()V">
+              <lines>
+                <line number="161" hits="26"/>
+              </lines>
+            </method>
+            <method name="(anonymous_6)" hits="538" signature="()V">
+              <lines>
+                <line number="189" hits="538"/>
+              </lines>
+            </method>
+            <method name="getCoverageFiles" hits="32" signature="()V">
+              <lines>
+                <line number="197" hits="32"/>
+              </lines>
+            </method>
+            <method name="(anonymous_8)" hits="538" signature="()V">
+              <lines>
+                <line number="201" hits="538"/>
+              </lines>
+            </method>
+            <method name="(anonymous_9)" hits="538" signature="()V">
+              <lines>
+                <line number="203" hits="538"/>
+              </lines>
+            </method>
+            <method name="fetchGitRoot" hits="26" signature="()V">
+              <lines>
+                <line number="222" hits="26"/>
+              </lines>
+            </method>
+            <method name="getAllFiles" hits="33" signature="()V">
+              <lines>
+                <line number="238" hits="33"/>
+              </lines>
+            </method>
+            <method name="(anonymous_12)" hits="524" signature="()V">
+              <lines>
+                <line number="264" hits="524"/>
+              </lines>
+            </method>
+            <method name="(anonymous_13)" hits="3" signature="()V">
+              <lines>
+                <line number="268" hits="3"/>
+              </lines>
+            </method>
+            <method name="readCoverageFile" hits="100" signature="()V">
+              <lines>
+                <line number="280" hits="100"/>
+              </lines>
+            </method>
+            <method name="(anonymous_15)" hits="1" signature="()V">
+              <lines>
+                <line number="286" hits="1"/>
+              </lines>
+            </method>
+            <method name="fileExists" hits="110" signature="()V">
+              <lines>
+                <line number="297" hits="110"/>
+              </lines>
+            </method>
+            <method name="fileHeader" hits="99" signature="()V">
+              <lines>
+                <line number="306" hits="99"/>
+              </lines>
+            </method>
+            <method name="getFilePath" hits="317" signature="()V">
+              <lines>
+                <line number="316" hits="317"/>
+              </lines>
+            </method>
+            <method name="removeFile" hits="4" signature="()V">
+              <lines>
+                <line number="336" hits="4"/>
+              </lines>
+            </method>
+            <method name="(anonymous_20)" hits="0" signature="()V">
+              <lines>
+                <line number="337" hits="0"/>
+              </lines>
+            </method>
+            <method name="getBlocklist" hits="60" signature="()V">
+              <lines>
+                <line number="343" hits="60"/>
+              </lines>
+            </method>
+            <method name="filterFilesAgainstBlockList" hits="32" signature="()V">
+              <lines>
+                <line number="347" hits="32"/>
+              </lines>
+            </method>
+            <method name="cleanCoverageFilePaths" hits="20" signature="()V">
+              <lines>
+                <line number="351" hits="20"/>
+              </lines>
+            </method>
+            <method name="(anonymous_24)" hits="107" signature="()V">
+              <lines>
+                <line number="353" hits="107"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="6" branch="false"/>
+            <line number="2" hits="6" branch="false"/>
+            <line number="3" hits="6" branch="false"/>
+            <line number="4" hits="6" branch="false"/>
+            <line number="5" hits="6" branch="false"/>
+            <line number="7" hits="6" branch="false"/>
+            <line number="8" hits="6" branch="false"/>
+            <line number="9" hits="6" branch="false"/>
+            <line number="10" hits="6" branch="false"/>
+            <line number="12" hits="6" branch="false"/>
+            <line number="13" hits="6" branch="false"/>
+            <line number="14" hits="6" branch="false"/>
+            <line number="16" hits="7110" branch="false"/>
+            <line number="24" hits="6" branch="false"/>
+            <line number="28" hits="27" branch="false"/>
+            <line number="31" hits="6" branch="false"/>
+            <line number="33" hits="66" branch="false"/>
+            <line number="49" hits="60" branch="false"/>
+            <line number="161" hits="6" branch="false"/>
+            <line number="162" hits="26" branch="false"/>
+            <line number="187" hits="6" branch="false"/>
+            <line number="189" hits="538" branch="false"/>
+            <line number="197" hits="6" branch="false"/>
+            <line number="201" hits="538" branch="false"/>
+            <line number="203" hits="32" branch="false"/>
+            <line number="204" hits="538" branch="false"/>
+            <line number="206" hits="538" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="207" hits="2" branch="false"/>
+            <line number="208" hits="2" branch="false"/>
+            <line number="210" hits="536" branch="false"/>
+            <line number="213" hits="538" branch="false"/>
+            <line number="222" hits="6" branch="false"/>
+            <line number="223" hits="26" branch="false"/>
+            <line number="224" hits="26" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="227" hits="1" branch="false"/>
+            <line number="238" hits="6" branch="false"/>
+            <line number="243" hits="33" branch="false"/>
+            <line number="245" hits="33" branch="false"/>
+            <line number="251" hits="33" branch="false"/>
+            <line number="252" hits="33" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="253" hits="3" branch="false"/>
+            <line number="260" hits="30" branch="false"/>
+            <line number="263" hits="33" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="264" hits="524" branch="false"/>
+            <line number="267" hits="33" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="268" hits="3" branch="false"/>
+            <line number="271" hits="33" branch="false"/>
+            <line number="280" hits="6" branch="false"/>
+            <line number="284" hits="100" branch="false"/>
+            <line number="287" hits="1" branch="false"/>
+            <line number="297" hits="6" branch="false"/>
+            <line number="298" hits="110" branch="false"/>
+            <line number="306" hits="6" branch="false"/>
+            <line number="307" hits="99" branch="false"/>
+            <line number="316" hits="6" branch="false"/>
+            <line number="317" hits="317" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="323" hits="2" branch="false"/>
+            <line number="325" hits="315" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="326" hits="4" branch="false"/>
+            <line number="328" hits="311" branch="false"/>
+            <line number="336" hits="6" branch="false"/>
+            <line number="337" hits="4" branch="false"/>
+            <line number="338" hits="0" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="339" hits="0" branch="false"/>
+            <line number="343" hits="6" branch="false"/>
+            <line number="344" hits="60" branch="false"/>
+            <line number="347" hits="6" branch="false"/>
+            <line number="348" hits="32" branch="false"/>
+            <line number="351" hits="6" branch="false"/>
+            <line number="352" hits="20" branch="false"/>
+            <line number="353" hits="20" branch="false"/>
+            <line number="354" hits="107" branch="false"/>
+            <line number="357" hits="20" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="358" hits="0" branch="false"/>
+            <line number="359" hits="0" branch="false"/>
+            <line number="362" hits="20" branch="false"/>
+          </lines>
+        </class>
+        <class name="fixes.ts" filename="src/helpers/fixes.ts" line-rate="0.9743" branch-rate="0.9375">
+          <methods>
+            <method name="generateFixes" hits="6" signature="()V">
+              <lines>
+                <line number="9" hits="6"/>
+              </lines>
+            </method>
+            <method name="getMatchedLines" hits="11" signature="()V">
+              <lines>
+                <line number="65" hits="11"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="2" branch="false"/>
+            <line number="2" hits="2" branch="false"/>
+            <line number="4" hits="2" branch="false"/>
+            <line number="5" hits="2" branch="false"/>
+            <line number="7" hits="2" branch="false"/>
+            <line number="9" hits="2" branch="false"/>
+            <line number="11" hits="6" branch="false"/>
+            <line number="17" hits="6" branch="false"/>
+            <line number="18" hits="6" branch="false"/>
+            <line number="20" hits="6" branch="false"/>
+            <line number="22" hits="6" branch="false"/>
+            <line number="24" hits="6" branch="false"/>
+            <line number="26" hits="6" branch="false"/>
+            <line number="28" hits="6" branch="false"/>
+            <line number="30" hits="6" branch="false"/>
+            <line number="31" hits="160" branch="false"/>
+            <line number="33" hits="160" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="42" hits="5" branch="false"/>
+            <line number="43" hits="155" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="46" hits="3" branch="false"/>
+            <line number="47" hits="152" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="50" hits="3" branch="false"/>
+            <line number="51" hits="149" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="54" hits="0" branch="false"/>
+            <line number="57" hits="160" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="58" hits="8" branch="false"/>
+            <line number="59" hits="8" branch="false"/>
+            <line number="62" hits="6" branch="false"/>
+            <line number="66" hits="11" branch="false"/>
+            <line number="67" hits="11" branch="false"/>
+            <line number="72" hits="11" branch="false"/>
+            <line number="73" hits="11" branch="false"/>
+            <line number="75" hits="11" branch="false"/>
+            <line number="76" hits="189" branch="false"/>
+            <line number="77" hits="451" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="78" hits="90" branch="false"/>
+            <line number="79" hits="90" branch="false"/>
+            <line number="82" hits="189" branch="false"/>
+            <line number="84" hits="11" branch="false"/>
+          </lines>
+        </class>
+        <class name="gcov.ts" filename="src/helpers/gcov.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="generateGcovCoverageFiles" hits="4" signature="()V">
+              <lines>
+                <line number="6" hits="4"/>
+              </lines>
+            </method>
+            <method name="(anonymous_2)" hits="34" signature="()V">
+              <lines>
+                <line number="11" hits="34"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="2" branch="false"/>
+            <line number="3" hits="2" branch="false"/>
+            <line number="4" hits="2" branch="false"/>
+            <line number="6" hits="2" branch="true" condition-coverage="100% (4/4)"/>
+            <line number="7" hits="4" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="8" hits="1" branch="false"/>
+            <line number="11" hits="34" branch="false"/>
+            <line number="12" hits="3" branch="false"/>
+            <line number="13" hits="3" branch="false"/>
+            <line number="14" hits="3" branch="false"/>
+            <line number="15" hits="3" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="16" hits="1" branch="false"/>
+            <line number="18" hits="2" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="19" hits="2" branch="false"/>
+            <line number="21" hits="2" branch="false"/>
+          </lines>
+        </class>
+        <class name="git.ts" filename="src/helpers/git.ts" line-rate="0.9545" branch-rate="0.85">
+          <methods>
+            <method name="parseSlug" hits="21" signature="()V">
+              <lines>
+                <line number="3" hits="21"/>
+              </lines>
+            </method>
+            <method name="parseSlugFromRemoteAddr" hits="17" signature="()V">
+              <lines>
+                <line number="24" hits="17"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="15" branch="false"/>
+            <line number="3" hits="15" branch="false"/>
+            <line number="6" hits="21" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="7" hits="0" branch="false"/>
+            <line number="10" hits="21" branch="true" condition-coverage="100% (5/5)"/>
+            <line number="12" hits="13" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="13" hits="13" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="14" hits="13" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="15" hits="13" branch="false"/>
+            <line number="16" hits="8" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="18" hits="6" branch="false"/>
+            <line number="19" hits="6" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="21" hits="2" branch="false"/>
+            <line number="24" hits="15" branch="false"/>
+            <line number="25" hits="17" branch="false"/>
+            <line number="26" hits="17" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="27" hits="15" branch="false"/>
+            <line number="31" hits="17" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="32" hits="10" branch="false"/>
+            <line number="34" hits="17" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="35" hits="1" branch="false"/>
+            <line number="37" hits="17" branch="false"/>
+          </lines>
+        </class>
+        <class name="logger.ts" filename="src/helpers/logger.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="_getTimestamp" hits="817" signature="()V">
+              <lines>
+                <line number="8" hits="817"/>
+              </lines>
+            </method>
+            <method name="verbose" hits="503" signature="()V">
+              <lines>
+                <line number="18" hits="503"/>
+              </lines>
+            </method>
+            <method name="logError" hits="2" signature="()V">
+              <lines>
+                <line number="29" hits="2"/>
+              </lines>
+            </method>
+            <method name="info" hits="376" signature="()V">
+              <lines>
+                <line number="38" hits="376"/>
+              </lines>
+            </method>
+            <method name="(anonymous_4)" hits="9" signature="()V">
+              <lines>
+                <line number="46" hits="9"/>
+              </lines>
+            </method>
+            <method name="(anonymous_5)" hits="506" signature="()V">
+              <lines>
+                <line number="50" hits="506"/>
+              </lines>
+            </method>
+            <method name="(anonymous_6)" hits="5" signature="()V">
+              <lines>
+                <line number="57" hits="5"/>
+              </lines>
+            </method>
+            <method name="(anonymous_7)" hits="501" signature="()V">
+              <lines>
+                <line number="61" hits="501"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="9" hits="817" branch="false"/>
+            <line number="18" hits="18" branch="false"/>
+            <line number="19" hits="503" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="20" hits="439" branch="false"/>
+            <line number="29" hits="18" branch="false"/>
+            <line number="30" hits="2" branch="false"/>
+            <line number="38" hits="18" branch="false"/>
+            <line number="39" hits="376" branch="false"/>
+            <line number="42" hits="18" branch="false"/>
+            <line number="44" hits="9" branch="false"/>
+            <line number="51" hits="506" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="52" hits="9" branch="false"/>
+            <line number="54" hits="506" branch="false"/>
+            <line number="58" hits="5" branch="false"/>
+            <line number="62" hits="501" branch="false"/>
+          </lines>
+        </class>
+        <class name="provider.ts" filename="src/helpers/provider.ts" line-rate="0.9309999999999999" branch-rate="0.9473">
+          <methods>
+            <method name="detectProvider" hits="25" signature="()V">
+              <lines>
+                <line number="5" hits="25"/>
+              </lines>
+            </method>
+            <method name="walkProviders" hits="27" signature="()V">
+              <lines>
+                <line number="40" hits="27"/>
+              </lines>
+            </method>
+            <method name="setSlug" hits="43" signature="()V">
+              <lines>
+                <line number="54" hits="43"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="7" branch="false"/>
+            <line number="2" hits="7" branch="false"/>
+            <line number="5" hits="7" branch="false"/>
+            <line number="9" hits="25" branch="false"/>
+            <line number="13" hits="25" branch="true" condition-coverage="100% (5/5)"/>
+            <line number="15" hits="2" branch="false"/>
+            <line number="16" hits="2" branch="false"/>
+            <line number="21" hits="23" branch="false"/>
+            <line number="25" hits="25" branch="false"/>
+            <line number="26" hits="25" branch="false"/>
+            <line number="29" hits="1" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="30" hits="0" branch="false"/>
+            <line number="32" hits="1" branch="false"/>
+            <line number="37" hits="0" branch="false"/>
+            <line number="40" hits="7" branch="false"/>
+            <line number="41" hits="27" branch="false"/>
+            <line number="42" hits="210" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="43" hits="25" branch="false"/>
+            <line number="44" hits="25" branch="false"/>
+            <line number="45" hits="25" branch="false"/>
+            <line number="46" hits="54" branch="false"/>
+            <line number="48" hits="25" branch="false"/>
+            <line number="51" hits="2" branch="false"/>
+            <line number="54" hits="7" branch="false"/>
+            <line number="59" hits="43" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="60" hits="12" branch="false"/>
+            <line number="62" hits="31" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="68" hits="26" branch="false"/>
+            <line number="70" hits="5" branch="false"/>
+          </lines>
+        </class>
+        <class name="swift.ts" filename="src/helpers/swift.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="generateSwiftCoverageFiles" hits="6" signature="()V">
+              <lines>
+                <line number="10" hits="6"/>
+              </lines>
+            </method>
+            <method name="convertSwiftFile" hits="8" signature="()V">
+              <lines>
+                <line number="50" hits="8"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="2" branch="false"/>
+            <line number="2" hits="2" branch="false"/>
+            <line number="3" hits="2" branch="false"/>
+            <line number="4" hits="2" branch="false"/>
+            <line number="5" hits="2" branch="false"/>
+            <line number="7" hits="2" branch="false"/>
+            <line number="8" hits="2" branch="false"/>
+            <line number="10" hits="2" branch="false"/>
+            <line number="11" hits="6" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="12" hits="1" branch="false"/>
+            <line number="14" hits="5" branch="false"/>
+            <line number="16" hits="5" branch="false"/>
+            <line number="17" hits="5" branch="false"/>
+            <line number="19" hits="5" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="20" hits="3" branch="false"/>
+            <line number="23" hits="5" branch="false"/>
+            <line number="29" hits="5" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="30" hits="1" branch="false"/>
+            <line number="32" hits="4" branch="false"/>
+            <line number="35" hits="5" branch="false"/>
+            <line number="36" hits="8" branch="false"/>
+            <line number="39" hits="5" branch="false"/>
+            <line number="40" hits="5" branch="false"/>
+            <line number="41" hits="8" branch="false"/>
+            <line number="42" hits="8" branch="false"/>
+            <line number="43" hits="4" branch="false"/>
+            <line number="45" hits="8" branch="false"/>
+            <line number="47" hits="5" branch="false"/>
+            <line number="51" hits="8" branch="false"/>
+            <line number="52" hits="8" branch="false"/>
+            <line number="53" hits="8" branch="false"/>
+            <line number="54" hits="8" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="55" hits="4" branch="false"/>
+            <line number="58" hits="8" branch="false"/>
+            <line number="60" hits="8" branch="false"/>
+            <line number="61" hits="24" branch="false"/>
+            <line number="67" hits="24" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="68" hits="16" branch="false"/>
+            <line number="71" hits="8" branch="false"/>
+            <line number="72" hits="8" branch="false"/>
+            <line number="74" hits="8" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="75" hits="2" branch="false"/>
+            <line number="76" hits="2" branch="false"/>
+            <line number="78" hits="6" branch="false"/>
+            <line number="79" hits="6" branch="false"/>
+            <line number="81" hits="6" branch="false"/>
+            <line number="82" hits="6" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="83" hits="6" branch="false"/>
+            <line number="86" hits="6" branch="false"/>
+            <line number="87" hits="6" branch="false"/>
+            <line number="88" hits="6" branch="false"/>
+            <line number="95" hits="4" branch="false"/>
+            <line number="96" hits="4" branch="false"/>
+            <line number="98" hits="2" branch="false"/>
+            <line number="102" hits="8" branch="false"/>
+          </lines>
+        </class>
+        <class name="token.ts" filename="src/helpers/token.ts" line-rate="0.9285" branch-rate="0.8665999999999999">
+          <methods>
+            <method name="getToken" hits="27" signature="()V">
+              <lines>
+                <line number="15" hits="27"/>
+              </lines>
+            </method>
+            <method name="yamlParse" hits="44" signature="()V">
+              <lines>
+                <line number="54" hits="44"/>
+              </lines>
+            </method>
+            <method name="getTokenFromYaml" hits="30" signature="()V">
+              <lines>
+                <line number="66" hits="30"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="2" branch="false"/>
+            <line number="2" hits="2" branch="false"/>
+            <line number="3" hits="2" branch="false"/>
+            <line number="5" hits="2" branch="false"/>
+            <line number="6" hits="2" branch="false"/>
+            <line number="7" hits="2" branch="false"/>
+            <line number="15" hits="2" branch="false"/>
+            <line number="16" hits="27" branch="false"/>
+            <line number="17" hits="27" branch="false"/>
+            <line number="23" hits="27" branch="false"/>
+            <line number="24" hits="38" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="25" hits="24" branch="false"/>
+            <line number="28" hits="24" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="29" hits="5" branch="false"/>
+            <line number="30" hits="5" branch="false"/>
+            <line number="31" hits="5" branch="false"/>
+            <line number="33" hits="19" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="34" hits="1" branch="false"/>
+            <line number="39" hits="18" branch="false"/>
+            <line number="43" hits="3" branch="false"/>
+            <line number="56" hits="44" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="57" hits="0" branch="false"/>
+            <line number="58" hits="44" branch="true" condition-coverage="50% (1/2)"/>
+            <line number="59" hits="0" branch="false"/>
+            <line number="61" hits="44" branch="false"/>
+            <line number="63" hits="44" branch="false"/>
+            <line number="66" hits="2" branch="false"/>
+            <line number="69" hits="30" branch="false"/>
+            <line number="71" hits="30" branch="false"/>
+            <line number="78" hits="30" branch="false"/>
+            <line number="79" hits="76" branch="false"/>
+            <line number="80" hits="297" branch="false"/>
+            <line number="82" hits="297" branch="false"/>
+            <line number="83" hits="297" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="84" hits="44" branch="false"/>
+            <line number="87" hits="44" branch="false"/>
+            <line number="90" hits="44" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="95" hits="7" branch="false"/>
+            <line number="98" hits="37" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="99" hits="1" branch="false"/>
+            <line number="106" hits="0" branch="false"/>
+            <line number="110" hits="23" branch="false"/>
+          </lines>
+        </class>
+        <class name="util.ts" filename="src/helpers/util.ts" line-rate="0.7646999999999999" branch-rate="0.6">
+          <methods>
+            <method name="(anonymous_1)" hits="43" signature="()V">
+              <lines>
+                <line number="3" hits="43"/>
+              </lines>
+            </method>
+            <method name="isProgramInstalled" hits="43" signature="()V">
+              <lines>
+                <line number="7" hits="43"/>
+              </lines>
+            </method>
+            <method name="runExternalProgram" hits="78" signature="()V">
+              <lines>
+                <line number="11" hits="78"/>
+              </lines>
+            </method>
+            <method name="isSetAndNotEmpty" hits="2" signature="()V">
+              <lines>
+                <line number="26" hits="2"/>
+              </lines>
+            </method>
+            <method name="argAsArray" hits="0" signature="()V">
+              <lines>
+                <line number="30" hits="0"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="25" branch="false"/>
+            <line number="2" hits="25" branch="false"/>
+            <line number="3" hits="68" branch="false"/>
+            <line number="7" hits="25" branch="false"/>
+            <line number="8" hits="43" branch="false"/>
+            <line number="11" hits="25" branch="false"/>
+            <line number="15" hits="78" branch="false"/>
+            <line number="20" hits="78" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="21" hits="3" branch="false"/>
+            <line number="23" hits="71" branch="false"/>
+            <line number="26" hits="25" branch="false"/>
+            <line number="27" hits="2" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="30" hits="25" branch="false"/>
+            <line number="31" hits="0" branch="false"/>
+            <line number="32" hits="0" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="33" hits="0" branch="false"/>
+            <line number="35" hits="0" branch="false"/>
+          </lines>
+        </class>
+        <class name="validate.ts" filename="src/helpers/validate.ts" line-rate="1" branch-rate="1">
+          <methods>
+            <method name="validateToken" hits="36" signature="()V">
+              <lines>
+                <line number="8" hits="36"/>
+              </lines>
+            </method>
+            <method name="validateURL" hits="3" signature="()V">
+              <lines>
+                <line number="13" hits="3"/>
+              </lines>
+            </method>
+            <method name="isValidFlag" hits="25" signature="()V">
+              <lines>
+                <line number="17" hits="25"/>
+              </lines>
+            </method>
+            <method name="validateFlags" hits="21" signature="()V">
+              <lines>
+                <line number="23" hits="21"/>
+              </lines>
+            </method>
+            <method name="(anonymous_5)" hits="21" signature="()V">
+              <lines>
+                <line number="24" hits="21"/>
+              </lines>
+            </method>
+            <method name="validateSHA" hits="8" signature="()V">
+              <lines>
+                <line number="41" hits="8"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="10" branch="false"/>
+            <line number="8" hits="10" branch="false"/>
+            <line number="10" hits="36" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="13" hits="10" branch="false"/>
+            <line number="14" hits="3" branch="false"/>
+            <line number="17" hits="10" branch="false"/>
+            <line number="19" hits="25" branch="false"/>
+            <line number="20" hits="25" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="23" hits="10" branch="false"/>
+            <line number="24" hits="21" branch="false"/>
+            <line number="26" hits="21" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="27" hits="1" branch="false"/>
+            <line number="39" hits="10" branch="false"/>
+            <line number="41" hits="10" branch="false"/>
+            <line number="45" hits="8" branch="false"/>
+          </lines>
+        </class>
+        <class name="web.ts" filename="src/helpers/web.ts" line-rate="0.8887999999999999" branch-rate="0.7916">
+          <methods>
+            <method name="populateBuildParams" hits="26" signature="()V">
+              <lines>
+                <line number="27" hits="26"/>
+              </lines>
+            </method>
+            <method name="getPackage" hits="33" signature="()V">
+              <lines>
+                <line number="45" hits="33"/>
+              </lines>
+            </method>
+            <method name="uploadToCodecovPUT" hits="4" signature="()V">
+              <lines>
+                <line number="54" hits="4"/>
+              </lines>
+            </method>
+            <method name="uploadToCodecovPOST" hits="5" signature="()V">
+              <lines>
+                <line number="82" hits="5"/>
+              </lines>
+            </method>
+            <method name="generateQuery" hits="23" signature="()V">
+              <lines>
+                <line number="117" hits="23"/>
+              </lines>
+            </method>
+            <method name="(anonymous_6)" hits="275" signature="()V">
+              <lines>
+                <line number="119" hits="275"/>
+              </lines>
+            </method>
+            <method name="parsePOSTResults" hits="6" signature="()V">
+              <lines>
+                <line number="125" hits="6"/>
+              </lines>
+            </method>
+            <method name="displayChangelog" hits="1" signature="()V">
+              <lines>
+                <line number="155" hits="1"/>
+              </lines>
+            </method>
+            <method name="generateRequestHeadersPOST" hits="7" signature="()V">
+              <lines>
+                <line number="160" hits="7"/>
+              </lines>
+            </method>
+            <method name="generateRequestHeadersPUT" hits="6" signature="()V">
+              <lines>
+                <line number="186" hits="6"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="2" branch="false"/>
+            <line number="2" hits="2" branch="false"/>
+            <line number="3" hits="2" branch="false"/>
+            <line number="9" hits="2" branch="false"/>
+            <line number="18" hits="2" branch="false"/>
+            <line number="27" hits="2" branch="false"/>
+            <line number="31" hits="26" branch="false"/>
+            <line number="32" hits="26" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="33" hits="26" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="35" hits="26" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="36" hits="25" branch="false"/>
+            <line number="38" hits="1" branch="false"/>
+            <line number="41" hits="26" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="42" hits="26" branch="false"/>
+            <line number="45" hits="2" branch="false"/>
+            <line number="46" hits="33" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="47" hits="5" branch="false"/>
+            <line number="49" hits="28" branch="false"/>
+            <line number="54" hits="2" branch="false"/>
+            <line number="59" hits="4" branch="false"/>
+            <line number="61" hits="4" branch="false"/>
+            <line number="66" hits="4" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="67" hits="0" branch="false"/>
+            <line number="69" hits="4" branch="false"/>
+            <line number="70" hits="4" branch="false"/>
+            <line number="72" hits="4" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="73" hits="0" branch="false"/>
+            <line number="74" hits="0" branch="false"/>
+            <line number="79" hits="4" branch="false"/>
+            <line number="82" hits="2" branch="false"/>
+            <line number="89" hits="5" branch="false"/>
+            <line number="96" hits="5" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="97" hits="0" branch="false"/>
+            <line number="99" hits="5" branch="false"/>
+            <line number="100" hits="5" branch="false"/>
+            <line number="102" hits="5" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="103" hits="0" branch="false"/>
+            <line number="104" hits="0" branch="false"/>
+            <line number="109" hits="5" branch="false"/>
+            <line number="117" hits="2" branch="false"/>
+            <line number="118" hits="23" branch="false"/>
+            <line number="119" hits="275" branch="false"/>
+            <line number="125" hits="2" branch="false"/>
+            <line number="126" hits="6" branch="false"/>
+            <line number="129" hits="6" branch="false"/>
+            <line number="131" hits="6" branch="false"/>
+            <line number="133" hits="6" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="134" hits="1" branch="false"/>
+            <line number="137" hits="5" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="138" hits="1" branch="false"/>
+            <line number="143" hits="4" branch="true" condition-coverage="66.66666666666666% (2/3)"/>
+            <line number="144" hits="0" branch="false"/>
+            <line number="148" hits="4" branch="false"/>
+            <line number="149" hits="4" branch="false"/>
+            <line number="152" hits="4" branch="false"/>
+            <line number="155" hits="2" branch="false"/>
+            <line number="156" hits="1" branch="false"/>
+            <line number="157" hits="1" branch="false"/>
+            <line number="160" hits="2" branch="false"/>
+            <line number="167" hits="7" branch="false"/>
+            <line number="171" hits="7" branch="false"/>
+            <line number="186" hits="2" branch="false"/>
+            <line number="191" hits="6" branch="false"/>
+          </lines>
+        </class>
+        <class name="xcode.ts" filename="src/helpers/xcode.ts" line-rate="0.9722" branch-rate="0.875">
+          <methods>
+            <method name="generateXcodeCoverageFiles" hits="2" signature="()V">
+              <lines>
+                <line number="10" hits="2"/>
+              </lines>
+            </method>
+            <method name="(anonymous_2)" hits="1" signature="()V">
+              <lines>
+                <line number="19" hits="1"/>
+              </lines>
+            </method>
+            <method name="getFileList" hits="1" signature="()V">
+              <lines>
+                <line number="36" hits="1"/>
+              </lines>
+            </method>
+            <method name="(anonymous_4)" hits="1" signature="()V">
+              <lines>
+                <line number="38" hits="1"/>
+              </lines>
+            </method>
+            <method name="getCoverageInfo" hits="1" signature="()V">
+              <lines>
+                <line number="41" hits="1"/>
+              </lines>
+            </method>
+            <method name="convertCoverage" hits="1" signature="()V">
+              <lines>
+                <line number="45" hits="1"/>
+              </lines>
+            </method>
+            <method name="(anonymous_7)" hits="2" signature="()V">
+              <lines>
+                <line number="48" hits="2"/>
+              </lines>
+            </method>
+          </methods>
+          <lines>
+            <line number="1" hits="2" branch="false"/>
+            <line number="3" hits="2" branch="false"/>
+            <line number="8" hits="2" branch="false"/>
+            <line number="10" hits="2" branch="false"/>
+            <line number="11" hits="2" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="12" hits="1" branch="false"/>
+            <line number="14" hits="1" branch="false"/>
+            <line number="16" hits="1" branch="false"/>
+            <line number="17" hits="1" branch="false"/>
+            <line number="19" hits="1" branch="false"/>
+            <line number="20" hits="1" branch="false"/>
+            <line number="21" hits="1" branch="false"/>
+            <line number="22" hits="1" branch="false"/>
+            <line number="23" hits="1" branch="false"/>
+            <line number="26" hits="1" branch="false"/>
+            <line number="27" hits="1" branch="true" condition-coverage="100% (1/1)"/>
+            <line number="28" hits="1" branch="false"/>
+            <line number="30" hits="1" branch="false"/>
+            <line number="31" hits="1" branch="false"/>
+            <line number="32" hits="1" branch="false"/>
+            <line number="33" hits="1" branch="false"/>
+            <line number="37" hits="1" branch="false"/>
+            <line number="38" hits="1" branch="false"/>
+            <line number="42" hits="1" branch="false"/>
+            <line number="46" hits="1" branch="false"/>
+            <line number="47" hits="1" branch="false"/>
+            <line number="48" hits="1" branch="false"/>
+            <line number="49" hits="2" branch="false"/>
+            <line number="50" hits="2" branch="true" condition-coverage="100% (3/3)"/>
+            <line number="51" hits="2" branch="false"/>
+            <line number="52" hits="2" branch="true" condition-coverage="0% (0/1)"/>
+            <line number="53" hits="0" branch="false"/>
+            <line number="55" hits="2" branch="true" condition-coverage="100% (2/2)"/>
+            <line number="56" hits="1" branch="false"/>
+            <line number="58" hits="1" branch="false"/>
+            <line number="62" hits="1" branch="false"/>
+          </lines>
+        </class>
+      </classes>
+    </package>
+  </packages>
+</coverage>
+<<<<<< EOF
+# path=test/fixtures/codecov_demobox_2023-02-27_01-03-34.cobertura.xml
+<<<<<< EOF
+# path=test/fixtures/coverage.txt
+An example coverage root file
+<<<<<< EOF
+# path=test/fixtures/invalid_yaml/codecov.yaml
+codecov_token: faketoken
+<<<<<< EOF
+# path=test/fixtures/other/coverage.txt
+An example coverage other file
+<<<<<< EOF
+# path=test/fixtures/other/coverage.xml
+Boo!<<<<<< EOF
+# path=test/fixtures/other/fake.codecov.txt
+<<<<<< EOF
+# path=test/fixtures/yaml/.codecov.yaml
+<<<<<< EOF
+# path=test/fixtures/yaml/codecov.yaml
+codecov:
+  token: faketoken
+<<<<<< EOF
