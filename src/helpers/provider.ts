@@ -31,7 +31,7 @@ export async function detectProvider(
       logError(`Error detecting repos setting using git: ${error}`)
     } else {
       throw new Error(
-        `\nUnable to detect SHA and slug, please specify them manually.\nSee the help for more details. ${error}`,
+        '\nUnable to detect SHA and slug, please specify them manually.\nSee the help for more details.',
       )
     }
   }

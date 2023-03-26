@@ -82,6 +82,27 @@ describe('Local Params', () => {
     expect(params).toMatchObject(expected)
   })
 
+  it('returns errors on git command failures', async () => {
+    const inputs: UploaderInputs = {
+      args: { ...createEmptyArgs() },
+      environment: {},
+    }
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    await expect(providerLocal.getServiceParams(inputs)).rejects.toThrow()
+
+    td.when(spawnSync('git', ['rev-parse', '--abbrev-ref', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn(
+      {
+        stdout: 'main',
+      },
+    )
+    await expect(providerLocal.getServiceParams(inputs)).rejects.toThrow()
+
+    td.when(spawnSync('git', ['rev-parse', 'HEAD'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
+      stdout: 'testSHA',
+    })
+    await expect(providerLocal.getServiceParams(inputs)).rejects.toThrow()
+  })
+
   describe('getSlug()', () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
