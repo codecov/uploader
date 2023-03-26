@@ -123,7 +123,6 @@ export async function main(
   }
 
   info(generateHeader(getVersion()))
-  debugger
 
   let flags: string[]
   if (typeof args.flags === 'object') {
