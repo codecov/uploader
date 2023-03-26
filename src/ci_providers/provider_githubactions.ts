@@ -1,7 +1,7 @@
 /**
  * https://docs.github.com/en/actions/learn-github-actions/environment-variables
  */
-import { request } from 'undici'
+import Undici from 'undici'
 
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
@@ -19,7 +19,7 @@ function _getBuild(inputs: UploaderInputs): string {
 
 async function _getJobURL(inputs: UploaderInputs): Promise<string> {
   const url = `https://api.github.com/repos/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}/jobs`
-  const res = await request(url, {
+  const res = await Undici.request(url, {
     headers: {
       'User-Agent': 'Awesome-Octocat-App'
     }
