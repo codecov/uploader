@@ -21,10 +21,16 @@ function _getJobURL(inputs: UploaderInputs): string {
   request(
     `https://api.github.com/repos/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}/jobs`
   ).then((res) => {
+    info('res')
+    info(`${res}`)
+    info('statusCode')
+    info(`${res.statusCode}`)
     if (res.statusCode !== 200) {
       return ''
     }
     res.body.text().then((data) => {
+      info('data')
+      info(`${data}`)
       return data
     })
   })
@@ -35,6 +41,8 @@ function _getBuildURL(inputs: UploaderInputs): string {
   const { environment: envs } = inputs
 
   const jobURL = _getJobURL(inputs)
+  info('jobURL')
+  info(`${jobURL}`)
   if (jobURL !== '') {
     return jobURL
   }
