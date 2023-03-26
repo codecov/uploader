@@ -17,25 +17,26 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.GITHUB_RUN_ID || ''
 }
 
-async function _getJobId(inputs: UploaderInputs): Promise<string> {
-  const response = await request(
+function _getJobURL(inputs: UploaderInputs): string {
+  request(
     `https://api.github.com/repos/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}/jobs`
-  )
-  if (response.statusCode !== 200) {
-    return ''
-  }
-
-  const data = await response.body.text()
-  info(data)
+  ).then((res) => {
+    if (res.statusCode !== 200) {
+      return ''
+    }
+    res.body.text().then((data) => {
+      return data
+    })
+  })
   return ''
 }
 
-async function _getBuildURL(inputs: UploaderInputs): Promise<string> {
+function _getBuildURL(inputs: UploaderInputs): string {
   const { environment: envs } = inputs
 
-  const url = await _getJobId(inputs)
-  if (url !== '') {
-    return url
+  const jobURL = _getJobURL(inputs)
+  if (jobURL !== '') {
+    return jobURL
   }
 
   return (
@@ -43,6 +44,7 @@ async function _getBuildURL(inputs: UploaderInputs): Promise<string> {
       inputs,
     )}`
   )
+
 }
 
 function _getBranch(inputs: UploaderInputs): string {
