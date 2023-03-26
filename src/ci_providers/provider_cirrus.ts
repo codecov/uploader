@@ -49,7 +49,7 @@ function _getSlug(inputs: UploaderInputs): string {
   return setSlug(args.slug, envs.CIRRUS_REPO_OWNER, envs.CIRRUS_REPO_NAME)
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

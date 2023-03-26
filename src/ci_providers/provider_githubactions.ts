@@ -17,42 +17,39 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || envs.GITHUB_RUN_ID || ''
 }
 
-function _getJobURL(inputs: UploaderInputs): string {
-  request(
-    `https://api.github.com/repos/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}/jobs`
-  ).then((res) => {
-    info('res')
-    info(`${res}`)
-    info('statusCode')
-    info(`${res.statusCode}`)
-    if (res.statusCode !== 200) {
-      return ''
+async function _getJobURL(inputs: UploaderInputs): Promise<string> {
+  const url = `https://api.github.com/repos/${_getSlug(inputs)}/actions/runs/${_getBuild(inputs)}/jobs`
+  const res = await request(url, {
+    headers: {
+      'User-Agent': 'Awesome-Octocat-App'
     }
-    res.body.text().then((data) => {
-      info('data')
-      info(`${data}`)
-      return data
-    })
   })
+  if (res.statusCode !== 200) {
+    return ''
+  }
+
+  const data = await res.body.json()
+  const { environment: envs } = inputs
+  for (const job of data.jobs) {
+    if (job.name == envs.GITHUB_JOB) {
+      return job.html_url
+    }
+  }
   return ''
 }
 
-function _getBuildURL(inputs: UploaderInputs): string {
+async function _getBuildURL(inputs: UploaderInputs): Promise<string> {
   const { environment: envs } = inputs
 
-  const jobURL = _getJobURL(inputs)
-  info('jobURL')
-  info(`${jobURL}`)
-  if (jobURL !== '') {
-    return jobURL
+  const url = await _getJobURL(inputs)
+  if (url !== '') {
+    return url
   }
-
   return (
     `${envs.GITHUB_SERVER_URL}/${_getSlug(inputs)}/actions/runs/${_getBuild(
       inputs,
     )}`
   )
-
 }
 
 function _getBranch(inputs: UploaderInputs): string {
@@ -128,11 +125,11 @@ function _getSlug(inputs: UploaderInputs): string {
   return envs.GITHUB_REPOSITORY || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: await _getBuildURL(inputs),
     commit: _getSHA(inputs),
     job: _getJob(inputs.environment),
     pr: _getPR(inputs),

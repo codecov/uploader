@@ -348,7 +348,7 @@ export async function main(
 
   const hasToken = token !== ''
 
-  const serviceParams = detectProvider(inputs, hasToken)
+  const serviceParams = await detectProvider(inputs, hasToken)
 
   // #endregion
   // #region == Step 8: either upload or dry-run
