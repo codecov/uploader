@@ -38,14 +38,15 @@ describe('CI Providers', () => {
         environment: {},
       }
 
-      const serviceParams = provider.getServiceParams(inputs)
-      expect(serviceParams).not.toBeNull()
-
-      it('has a sha', () => {
+      it('has a sha', async () => {
+        const serviceParams = await provider.getServiceParams(inputs)
+        expect(serviceParams).not.toBeNull()
         expect(serviceParams.commit).toEqual(inputs.args.sha)
       })
 
-      it('has a slug', () => {
+      it('has a slug', async () => {
+        const serviceParams = await provider.getServiceParams(inputs)
+        expect(serviceParams).not.toBeNull()
         expect(serviceParams.slug).toEqual(inputs.args.slug)
       })
     })

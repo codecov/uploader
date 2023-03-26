@@ -46,7 +46,7 @@ describe('Bitrise Params', () => {
   })
 
   // This should test that the provider outputs proper default values
-  it('gets the correct params on no env variables', () => {
+  it('gets the correct params on no env variables', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -69,12 +69,12 @@ describe('Bitrise Params', () => {
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
 
-    const params = providerBitrise.getServiceParams(inputs)
+    const params = await providerBitrise.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
   // This should test that the provider outputs proper parameters when a push event is created
-  it('gets the correct params on push', () => {
+  it('gets the correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -100,11 +100,11 @@ describe('Bitrise Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
-    const params = providerBitrise.getServiceParams(inputs)
+    const params = await providerBitrise.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets the correct params on pr', () => {
+  it('gets the correct params on pr', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -131,12 +131,12 @@ describe('Bitrise Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
-    const params = providerBitrise.getServiceParams(inputs)
+    const params = await providerBitrise.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
   // This should test that the provider outputs proper parameters when given overrides
-  it('gets the correct params on overrides', () => {
+  it('gets the correct params on overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -172,7 +172,7 @@ describe('Bitrise Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
-    const params = providerBitrise.getServiceParams(inputs)
+    const params = await providerBitrise.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

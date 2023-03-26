@@ -39,7 +39,7 @@ describe('GitHub Actions Params', () => {
     })
   })
 
-  it('gets correct params for a push event', () => {
+  it('gets correct params for a push event', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -62,11 +62,11 @@ describe('GitHub Actions Params', () => {
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for a PR', () => {
+  it('gets correct params for a PR', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -97,11 +97,11 @@ describe('GitHub Actions Params', () => {
     ).thenReturn({
       stdout: 'testingsha',
     })
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for a merge', () => {
+  it('gets correct params for a merge', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -133,11 +133,11 @@ describe('GitHub Actions Params', () => {
       stdout:
         'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
     })
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -169,11 +169,11 @@ describe('GitHub Actions Params', () => {
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'testsha' })
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets an improper merge commit message', () => {
+  it('gets an improper merge commit message', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -202,7 +202,7 @@ describe('GitHub Actions Params', () => {
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

@@ -38,7 +38,7 @@ describe('<Ci> Params', () => {
   })
 
   // This should test that the provider outputs proper default values
-  it('gets the correct params on no env variables', () => {
+  it('gets the correct params on no env variables', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {},
@@ -54,13 +54,13 @@ describe('<Ci> Params', () => {
       slug: '',
     }
     /*
-    const params = provider<Ci>.getServiceParams(inputs)
+    const params = await provider<Ci>.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     */
   })
 
   // This should test that the provider outputs proper parameters when a push event is created
-  it('gets the correct params on push', () => {
+  it('gets the correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {},
@@ -76,13 +76,13 @@ describe('<Ci> Params', () => {
       slug: '',
     }
     /*
-    const params = provider<Ci>.getServiceParams(inputs)
+    const params = await provider<Ci>.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     */
   })
   //
   // This should test that the provider outputs proper parameters when a pull request event is created
-  it('gets the correct params on pr', () => {
+  it('gets the correct params on pr', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {},
@@ -98,13 +98,13 @@ describe('<Ci> Params', () => {
       slug: '',
     }
     /*
-    const params = provider<Ci>.getServiceParams(inputs)
+    const params = await provider<Ci>.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     */
   })
 
   // This should test that the provider outputs proper parameters when given overrides
-  it('gets the correct params on overrides', () => {
+  it('gets the correct params on overrides', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {},
@@ -120,7 +120,7 @@ describe('<Ci> Params', () => {
       slug: '',
     }
     /*
-    const params = provider<Ci>.getServiceParams(inputs)
+    const params = await provider<Ci>.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     */
   })

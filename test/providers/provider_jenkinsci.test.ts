@@ -37,7 +37,7 @@ describe('Jenkins CI Params', () => {
     })
   })
 
-  it('gets correct params on push', () => {
+  it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -63,11 +63,11 @@ describe('Jenkins CI Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
-    const params = providerJenkinsci.getServiceParams(inputs)
+    const params = await providerJenkinsci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('can get the slug from git config', () => {
+  it('can get the slug from git config', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -84,11 +84,11 @@ describe('Jenkins CI Params', () => {
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
 
-    const params = providerJenkinsci.getServiceParams(inputs)
+    const params = await providerJenkinsci.getServiceParams(inputs)
     expect(params.slug).toBe('testOrg/testRepo')
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -115,7 +115,7 @@ describe('Jenkins CI Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerJenkinsci.getServiceParams(inputs)
+    const params = await providerJenkinsci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })
