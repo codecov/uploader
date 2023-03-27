@@ -62,7 +62,7 @@ function _getJob(envs: UploaderEnvs): string {
   return envs.CIRCLE_NODE_INDEX || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

@@ -37,7 +37,7 @@ describe('Bitbucket Params', () => {
     })
   })
 
-  it('gets the correct params on no env variables', () => {
+  it('gets the correct params on no env variables', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
       environment: {
@@ -55,11 +55,11 @@ describe('Bitbucket Params', () => {
       service: 'bitbucket',
       slug: '',
     }
-    const params = providerBitbucket.getServiceParams(inputs)
+    const params = await providerBitbucket.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets the correct params on pr', () => {
+  it('gets the correct params on pr', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
       environment: {
@@ -81,11 +81,11 @@ describe('Bitbucket Params', () => {
       service: 'bitbucket',
       slug: 'testOwner/testSlug',
     }
-    const params = providerBitbucket.getServiceParams(inputs)
+    const params = await providerBitbucket.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets the correct params on push', () => {
+  it('gets the correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
       environment: {
@@ -106,11 +106,11 @@ describe('Bitbucket Params', () => {
       service: 'bitbucket',
       slug: 'testOwner/testSlug',
     }
-    const params = providerBitbucket.getServiceParams(inputs)
+    const params = await providerBitbucket.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets the correct params with short SHA', () => {
+  it('gets the correct params with short SHA', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
       environment: {
@@ -136,11 +136,11 @@ describe('Bitbucket Params', () => {
     td.when(execFileSync('git', ['rev-parse', 'testingsha12'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn(
       { stdout: 'newtestsha'},
     )
-    const params = providerBitbucket.getServiceParams(inputs)
+    const params = await providerBitbucket.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets the correct params on overrides', () => {
+  it('gets the correct params on overrides', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), ...{
         branch: 'feature',
@@ -169,7 +169,7 @@ describe('Bitbucket Params', () => {
       service: 'bitbucket',
       slug: 'overwriteOwner/overwriteRepo',
     }
-    const params = providerBitbucket.getServiceParams(inputs)
+    const params = await providerBitbucket.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

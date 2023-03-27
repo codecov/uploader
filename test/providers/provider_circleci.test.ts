@@ -32,7 +32,7 @@ describe('CircleCI Params', () => {
     })
   })
 
-  it('gets correct params', () => {
+  it('gets correct params', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
       environment: {
@@ -58,11 +58,11 @@ describe('CircleCI Params', () => {
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }
-    const params = providerCircleci.getServiceParams(inputs)
+    const params = await providerCircleci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct slug when empty reponame', () => {
+  it('gets correct slug when empty reponame', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
       environment: {
@@ -87,7 +87,7 @@ describe('CircleCI Params', () => {
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }
-    const params = providerCircleci.getServiceParams(inputs)
+    const params = await providerCircleci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })
