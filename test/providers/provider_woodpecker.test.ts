@@ -31,7 +31,7 @@ describe('Woodpecker Params', () => {
     })
   })
 
-  it('gets correct params', () => {
+  it('gets correct params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -54,11 +54,11 @@ describe('Woodpecker Params', () => {
       service: 'woodpecker',
       slug: 'testOrg/testRepo',
     }
-    const params = providerWoodpecker.getServiceParams(inputs)
+    const params = await providerWoodpecker.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
-  
-  it('gets correct params for pull request', () => {
+
+  it('gets correct params for pull request', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -83,7 +83,7 @@ describe('Woodpecker Params', () => {
       service: 'woodpecker',
       slug: 'testOrg/testRepo',
     }
-    const params = providerWoodpecker.getServiceParams(inputs)
+    const params = await providerWoodpecker.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

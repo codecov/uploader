@@ -2,10 +2,10 @@ import providers from '../ci_providers'
 import { info, logError, UploadLogger } from '../helpers/logger'
 import { IServiceParams, UploaderInputs } from '../types'
 
-export function detectProvider(
+export async function detectProvider(
   inputs: UploaderInputs,
   hasToken = false,
-): Partial<IServiceParams> {
+): Promise<Partial<IServiceParams>> {
   const { args } = inputs
   let serviceParams: Partial<IServiceParams> | undefined
 
@@ -23,7 +23,8 @@ export function detectProvider(
 
   //   loop though all providers
   try {
-    return { ...walkProviders(inputs), ...serviceParams }
+    const serviceParams = await walkProviders(inputs)
+    return { ...serviceParams, ...serviceParams }
   } catch (error) {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
     if (typeof serviceParams !== 'undefined') {
@@ -37,7 +38,7 @@ export function detectProvider(
   return serviceParams
 }
 
-export function walkProviders(inputs: UploaderInputs): IServiceParams {
+export async function walkProviders(inputs: UploaderInputs): Promise<IServiceParams> {
   for (const provider of providers) {
     if (provider.detect(inputs.environment)) {
       info(`Detected ${provider.getServiceName()} as the CI provider.`)
@@ -45,7 +46,7 @@ export function walkProviders(inputs: UploaderInputs): IServiceParams {
       for (const envVarName of provider.getEnvVarNames()) {
         UploadLogger.verbose(`     ${envVarName}: ${inputs.environment[envVarName]}`)
       }
-      return provider.getServiceParams(inputs)
+      return await provider.getServiceParams(inputs)
     }
   }
   throw new Error(`Unable to detect provider.`)

@@ -34,7 +34,7 @@ describe('TeamCity Params', () => {
     })
   })
 
-  it('gets correct params', () => {
+  it('gets correct params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -59,11 +59,11 @@ describe('TeamCity Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
-    const params = providerTeamCity.getServiceParams(inputs)
+    const params = await providerTeamCity.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params and remote slug', () => {
+  it('gets correct params and remote slug', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -88,11 +88,11 @@ describe('TeamCity Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
-    const params = providerTeamCity.getServiceParams(inputs)
+    const params = await providerTeamCity.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -127,7 +127,7 @@ describe('TeamCity Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerTeamCity.getServiceParams(inputs)
+    const params = await providerTeamCity.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

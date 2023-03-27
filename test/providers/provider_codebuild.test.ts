@@ -33,7 +33,7 @@ describe('CodeBuild Params', () => {
   })
 
   describe('getServiceParams()', () => {
-    it('gets correct params', () => {
+    it('gets correct params', async () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
         environment: {
@@ -56,11 +56,11 @@ describe('CodeBuild Params', () => {
         service: 'codebuild',
         slug: 'repo',
       }
-      const params = providerCodeBuild.getServiceParams(inputs)
+      const params = await providerCodeBuild.getServiceParams(inputs)
       expect(params).toMatchObject(expected)
     })
 
-    it('gets correct params for overrides', () => {
+    it('gets correct params for overrides', async () => {
       const inputs: UploaderInputs = {
         args: {
           ...createEmptyArgs(),
@@ -93,7 +93,7 @@ describe('CodeBuild Params', () => {
         slug: 'testOrg/testRepo',
       }
 
-      const params = providerCodeBuild.getServiceParams(inputs)
+      const params = await providerCodeBuild.getServiceParams(inputs)
       expect(params).toMatchObject(expected)
     })
   })

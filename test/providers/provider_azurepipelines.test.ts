@@ -33,7 +33,7 @@ describe('Azure Pipelines CI Params', () => {
     })
   })
 
-  it('gets empty string if environment variable is undefined', () => {
+  it('gets empty string if environment variable is undefined', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -57,11 +57,11 @@ describe('Azure Pipelines CI Params', () => {
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
 
-    const params = providerAzurepipelines.getServiceParams(inputs)
+    const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params on pr number', () => {
+  it('gets correct params on pr number', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -94,11 +94,11 @@ describe('Azure Pipelines CI Params', () => {
     ).thenReturn(
       'nonmergesha23456789012345678901234567890',
     )
-    const params = providerAzurepipelines.getServiceParams(inputs)
+    const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params on pr id', () => {
+  it('gets correct params on pr id', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -131,11 +131,11 @@ describe('Azure Pipelines CI Params', () => {
     ).thenReturn(
       'nonmergesha23456789012345678901234567890',
     )
-    const params = providerAzurepipelines.getServiceParams(inputs)
+    const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct slug by remote address', () => {
+  it('gets correct slug by remote address', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -165,11 +165,11 @@ describe('Azure Pipelines CI Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
-    const params = providerAzurepipelines.getServiceParams(inputs)
+    const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params on merge', () => {
+  it('gets correct params on merge', async() => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -202,11 +202,11 @@ describe('Azure Pipelines CI Params', () => {
     ).thenReturn(
       'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
     )
-    const params = providerAzurepipelines.getServiceParams(inputs)
+    const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -236,7 +236,7 @@ describe('Azure Pipelines CI Params', () => {
       slug: 'testOrg/otherTestRepo',
     }
 
-    const params = providerAzurepipelines.getServiceParams(inputs)
+    const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })
