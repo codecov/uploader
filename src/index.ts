@@ -28,8 +28,7 @@ import { generateGcovCoverageFiles } from './helpers/gcov'
 import { generateSwiftCoverageFiles } from './helpers/swift'
 import { generateXcodeCoverageFiles } from './helpers/xcode'
 import { argAsArray } from './helpers/util'
-import { checkSlug } from './helpers/checkSlug'
-import { validateFlags } from './helpers/validate'
+import { checkSlug, validateFlags } from './helpers/validate'
 
 /**
  *
