@@ -26,7 +26,7 @@
         "@types/js-yaml": "4.0.5",
         "@types/micromatch": "4.0.2",
         "@types/mock-fs": "4.13.1",
-        "@types/node": "18.15.5",
+        "@types/node": "18.15.7",
         "@types/validator": "13.7.14",
         "@types/yargs": "17.0.23",
         "@typescript-eslint/eslint-plugin": "5.56.0",
@@ -39,7 +39,7 @@
         "lint-staged": "13.2.0",
         "mock-fs": "5.2.0",
         "pkg": "5.6.0",
-        "prettier": "2.8.6",
+        "prettier": "2.8.7",
         "standard-version": "9.5.0",
         "testdouble": "3.16.6",
         "testdouble-jest": "2.0.0",
@@ -1609,9 +1609,9 @@
       }
     },
     "node_modules/@types/node": {
-      "version": "18.15.5",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.15.5.tgz",
-      "integrity": "sha512-Ark2WDjjZO7GmvsyFFf81MXuGTA/d6oP38anyxWOL6EREyBKAxKoFHwBhaZxCfLRLpO8JgVXwqOwSwa7jRcjew==",
+      "version": "18.15.7",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.15.7.tgz",
+      "integrity": "sha512-LFmUbFunqmBn26wJZgZPYZPrDR1RwGOu2v79Mgcka1ndO6V0/cwjivPTc4yoK6n9kmw4/ls1r8cLrvh2iMibFA==",
       "dev": true
     },
     "node_modules/@types/normalize-package-data": {
@@ -7250,9 +7250,9 @@
       }
     },
     "node_modules/prettier": {
-      "version": "2.8.6",
-      "resolved": "https://registry.npmjs.org/prettier/-/prettier-2.8.6.tgz",
-      "integrity": "sha512-mtuzdiBbHwPEgl7NxWlqOkithPyp4VN93V7VeHVWBF+ad3I5avc0RVDT4oImXQy9H/AqxA2NSQH8pSxHW6FYbQ==",
+      "version": "2.8.7",
+      "resolved": "https://registry.npmjs.org/prettier/-/prettier-2.8.7.tgz",
+      "integrity": "sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==",
       "dev": true,
       "bin": {
         "prettier": "bin-prettier.js"
@@ -10464,9 +10464,9 @@
       }
     },
     "@types/node": {
-      "version": "18.15.5",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.15.5.tgz",
-      "integrity": "sha512-Ark2WDjjZO7GmvsyFFf81MXuGTA/d6oP38anyxWOL6EREyBKAxKoFHwBhaZxCfLRLpO8JgVXwqOwSwa7jRcjew==",
+      "version": "18.15.7",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.15.7.tgz",
+      "integrity": "sha512-LFmUbFunqmBn26wJZgZPYZPrDR1RwGOu2v79Mgcka1ndO6V0/cwjivPTc4yoK6n9kmw4/ls1r8cLrvh2iMibFA==",
       "dev": true
     },
     "@types/normalize-package-data": {
@@ -14709,9 +14709,9 @@
       "dev": true
     },
     "prettier": {
-      "version": "2.8.6",
-      "resolved": "https://registry.npmjs.org/prettier/-/prettier-2.8.6.tgz",
-      "integrity": "sha512-mtuzdiBbHwPEgl7NxWlqOkithPyp4VN93V7VeHVWBF+ad3I5avc0RVDT4oImXQy9H/AqxA2NSQH8pSxHW6FYbQ==",
+      "version": "2.8.7",
+      "resolved": "https://registry.npmjs.org/prettier/-/prettier-2.8.7.tgz",
+      "integrity": "sha512-yPngTo3aXUUmyuTjeTUT75txrf+aMh9FiD7q9ZE/i6r0bPb22g4FsE6Y338PQX1bmfy08i9QQCB7/rcUAVntfw==",
       "dev": true
     },
     "pretty-format": {

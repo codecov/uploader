@@ -32,7 +32,7 @@ describe('Drone Params', () => {
     })
   })
 
-  it('gets correct params', () => {
+  it('gets correct params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -56,11 +56,11 @@ describe('Drone Params', () => {
       service: 'drone.io',
       slug: 'testOrg/testRepo',
     }
-    const params = providerDrone.getServiceParams(inputs)
+    const params = await providerDrone.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
-  
-  it('gets correct params for DRONE_BUILD_URL', () => {
+
+  it('gets correct params for DRONE_BUILD_URL', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -84,7 +84,7 @@ describe('Drone Params', () => {
       service: 'drone.io',
       slug: 'testOrg/testRepo',
     }
-    const params = providerDrone.getServiceParams(inputs)
+    const params = await providerDrone.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

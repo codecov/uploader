@@ -49,7 +49,7 @@ describe('AppveyorCI Params', () => {
     })
   })
 
-  it('gets correct params on push', () => {
+  it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -76,11 +76,11 @@ describe('AppveyorCI Params', () => {
       service: 'appveyor',
       slug: 'testOrg/testRepo',
     }
-    const params = providerAppveyorci.getServiceParams(inputs)
+    const params = await providerAppveyorci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for PRs', () => {
+  it('gets correct params for PRs', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -109,11 +109,11 @@ describe('AppveyorCI Params', () => {
       service: 'appveyor',
       slug: 'testOrg/testRepo',
     }
-    const params = providerAppveyorci.getServiceParams(inputs)
+    const params = await providerAppveyorci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -141,7 +141,7 @@ describe('AppveyorCI Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerAppveyorci.getServiceParams(inputs)
+    const params = await providerAppveyorci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

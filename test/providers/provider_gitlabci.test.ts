@@ -1,7 +1,7 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 
-import * as providerGitLabci from '../../src/ci_providers//provider_gitlabci'
+import * as providerGitLabci from '../../src/ci_providers/provider_gitlabci'
 import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
@@ -33,7 +33,7 @@ describe('GitLabCI Params', () => {
     })
   })
 
-  it('gets correct empty params', () => {
+  it('gets correct empty params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -54,11 +54,11 @@ describe('GitLabCI Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
-    const params = providerGitLabci.getServiceParams(inputs)
+    const params = await providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct initial params', () => {
+  it('gets correct initial params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -82,11 +82,11 @@ describe('GitLabCI Params', () => {
       service: 'gitlab',
       slug: 'testOrg/testRepo',
     }
-    const params = providerGitLabci.getServiceParams(inputs)
+    const params = await providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct second params', () => {
+  it('gets correct second params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -107,7 +107,7 @@ describe('GitLabCI Params', () => {
       service: 'gitlab',
       slug: 'testOrg/testRepo',
     }
-    const params = providerGitLabci.getServiceParams(inputs)
+    const params = await providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
@@ -119,54 +119,54 @@ describe('GitLabCI Params', () => {
       },
     }
 
-    it('can get the slug from http', () => {
+    it('can get the slug from http', async () => {
       inputs.environment.CI_BUILD_REPO =
         'https://gitlab.com/testOrg/testRepo.git'
-      const params = providerGitLabci.getServiceParams(inputs)
+      const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
-    it('can get the slug from git url', () => {
+    it('can get the slug from git url', async () => {
       inputs.environment.CI_BUILD_REPO = 'git@gitlab.com:testOrg/testRepo.git'
-      const params = providerGitLabci.getServiceParams(inputs)
+      const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
-    it('can get the slug from git config', () => {
+    it('can get the slug from git config', async () => {
       inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({ stdout: 'https://gitlab.com/testOrg/testRepo.git' })
 
-      const params = providerGitLabci.getServiceParams(inputs)
+      const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
-    it('can get the slug from git config as /', () => {
+    it('can get the slug from git config as /', async () => {
       inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({ stdout: 'git@gitlab.com:/' })
 
-      const params = providerGitLabci.getServiceParams(inputs)
+      const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')
     })
 
-    it('can handle no remote origin url', () => {
+    it('can handle no remote origin url', async () => {
       inputs.environment.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
       ).thenReturn({ stdout: '' })
 
-      const params = providerGitLabci.getServiceParams(inputs)
+      const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')
     })
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -193,7 +193,7 @@ describe('GitLabCI Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerGitLabci.getServiceParams(inputs)
+    const params = await providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

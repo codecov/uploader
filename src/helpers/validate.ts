@@ -46,3 +46,10 @@ export function validateSHA(
     commitSHA.length === requestedLength && validator.isAlphanumeric(commitSHA)
   )
 }
+
+export function checkSlug(slug: string): boolean {
+  if (slug !== '' && !slug.match(/\//)) {
+    return false
+  }
+  return true
+}

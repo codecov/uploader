@@ -1,9 +1,4 @@
 import * as validate from '../../src/helpers/validate'
-import { DEFAULT_UPLOAD_HOST } from '../../src/helpers/constansts'
-import Module from 'module'
-
-// Backup the env
-const realEnv = { ...process.env }
 
 describe('Input Validators', () => {
   describe('Tokens', () => {
@@ -75,5 +70,31 @@ describe('Input Validators', () => {
         validate.validateSHA('1732d84b7ef2425e979d6034a3e3bb5633da344a'),
       ).toBe(true)
     })
+  })
+
+  describe('checkSlug()', () => {
+      it('should return true for a slug with a forward slash', () => {
+          // arrange
+          const inputSlug = "testOrg/testRepo"
+          const expectedResult = true
+
+          // act
+          const result = validate.checkSlug(inputSlug)
+
+          // assert
+          expect(result).toEqual(expectedResult)
+      })
+
+      it('should return false for a slug without a forward slash', () => {
+          // arrange
+          const inputSlug = 'testRepo'
+          const expectedResult = false
+
+          // act
+          const result = validate.checkSlug(inputSlug)
+
+          // assert
+          expect(result).toEqual(expectedResult)
+      })
   })
 })

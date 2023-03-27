@@ -55,7 +55,7 @@ function _getSlug(inputs: UploaderInputs): string {
   return envs.BITBUCKET_REPO_FULL_NAME || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
