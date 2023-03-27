@@ -11,6 +11,7 @@ export interface UploaderArgs {
   feature?: string // Toggle features
   file?: string | string[] // Target file(s) to upload
   flags: string | string[] // Flag the upload to group coverage metrics
+  fullReport?: string // Specify the path to a previously uploaded Codecov report
   gcov?: string // Run with gcov support
   gcovArgs?:  string | string[] // Extra arguments to pass to gcov
   gcovIgnore?:  string | string[] // Paths to ignore during gcov gathering

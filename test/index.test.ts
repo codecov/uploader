@@ -555,4 +555,35 @@ describe('Uploader Core', () => {
       expect.stringMatching(/# path=fixes\ntest\/fixtures\/fixes\/example.go:2,4,5,7,8,9,10,11,13,14,15,16,17,19,20,21,23,24,25,27,28,29,32,34\ntest\/fixtures\/fixes\/example.php:4,6,11,15,19,20\ntest\/fixtures\/gcov\/main.c:2,4,11,12,13,14,16,20\n<<<<<< EOF/)
     )
   })
+
+  it('Can create upload the full report', async () => {
+    await app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: 'true',
+      feature: 'fixes',
+      flags: '',
+      slug: '',
+      upstream: '',
+      fullReport: 'test/fixtures/coverage.txt'
+    })
+    expect(console.log).not.toHaveBeenCalledWith(
+      expect.stringMatching(/Searching for coverage files.../)
+    )
+  })
+
+  it('Can error if full report is not a real file', async () => {
+    await expect(app.main({
+      name: 'customname',
+      token: 'abcdefg',
+      url: 'https://codecov.io',
+      dryRun: 'true',
+      feature: 'fixes',
+      flags: '',
+      slug: '',
+      upstream: '',
+      fullReport: 'test/fixtures/fakefile.txt'
+    })).rejects.toThrowError(/Error uploading to Codecov: Path to test\/fixtures\/fakefile.txt does not exist and no coverage report could be upload/)
+  })
 })

@@ -58,6 +58,12 @@ const args: ICLIArgument[] = [
     description: 'Target file(s) to upload',
   },
   {
+    alias: 'full',
+    name: 'fullReport',
+    type: 'string',
+    description: 'Specify the path to a previously uploaded Codecov report'
+  },
+  {
     alias: 'F',
     name: 'flags',
     type: 'string',
