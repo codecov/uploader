@@ -32,7 +32,7 @@ describe('Cirrus Params', () => {
     })
   })
 
-  it('gets correct params', () => {
+  it('gets correct params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -56,11 +56,11 @@ describe('Cirrus Params', () => {
       service: 'cirrus-ci',
       slug: 'testOrg/testRepo',
     }
-    const params = providerCirrus.getServiceParams(inputs)
+    const params = await providerCirrus.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -94,7 +94,7 @@ describe('Cirrus Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerCirrus.getServiceParams(inputs)
+    const params = await providerCirrus.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

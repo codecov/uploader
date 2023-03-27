@@ -4,7 +4,7 @@ import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
-const providerHerokuci = require('../../src/ci_providers//provider_herokuci')
+import * as providerHerokuci from '../../src/ci_providers/provider_herokuci'
 
 describe('HerokuCI Params', () => {
   afterEach(() => {
@@ -35,7 +35,7 @@ describe('HerokuCI Params', () => {
   })
 
   // This should test that the provider outputs proper default values
-  it('gets the correct params on no env variables', () => {
+  it('gets the correct params on no env variables', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {},
@@ -54,12 +54,12 @@ describe('HerokuCI Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
-    const params = providerHerokuci.getServiceParams(inputs)
+    const params = await providerHerokuci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
   // This should test that the provider outputs proper parameters when a push event is created
-  it('gets the correct params on push', () => {
+  it('gets the correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { tag: '', url: '', source: '', flags: '', slug: '', upstream: '' },
       environment: {
@@ -83,12 +83,12 @@ describe('HerokuCI Params', () => {
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
-    const params = providerHerokuci.getServiceParams(inputs)
+    const params = await providerHerokuci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
   // This should test that the provider outputs proper parameters when given overrides
-  it('gets the correct params on overrides', () => {
+  it('gets the correct params on overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -112,7 +112,7 @@ describe('HerokuCI Params', () => {
       service: 'heroku',
       slug: 'testOrg/testRepo',
     }
-    const params = providerHerokuci.getServiceParams(inputs)
+    const params = await providerHerokuci.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     expect(params).toMatchObject(expected)
   })

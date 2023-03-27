@@ -44,7 +44,7 @@ describe('TravisCI Params', () => {
     })
   })
 
-  it('gets correct params on push', () => {
+  it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -69,11 +69,11 @@ describe('TravisCI Params', () => {
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
-    const params = providerTravisci.getServiceParams(inputs)
+    const params = await providerTravisci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params on PR', () => {
+  it('gets correct params on PR', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -100,11 +100,11 @@ describe('TravisCI Params', () => {
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
-    const params = providerTravisci.getServiceParams(inputs)
+    const params = await providerTravisci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params on PR with no pull request branch', () => {
+  it('gets correct params on PR with no pull request branch', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -130,11 +130,11 @@ describe('TravisCI Params', () => {
       service: 'travis',
       slug: 'testOrg/testRepo',
     }
-    const params = providerTravisci.getServiceParams(inputs)
+    const params = await providerTravisci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -162,7 +162,7 @@ describe('TravisCI Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerTravisci.getServiceParams(inputs)
+    const params = await providerTravisci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

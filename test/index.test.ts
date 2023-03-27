@@ -79,7 +79,7 @@ describe('Uploader Core', () => {
       url: 'https://codecov.io',
     }
     const inputs = { args, environment: process.env }
-    const serviceParams = providerHelpers.detectProvider(inputs, args.token != '')
+    const serviceParams = await providerHelpers.detectProvider(inputs, args.token != '')
     const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
     const query = webHelpers.generateQuery(buildParams)
 
@@ -197,7 +197,7 @@ describe('Uploader Core', () => {
         upstream: ''
       }
       const inputs = { args, environment: process.env }
-      const serviceParams = providerHelpers.detectProvider(inputs, args.token != '')
+      const serviceParams = await providerHelpers.detectProvider(inputs, args.token != '')
       const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
       const query = webHelpers.generateQuery(buildParams)
 
@@ -234,7 +234,7 @@ describe('Uploader Core', () => {
       upstream: ''
     }
     const inputs = { args, environment: process.env }
-    const serviceParams = providerHelpers.detectProvider(inputs, args.token != '')
+    const serviceParams = await providerHelpers.detectProvider(inputs, args.token != '')
     const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
     const query = webHelpers.generateQuery(buildParams)
 

@@ -131,7 +131,7 @@ function _getSlug(inputs: UploaderInputs): string {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {{ branch: string, build: string, buildURL: string, commit: string, job: string, pr: string, service: string, slug: string }}
  */
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

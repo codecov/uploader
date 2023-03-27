@@ -10,7 +10,7 @@ describe('detectProvider()', () => {
     jest.clearAllMocks()
   })
 
-  it('can detect a manual override', () => {
+  it('can detect a manual override', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), ...{
         sha: '1234566',
@@ -22,10 +22,10 @@ describe('detectProvider()', () => {
       commit: '1234566',
       slug: 'fakeOrg/fakeRepo',
     }
-    expect(detectProvider(inputs)).toMatchObject(expectedOutput)
+    expect(await detectProvider(inputs)).toMatchObject(expectedOutput)
   })
-  
-  it('can detect a manual override with token', () => {
+
+  it('can detect a manual override with token', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), ...{
         sha: '1234566',
@@ -35,10 +35,10 @@ describe('detectProvider()', () => {
     const expectedOutput: Partial<IServiceParams> = {
       commit: '1234566',
     }
-    expect(detectProvider(inputs, true)).toMatchObject(expectedOutput)
+    expect(await detectProvider(inputs, true)).toMatchObject(expectedOutput)
   })
 
-  it('will throw if unable to detect', () => {
+  it('will throw if unable to detect', async () => {
     jest.spyOn(console, 'error').mockImplementation(() => void {})
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(spawnSync('git')).thenReturn({
@@ -48,7 +48,7 @@ describe('detectProvider()', () => {
       args: {...createEmptyArgs()},
       environment: {},
     }
-    expect(()  => detectProvider(inputs)).toThrowError(/Unable to detect SHA and slug, please specify them manually/)
+    await expect(detectProvider(inputs)).rejects.toThrowError(/Unable to detect SHA and slug, please specify them manually/)
   })
 })
 
@@ -57,7 +57,7 @@ describe('walkProviders()', () => {
     td.reset()
   })
 
-  it('will throw if unable to detect', () => {
+  it('will throw if unable to detect', async () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(spawnSync('git')).thenReturn({
       error: 'Git is not installed!',
@@ -66,11 +66,10 @@ describe('walkProviders()', () => {
       args: {...createEmptyArgs()},
       environment: {},
     }
-    expect(()  => walkProviders(inputs)).toThrowError(/Unable to detect provider./)
-
+    await expect(walkProviders(inputs)).rejects.toThrow(/Unable to detect provider./)
   })
 
-  it('will return serviceParams if able to detect', () => {
+  it('will return serviceParams if able to detect', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs()},
       environment: {
@@ -88,7 +87,7 @@ describe('walkProviders()', () => {
       service: 'circleci',
       slug: '',
     }
-    expect(walkProviders(inputs)).toEqual(expectedOutput)
+    expect(await walkProviders(inputs)).toEqual(expectedOutput)
   })
 })
 
@@ -102,7 +101,7 @@ describe('setSlug()', () => {
   it('will return the args.slug if either orgEnv or repoEnv are not valid', () => {
     expect(setSlug('baz', undefined, undefined)).toEqual('baz')
     expect(setSlug('baz', 'foo', undefined)).toEqual('baz')
-    expect(setSlug('baz', undefined, 'bar')).toEqual('baz')  
+    expect(setSlug('baz', undefined, 'bar')).toEqual('baz')
   })
 
   it('will return the args.slug if set and both orgEnv and repoEnv are valid', () => {
@@ -113,5 +112,3 @@ describe('setSlug()', () => {
     expect(setSlug('', 'foo', 'bar')).toEqual('foo/bar')
   })
 })
-
-

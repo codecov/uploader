@@ -67,7 +67,7 @@ function _getSlug(inputs: UploaderInputs) {
   return envs.APPVEYOR_REPO_NAME || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),

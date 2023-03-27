@@ -30,7 +30,7 @@ describe('Buildkite Params', () => {
     })
   })
 
-  it('gets correct params on push', () => {
+  it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -55,11 +55,11 @@ describe('Buildkite Params', () => {
       service: 'buildkite',
       slug: 'testOrg/testRepo',
     }
-    const params = providerBuildkite.getServiceParams(inputs)
+    const params = await providerBuildkite.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -87,7 +87,7 @@ describe('Buildkite Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerBuildkite.getServiceParams(inputs)
+    const params = await providerBuildkite.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

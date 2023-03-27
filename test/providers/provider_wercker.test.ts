@@ -32,7 +32,7 @@ describe('Wercker CI Params', () => {
     })
   })
 
-  it('gets correct params on push', () => {
+  it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       environment: {
@@ -55,11 +55,11 @@ describe('Wercker CI Params', () => {
       service: 'wercker',
       slug: 'testOrg/testRepo',
     }
-    const params = providerWercker.getServiceParams(inputs)
+    const params = await providerWercker.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
         ...createEmptyArgs(),
@@ -92,7 +92,7 @@ describe('Wercker CI Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerWercker.getServiceParams(inputs)
+    const params = await providerWercker.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })
