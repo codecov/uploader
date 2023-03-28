@@ -2,7 +2,7 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 import { generateGcovCoverageFiles } from '../../src/helpers/gcov'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 
 describe('generateGcovCoverageFiles()', () => {
     afterEach(() => {

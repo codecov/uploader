@@ -1,8 +1,8 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 
-import * as providerJenkinsci from '../../src/ci_providers//provider_jenkinsci'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
+import * as providerJenkinsci from '../../src/ci_providers/provider_jenkinsci'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 

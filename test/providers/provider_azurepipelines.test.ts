@@ -2,7 +2,7 @@ import td from 'testdouble'
 import childProcess from 'child_process'
 
 import * as providerAzurepipelines from '../../src/ci_providers//provider_azurepipelines'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 

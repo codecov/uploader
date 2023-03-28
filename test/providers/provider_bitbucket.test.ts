@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import td from 'testdouble'
-import * as providerBitbucket from '../../src/ci_providers//provider_bitbucket'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
+import * as providerBitbucket from '../../src/ci_providers/provider_bitbucket'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
