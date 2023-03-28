@@ -41,7 +41,7 @@
         "pkg": "5.6.0",
         "prettier": "2.8.7",
         "standard-version": "9.5.0",
-        "testdouble": "3.16.6",
+        "testdouble": "3.17.1",
         "testdouble-jest": "2.0.0",
         "ts-jest": "27.1.5",
         "typescript": "4.9.5"
@@ -4708,9 +4708,9 @@
       "dev": true
     },
     "node_modules/is-core-module": {
-      "version": "2.8.1",
-      "resolved": "https://registry.npmjs.org/is-core-module/-/is-core-module-2.8.1.tgz",
-      "integrity": "sha512-SdNCUs284hr40hFTFP6l0IfZ/RSrMXF3qgoRHd3/79unUTvrFO/JoXwkGm+5J/Oe3E/b5GsnG330uUNgRpu1PA==",
+      "version": "2.11.0",
+      "resolved": "https://registry.npmjs.org/is-core-module/-/is-core-module-2.11.0.tgz",
+      "integrity": "sha512-RRjxlvLDkD1YJwDbroBHMb+cukurkDWNyHx7D3oNB5x9rb5ogcksMC5wHCadcXoo67gVr/+3GFySh3134zi6rw==",
       "dev": true,
       "dependencies": {
         "has": "^1.0.3"
@@ -7373,17 +7373,16 @@
       ]
     },
     "node_modules/quibble": {
-      "version": "0.6.8",
-      "resolved": "https://registry.npmjs.org/quibble/-/quibble-0.6.8.tgz",
-      "integrity": "sha512-HQ89ZADQ4uZjyePn1yACZADE3OUQ16Py5gkVxcoPvV6IRiItAgGMBkeQ5f1rOnnnsVKccMdhic0xABd7+cY/jA==",
+      "version": "0.6.17",
+      "resolved": "https://registry.npmjs.org/quibble/-/quibble-0.6.17.tgz",
+      "integrity": "sha512-uybGnGrx1hAhBCmzmVny+ycKaS5F71+q+iWVzbf8x/HyeEMDGeiQFVjWl1zhi4rwfTHa05+/NIExC4L5YRNPjQ==",
       "dev": true,
       "dependencies": {
         "lodash": "^4.17.21",
-        "resolve": "^1.20.0"
+        "resolve": "^1.22.1"
       },
       "engines": {
-        "iojs": ">= 1.0.0",
-        "node": ">= 0.12.0"
+        "node": ">= 0.14.0"
       }
     },
     "node_modules/quick-lru": {
@@ -7600,12 +7599,12 @@
       }
     },
     "node_modules/resolve": {
-      "version": "1.22.0",
-      "resolved": "https://registry.npmjs.org/resolve/-/resolve-1.22.0.tgz",
-      "integrity": "sha512-Hhtrw0nLeSrFQ7phPp4OOcVjLPIeMnRlr5mcnVuMe7M/7eBn98A3hmFRLoFo3DLZkivSYwhRUJTyPyWAk56WLw==",
+      "version": "1.22.1",
+      "resolved": "https://registry.npmjs.org/resolve/-/resolve-1.22.1.tgz",
+      "integrity": "sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==",
       "dev": true,
       "dependencies": {
-        "is-core-module": "^2.8.1",
+        "is-core-module": "^2.9.0",
         "path-parse": "^1.0.7",
         "supports-preserve-symlinks-flag": "^1.0.0"
       },
@@ -8426,18 +8425,18 @@
       }
     },
     "node_modules/testdouble": {
-      "version": "3.16.6",
-      "resolved": "https://registry.npmjs.org/testdouble/-/testdouble-3.16.6.tgz",
-      "integrity": "sha512-mijMgc9y7buK9IG9zSVhzlXsFMqWbLQHRei4SLX7F7K4Qtrcnglg6lIMTCmNs6RwDUyLGWtpIe+TzkugYHB+qA==",
+      "version": "3.17.1",
+      "resolved": "https://registry.npmjs.org/testdouble/-/testdouble-3.17.1.tgz",
+      "integrity": "sha512-6u3v0rKHf3oJHSD7UuxFkXXcvV3QWguYdfU9QKaRjLF/wRa9Hxg0fmRzdbMhPX2fYs4xVnw4l1h2GsKJiwFRlw==",
       "dev": true,
       "dependencies": {
-        "lodash": "^4.17.15",
-        "quibble": "^0.6.7",
+        "lodash": "^4.17.21",
+        "quibble": "^0.6.17",
         "stringify-object-es5": "^2.5.0",
         "theredoc": "^1.0.0"
       },
       "engines": {
-        "node": ">= 4.0.0"
+        "node": ">= 14"
       }
     },
     "node_modules/testdouble-jest": {
@@ -12778,9 +12777,9 @@
       "dev": true
     },
     "is-core-module": {
-      "version": "2.8.1",
-      "resolved": "https://registry.npmjs.org/is-core-module/-/is-core-module-2.8.1.tgz",
-      "integrity": "sha512-SdNCUs284hr40hFTFP6l0IfZ/RSrMXF3qgoRHd3/79unUTvrFO/JoXwkGm+5J/Oe3E/b5GsnG330uUNgRpu1PA==",
+      "version": "2.11.0",
+      "resolved": "https://registry.npmjs.org/is-core-module/-/is-core-module-2.11.0.tgz",
+      "integrity": "sha512-RRjxlvLDkD1YJwDbroBHMb+cukurkDWNyHx7D3oNB5x9rb5ogcksMC5wHCadcXoo67gVr/+3GFySh3134zi6rw==",
       "dev": true,
       "requires": {
         "has": "^1.0.3"
@@ -14789,13 +14788,13 @@
       "integrity": "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="
     },
     "quibble": {
-      "version": "0.6.8",
-      "resolved": "https://registry.npmjs.org/quibble/-/quibble-0.6.8.tgz",
-      "integrity": "sha512-HQ89ZADQ4uZjyePn1yACZADE3OUQ16Py5gkVxcoPvV6IRiItAgGMBkeQ5f1rOnnnsVKccMdhic0xABd7+cY/jA==",
+      "version": "0.6.17",
+      "resolved": "https://registry.npmjs.org/quibble/-/quibble-0.6.17.tgz",
+      "integrity": "sha512-uybGnGrx1hAhBCmzmVny+ycKaS5F71+q+iWVzbf8x/HyeEMDGeiQFVjWl1zhi4rwfTHa05+/NIExC4L5YRNPjQ==",
       "dev": true,
       "requires": {
         "lodash": "^4.17.21",
-        "resolve": "^1.20.0"
+        "resolve": "^1.22.1"
       }
     },
     "quick-lru": {
@@ -14967,12 +14966,12 @@
       "dev": true
     },
     "resolve": {
-      "version": "1.22.0",
-      "resolved": "https://registry.npmjs.org/resolve/-/resolve-1.22.0.tgz",
-      "integrity": "sha512-Hhtrw0nLeSrFQ7phPp4OOcVjLPIeMnRlr5mcnVuMe7M/7eBn98A3hmFRLoFo3DLZkivSYwhRUJTyPyWAk56WLw==",
+      "version": "1.22.1",
+      "resolved": "https://registry.npmjs.org/resolve/-/resolve-1.22.1.tgz",
+      "integrity": "sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==",
       "dev": true,
       "requires": {
-        "is-core-module": "^2.8.1",
+        "is-core-module": "^2.9.0",
         "path-parse": "^1.0.7",
         "supports-preserve-symlinks-flag": "^1.0.0"
       }
@@ -15596,13 +15595,13 @@
       }
     },
     "testdouble": {
-      "version": "3.16.6",
-      "resolved": "https://registry.npmjs.org/testdouble/-/testdouble-3.16.6.tgz",
-      "integrity": "sha512-mijMgc9y7buK9IG9zSVhzlXsFMqWbLQHRei4SLX7F7K4Qtrcnglg6lIMTCmNs6RwDUyLGWtpIe+TzkugYHB+qA==",
+      "version": "3.17.1",
+      "resolved": "https://registry.npmjs.org/testdouble/-/testdouble-3.17.1.tgz",
+      "integrity": "sha512-6u3v0rKHf3oJHSD7UuxFkXXcvV3QWguYdfU9QKaRjLF/wRa9Hxg0fmRzdbMhPX2fYs4xVnw4l1h2GsKJiwFRlw==",
       "dev": true,
       "requires": {
-        "lodash": "^4.17.15",
-        "quibble": "^0.6.7",
+        "lodash": "^4.17.21",
+        "quibble": "^0.6.17",
         "stringify-object-es5": "^2.5.0",
         "theredoc": "^1.0.0"
       }
