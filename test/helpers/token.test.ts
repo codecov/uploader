@@ -2,8 +2,8 @@ import path from 'path'
 
 import * as fileHelpers from '../../src/helpers/files'
 import * as tokenHelpers from '../../src/helpers/token'
-import { UploaderArgs, UploaderInputs } from '../../src/types'
-import { DEFAULT_UPLOAD_HOST } from '../../src/helpers/constansts'
+import { UploaderInputs } from '../../src/types'
+import { DEFAULT_UPLOAD_HOST } from '../../src/helpers/constants'
 import { createEmptyArgs } from '../test_helpers'
 
 describe('Get tokens', () => {

@@ -1,9 +1,9 @@
 import path from 'path'
 import childProcess from 'child_process'
 import td from 'testdouble'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { generateCoveragePyFile } from '../../src/helpers/coveragepy'
 import * as fileHelpers from '../../src/helpers/files'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
 
 describe('generateCoveragePyFile()', () => {
     afterEach(() => {

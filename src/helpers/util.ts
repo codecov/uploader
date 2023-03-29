@@ -1,7 +1,5 @@
 import childprocess from 'child_process'
-import { SPAWNPROCESSBUFFERSIZE } from './constansts'
-export { SPAWNPROCESSBUFFERSIZE } from './constansts'
-
+import { SPAWNPROCESSBUFFERSIZE } from './constants'
 
 
 export function isProgramInstalled(programName: string): boolean {

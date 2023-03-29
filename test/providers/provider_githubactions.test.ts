@@ -2,8 +2,8 @@ import td from 'testdouble'
 import Undici from 'undici'
 import childProcess from 'child_process'
 
-import * as providerGitHubactions from '../../src/ci_providers//provider_githubactions'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
+import * as providerGitHubactions from '../../src/ci_providers/provider_githubactions'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 

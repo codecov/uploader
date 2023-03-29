@@ -1,6 +1,6 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { generateXcodeCoverageFiles } from '../../src/helpers/xcode'
 
 describe('generateXcodeCoverageFiles()', () => {

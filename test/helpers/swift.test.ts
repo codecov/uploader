@@ -3,7 +3,7 @@ import childProcess from 'child_process'
 
 import * as fsPromise from 'fs/promises'
 import os from 'os'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { generateSwiftCoverageFiles } from '../../src/helpers/swift'
 
 describe('generateSwiftCoverageFiles()', () => {

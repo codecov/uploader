@@ -1,8 +1,8 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 
-import * as providerLocal from '../../src/ci_providers//provider_local'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/util'
+import * as providerLocal from '../../src/ci_providers/provider_local'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 

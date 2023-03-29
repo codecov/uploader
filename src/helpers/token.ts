@@ -2,7 +2,7 @@ import fs from 'fs'
 import yaml from 'js-yaml'
 import path from 'path'
 import { UploaderInputs } from '../types'
-import { DEFAULT_UPLOAD_HOST } from './constansts'
+import { DEFAULT_UPLOAD_HOST } from './constants'
 import { info, logError, UploadLogger } from './logger'
 import { validateToken } from './validate'
 

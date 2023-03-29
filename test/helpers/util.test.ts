@@ -1,7 +1,7 @@
 import childProcess from 'child_process'
 import td from 'testdouble'
 import { isProgramInstalled, runExternalProgram } from '../../src/helpers/util'
-import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constansts'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 
 describe('isProgramInstalled()', () => {
   afterEach(() => {
