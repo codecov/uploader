@@ -38,8 +38,8 @@ describe('File Helpers', () => {
   it('returns cwd when it cannot fetch the git root', () => {
     const cwd = td.replace(process, 'cwd')
     td.replace(childProcess, 'spawnSync')
-    td.when(cwd()).thenReturn({ stdout: 'cwd' })
-    expect(fileHelpers.fetchGitRoot()).toEqual({stdout: 'cwd'})
+    td.when(cwd()).thenReturn({ stdout: 'fish' })
+    expect(fileHelpers.fetchGitRoot()).toEqual({stdout: 'fish'})
   })
 
   it('can get a file listing', async () => {
