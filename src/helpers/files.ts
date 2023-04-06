@@ -220,11 +220,13 @@ export async function getCoverageFiles(
 }
 
 export function fetchGitRoot(): string {
+  const currentWorkingDirectory = process.cwd() 
   try {
-    return (
-      runExternalProgram('git', ['rev-parse', '--show-toplevel'])) || process.cwd()
+    const gitRoot = runExternalProgram('git', ['rev-parse', '--show-toplevel'])
+    return (gitRoot != "" ? gitRoot : currentWorkingDirectory)
   } catch (error) {
-    throw new Error(`Error fetching git root. Please try using the -R flag. ${error}`)
+    UploadLogger.verbose(`Error fetching git root. Defaulting to ${currentWorkingDirectory}. Please try using the -R flag. ${error}`)
+    return currentWorkingDirectory
   }
 }
 
