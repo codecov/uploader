@@ -29,19 +29,19 @@ describe('File Helpers', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn({ stdout: 'fish' })
     td.when(
-      spawnSync('git', ['rev-parse', '--show-toplevel'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
+      spawnSync('git', ['rev-parse', '--show-toplevel'], {
+        maxBuffer: SPAWNPROCESSBUFFERSIZE,
+      }),
     ).thenReturn({ stdout: 'gitRoot' })
 
     expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')
   })
 
-  it('errors when it cannot fetch the git root', () => {
+  it('returns cwd when it cannot fetch the git root', () => {
     const cwd = td.replace(process, 'cwd')
     td.replace(childProcess, 'spawnSync')
-    td.when(cwd()).thenReturn({ stdout: 'fish' })
-    expect(() => {
-      fileHelpers.fetchGitRoot()
-    }).toThrow()
+    td.when(cwd()).thenReturn({ stdout: 'cwd' })
+    expect(fileHelpers.fetchGitRoot()).toEqual({ stdout: 'cwd' })
   })
 
   it('can get a file listing', async () => {
@@ -54,12 +54,22 @@ describe('File Helpers', () => {
       }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', verbose: 'true', slug: '',upstream: '' }),
+      await fileHelpers.getFileListing('.', {
+        flags: '',
+        verbose: 'true',
+        slug: '',
+        upstream: '',
+      }),
     ).toBe(files.join('\n'))
   })
 
   it('can get a file listing with a file filter', async () => {
-    const files = ['npm-shrinkwrap.json', 'package.json', 'package-lock.json', 'src/file.js']
+    const files = [
+      'npm-shrinkwrap.json',
+      'package.json',
+      'package-lock.json',
+      'src/file.js',
+    ]
     td.replace(childProcess, 'spawnSync', () => {
       return {
         stdout: files.join('\n'),
@@ -113,7 +123,12 @@ describe('File Helpers', () => {
   })
 
   it('can get a file listing with a file filter and prefix', async () => {
-    const files = ['npm-shrinkwrap.json', 'package.json', 'package-lock.json', 'src/file.js']
+    const files = [
+      'npm-shrinkwrap.json',
+      'package.json',
+      'package-lock.json',
+      'src/file.js',
+    ]
     td.replace(childProcess, 'spawnSync', () => {
       return {
         stdout: files.join('\n'),
@@ -191,9 +206,8 @@ describe('File Helpers', () => {
       )
     })
     it('can read a coverage report file', async () => {
-
       mock({
-        'test-coverage-file.xml': 'I am test coverage data'
+        'test-coverage-file.xml': 'I am test coverage data',
       })
 
       const reportContents = await fileHelpers.readCoverageFile(
@@ -204,15 +218,13 @@ describe('File Helpers', () => {
     })
 
     it('throws when unable to read a coverage file', async () => {
-
       mock({
-        'test-coverage-file.xml': 'I am test coverage data'
+        'test-coverage-file.xml': 'I am test coverage data',
       })
 
-      await expect(fileHelpers.readCoverageFile(
-        '.',
-        'test-no-coverage-file.xml',
-      )).rejects.toThrowError(/no such file or directory/)
+      await expect(
+        fileHelpers.readCoverageFile('.', 'test-no-coverage-file.xml'),
+      ).rejects.toThrowError(/no such file or directory/)
     })
 
     it('can return a list of coverage files', async () => {
@@ -226,17 +238,25 @@ describe('File Helpers', () => {
       expect(results).not.toContain('codecov.exe')
 
       expect(results).toContain('test/fixtures/other/fake.codecov.txt')
-      expect(results).toContain('test/fixtures/codecov_demobox_2023-02-27_01-03-34.cobertura.xml')
+      expect(results).toContain(
+        'test/fixtures/codecov_demobox_2023-02-27_01-03-34.cobertura.xml',
+      )
     })
 
     it('can return a list of coverage files with a pattern', async () => {
       expect(
         await fileHelpers.getCoverageFiles('.', ['coverage.txt']),
-      ).toStrictEqual(['test/fixtures/coverage.txt', 'test/fixtures/other/coverage.txt'])
+      ).toStrictEqual([
+        'test/fixtures/coverage.txt',
+        'test/fixtures/other/coverage.txt',
+      ])
     })
     it('can return a list of coverage files with a negated pattern', async () => {
       expect(
-        await fileHelpers.getCoverageFiles('.', ['coverage.txt', '!test/fixtures/other']),
+        await fileHelpers.getCoverageFiles('.', [
+          'coverage.txt',
+          '!test/fixtures/other',
+        ]),
       ).toStrictEqual(['test/fixtures/coverage.txt'])
     })
     describe('coverage file patterns', () => {
@@ -284,63 +304,105 @@ describe('File Helpers', () => {
     })
   })
 
-  describe("filterFilesAgainstBlockList()", () => {
-    const getPaths = () => fileHelpers.getCoverageFiles(
-      '.',
-      fileHelpers.coverageFilePatterns(),
-    )
-    it("works", async () => {
+  describe('filterFilesAgainstBlockList()', () => {
+    const getPaths = () =>
+      fileHelpers.getCoverageFiles('.', fileHelpers.coverageFilePatterns())
+    it('works', async () => {
       const paths = await getPaths()
 
-      expect(() => fileHelpers.filterFilesAgainstBlockList(paths, getBlocklist())).not.toThrow()
+      expect(() =>
+        fileHelpers.filterFilesAgainstBlockList(paths, getBlocklist()),
+      ).not.toThrow()
     })
 
-    it("returns the input array when passed an empty ignore array", async () => {
+    it('returns the input array when passed an empty ignore array', async () => {
       const paths = await getPaths()
       expect(fileHelpers.filterFilesAgainstBlockList(paths, [])).toEqual(paths)
     })
 
-    it("ignores an ignore filename", async () => {
-      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), ["coverage-summary.json"])).not.toContain(expect.stringContaining('coverage-summary.json'))
+    it('ignores an ignore filename', async () => {
+      expect(
+        fileHelpers.filterFilesAgainstBlockList(await getPaths(), [
+          'coverage-summary.json',
+        ]),
+      ).not.toContain(expect.stringContaining('coverage-summary.json'))
     })
 
-    it("ignores an ignore filename glob", async () => {
-      const foo = expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), ["**/coverage*"])).not.toContainEqual(expect.stringMatching('/coverage'))
+    it('ignores an ignore filename glob', async () => {
+      const foo = expect(
+        fileHelpers.filterFilesAgainstBlockList(await getPaths(), [
+          '**/coverage*',
+        ]),
+      ).not.toContainEqual(expect.stringMatching('/coverage'))
       console.log(foo)
     })
 
-    it("ignores an ignore filename globstar", async () => {
-      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), ["**/other/*"])).not.toContainEqual(expect.stringMatching('other'))
+    it('ignores an ignore filename globstar', async () => {
+      expect(
+        fileHelpers.filterFilesAgainstBlockList(await getPaths(), [
+          '**/other/*',
+        ]),
+      ).not.toContainEqual(expect.stringMatching('other'))
     })
 
-    it("ignores shell scripts by default", async () => {
-      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.sh'))
+    it('ignores shell scripts by default', async () => {
+      expect(
+        fileHelpers.filterFilesAgainstBlockList(
+          await getPaths(),
+          getBlocklist(),
+        ),
+      ).not.toContainEqual(expect.stringMatching('codecov.sh'))
     })
 
-    it("should ignore files ending with *.*js", async () => {
-      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.cjs'))
-      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.mjs'))
+    it('should ignore files ending with *.*js', async () => {
+      expect(
+        fileHelpers.filterFilesAgainstBlockList(
+          await getPaths(),
+          getBlocklist(),
+        ),
+      ).not.toContainEqual(expect.stringMatching('coverage.cjs'))
+      expect(
+        fileHelpers.filterFilesAgainstBlockList(
+          await getPaths(),
+          getBlocklist(),
+        ),
+      ).not.toContainEqual(expect.stringMatching('coverage.mjs'))
     })
 
-    it("should ignore files ending with *.js", async () => {
-      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('coverage.js'))
+    it('should ignore files ending with *.js', async () => {
+      expect(
+        fileHelpers.filterFilesAgainstBlockList(
+          await getPaths(),
+          getBlocklist(),
+        ),
+      ).not.toContainEqual(expect.stringMatching('coverage.js'))
     })
 
-    it("ignores powershell scripts by default", async () => {
-      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching('codecov.ps1'))
+    it('ignores powershell scripts by default', async () => {
+      expect(
+        fileHelpers.filterFilesAgainstBlockList(
+          await getPaths(),
+          getBlocklist(),
+        ),
+      ).not.toContainEqual(expect.stringMatching('codecov.ps1'))
     })
-    it("ignores codecov configs by default", async () => {
-      expect(fileHelpers.filterFilesAgainstBlockList(await getPaths(), getBlocklist())).not.toContainEqual(expect.stringMatching(/^\.?codecov\.ya?ml/))
+    it('ignores codecov configs by default', async () => {
+      expect(
+        fileHelpers.filterFilesAgainstBlockList(
+          await getPaths(),
+          getBlocklist(),
+        ),
+      ).not.toContainEqual(expect.stringMatching(/^\.?codecov\.ya?ml/))
     })
 
-    it.each([
-      "coverage.info",
-      "coverage.opencover.xml",
-      "gap-coverage.json",
-    ])("includes %s", (file) => {
-      expect(fileHelpers.filterFilesAgainstBlockList([file], getBlocklist()))
-        .toContainEqual(expect.stringMatching(file))
-    })
+    it.each(['coverage.info', 'coverage.opencover.xml', 'gap-coverage.json'])(
+      'includes %s',
+      file => {
+        expect(
+          fileHelpers.filterFilesAgainstBlockList([file], getBlocklist()),
+        ).toContainEqual(expect.stringMatching(file))
+      },
+    )
   })
 
   it('can remove a file', () => {
