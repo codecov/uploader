@@ -439,7 +439,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:424.0.0-slim@sha256:764b5ecc280a1ea27778aabc29f4ab48a21e995a2fe4a2f95dd2a106f4f6c3a8
+      - image: google/cloud-sdk:425.0.0-slim@sha256:debf7bdec76d5484ffa7a9ee962b3adc808d12a546ae78115750b718823d6c4c
     steps:
       - attach_workspace:
           at: .
