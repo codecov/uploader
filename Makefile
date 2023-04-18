@@ -10,18 +10,22 @@ clean:
 install:
 	npm install
 
-test: 
+test:
 	rm -rf coverage
 	rm -rf .nyc_output
 	npm test
-	
 
-build: 
+
+build:
 	rm -rf out
 	rm -rf dist
 	npm run build
 	npm run build-linux
 	npm run build-macos
+
+build_aarch64:
+	npm run build
+	npm run build-aarch64
 
 build_alpine:
 	npm run build

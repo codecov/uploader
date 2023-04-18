@@ -28,7 +28,7 @@ jobs:
 
       - run: make test
 
-      - run: make build
+      - run: make build_aarch64
 
       - persist_to_workspace:
           root: .
@@ -291,17 +291,21 @@ jobs:
       - run:
           name: Confirm that aarch64 uploader binary is static
           command: |
+            file out/codecov-aarch64
+      - run:
+          name: Confirm that aarch64 uploader binary is static
+          command: |
             (file out/codecov-aarch64 | grep 'static') || exit ${?}
       - run:
-          name: Run Linux binary -f (dry run)
+          name: Run aarch64 binary -f (dry run)
           command: |
             out/codecov-aarch64 -f /home/circleci/project/coverage/cobertura-coverage.xml -F aarch64 -d -Z -v -e CIRCLE_BRANCH >> output_aarch64.txt
       - run:
-          name: Run Linux binary auto-detect (dry run)
+          name: Run aarch64 binary auto-detect (dry run)
           command: |
             out/codecov-aarch64 -F aarch64 -d -Z -e CIRCLE_BRANCH >> output_aarch64.txt
       - run:
-          name: Run Linux binary (upload)
+          name: Run aarch64 binary (upload)
           command: |
             out/codecov-aarch64 -F aarch64 -Z -e CIRCLE_BRANCH
             out/codecov-aarch64 -F "-aarch64" -Z -e CIRCLE_BRANCH
