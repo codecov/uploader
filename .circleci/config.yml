@@ -13,30 +13,23 @@ jobs:
 
     steps:
       - checkout
+      - attach_workspace:
+          at: .
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
+      - run: npm ci
 
-      - run: npm install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
-
-      - run: make test
+      - run: |
+          make test
+          mkdir -p coverage-aarch64
+          cp -r coverage/* coverage-aarch64/
 
       - run: make build_aarch64
 
       - persist_to_workspace:
           root: .
           paths:
-            - out
-            - coverage
-            - package.json
-            - vendor
+            - out/codecov-aarch64
+            - coverage-aarch64
 
   build-linux-and-osx:
     docker:
