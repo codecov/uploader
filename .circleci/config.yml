@@ -4,6 +4,40 @@ orbs:
   win: circleci/windows@4.1.1
 
 jobs:
+  build-aarch64:
+    docker:
+      - image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
+
+      - run: make test
+
+      - run: make build
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - out
+            - coverage
+            - package.json
+            - vendor
+
   build-linux-and-osx:
     docker:
       - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
@@ -246,6 +280,62 @@ jobs:
           paths:
             - output_linux_without_git.txt
 
+  test-aarch64:
+    docker:
+      - image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Confirm that aarch64 uploader binary is static
+          command: |
+            (file out/codecov-aarch64 | grep 'static') || exit ${?}
+      - run:
+          name: Run Linux binary -f (dry run)
+          command: |
+            out/codecov-aarch64 -f /home/circleci/project/coverage/cobertura-coverage.xml -F aarch64 -d -Z -v -e CIRCLE_BRANCH >> output_aarch64.txt
+      - run:
+          name: Run Linux binary auto-detect (dry run)
+          command: |
+            out/codecov-aarch64 -F aarch64 -d -Z -e CIRCLE_BRANCH >> output_aarch64.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-aarch64 -F aarch64 -Z -e CIRCLE_BRANCH
+            out/codecov-aarch64 -F "-aarch64" -Z -e CIRCLE_BRANCH
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_aarch64.txt
+
+  test-aarch64-without-git:
+    docker:
+      - image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Remove .git directory
+          command: rm -rf .git
+      - run:
+          name: Run Linux binary (dry run)
+          command: |
+            out/codecov-aarch64 -F aarch64-without-git -d -Z -e CIRCLE_BRANCH > output_aarch64_without_git.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-aarch64 -F aarch64-without-git -Z -e CIRCLE_BRANCH
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_aarch64_without_git.txt
+
   test-macos:
     macos:
       xcode: '12.5.1'
@@ -401,6 +491,10 @@ jobs:
       - store_artifacts:
           path: output_linux_without_git.txt
       - store_artifacts:
+          path: output_aarch64.txt
+      - store_artifacts:
+          path: output_aarch64_without_git.txt
+      - store_artifacts:
           path: output_osx.txt
       - store_artifacts:
           path: output_osx_without_git.txt
@@ -485,6 +579,9 @@ workflows:
       #           requires:
       #             - build-alpine
       - build-linux-and-osx
+      - build-aarch64:
+          requires:
+            - build-linux-and-osx
       - build-alpine:
           requires:
             - build-linux-and-osx
@@ -500,6 +597,12 @@ workflows:
       - build-windows:
           requires:
             - build-linux-and-osx
+      - test-aarch64:
+          requires:
+            - build-aarch64
+      - test-aarch64-without-git:
+          requires:
+            - test-aarch64
       - test-linux:
           requires:
             - build-linux-and-osx
@@ -523,6 +626,7 @@ workflows:
             - test-alpine-proxy
             - test-alpine-without-git
             - test-linux-without-git
+            - test-aarch64-without-git
             - test-macos-without-git
             - test-windows-without-git
       - deploy:
