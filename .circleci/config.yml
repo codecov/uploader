@@ -316,7 +316,7 @@ jobs:
             - output_aarch64.txt
 
   test-aarch64-without-git:
-    docker:
+    machine:
       - image: ubuntu-2004:2022.04.1
     resource_class: arm.medium
     steps:
