@@ -48,7 +48,7 @@
     "@types/js-yaml": "4.0.5",
     "@types/micromatch": "4.0.2",
     "@types/mock-fs": "4.13.1",
-    "@types/node": "18.15.10",
+    "@types/node": "18.15.11",
     "@types/validator": "13.7.14",
     "@types/yargs": "17.0.23",
     "@typescript-eslint/eslint-plugin": "5.56.0",
@@ -78,6 +78,6 @@
     ]
   },
   "volta": {
-    "node": "18.15.0"
+    "node": "18.16.0"
   }
 }
