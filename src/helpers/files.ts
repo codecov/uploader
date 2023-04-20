@@ -4,7 +4,7 @@ import fs from 'fs'
 import { readFile } from 'fs/promises'
 import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
-import { logError, UploadLogger } from './logger'
+import { info, logError, UploadLogger } from './logger'
 import { runExternalProgram } from './util'
 import micromatch from "../vendor/micromatch/index.js";
 import { SPAWNPROCESSBUFFERSIZE } from './constants'
@@ -220,11 +220,13 @@ export async function getCoverageFiles(
 }
 
 export function fetchGitRoot(): string {
+  const currentWorkingDirectory = process.cwd() 
   try {
-    return (
-      runExternalProgram('git', ['rev-parse', '--show-toplevel'])) || process.cwd()
+    const gitRoot = runExternalProgram('git', ['rev-parse', '--show-toplevel'])
+    return (gitRoot != "" ? gitRoot : currentWorkingDirectory)
   } catch (error) {
-    throw new Error(`Error fetching git root. Please try using the -R flag. ${error}`)
+    info(`Error fetching git root. Defaulting to ${currentWorkingDirectory}. Please try using the -R flag. ${error}`)
+    return currentWorkingDirectory
   }
 }
 

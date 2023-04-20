@@ -35,13 +35,11 @@ describe('File Helpers', () => {
     expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')
   })
 
-  it('errors when it cannot fetch the git root', () => {
+  it('returns cwd when it cannot fetch the git root', () => {
     const cwd = td.replace(process, 'cwd')
     td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn({ stdout: 'fish' })
-    expect(() => {
-      fileHelpers.fetchGitRoot()
-    }).toThrow()
+    expect(fileHelpers.fetchGitRoot()).toEqual({stdout: 'fish'})
   })
 
   it('can get a file listing', async () => {

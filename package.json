@@ -13,6 +13,7 @@
     "build:clean": "rm -rf dist",
     "build": "tsc  --build",
     "build-linux": "pkg . --targets linuxstatic --output out/codecov-linux",
+    "build-aarch64": "pkg . --targets linuxstatic-arm64 --output out/codecov-aarch64",
     "build-macos": "pkg . --targets macos --output out/codecov-macos",
     "build-alpine": "pkg . --targets node14-alpine-x64 --output out/codecov-alpine",
     "build-windows": "pkg . --targets win --output out/codecov.exe",
@@ -36,28 +37,28 @@
     "fast-glob": "3.2.12",
     "js-yaml": "4.1.0",
     "snake-case": "3.0.4",
-    "undici": "5.21.0",
+    "undici": "5.21.2",
     "validator": "13.9.0",
     "yargs": "17.7.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "17.5.0",
-    "@commitlint/config-conventional": "17.4.4",
+    "@commitlint/cli": "17.6.1",
+    "@commitlint/config-conventional": "17.6.1",
     "@types/jest": "27.5.2",
     "@types/js-yaml": "4.0.5",
     "@types/micromatch": "4.0.2",
     "@types/mock-fs": "4.13.1",
-    "@types/node": "18.15.10",
-    "@types/validator": "13.7.14",
-    "@types/yargs": "17.0.23",
-    "@typescript-eslint/eslint-plugin": "5.56.0",
-    "@typescript-eslint/parser": "5.56.0",
-    "eslint": "8.37.0",
+    "@types/node": "18.15.11",
+    "@types/validator": "13.7.15",
+    "@types/yargs": "17.0.24",
+    "@typescript-eslint/eslint-plugin": "5.58.0",
+    "@typescript-eslint/parser": "5.58.0",
+    "eslint": "8.38.0",
     "eslint-config-prettier": "8.8.0",
     "husky": "8.0.1",
     "jest": "27.5.1",
     "jest-spec-reporter": "1.0.19",
-    "lint-staged": "13.2.0",
+    "lint-staged": "13.2.1",
     "mock-fs": "5.2.0",
     "pkg": "5.6.0",
     "prettier": "2.8.7",
@@ -77,6 +78,6 @@
     ]
   },
   "volta": {
-    "node": "18.15.0"
+    "node": "18.16.0"
   }
 }
