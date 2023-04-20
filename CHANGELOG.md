@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.5.0](https://github.com/codecov/uploader/compare/v0.4.1...v0.5.0) (2023-04-20)
+
+
+### Features
+
+* feat: build aarch64 ([#523](https://github.com/codecov/uploader/issues/523)) ([ec2b1c3](https://github.com/codecov/uploader/commit/ec2b1c3ca91bf7d60978d8bf14cb66293d0cf723))
+
+
+### Bug Fixes
+
+* Update fetchGitRoot to not halt execution ([ab87260](https://github.com/codecov/uploader/commit/ab87260226ddda691b2baa7824f97495f8723173))
+* add pointer to docs ([#1007](https://github.com/codecov/uploader/issues/1007)) ([f4c98c6](https://github.com/codecov/uploader/commit/f4c98c6e0c26a39710e49f020773d93782faa716))
+* **deps:** update dependency undici to v5.21.2 ([#1016](https://github.com/codecov/uploader/issues/1016)) ([b4bcf02](https://github.com/codecov/uploader/commit/b4bcf021f02d9c03a241013f4e16945a8d9cf699))
+* **deps:** update dependency eslint to v8.37.0 ([977093b](https://github.com/codecov/uploader/commit/977093be56039701d667d36f388b2852c58e401a))
+* **deps:** update actions/checkout digest to 8e5e7e5 ([25e034e](https://github.com/codecov/uploader/commit/25e034ea4709bc1879f5cef20d20dfd9838b0cdf))
+* **deps:** update typescript-eslint monorepo to v5.58.0 ([ceeb344](https://github.com/codecov/uploader/commit/ceeb344725b7202b405f7a8bbeebba44c794ef65))
+* **deps:** update commitlint monorepo to v17.6.1 ([d96d5ef](https://github.com/codecov/uploader/commit/d96d5efb18416b1e3e50c2bc857442548b5c43c7))
+* **deps:** update node.js to v18.16.0 ([cdd2fd2](https://github.com/codecov/uploader/commit/cdd2fd25ff9cd2159038a87e921e774c3ac0c319))
+* **deps:** update google/cloud-sdk docker tag to v427 ([677310f](https://github.com/codecov/uploader/commit/677310f43d9c4a3acf2d075114053f648e717f76))
+* **deps:** update dependency eslint to v8.38.0 ([43e064c](https://github.com/codecov/uploader/commit/43e064c0e205fbeaaf8007b43d926307f4d47339))
+* **deps:** update dependency lint-staged to v13.2.1 ([3cf9518](https://github.com/codecov/uploader/commit/3cf9518eaf0c1866ca3425573d147da6ff6517aa))
+* **deps:** update github/codeql-action digest to 7df0ce3 ([417380c](https://github.com/codecov/uploader/commit/417380c9404170d2eb5c3f4c0672019e66057352))
+* **deps:** update dependency @types/yargs to v17.0.24 ([9f4375c](https://github.com/codecov/uploader/commit/9f4375c1d0eeaebd22c803efefb8d9b3a8e2aa0e))
+* **deps:** update dependency @types/validator to v13.7.15 ([654957d](https://github.com/codecov/uploader/commit/654957d23de2b7e2abd74da363de115ab4732293))
+
 ### [0.4.1](https://github.com/codecov/uploader/compare/v0.4.0...v0.4.1) (2023-03-30)
 
 
