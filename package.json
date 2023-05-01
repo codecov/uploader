@@ -39,7 +39,7 @@
     "snake-case": "3.0.4",
     "undici": "5.21.2",
     "validator": "13.9.0",
-    "yargs": "17.7.1"
+    "yargs": "17.7.2"
   },
   "devDependencies": {
     "@commitlint/cli": "17.6.1",
