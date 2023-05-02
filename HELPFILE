@@ -67,7 +67,9 @@ Options:
                                 network
                                 -X search        Disable searching for coverage
                                 files                                   [string]
-      --xcode, --xc, --xc       Run with xcode support[boolean] [default: false]
+      --xcode, --xc, --xc       Deprecating, please use xs] Run with xcode 
+                                support               [boolean] [default: false]
+                                         
       --xcodeArchivePath, --xp  [Deprecating, please use xs] Specify the xcode
                                 archive path. Likely specified as the
                                 -resultBundlePath and should end in .xcresult
