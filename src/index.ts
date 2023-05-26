@@ -418,6 +418,7 @@ export async function main(
       token,
       query,
       args.source || '',
+      envs,
       args,
     )
 
@@ -428,6 +429,7 @@ export async function main(
     const statusAndResultPair = await webHelpers.uploadToCodecovPUT(
       postResults,
       gzippedFile,
+      envs,
       args,
     )
     info(JSON.stringify(statusAndResultPair))

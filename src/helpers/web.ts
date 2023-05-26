@@ -1,7 +1,6 @@
 import dns from 'node:dns'
 import { snakeCase } from 'snake-case'
 import {
-  ProxyAgent,
   request,
   setGlobalDispatcher,
 } from 'undici'
@@ -13,9 +12,12 @@ import {
   PostResults,
   PutResults,
   UploaderArgs,
+  UploaderEnvs,
   UploaderInputs,
 } from '../types'
 import { info } from './logger'
+import { addProxyIfNeeded } from './proxy'
+import { IncomingHttpHeaders } from 'undici/types/header.js'
 
 /**
  *
@@ -54,6 +56,7 @@ export function getPackage(source: string): string {
 export async function uploadToCodecovPUT(
   putAndResultUrlPair: PostResults,
   uploadFile: string | Buffer,
+  envs: UploaderEnvs,
   args: UploaderArgs
 ): Promise<PutResults> {
   info('Uploading...')
@@ -61,6 +64,7 @@ export async function uploadToCodecovPUT(
   const requestHeaders = generateRequestHeadersPUT(
     putAndResultUrlPair.putURL,
     uploadFile,
+    envs,
     args,
   )
   if (requestHeaders.agent) {
@@ -84,6 +88,7 @@ export async function uploadToCodecovPOST(
   token: string,
   query: string,
   source: string,
+  envs: UploaderEnvs,
   args: UploaderArgs,
 ): Promise<string> {
   const requestHeaders = generateRequestHeadersPOST(
@@ -91,6 +96,7 @@ export async function uploadToCodecovPOST(
     token,
     query,
     source,
+    envs,
     args,
   )
   if (requestHeaders.agent) {
@@ -162,20 +168,25 @@ export function generateRequestHeadersPOST(
   token: string,
   query: string,
   source: string,
+  envs: UploaderEnvs,
   args: UploaderArgs,
 ): IRequestHeaders {
   const url = new URL(`upload/v4?package=${getPackage(
     source,
   )}&token=${token}&${query}`, postURL)
 
+  const initialHeaders = {
+    'X-Upload-Token': token,
+    'X-Reduced-Redundancy': 'false',
+  }
+
+  const headers: IncomingHttpHeaders = generateHeaders(envs, initialHeaders)
+
   return {
-    agent: args.upstream ? new ProxyAgent(args.upstream) : undefined,
+    agent: addProxyIfNeeded(envs, args),
     url: url,
     options: {
-      headers: {
-        'X-Upload-Token': token,
-        'X-Reduced-Redundancy': 'false',
-      },
+      headers,
       method: 'POST',
       origin: postURL,
       path: `${url.pathname}${url.search}`,
@@ -183,20 +194,36 @@ export function generateRequestHeadersPOST(
   }
 }
 
+export function generateHeaders(envs: UploaderEnvs, initialHeaders: IncomingHttpHeaders): IncomingHttpHeaders {
+  let headers: IncomingHttpHeaders
+  if (envs['PROXY_BASIC_USER'] && envs['PROXY_BASIC_PASS']) {
+    const authString = Buffer.from(`${envs['PROXY_BASIC_USER']}:${envs['PROXY_BASIC_PASS']}`).toString("base64")
+    headers = { ...initialHeaders, Authorization: `Basic ${authString}` }
+  } else {
+    headers = initialHeaders
+  }
+  return headers
+}
+
 export function generateRequestHeadersPUT(
   uploadURL: URL,
   uploadFile: string | Buffer,
+  envs: UploaderEnvs,
   args: UploaderArgs,
 ): IRequestHeaders {
+  const initialHeaders = {
+    'Content-Type': 'text/plain',
+    'Content-Encoding': 'gzip',
+  }
+  
+  const headers = generateHeaders(envs, initialHeaders)
+
   return {
-    agent: args.upstream ? new ProxyAgent(args.upstream) : undefined,
+    agent: addProxyIfNeeded(envs, args),
     url: uploadURL,
     options: {
       body: uploadFile,
-      headers: {
-        'Content-Type': 'text/plain',
-        'Content-Encoding': 'gzip',
-      },
+      headers,
       method: 'PUT',
       origin: uploadURL,
       path: `${uploadURL.pathname}${uploadURL.search}`,
