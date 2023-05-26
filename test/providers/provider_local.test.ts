@@ -38,7 +38,7 @@ describe('Local Params', () => {
           slug: 'owner/repo',
         },
       },
-      environment: {},
+      envs: {},
     }
     const expected: IServiceParams = {
       branch: 'main',
@@ -63,7 +63,7 @@ describe('Local Params', () => {
           slug: 'owner/repo',
         },
       },
-      environment: {
+      envs: {
         GIT_COMMIT: 'testingsha',
         GIT_BRANCH: 'main'
       },
@@ -85,7 +85,7 @@ describe('Local Params', () => {
   it('returns errors on git command failures', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {},
+      envs: {},
     }
     const spawnSync = td.replace(childProcess, 'spawnSync')
     await expect(providerLocal.getServiceParams(inputs)).rejects.toThrow()
@@ -106,7 +106,7 @@ describe('Local Params', () => {
   describe('getSlug()', () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {},
+      envs: {},
     }
 
     it('can get the slug from a git url', async () => {

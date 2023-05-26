@@ -15,21 +15,21 @@ describe('TeamCity Params', () => {
     it('does not run without TeamCity env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {},
+        envs: {},
       }
-      const detected = providerTeamCity.detect(inputs.environment)
+      const detected = providerTeamCity.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with TeamCity env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           CI: 'true',
           TEAMCITY_VERSION: 'true',
         },
       }
-      const detected = providerTeamCity.detect(inputs.environment)
+      const detected = providerTeamCity.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -37,7 +37,7 @@ describe('TeamCity Params', () => {
   it('gets correct params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         CI: 'true',
         TEAMCITY_VERSION: 'true',
         BRANCH_NAME: 'main',
@@ -66,7 +66,7 @@ describe('TeamCity Params', () => {
   it('gets correct params and remote slug', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         CI: 'true',
         TEAMCITY_VERSION: 'true',
         BRANCH_NAME: 'main',
@@ -104,7 +104,7 @@ describe('TeamCity Params', () => {
           slug: 'testOrg/testRepo',
         },
       },
-      environment: {
+      envs: {
         CI: 'true',
         TEAMCITY_VERSION: 'true',
         BRANCH_NAME: 'main',

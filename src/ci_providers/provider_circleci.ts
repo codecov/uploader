@@ -7,7 +7,7 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  return inputs.environment['CIRCLE_BUILD_URL'] ?? ''
+  return inputs.envs['CIRCLE_BUILD_URL'] ?? ''
 }
 
 // This is the value that gets passed to the Codecov uploader
@@ -21,17 +21,17 @@ export function getServiceName(): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.CIRCLE_BRANCH || ''
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.CIRCLE_SHA1 || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
 
   const slug = setSlug(
     args.slug,
@@ -49,12 +49,12 @@ function _getSlug(inputs: UploaderInputs): string {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.CIRCLE_BUILD_NUM || ''
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.pr || envs.CIRCLE_PR_NUMBER || ''
 }
 
@@ -68,7 +68,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

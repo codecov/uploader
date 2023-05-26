@@ -41,7 +41,7 @@ export interface UploaderArgs {
 export type UploaderEnvs = NodeJS.Dict<string>
 
 export interface UploaderInputs {
-  environment: UploaderEnvs
+  envs: UploaderEnvs
   args: UploaderArgs
 }
 

@@ -6,17 +6,17 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.BUILD_NUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.BUILD_URL ? (envs.BUILD_URL) : ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return (
     args.branch ||
     envs.ghprbSourceBranch ||
@@ -32,7 +32,7 @@ function _getJob() {
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.pr || envs.ghprbPullId || envs.CHANGE_ID || ''
 }
 
@@ -45,7 +45,7 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   // Note that the value of GIT_COMMIT may not be accurate if Jenkins
   // is merging `master` in to the working branch first. In these cases
   // there is no envvar representing the actual submitted commit

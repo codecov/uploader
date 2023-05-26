@@ -15,24 +15,24 @@ describe('Jenkins CI Params', () => {
     it('does not run without JenkinsCI env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {},
+        envs: {},
       }
-      let detected = providerJenkinsci.detect(inputs.environment)
+      let detected = providerJenkinsci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.environment.JENKINS_URL = ''
-      detected = providerJenkinsci.detect(inputs.environment)
+      inputs.envs.JENKINS_URL = ''
+      detected = providerJenkinsci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with JenkinsCI env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           JENKINS_URL: 'https://example.jenkins.com',
         },
       }
-      const detected = providerJenkinsci.detect(inputs.environment)
+      const detected = providerJenkinsci.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -40,7 +40,7 @@ describe('Jenkins CI Params', () => {
   it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         BUILD_NUMBER: '1',
         BUILD_URL: 'https://example.jenkins.com',
         CHANGE_ID: '2',
@@ -70,7 +70,7 @@ describe('Jenkins CI Params', () => {
   it('can get the slug from git config', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         BUILD_NUMBER: '1',
         BUILD_URL: 'https://example.jenkins.com',
         CHANGE_ID: '2',
@@ -100,7 +100,7 @@ describe('Jenkins CI Params', () => {
           slug: 'testOrg/testRepo',
         },
       },
-      environment: {
+      envs: {
         JENKINS_URL: 'https://example.com',
       },
     }

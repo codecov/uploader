@@ -45,7 +45,7 @@ describe('Get tokens', () => {
     it('Returns from args', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs(), ...{ token: 'argtoken' } },
-        environment: { CODECOV_TOKEN: 'envtoken' },
+        envs: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('argtoken')
     })
@@ -53,7 +53,7 @@ describe('Get tokens', () => {
     it('Returns from env', () => {
       const inputs: UploaderInputs = {
         args: {...createEmptyArgs(),},
-        environment: { CODECOV_TOKEN: 'envtoken' },
+        envs: { CODECOV_TOKEN: 'envtoken' },
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('envtoken')
     })
@@ -61,7 +61,7 @@ describe('Get tokens', () => {
     it('Returns from env', () => {
       const inputs: UploaderInputs = {
         args: {...createEmptyArgs(),},
-        environment: {},
+        envs: {},
       }
       expect(tokenHelpers.getToken(inputs, fixturesDir)).toBe('faketoken')
     })
@@ -69,7 +69,7 @@ describe('Get tokens', () => {
     it('Returns from no source', () => {
       const inputs: UploaderInputs = {
         args: {...createEmptyArgs(), },
-        environment: {},
+        envs: {},
       }
       expect(tokenHelpers.getToken(inputs, '.')).toBe('')
     })
@@ -81,7 +81,7 @@ describe('Get tokens', () => {
         url: 'dummy.local',
         token: 'goodToken',
       }},
-      environment: {
+      envs: {
         CODECOV_TOKEN: 'badToken',
       },
     }
@@ -93,7 +93,7 @@ describe('Get tokens', () => {
       args: {...createEmptyArgs(), ...{
         url: 'dummy.local',
       }},
-      environment: {
+      envs: {
         CODECOV_TOKEN: 'goodT----oken',
       },
     }
@@ -105,7 +105,7 @@ describe('Get tokens', () => {
       args: {...createEmptyArgs(), ...{
         url: DEFAULT_UPLOAD_HOST,
       }},
-      environment: {
+      envs: {
         CODECOV_TOKEN: 'bad------Token',
       },
     }

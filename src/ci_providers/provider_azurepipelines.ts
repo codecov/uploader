@@ -8,12 +8,12 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.BUILD_BUILDNUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   if (envs.SYSTEM_TEAMPROJECT && envs.BUILD_BUILDID) {
     return (
       `${envs.SYSTEM_TEAMFOUNDATIONSERVERURI}${envs.SYSTEM_TEAMPROJECT}/_build/results?buildId=${envs.BUILD_BUILDID}`
@@ -23,7 +23,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   let branch = ''
   if (envs.BUILD_SOURCEBRANCH) {
     branch = envs.BUILD_SOURCEBRANCH.toString().replace('refs/heads/', '')
@@ -36,7 +36,7 @@ function _getJob(envs: UploaderEnvs): string {
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return (
     args.pr ||
     envs.SYSTEM_PULLREQUEST_PULLREQUESTNUMBER ||
@@ -54,7 +54,7 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   let commit = envs.BUILD_SOURCEVERSION || ''
 
   if (_getPR(inputs)) {
@@ -74,17 +74,17 @@ function _getSHA(inputs: UploaderInputs): string {
 }
 
 function _getProject(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.SYSTEM_TEAMPROJECT || ''
 }
 
 function _getServerURI(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.SYSTEM_TEAMFOUNDATIONSERVERURI || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (args.slug !== '') return args.slug
   return envs.BUILD_REPOSITORY_NAME || parseSlugFromRemoteAddr('') || ''
 }
@@ -100,7 +100,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     project: _getProject(inputs),
     server_uri: _getServerURI(inputs),

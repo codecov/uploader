@@ -14,25 +14,25 @@ describe('Bitbucket Params', () => {
     it('does not run without Bitbucket env variable', () => {
       const inputs: UploaderInputs = {
         args: {...createEmptyArgs(), },
-        environment: {},
+        envs: {},
       }
-      let detected = providerBitbucket.detect(inputs.environment)
+      let detected = providerBitbucket.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.environment['CI'] = 'true'
-      detected = providerBitbucket.detect(inputs.environment)
+      inputs.envs['CI'] = 'true'
+      detected = providerBitbucket.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does not run without Bitbucket env variable', () => {
       const inputs: UploaderInputs = {
         args: {...createEmptyArgs(), },
-        environment: {
+        envs: {
           BITBUCKET_BUILD_NUMBER: '1',
           CI: 'true',
         },
       }
-      const detected = providerBitbucket.detect(inputs.environment)
+      const detected = providerBitbucket.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -40,7 +40,7 @@ describe('Bitbucket Params', () => {
   it('gets the correct params on no env variables', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
-      environment: {
+      envs: {
         BITBUCKET_BUILD_NUMBER: '1',
         CI: 'true',
       },
@@ -62,7 +62,7 @@ describe('Bitbucket Params', () => {
   it('gets the correct params on pr', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
-      environment: {
+      envs: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',
@@ -88,7 +88,7 @@ describe('Bitbucket Params', () => {
   it('gets the correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
-      environment: {
+      envs: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',
@@ -113,7 +113,7 @@ describe('Bitbucket Params', () => {
   it('gets the correct params with short SHA', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs(), },
-      environment: {
+      envs: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha12',
@@ -150,7 +150,7 @@ describe('Bitbucket Params', () => {
         slug: 'overwriteOwner/overwriteRepo',
 
       }},
-      environment: {
+      envs: {
         BITBUCKET_BRANCH: 'main',
         BITBUCKET_BUILD_NUMBER: '1',
         BITBUCKET_COMMIT: 'testingsha',

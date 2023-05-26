@@ -40,11 +40,11 @@ export async function detectProvider(
 
 export async function walkProviders(inputs: UploaderInputs): Promise<IServiceParams> {
   for (const provider of providers) {
-    if (provider.detect(inputs.environment)) {
+    if (provider.detect(inputs.envs)) {
       info(`Detected ${provider.getServiceName()} as the CI provider.`)
       UploadLogger.verbose('-> Using the following env variables:')
       for (const envVarName of provider.getEnvVarNames()) {
-        UploadLogger.verbose(`     ${envVarName}: ${inputs.environment[envVarName]}`)
+        UploadLogger.verbose(`     ${envVarName}: ${inputs.envs[envVarName]}`)
       }
       return await provider.getServiceParams(inputs)
     }

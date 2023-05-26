@@ -113,7 +113,7 @@ export async function main(
   // TODO: clean and sanitize envs and args
   const envs = process.env
   // args
-  const inputs: UploaderInputs = { args, environment: envs }
+  const inputs: UploaderInputs = { args, envs }
 
   let uploadHost: string
   if (args.url) {

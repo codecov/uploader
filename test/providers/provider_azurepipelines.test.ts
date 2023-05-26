@@ -15,20 +15,20 @@ describe('Azure Pipelines CI Params', () => {
     it('does not run without AzurePipelines env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {},
+        envs: {},
       }
-      const detected = providerAzurepipelines.detect(inputs.environment)
+      const detected = providerAzurepipelines.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with AzurePipelines env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           SYSTEM_TEAMFOUNDATIONSERVERURI: 'true',
         },
       }
-      const detected = providerAzurepipelines.detect(inputs.environment)
+      const detected = providerAzurepipelines.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -36,7 +36,7 @@ describe('Azure Pipelines CI Params', () => {
   it('gets empty string if environment variable is undefined', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
       },
     }
@@ -64,7 +64,7 @@ describe('Azure Pipelines CI Params', () => {
   it('gets correct params on pr number', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
         BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
@@ -101,7 +101,7 @@ describe('Azure Pipelines CI Params', () => {
   it('gets correct params on pr id', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
         BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
@@ -138,7 +138,7 @@ describe('Azure Pipelines CI Params', () => {
   it('gets correct slug by remote address', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
         BUILD_SOURCEBRANCH: 'refs/heads/main',
@@ -172,7 +172,7 @@ describe('Azure Pipelines CI Params', () => {
   it('gets correct params on merge', async() => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         BUILD_BUILDNUMBER: '1',
         BUILD_BUILDID: '2',
         BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
@@ -218,7 +218,7 @@ describe('Azure Pipelines CI Params', () => {
           slug: 'testOrg/otherTestRepo',
         },
       },
-      environment: {
+      envs: {
         SYSTEM_TEAMFOUNDATIONSERVERURI: 'https://example.azure.com',
         BUILD_REPOSITORY_NAME: 'testOrg/testRepo',
       },

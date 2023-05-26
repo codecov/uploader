@@ -6,17 +6,17 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.WERCKER_MAIN_PIPELINE_STARTED || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.WERCKER_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
 
   return args.branch || envs.WERCKER_GIT_BRANCH || ''
 }
@@ -39,12 +39,12 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.WERCKER_GIT_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return setSlug(args.slug, envs.WERCKER_GIT_OWNER, envs.WERCKER_GIT_REPOSITORY)
 }
 

@@ -28,7 +28,7 @@ export function populateBuildParams(
   inputs: UploaderInputs,
   serviceParams: Partial<IServiceParams>,
 ): Partial<IServiceParams> {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
 
