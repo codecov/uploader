@@ -16,7 +16,7 @@ describe('GitHub Actions Params', () => {
     it('does not run without GitHub Actions env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           GITHUB_REF: 'refs/heads/master',
           GITHUB_REPOSITORY: 'testOrg/testRepo',
           GITHUB_RUN_ID: '2',
@@ -24,18 +24,18 @@ describe('GitHub Actions Params', () => {
           GITHUB_WORKFLOW: 'testWorkflow',
         },
       }
-      const detected = providerGitHubactions.detect(inputs.environment)
+      const detected = providerGitHubactions.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does not run with only the GitHub Actions env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           GITHUB_ACTIONS: 'true',
         },
       }
-      const detected = providerGitHubactions.detect(inputs.environment)
+      const detected = providerGitHubactions.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -43,7 +43,7 @@ describe('GitHub Actions Params', () => {
   it('gets correct params for a push event', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_REF: 'refs/heads/master',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
@@ -70,7 +70,7 @@ describe('GitHub Actions Params', () => {
   it('gets correct params for a PR', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',
@@ -105,7 +105,7 @@ describe('GitHub Actions Params', () => {
   it('gets correct buildURL for a PR', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_JOB: 'testJob',
@@ -173,7 +173,7 @@ describe('GitHub Actions Params', () => {
   it('gets correct buildURL by default for a PR', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_JOB: 'testJob',
@@ -239,7 +239,7 @@ describe('GitHub Actions Params', () => {
   it('gets correct params for a merge', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',
@@ -284,7 +284,7 @@ describe('GitHub Actions Params', () => {
           slug: 'testOrg/testRepo',
         },
       },
-      environment: {
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_SERVER_URL: 'https://github.com',
       },
@@ -311,7 +311,7 @@ describe('GitHub Actions Params', () => {
   it('gets an improper merge commit message', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',

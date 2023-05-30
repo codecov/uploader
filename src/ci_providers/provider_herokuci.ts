@@ -6,7 +6,7 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs} = inputs
+  const { args, envs} = inputs
   return args.build || envs.HEROKU_TEST_RUN_ID || ''
 }
 
@@ -15,7 +15,7 @@ function _getBuildURL(): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs} = inputs
+  const { args, envs} = inputs
   return args.branch || envs.HEROKU_TEST_RUN_BRANCH || ''
 }
 
@@ -37,7 +37,7 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs} = inputs
+  const { args, envs} = inputs
   return args.sha || envs.HEROKU_TEST_RUN_COMMIT_VERSION || ''
 }
 

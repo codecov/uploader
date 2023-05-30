@@ -15,21 +15,21 @@ describe('HerokuCI Params', () => {
     it('does not run without HerokuCI env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {},
+        envs: {},
       }
-      const detected = providerHerokuci.detect(inputs.environment)
+      const detected = providerHerokuci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with Herokuci env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           CI: 'true',
           HEROKU_TEST_RUN_BRANCH: 'test',
         },
       }
-      const detected = providerHerokuci.detect(inputs.environment)
+      const detected = providerHerokuci.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -38,7 +38,7 @@ describe('HerokuCI Params', () => {
   it('gets the correct params on no env variables', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {},
+      envs: {},
     }
     const expected: IServiceParams = {
       branch: '',
@@ -62,7 +62,7 @@ describe('HerokuCI Params', () => {
   it('gets the correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { tag: '', url: '', source: '', flags: '', slug: '', upstream: '' },
-      environment: {
+      envs: {
         CI: 'true',
         HEROKU_TEST_RUN_BRANCH: 'testBranch',
         HEROKU_TEST_RUN_COMMIT_VERSION: 'testSha',
@@ -100,7 +100,7 @@ describe('HerokuCI Params', () => {
           slug: 'testOrg/testRepo',
         },
       },
-      environment: {},
+      envs: {},
     }
     const expected: IServiceParams = {
       branch: 'branch',

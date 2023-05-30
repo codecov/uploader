@@ -7,17 +7,17 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.BITRISE_BUILD_NUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.BITRISE_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.BITRISE_GIT_BRANCH || ''
 }
 
@@ -26,7 +26,7 @@ function _getJob() {
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.pr || envs.BITRISE_PULL_REQUEST || ''
 }
 
@@ -39,7 +39,7 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.GIT_CLONE_COMMIT_HASH || ''
 }
 

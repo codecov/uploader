@@ -5,7 +5,7 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.CODEBUILD_BUILD_ID || ''
 }
 
@@ -14,7 +14,7 @@ function _getBuildURL(): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return (
     args.branch ||
     (envs.CODEBUILD_WEBHOOK_HEAD_REF
@@ -28,7 +28,7 @@ function _getJob(envs: UploaderEnvs): string {
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return (
     args.pr ||
     (envs.CODEBUILD_SOURCE_VERSION &&
@@ -47,12 +47,12 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.CODEBUILD_RESOLVED_SOURCE_VERSION || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (args.slug !== '') return args.slug
   return (
     (envs.CODEBUILD_SOURCE_REPO_URL
@@ -69,7 +69,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
     build: _getBuild(inputs),
     buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

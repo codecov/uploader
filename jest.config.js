@@ -11,4 +11,5 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/test/test_helpers.ts'],
   reporters: ['jest-spec-reporter'],
   testPathIgnorePatterns: ['<rootDir>/dist/'],
+  modulePathIgnorePatterns: ['<rootDir>/dist'],
 }

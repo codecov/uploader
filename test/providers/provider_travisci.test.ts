@@ -13,33 +13,33 @@ describe('TravisCI Params', () => {
     it('does not run with Shipable env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {},
+        envs: {},
       }
-      let detected = providerTravisci.detect(inputs.environment)
+      let detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.environment.CI = 'true'
-      detected = providerTravisci.detect(inputs.environment)
+      inputs.envs.CI = 'true'
+      detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
 
-      inputs.environment.TRAVIS = 'true'
-      detected = providerTravisci.detect(inputs.environment)
+      inputs.envs.TRAVIS = 'true'
+      detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeTruthy()
 
-      inputs.environment.SHIPPABLE = 'true'
-      detected = providerTravisci.detect(inputs.environment)
+      inputs.envs.SHIPPABLE = 'true'
+      detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with TravisCI env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           CI: 'true',
           TRAVIS: 'true',
         },
       }
-      const detected = providerTravisci.detect(inputs.environment)
+      const detected = providerTravisci.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -47,7 +47,7 @@ describe('TravisCI Params', () => {
   it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         CI: 'true',
         TRAVIS: 'true',
         TRAVIS_JOB_NUMBER: '1',
@@ -76,7 +76,7 @@ describe('TravisCI Params', () => {
   it('gets correct params on PR', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         CI: 'true',
         TRAVIS: 'true',
         TRAVIS_BRANCH: 'branch',
@@ -107,7 +107,7 @@ describe('TravisCI Params', () => {
   it('gets correct params on PR with no pull request branch', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         CI: 'true',
         TRAVIS: 'true',
         TRAVIS_BRANCH: 'branch',
@@ -146,7 +146,7 @@ describe('TravisCI Params', () => {
           slug: 'testOrg/testRepo',
         },
       },
-      environment: {
+      envs: {
         CI: 'true',
         TRAVIS: 'true',
       },

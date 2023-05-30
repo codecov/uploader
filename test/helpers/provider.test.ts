@@ -16,7 +16,7 @@ describe('detectProvider()', () => {
         sha: '1234566',
         slug: 'fakeOrg/fakeRepo',
       }},
-      environment: {},
+      envs: {},
     }
     const expectedOutput: Partial<IServiceParams> = {
       commit: '1234566',
@@ -30,7 +30,7 @@ describe('detectProvider()', () => {
       args: {...createEmptyArgs(), ...{
         sha: '1234566',
       }},
-      environment: {},
+      envs: {},
     }
     const expectedOutput: Partial<IServiceParams> = {
       commit: '1234566',
@@ -46,7 +46,7 @@ describe('detectProvider()', () => {
     })
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs()},
-      environment: {},
+      envs: {},
     }
     await expect(detectProvider(inputs)).rejects.toThrowError(/Unable to detect SHA and slug, please specify them manually/)
   })
@@ -64,7 +64,7 @@ describe('walkProviders()', () => {
     })
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs()},
-      environment: {},
+      envs: {},
     }
     await expect(walkProviders(inputs)).rejects.toThrow(/Unable to detect provider./)
   })
@@ -72,7 +72,7 @@ describe('walkProviders()', () => {
   it('will return serviceParams if able to detect', async () => {
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs()},
-      environment: {
+      envs: {
         CI: 'true',
         CIRCLECI: 'true',
       },

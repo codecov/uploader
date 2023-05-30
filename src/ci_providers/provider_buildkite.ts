@@ -18,7 +18,7 @@ export function detect(envs: UploaderEnvs): boolean {
  * @returns {string}
  */
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.BUILDKITE_BUILD_NUMBER || ''
 }
 
@@ -29,7 +29,7 @@ function _getBuild(inputs: UploaderInputs): string {
  * @returns {string}
  */
 function _getBuildURL(inputs: UploaderInputs): string {
-  return inputs.environment.BUILDKITE_BUILD_URL || ''
+  return inputs.envs.BUILDKITE_BUILD_URL || ''
 }
 
 /**
@@ -39,7 +39,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
  * @returns {string}
  */
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.BUILDKITE_BRANCH || ''
 }
 
@@ -88,7 +88,7 @@ export function getServiceName(): string {
  * @returns {string}
  */
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (Boolean(args.sha) || Boolean(envs.BUILDKITE_COMMIT)) {
     return args.sha || envs.BUILDKITE_COMMIT || ''
   }
@@ -101,7 +101,7 @@ function _getSHA(inputs: UploaderInputs): string {
  * @returns {string}
  */
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return setSlug(args.slug, envs.BUILDKITE_ORGANIZATION_SLUG, envs.BUILDKITE_PIPELINE_SLUG)
 }
 /**
@@ -116,7 +116,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

@@ -12,20 +12,20 @@ describe('Buildkite Params', () => {
     it('does not run without Buildkite env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {},
+        envs: {},
       }
-      const detected = providerBuildkite.detect(inputs.environment)
+      const detected = providerBuildkite.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does not run without Buildkite env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           BUILDKITE: 'true',
         },
       }
-      const detected = providerBuildkite.detect(inputs.environment)
+      const detected = providerBuildkite.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -33,7 +33,7 @@ describe('Buildkite Params', () => {
   it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         BUILDKITE: 'true',
         BUILDKITE_BUILD_NUMBER: '1',
         BUILDKITE_JOB_ID: '3',
@@ -71,7 +71,7 @@ describe('Buildkite Params', () => {
           slug: 'testOrg/testRepo',
         },
       },
-      environment: {
+      envs: {
         BUILDKITE: 'true',
         CI: 'true',
       },
