@@ -16,7 +16,7 @@ import {
   UploaderInputs,
 } from '../types'
 import { info } from './logger'
-import { addProxyIfNeeded } from './proxy'
+import { addProxyHeaders, addProxyIfNeeded } from './proxy.js'
 import { IncomingHttpHeaders } from 'undici/types/header.js'
 
 /**
@@ -180,7 +180,7 @@ export function generateRequestHeadersPOST(
     'X-Reduced-Redundancy': 'false',
   }
 
-  const headers: IncomingHttpHeaders = generateHeaders(envs, initialHeaders)
+  const headers: IncomingHttpHeaders = addProxyHeaders(envs, initialHeaders)
 
   return {
     agent: addProxyIfNeeded(envs, args),
@@ -194,16 +194,7 @@ export function generateRequestHeadersPOST(
   }
 }
 
-export function generateHeaders(envs: UploaderEnvs, initialHeaders: IncomingHttpHeaders): IncomingHttpHeaders {
-  let headers: IncomingHttpHeaders
-  if (envs['PROXY_BASIC_USER'] && envs['PROXY_BASIC_PASS']) {
-    const authString = Buffer.from(`${envs['PROXY_BASIC_USER']}:${envs['PROXY_BASIC_PASS']}`).toString("base64")
-    headers = { ...initialHeaders, Authorization: `Basic ${authString}` }
-  } else {
-    headers = initialHeaders
-  }
-  return headers
-}
+
 
 export function generateRequestHeadersPUT(
   uploadURL: URL,
@@ -216,7 +207,7 @@ export function generateRequestHeadersPUT(
     'Content-Encoding': 'gzip',
   }
   
-  const headers = generateHeaders(envs, initialHeaders)
+  const headers = addProxyHeaders(envs, initialHeaders)
 
   return {
     agent: addProxyIfNeeded(envs, args),
