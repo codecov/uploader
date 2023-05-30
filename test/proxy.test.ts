@@ -1,6 +1,6 @@
 import { IncomingHttpHeaders } from "undici/types/header.js"
-import { addProxyHeaders } from "../src/helpers/proxy.js"
-import { UploaderEnvs } from "../src/types.js"
+import { addProxyHeaders } from "../src/helpers/proxy"
+import { UploaderEnvs } from "../src/types"
 
 describe('addProxyHeaders', () => {
     it('should not return an Authorization header if PROXY_BASIC_USER and PROXY_BASIC_PASS are not set', () => {

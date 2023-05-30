@@ -14,9 +14,9 @@ import {
   UploaderArgs,
   UploaderEnvs,
   UploaderInputs,
-} from '../types.js'
-import { info } from './logger.js'
-import { addProxyHeaders, addProxyIfNeeded } from './proxy.js'
+} from '../types'
+import { info } from './logger'
+import { addProxyHeaders, addProxyIfNeeded } from './proxy'
 import { IncomingHttpHeaders } from 'undici/types/header.js'
 
 /**

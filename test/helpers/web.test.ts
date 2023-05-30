@@ -16,9 +16,9 @@ import {
   populateBuildParams,
   uploadToCodecovPOST,
   uploadToCodecovPUT,
-} from '../../src/helpers/web.js'
+} from '../../src/helpers/web'
 import { IServiceParams, PostResults, UploaderArgs, UploaderEnvs } from '../../src/types.js'
-import { createEmptyArgs } from '../test_helpers.js'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Web Helpers', () => {
   let uploadURL: string
