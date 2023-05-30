@@ -8,12 +8,12 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs) {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.APPVEYOR_JOB_ID || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs) {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   if (
     envs.APPVEYOR_URL &&
     envs.APPVEYOR_REPO_NAME &&
@@ -28,7 +28,7 @@ function _getBuildURL(inputs: UploaderInputs) {
 }
 
 function _getBranch(inputs: UploaderInputs) {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.APPVEYOR_REPO_BRANCH || ''
 }
 
@@ -44,7 +44,7 @@ function _getJob(envs: UploaderEnvs) {
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER || ''
 }
 
@@ -57,12 +57,12 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs) {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.APPVEYOR_PULL_REQUEST_HEAD_COMMIT || envs.APPVEYOR_REPO_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs) {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (args.slug !== '') return args.slug
   return envs.APPVEYOR_REPO_NAME || ''
 }
@@ -73,7 +73,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

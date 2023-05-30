@@ -113,7 +113,7 @@ export async function main(
   // TODO: clean and sanitize envs and args
   const envs = process.env
   // args
-  const inputs: UploaderInputs = { args, environment: envs }
+  const inputs: UploaderInputs = { args, envs }
 
   let uploadHost: string
   if (args.url) {
@@ -418,6 +418,7 @@ export async function main(
       token,
       query,
       args.source || '',
+      envs,
       args,
     )
 
@@ -428,6 +429,7 @@ export async function main(
     const statusAndResultPair = await webHelpers.uploadToCodecovPUT(
       postResults,
       gzippedFile,
+      envs,
       args,
     )
     info(JSON.stringify(statusAndResultPair))

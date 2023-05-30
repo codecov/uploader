@@ -28,6 +28,7 @@ describe('CI Providers', () => {
 
     describe(`${provider.getServiceName()} can return a ISeviceParams object that`, () => {
       const inputs: UploaderInputs = {
+        envs: {},
         args: {
           ...createEmptyArgs(),
           ...{
@@ -35,7 +36,6 @@ describe('CI Providers', () => {
             slug: 'testOrg/testRepo',
           },
         },
-        environment: {},
       }
 
       it('has a sha', async () => {

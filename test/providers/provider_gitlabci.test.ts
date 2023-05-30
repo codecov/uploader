@@ -15,20 +15,20 @@ describe('GitLabCI Params', () => {
     it('does not run without GitLabCI env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {},
+        envs: {},
       }
-      const detected = providerGitLabci.detect(inputs.environment)
+      const detected = providerGitLabci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with GitLabCI env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           GITLAB_CI: 'true',
         },
       }
-      const detected = providerGitLabci.detect(inputs.environment)
+      const detected = providerGitLabci.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -36,7 +36,7 @@ describe('GitLabCI Params', () => {
   it('gets correct empty params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         GITLAB_CI: 'true',
       },
     }
@@ -61,7 +61,7 @@ describe('GitLabCI Params', () => {
   it('gets correct initial params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         CI_BUILD_ID: '1',
         CI_BUILD_REF: 'testingsha',
         CI_BUILD_REF_NAME: 'main',
@@ -89,7 +89,7 @@ describe('GitLabCI Params', () => {
   it('gets correct second params', async () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         CI_COMMIT_REF_NAME: 'master',
         CI_COMMIT_SHA: 'testsha',
         CI_JOB_ID: '2',
@@ -114,26 +114,26 @@ describe('GitLabCI Params', () => {
   describe('getSlug()', () => {
     const inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
-      environment: {
+      envs: {
         GITLAB_CI: 'true',
       },
     }
 
     it('can get the slug from http', async () => {
-      inputs.environment.CI_BUILD_REPO =
+      inputs.envs.CI_BUILD_REPO =
         'https://gitlab.com/testOrg/testRepo.git'
       const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from git url', async () => {
-      inputs.environment.CI_BUILD_REPO = 'git@gitlab.com:testOrg/testRepo.git'
+      inputs.envs.CI_BUILD_REPO = 'git@gitlab.com:testOrg/testRepo.git'
       const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
     })
 
     it('can get the slug from git config', async () => {
-      inputs.environment.CI_BUILD_REPO = ''
+      inputs.envs.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
@@ -144,7 +144,7 @@ describe('GitLabCI Params', () => {
     })
 
     it('can get the slug from git config as /', async () => {
-      inputs.environment.CI_BUILD_REPO = ''
+      inputs.envs.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
@@ -155,7 +155,7 @@ describe('GitLabCI Params', () => {
     })
 
     it('can handle no remote origin url', async () => {
-      inputs.environment.CI_BUILD_REPO = ''
+      inputs.envs.CI_BUILD_REPO = ''
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
@@ -178,7 +178,7 @@ describe('GitLabCI Params', () => {
           slug: 'testOrg/testRepo',
         },
       },
-      environment: {
+      envs: {
         GITLAB_CI: 'true',
       },
     }

@@ -8,17 +8,17 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.DRONE_BUILD_NUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.DRONE_BUILD_LINK || envs.DRONE_BUILD_URL || envs.CI_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.DRONE_BRANCH || ''
 }
 
@@ -27,7 +27,7 @@ function _getJob(): string {
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.pr || envs.DRONE_PULL_REQUEST || ''
 }
 
@@ -40,12 +40,12 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.DRONE_COMMIT_SHA || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (args.slug !== '') return args.slug
   return envs.DRONE_REPO || ''
 }

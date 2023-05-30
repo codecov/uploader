@@ -8,27 +8,27 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.CI_BUILD_NUMBER || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.CI_BUILD_LINK || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.CI_COMMIT_SOURCE_BRANCH || envs.CI_COMMIT_BRANCH || ''
 }
 
 function _getJob(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.CI_JOB_NUMBER || ''
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.pr || envs.CI_COMMIT_PULL_REQUEST || ''
 }
 
@@ -41,17 +41,17 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.CI_COMMIT_SHA || ''
 }
 
 function _getTag(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.tag || envs.CI_COMMIT_TAG || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (args.slug !== '') return args.slug
   return envs.CI_REPO || ''
 }

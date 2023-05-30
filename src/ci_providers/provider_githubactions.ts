@@ -13,7 +13,7 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.GITHUB_RUN_ID || ''
 }
 
@@ -29,7 +29,7 @@ async function _getJobURL(inputs: UploaderInputs): Promise<string> {
   }
 
   const data = await res.body.json()
-  const { environment: envs } = inputs
+  const { envs } = inputs
   for (const job of data.jobs) {
     if (job.name == envs.GITHUB_JOB) {
       return job.html_url
@@ -39,7 +39,7 @@ async function _getJobURL(inputs: UploaderInputs): Promise<string> {
 }
 
 async function _getBuildURL(inputs: UploaderInputs): Promise<string> {
-  const { environment: envs } = inputs
+  const { envs } = inputs
 
   const url = await _getJobURL(inputs)
   if (url !== '') {
@@ -53,7 +53,7 @@ async function _getBuildURL(inputs: UploaderInputs): Promise<string> {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   const branchRegex = /refs\/heads\/(.*)/
   const branchMatches = branchRegex.exec(envs.GITHUB_REF || '')
   let branch
@@ -72,7 +72,7 @@ function _getJob(envs: UploaderEnvs): string {
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   let match
   if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
     const prRegex = /refs\/pull\/([0-9]+)\/merge/
@@ -93,7 +93,7 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (args.sha) return args.sha
 
   const pr = _getPR(inputs)
@@ -120,7 +120,7 @@ function _getSHA(inputs: UploaderInputs): string {
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (args.slug !== '') return args.slug
   return envs.GITHUB_REPOSITORY || ''
 }
@@ -131,7 +131,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
     build: _getBuild(inputs),
     buildURL: await _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

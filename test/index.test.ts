@@ -14,7 +14,7 @@ import { version } from '../package.json'
 import { UploadLogger } from '../src/helpers/logger'
 import * as providerHelpers from '../src/helpers/provider'
 import * as webHelpers from '../src/helpers/web'
-import { IServiceParams } from '../src/types'
+import { IServiceParams, UploaderArgs, } from '../src/types'
 
 // Backup the env
 const realEnv = { ...process.env }
@@ -78,7 +78,7 @@ describe('Uploader Core', () => {
       upstream: '',
       url: 'https://codecov.io',
     }
-    const inputs = { args, environment: process.env }
+    const inputs = { args, envs: process.env }
     const serviceParams = await providerHelpers.detectProvider(inputs, args.token != '')
     const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
     const query = webHelpers.generateQuery(buildParams)
@@ -196,7 +196,7 @@ describe('Uploader Core', () => {
         slug: '',
         upstream: ''
       }
-      const inputs = { args, environment: process.env }
+      const inputs = { args, envs: process.env }
       const serviceParams = await providerHelpers.detectProvider(inputs, args.token != '')
       const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
       const query = webHelpers.generateQuery(buildParams)
@@ -225,7 +225,7 @@ describe('Uploader Core', () => {
     process.env.CIRCLECI = 'true'
 
     const parent = '2x4bqz123abc'
-    const args = {
+    const args: UploaderArgs = {
       token: 'abcdefg',
       url: 'https://codecov.io',
       parent,
@@ -233,7 +233,7 @@ describe('Uploader Core', () => {
       slug: '',
       upstream: ''
     }
-    const inputs = { args, environment: process.env }
+    const inputs = { args, envs: process.env }
     const serviceParams = await providerHelpers.detectProvider(inputs, args.token != '')
     const buildParams = webHelpers.populateBuildParams(inputs, serviceParams)
     const query = webHelpers.generateQuery(buildParams)

@@ -17,7 +17,7 @@ import {
   uploadToCodecovPOST,
   uploadToCodecovPUT,
 } from '../../src/helpers/web'
-import { IServiceParams, PostResults, UploaderArgs } from '../../src/types'
+import { IServiceParams, PostResults, UploaderArgs, UploaderEnvs } from '../../src/types.js'
 import { createEmptyArgs } from '../test_helpers'
 
 describe('Web Helpers', () => {
@@ -46,6 +46,12 @@ describe('Web Helpers', () => {
   })
 
   it('Can POST to the uploader endpoint (HTTP)', async () => {
+    const envs: UploaderEnvs = {}
+    const args: UploaderArgs = {
+      flags: '',
+      slug: '',
+      upstream: '',
+    }
     uploadURL = 'http://codecov.io'
     mockClient = mockAgent.get(uploadURL)
     mockClient.intercept({
@@ -58,11 +64,8 @@ describe('Web Helpers', () => {
       token,
       query,
       source,
-      {
-        flags: '',
-        slug: '',
-        upstream: '',
-      },
+      envs,
+      args,
     )
     try {
       expect(response).toBe('testPOSTHTTP')
@@ -73,6 +76,12 @@ describe('Web Helpers', () => {
   })
 
   it('Can POST to the uploader endpoint (HTTPS)', async () => {
+    const envs: UploaderEnvs = {}
+    const args: UploaderArgs = {
+      flags: '',
+      slug: '',
+      upstream: '',
+    }
     jest.spyOn(console, 'log').mockImplementation(() => void {})
     uploadURL = 'https://codecov.io'
     mockClient = mockAgent.get(uploadURL)
@@ -86,16 +95,19 @@ describe('Web Helpers', () => {
       token,
       query,
       source,
-      {
-        flags: '',
-        slug: '',
-        upstream: '',
-      },
+      envs,
+      args,
     )
     expect(response).toBe('testPOSTHTTPS')
   })
 
   it('Can PUT to the storage endpoint', async () => {
+    const envs: UploaderEnvs = {}
+    const args: UploaderArgs = {
+      flags: '',
+      slug: '',
+      upstream: '',
+    }
     jest.spyOn(console, 'log').mockImplementation(() => void {})
     const postResults: PostResults = {
       putURL: new URL('https://codecov.io'),
@@ -108,11 +120,7 @@ describe('Web Helpers', () => {
       path: '/',
     }).reply(200, postResults.resultURL.href)
 
-    const response = await uploadToCodecovPUT(postResults, uploadFile, {
-      flags: '',
-      slug: '',
-      upstream: '',
-    })
+    const response = await uploadToCodecovPUT(postResults, uploadFile, envs, args)
     expect(response.resultURL.href).toStrictEqual('https://results.codecov.io/')
   })
 
@@ -155,13 +163,15 @@ describe('Web Helpers', () => {
   }) */
 
   it('can populateBuildParams() from args', () => {
+    const envs: UploaderEnvs = {}
+    const args: UploaderArgs = {
+      ...createEmptyArgs(),
+      ...{ flags: 'testFlag', tag: 'testTag' },
+    }
     const result = populateBuildParams(
       {
-        args: {
-          ...createEmptyArgs(),
-          ...{ flags: 'testFlag', tag: 'testTag' },
-        },
-        environment: {},
+        envs,
+        args,
       },
       {
         name: '',
@@ -181,8 +191,10 @@ describe('Web Helpers', () => {
   })
 
   it('can populateBuildParams() from args with multiple flags as string', () => {
+    const envs: UploaderEnvs = {}
     const result = populateBuildParams(
       {
+        envs,
         args: {
           ...createEmptyArgs(),
           ...{
@@ -190,7 +202,6 @@ describe('Web Helpers', () => {
             tag: 'testTag',
           },
         },
-        environment: {},
       },
       {
         name: '',
@@ -210,8 +221,10 @@ describe('Web Helpers', () => {
   })
 
   it('can populateBuildParams() from args with multiple flags as list', () => {
+    const envs: UploaderEnvs = {}
     const result = populateBuildParams(
       {
+        envs,
         args: {
           ...createEmptyArgs(),
           ...{
@@ -219,7 +232,6 @@ describe('Web Helpers', () => {
             tag: 'testTag',
           },
         },
-        environment: {},
       },
       {
         name: '',
@@ -291,6 +303,7 @@ describe('displayChangelog()', () => {
 })
 
 describe('generateRequestHeadersPOST()', () => {
+  const envs: UploaderEnvs = {}
   const args: UploaderArgs = { ...createEmptyArgs() }
 
   it('should return return the correct url when args.upstream is not set', () => {
@@ -300,6 +313,7 @@ describe('generateRequestHeadersPOST()', () => {
       '134',
       'slug=testOrg/testUploader',
       'G',
+      envs,
       args,
     )
 
@@ -313,12 +327,14 @@ describe('generateRequestHeadersPOST()', () => {
   })
 
   it('should return return the correct url when args.upstream is set', () => {
+    const envs: UploaderEnvs = {}
     args.upstream = 'http://proxy.local'
     const requestHeaders = generateRequestHeadersPOST(
       new URL('https:localhost.local'),
       '134',
       'slug=testOrg/testUploader',
       'G',
+      envs,
       args,
     )
 
@@ -336,6 +352,7 @@ describe('generateRequestHeadersPOST()', () => {
 })
 
 describe('generateRequestHeadersPUT()', () => {
+  const envs: UploaderEnvs = {}
   const args: UploaderArgs = { ...createEmptyArgs() }
 
   it('should return return the correct url when args.upstream is not set', () => {
@@ -343,6 +360,7 @@ describe('generateRequestHeadersPUT()', () => {
     const requestHeaders = generateRequestHeadersPUT(
       new URL('https://localhost.local'),
       "I'm a coverage report!",
+      envs,
       args,
     )
 
@@ -352,10 +370,12 @@ describe('generateRequestHeadersPUT()', () => {
   })
 
   it('should return return the correct url when args.upstream is set', () => {
+    const envs: UploaderEnvs = {}
     args.upstream = 'http://proxy.local'
     const requestHeaders = generateRequestHeadersPUT(
       new URL('https://localhost.local'),
       "I'm a coverage report!",
+      envs,
       args,
     )
 
@@ -366,3 +386,4 @@ describe('generateRequestHeadersPUT()', () => {
     )
   })
 })
+

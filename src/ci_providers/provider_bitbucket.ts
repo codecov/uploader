@@ -7,7 +7,7 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.BITBUCKET_BUILD_NUMBER || ''
 }
 
@@ -17,7 +17,7 @@ function _getBuildURL(): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.BITBUCKET_BRANCH || ''
 }
 
@@ -26,7 +26,7 @@ function _getJob(envs: UploaderEnvs): string {
 }
 
 function _getPR(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.pr || envs.BITBUCKET_PR_ID || ''
 }
 
@@ -39,7 +39,7 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   let commit = envs.BITBUCKET_COMMIT || ''
 
   if (commit && validateSHA(commit, 12)) {
@@ -50,7 +50,7 @@ function _getSHA(inputs: UploaderInputs): string {
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (args.slug !== '') return args.slug
   return envs.BITBUCKET_REPO_FULL_NAME || ''
 }
@@ -61,7 +61,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
     build: _getBuild(inputs),
     buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

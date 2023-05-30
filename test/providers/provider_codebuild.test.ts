@@ -13,21 +13,21 @@ describe('CodeBuild Params', () => {
     it('does not run without CodeBuild env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {},
+        envs: {},
       }
-      const detected = providerCodeBuild.detect(inputs.environment)
+      const detected = providerCodeBuild.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with CodeBuild env variable', () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           CI: 'true',
           CODEBUILD_CI: 'true',
         },
       }
-      const detected = providerCodeBuild.detect(inputs.environment)
+      const detected = providerCodeBuild.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
@@ -36,7 +36,7 @@ describe('CodeBuild Params', () => {
     it('gets correct params', async () => {
       const inputs: UploaderInputs = {
         args: { ...createEmptyArgs() },
-        environment: {
+        envs: {
           CI: 'true',
           CODEBUILD_CI: 'true',
           CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
@@ -72,7 +72,7 @@ describe('CodeBuild Params', () => {
             slug: 'testOrg/testRepo',
           },
         },
-        environment: {
+        envs: {
           CI: 'true',
           CODEBUILD_CI: 'true',
           CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',

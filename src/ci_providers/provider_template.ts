@@ -137,7 +137,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),
