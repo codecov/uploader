@@ -1,5 +1,5 @@
 import { ProxyAgent } from 'undici';
-import { UploaderArgs, UploaderEnvs } from '../types';
+import { UploaderArgs, UploaderEnvs } from '../types.js';
 import { IncomingHttpHeaders } from 'undici/types/header.js';
 
 export function addProxyIfNeeded(envs: UploaderEnvs, args: UploaderArgs): ProxyAgent | undefined {
