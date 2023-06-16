@@ -1,6 +1,6 @@
 export interface ICLIArgument {
   name: string
-  alias: string
+  alias?: string
   type?: string
   default?: string | boolean
   description: string
@@ -58,7 +58,6 @@ const args: ICLIArgument[] = [
     description: 'Target file(s) to upload',
   },
   {
-    alias: 'full',
     name: 'fullReport',
     type: 'string',
     description: 'Specify the path to a previously uploaded Codecov report'
