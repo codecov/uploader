@@ -16,8 +16,7 @@ import {
   UploaderInputs,
 } from '../types'
 import { info } from './logger'
-import { addProxyHeaders, addProxyIfNeeded } from './proxy'
-import { IncomingHttpHeaders } from 'undici/types/header.js'
+import { addProxyIfNeeded } from './proxy'
 
 /**
  *
@@ -175,12 +174,10 @@ export function generateRequestHeadersPOST(
     source,
   )}&token=${token}&${query}`, postURL)
 
-  const initialHeaders = {
+  const headers = {
     'X-Upload-Token': token,
     'X-Reduced-Redundancy': 'false',
   }
-
-  const headers: IncomingHttpHeaders = addProxyHeaders(envs, initialHeaders)
 
   return {
     agent: addProxyIfNeeded(envs, args),
@@ -202,12 +199,10 @@ export function generateRequestHeadersPUT(
   envs: UploaderEnvs,
   args: UploaderArgs,
 ): IRequestHeaders {
-  const initialHeaders = {
+  const headers = {
     'Content-Type': 'text/plain',
     'Content-Encoding': 'gzip',
   }
-  
-  const headers = addProxyHeaders(envs, initialHeaders)
 
   return {
     agent: addProxyIfNeeded(envs, args),
