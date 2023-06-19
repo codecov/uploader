@@ -1,18 +1,37 @@
 import { ProxyAgent } from 'undici';
 import { UploaderArgs, UploaderEnvs } from '../types.js';
-import { IncomingHttpHeaders } from 'undici/types/header.js';
+import { logError } from './logger'
 
-export function addProxyIfNeeded(envs: UploaderEnvs, args: UploaderArgs): ProxyAgent | undefined {
-  return args.upstream ? new ProxyAgent({ uri: args.upstream }) : undefined;
+export function getBasicAuthToken(username: string, password: string): string {
+  const authString = Buffer.from(`${username}:${password}`).toString('base64')
+  return `Basic ${authString}`
 }
 
-export function addProxyHeaders(envs: UploaderEnvs, initialHeaders: IncomingHttpHeaders): IncomingHttpHeaders {
-  let headers: IncomingHttpHeaders
-  if (envs['PROXY_BASIC_USER'] && envs['PROXY_BASIC_PASS']) {
-    const authString = Buffer.from(`${envs['PROXY_BASIC_USER']}:${envs['PROXY_BASIC_PASS']}`).toString("base64")
-    headers = { ...initialHeaders, Authorization: `Basic ${authString}` }
-  } else {
-    headers = initialHeaders
+export function removeUrlAuth(url: string | URL): string {
+  const noAuthUrl = new URL(url)
+  noAuthUrl.username = ''
+  noAuthUrl.password = ''
+  return noAuthUrl.href
+}
+
+export function addProxyIfNeeded(envs: UploaderEnvs, args: UploaderArgs): ProxyAgent | undefined {
+  if (!args.upstream) {
+    return undefined
   }
-  return headers
+
+  // https://github.com/nodejs/undici/blob/main/docs/api/ProxyAgent.md#example---basic-proxy-request-with-authentication
+  try {
+    const proxyUrl = new URL(args.upstream)
+    if (proxyUrl.username && proxyUrl.password) {
+      return new ProxyAgent({
+        uri: removeUrlAuth(proxyUrl),
+        token: getBasicAuthToken(proxyUrl.username, proxyUrl.password),
+      })
+    }
+    return new ProxyAgent({ uri: args.upstream })
+  } catch (err) {
+    logError(`Couldn't set upstream proxy: ${err}`)
+  }
+
+  return undefined
 }
