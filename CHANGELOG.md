@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.6.1](https://github.com/codecov/uploader/compare/v0.6.0...v0.6.1) (2023-06-20)
+
+
+### Bug Fixes
+
+* **deps:** update dependency undici to v5.22.0 ([#1031](https://github.com/codecov/uploader/issues/1031)) ([32e1f90](https://github.com/codecov/uploader/commit/32e1f90f3879776bf9ca24b938f113d65cd2215b))
+* **deps:** update dependency undici to v5.22.1 ([#1059](https://github.com/codecov/uploader/issues/1059)) ([0f48b37](https://github.com/codecov/uploader/commit/0f48b3754cc1021a7f9d27a3112dd88e2bb22cba))
+* **deps:** update dependency yargs to v17.7.2 ([#1038](https://github.com/codecov/uploader/issues/1038)) ([2ab7941](https://github.com/codecov/uploader/commit/2ab7941a173f12419a5126e2a6522c0eecab0446))
+* use token param for upstream proxy auth ([b448744](https://github.com/codecov/uploader/commit/b4487448b185de43947120daf83d9f50da034922))
+
 ## [0.6.0](https://github.com/codecov/uploader/compare/v0.3.3...v0.6.0) (2023-06-16)
 
 
