@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import providers from '../../src/ci_providers'
 import { UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('CI Providers', () => {
   afterEach(() => {
@@ -27,21 +28,25 @@ describe('CI Providers', () => {
 
     describe(`${provider.getServiceName()} can return a ISeviceParams object that`, () => {
       const inputs: UploaderInputs = {
+        envs: {},
         args: {
-          sha: '123',
-          slug: 'testOrg/testRepo'
+          ...createEmptyArgs(),
+          ...{
+            sha: '123',
+            slug: 'testOrg/testRepo',
+          },
         },
-        environment: {}
       }
 
-      const serviceParams = provider.getServiceParams(inputs)
-      expect(serviceParams).not.toBeNull()
-
-      it('has a sha', () => {
+      it('has a sha', async () => {
+        const serviceParams = await provider.getServiceParams(inputs)
+        expect(serviceParams).not.toBeNull()
         expect(serviceParams.commit).toEqual(inputs.args.sha)
       })
 
-      it('has a slug', () => {
+      it('has a slug', async () => {
+        const serviceParams = await provider.getServiceParams(inputs)
+        expect(serviceParams).not.toBeNull()
         expect(serviceParams.slug).toEqual(inputs.args.slug)
       })
     })

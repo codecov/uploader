@@ -1,14 +1,19 @@
-import childProcess from 'child_process'
+import { spawnSync } from 'child_process'
 import glob from 'fast-glob'
 import fs from 'fs'
 import { readFile } from 'fs/promises'
 import { posix as path } from 'path'
 import { UploaderArgs } from '../types'
-import { logError, verbose } from './logger'
+import { info, logError, UploadLogger } from './logger'
+import { runExternalProgram } from './util'
+import micromatch from "../vendor/micromatch/index.js";
+import { SPAWNPROCESSBUFFERSIZE } from './constants'
 
-export const MARKER_NETWORK_END = '<<<<<< network\n'
+export const MARKER_NETWORK_END = '\n<<<<<< network\n'
 export const MARKER_FILE_END = '<<<<<< EOF\n'
 export const MARKER_ENV_END = '<<<<<< ENV\n'
+
+const globstar = (pattern: string) => `**/${pattern}`
 
 /**
  *
@@ -20,10 +25,10 @@ export async function getFileListing(
   projectRoot: string,
   args: UploaderArgs,
 ): Promise<string> {
-  return getAllFiles(projectRoot, projectRoot, args).join('')
+  return getAllFiles(projectRoot, projectRoot, args).join('\n')
 }
 
-export function manualBlacklist(): string[] {
+export function manualBlocklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     '.DS_Store',
@@ -32,12 +37,14 @@ export function manualBlacklist(): string[] {
     '.gitignore',
     '.nvmrc',
     '.nyc_output',
+    'bower_components',
+    'jspm_packages',
     'node_modules',
     'vendor',
   ]
 }
 
-export function globBlacklist(): string[] {
+function globBlocklist(): string[] {
   // TODO: honor the .gitignore file instead of a hard-coded list
   return [
     '__pycache__',
@@ -71,12 +78,14 @@ export function globBlacklist(): string[] {
     '*.ec',
     '*.ec',
     '*.egg',
+    '*.egg-info',
     '*.el',
     '*.env',
     '*.erb',
     '*.exe',
     '*.ftl',
     '*.gif',
+    '*.go',
     '*.gradle',
     '*.gz',
     '*.h',
@@ -92,6 +101,7 @@ export function globBlacklist(): string[] {
     '*.m4',
     '*.mak*',
     '*.map',
+    '*.marker',
     '*.md',
     '*.o',
     '*.p12',
@@ -128,6 +138,8 @@ export function globBlacklist(): string[] {
     '*~',
     '.*coveragerc',
     '.coverage*',
+    'codecov.SHA256SUM',
+    'codecov.SHA256SUM.sig',
     'coverage-summary.json',
     'createdFiles.lst',
     'fullLocaleNames.lst',
@@ -140,6 +152,9 @@ export function globBlacklist(): string[] {
     'test-result-*-codecoverage.json',
     'test_*_coverage.txt',
     'testrunner-coverage*',
+    '*.*js',
+    '.yarn',
+    '*.zip',
   ]
 }
 
@@ -152,7 +167,7 @@ export function coverageFilePatterns(): string[] {
     'report.xml',
     '*.codecov.!(exe)',
     'codecov.!(exe)',
-    'cobertura.xml',
+    '*cobertura.xml',
     'excoveralls.json',
     'luacov.report.out',
     'coverage-final.json',
@@ -165,8 +180,13 @@ export function coverageFilePatterns(): string[] {
     'gcov.info',
     '*.gcov',
     '*.lst',
+    'test_cov.xml',
   ]
 }
+
+const EMPTY_STRING = '' as const
+
+const isNegated = (path: string) => path.startsWith('!')
 
 /**
  *
@@ -180,45 +200,34 @@ export async function getCoverageFiles(
 ): Promise<string[]> {
   const globstar = (pattern: string) => `**/${pattern}`
 
-  return glob(coverageFilePatterns.map(globstar), {
+  return glob(coverageFilePatterns.map((pattern: string) => {
+    const parts = []
+
+    if (isNegated(pattern)) {
+      parts.push('!')
+      parts.push(globstar(pattern.substr(1)))
+    } else {
+      parts.push(globstar(pattern))
+    }
+
+    return parts.join(EMPTY_STRING)
+  }), {
     cwd: projectRoot,
-    ignore: [...manualBlacklist(), ...globBlacklist()],
+    dot: true,
+    ignore: getBlocklist(),
+    suppressErrors: true,
   })
 }
 
 export function fetchGitRoot(): string {
+  const currentWorkingDirectory = process.cwd() 
   try {
-    return (
-      childProcess.spawnSync('git', ['rev-parse', '--show-toplevel'], {
-        encoding: 'utf-8',
-      }).stdout || process.cwd()
-    ).trimRight()
+    const gitRoot = runExternalProgram('git', ['rev-parse', '--show-toplevel'])
+    return (gitRoot != "" ? gitRoot : currentWorkingDirectory)
   } catch (error) {
-    throw new Error('Error fetching git root. Please try using the -R flag.')
+    info(`Error fetching git root. Defaulting to ${currentWorkingDirectory}. Please try using the -R flag. ${error}`)
+    return currentWorkingDirectory
   }
-}
-
-/**
- *
- * @param {string} projectRoot
- * @returns {string[]}
- */
-export function parseGitIgnore(projectRoot: string): string[] {
-  const gitIgnorePath = path.join(projectRoot, '.gitignore')
-  /** @type {string[]} */
-  let lines: string[] = []
-  try {
-    lines = readAllLines(gitIgnorePath) || []
-  } catch (error) {
-    throw new Error(`Unable to open ${gitIgnorePath}: ${error}`)
-  }
-
-  return lines.filter(line => {
-    if (line === '' || line.startsWith('#')) {
-      return false
-    }
-    return true
-  })
 }
 
 /**
@@ -233,26 +242,35 @@ export function getAllFiles(
   dirPath: string,
   args: UploaderArgs,
 ): string[] {
-  verbose(`Searching for files in ${dirPath}`, Boolean(args.verbose))
+  UploadLogger.verbose(`Searching for files in ${dirPath}`)
 
-  return glob
-    .sync(['**/*', '**/.[!.]*'], {
-      cwd: projectRoot,
-      ignore: globBlacklist(),
-    })
-    .map(file => `${file}\n`)
-}
+  const { stdout, status, error } = spawnSync(
+    'git',
+    ['-C', dirPath, 'ls-files'],
+    { encoding: 'utf8', maxBuffer: SPAWNPROCESSBUFFERSIZE },
+  )
 
-/**
- *
- * @param {string} filePath
- * @returns {string[]}
- */
-export function readAllLines(filePath: string): string[] {
-  const fileContents = fs.readFileSync(filePath)
+  let files = []
+  if (error instanceof Error || status !== 0) {
+    files = glob
+      .sync(['**/*', '**/.[!.]*'], {
+        cwd: dirPath,
+        ignore: manualBlocklist().map(globstar),
+        suppressErrors: true,
+      })
+  } else {
+    files = stdout.split(/[\r\n]+/)
+  }
 
-  const lines = fileContents.toString().split('\n') || []
-  return lines
+  if (args.networkFilter) {
+    files = files.filter(file => file.startsWith(String(args.networkFilter)))
+  }
+
+  if (args.networkPrefix) {
+    files = files.map(file => String(args.networkPrefix) + file)
+  }
+
+  return files
 }
 
 /**
@@ -324,3 +342,25 @@ export function removeFile(projectRoot: string, filePath: string): void {
     }
   })
 }
+export function getBlocklist(): string[] {
+  return [...manualBlocklist(), ...globBlocklist()].map(globstar)
+}
+
+export function filterFilesAgainstBlockList(paths: string[], ignoreGlobs: string[]): string[] {
+  return micromatch.not(paths, ignoreGlobs, {windows: true})
+}
+
+export function cleanCoverageFilePaths(projectRoot: string, paths: string[]): string[] {
+  UploadLogger.verbose(`Preparing to clean the following coverage paths: ${paths.toString()}`)
+  const coverageFilePaths = [... new Set(paths.filter(file => {
+    return fileExists(projectRoot, file)
+  }))]
+
+  if (coverageFilePaths.length === 0) {
+    logError(`None of the following appear to exist as files: ${paths.toString()}`)
+    throw new Error('Error while cleaning paths. No paths matched existing files!')
+  }
+
+  return coverageFilePaths
+}
+

@@ -1,11 +1,22 @@
+import dns from 'node:dns'
 import { snakeCase } from 'snake-case'
-import superagent from 'superagent'
+import {
+  request,
+  setGlobalDispatcher,
+} from 'undici'
 
 import { version } from '../../package.json'
-import { IServiceParams, UploaderArgs, UploaderInputs } from '../types'
-import { info, logError, verbose } from './logger'
-import * as validateHelpers from './validate'
-import { checkValueType } from './validate'
+import {
+  IRequestHeaders,
+  IServiceParams,
+  PostResults,
+  PutResults,
+  UploaderArgs,
+  UploaderEnvs,
+  UploaderInputs,
+} from '../types'
+import { info } from './logger'
+import { addProxyIfNeeded } from './proxy'
 
 /**
  *
@@ -16,21 +27,17 @@ import { checkValueType } from './validate'
  */
 export function populateBuildParams(
   inputs: UploaderInputs,
-  serviceParams: IServiceParams,
-): IServiceParams {
-  const { args, environment: envs } = inputs
+  serviceParams: Partial<IServiceParams>,
+): Partial<IServiceParams> {
+  const { args, envs } = inputs
   serviceParams.name = args.name || envs.CODECOV_NAME || ''
   serviceParams.tag = args.tag || ''
 
-  let flags: string[]
-  if (typeof args.flags === 'object') {
-    flags = [...args.flags]
+  if (typeof args.flags === "string") {
+    serviceParams.flags = args.flags
   } else {
-    flags = (args.flags || '').split(',')
+    serviceParams.flags = args.flags.join(',')
   }
-  serviceParams.flags = flags
-    .filter(flag => validateHelpers.validateFlags(flag))
-    .join(',')
 
   serviceParams.parent = args.parent || ''
   return serviceParams
@@ -44,64 +51,67 @@ export function getPackage(source: string): string {
   }
 }
 
+
 export async function uploadToCodecovPUT(
-  uploadURL: string,
+  putAndResultUrlPair: PostResults,
   uploadFile: string | Buffer,
-): Promise<{ status: string; resultURL: string }> {
+  envs: UploaderEnvs,
+  args: UploaderArgs
+): Promise<PutResults> {
   info('Uploading...')
 
-  const { putURL, resultURL } = parsePOSTResults(uploadURL)
-
-  try {
-    const result = await superagent
-      .put(`${putURL}`)
-      .retry()
-      .send(uploadFile)
-      .set('Content-Type', 'text/plain')
-      .set('Content-Encoding', 'gzip')
-
-    if (result.status === 200) {
-      return { status: 'success', resultURL }
-    }
-    throw new Error(`${result.status}, ${result.body}`)
-  } catch (error) {
-    throw new Error(`Error PUTing file to storage: ${error}`)
+  const requestHeaders = generateRequestHeadersPUT(
+    putAndResultUrlPair.putURL,
+    uploadFile,
+    envs,
+    args,
+  )
+  if (requestHeaders.agent) {
+    setGlobalDispatcher(requestHeaders.agent)
   }
+  dns.setDefaultResultOrder('ipv4first');
+  const response = await request(requestHeaders.url.origin, requestHeaders.options)
+
+  if (response.statusCode !== 200) {
+    const data = await response.body.text()
+    throw new Error(
+      `There was an error fetching the storage URL during PUT: ${response.statusCode} - ${data}`,
+    )
+  }
+
+  return { status: 'success', resultURL: putAndResultUrlPair.resultURL }
 }
 
-interface SuperAgentResponse extends superagent.Response {
-  res?: {
-    text: string
-  }
-}
-
-export async function uploadToCodecov(
-  uploadURL: string,
+export async function uploadToCodecovPOST(
+  postURL: URL,
   token: string,
   query: string,
-  uploadFile: string | Buffer,
   source: string,
+  envs: UploaderEnvs,
+  args: UploaderArgs,
 ): Promise<string> {
-  const result: SuperAgentResponse = await superagent
-    .post(
-      `${uploadURL}/upload/v4?package=${getPackage(
-        source,
-      )}&token=${token}&${query}`,
-    )
-    .retry()
-    .set('X-Upload-Token', token)
-    .set('X-Reduced-Redundancy', 'false')
-    .on('error', err => {
-      logError(
-        `Error POSTing to ${uploadURL}: ${err.status} ${err.response?.text}`,
-      )
-    })
-    .ok(res => res.status === 200)
-
-  if (result.res) {
-    return result.res.text
+  const requestHeaders = generateRequestHeadersPOST(
+    postURL,
+    token,
+    query,
+    source,
+    envs,
+    args,
+  )
+  if (requestHeaders.agent) {
+    setGlobalDispatcher(requestHeaders.agent)
   }
-  throw new Error(`There was an error fetching the storage URL during POST`)
+  dns.setDefaultResultOrder('ipv4first');
+  const response = await request(requestHeaders.url.origin, requestHeaders.options)
+
+  if (response.statusCode !== 200) {
+    const data = await response.body.text()
+    throw new Error(
+      `There was an error fetching the storage URL during POST: ${response.statusCode} - ${data}`,
+    )
+  }
+
+  return await response.body.text()
 }
 
 /**
@@ -109,35 +119,100 @@ export async function uploadToCodecov(
  * @param {Object} queryParams
  * @returns {string}
  */
-export function generateQuery(queryParams: IServiceParams): string {
-  checkValueType('pr', queryParams.pr, 'number')
-  if (queryParams.pr === 0  || isNaN(Number(queryParams.pr))) {
-    queryParams.pr = ''
-  }
-  return Object.entries(queryParams)
-    .map(([key, value]) => `${snakeCase(key)}=${value}`)
-    .join('&')
+export function generateQuery(queryParams: Partial<IServiceParams>): string {
+  return new URLSearchParams(
+    Object.entries(queryParams).map(([key, value]) => [snakeCase(key), value]),
+  ).toString()
 }
 
-export function parsePOSTResults(uploadURL: string): {
-  putURL: string
-  resultURL: string
-} {
+
+
+export function parsePOSTResults(putAndResultUrlPair: string): PostResults {
+  info(putAndResultUrlPair)
+
   // JS for [[:graph:]] https://www.regular-expressions.info/posixbrackets.html
   const re = /([\x21-\x7E]+)[\r\n]?/gm
 
-  const matches = uploadURL.match(re)
+  const matches = putAndResultUrlPair.match(re)
 
   if (matches === null) {
-    throw new Error(`Parsing results from POST failed: (${uploadURL})`)
+    throw new Error(`Parsing results from POST failed: (${putAndResultUrlPair})`)
   }
 
   if (matches?.length !== 2) {
-    throw new Error(`Incorrect number of urls when parsing results from POST: ${matches.length}`)
+    throw new Error(
+      `Incorrect number of urls when parsing results from POST: ${matches.length}`,
+    )
   }
 
-  const putURL = matches[1]
-  const resultURL = matches[0].trimEnd() // This match may have trailing 0x0A and 0x0D that must be trimmed
+  if (matches[0] === undefined || matches[1] === undefined) {
+    throw new Error(
+      `Invalid URLs received when parsing results from POST: ${matches[0]},${matches[1]}`
+    )
+  }
+  const resultURL = new URL(matches[0].trimEnd())
+  const putURL = new URL(matches[1])
+   // This match may have trailing 0x0A and 0x0D that must be trimmed
 
   return { putURL, resultURL }
+}
+
+export function displayChangelog(): void {
+  info(`The change log for this version (v${version}) can be found at`)
+  info(`https://github.com/codecov/uploader/blob/v${version}/CHANGELOG.md`)
+}
+
+export function generateRequestHeadersPOST(
+  postURL: URL,
+  token: string,
+  query: string,
+  source: string,
+  envs: UploaderEnvs,
+  args: UploaderArgs,
+): IRequestHeaders {
+  const url = new URL(`upload/v4?package=${getPackage(
+    source,
+  )}&token=${token}&${query}`, postURL)
+
+  const headers = {
+    'X-Upload-Token': token,
+    'X-Reduced-Redundancy': 'false',
+  }
+
+  return {
+    agent: addProxyIfNeeded(envs, args),
+    url: url,
+    options: {
+      headers,
+      method: 'POST',
+      origin: postURL,
+      path: `${url.pathname}${url.search}`,
+    },
+  }
+}
+
+
+
+export function generateRequestHeadersPUT(
+  uploadURL: URL,
+  uploadFile: string | Buffer,
+  envs: UploaderEnvs,
+  args: UploaderArgs,
+): IRequestHeaders {
+  const headers = {
+    'Content-Type': 'text/plain',
+    'Content-Encoding': 'gzip',
+  }
+
+  return {
+    agent: addProxyIfNeeded(envs, args),
+    url: uploadURL,
+    options: {
+      body: uploadFile,
+      headers,
+      method: 'PUT',
+      origin: uploadURL,
+      path: `${uploadURL.pathname}${uploadURL.search}`,
+    },
+  }
 }

@@ -8,27 +8,27 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs) {
-  const { args, environment: envs } = inputs
-  return args.build || encodeURIComponent(envs.APPVEYOR_JOB_ID || '')
+  const { args, envs } = inputs
+  return args.build || envs.APPVEYOR_JOB_ID || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs) {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   if (
     envs.APPVEYOR_URL &&
     envs.APPVEYOR_REPO_NAME &&
     envs.APPVEYOR_BUILD_ID &&
     envs.APPVEYOR_JOB_ID
   ) {
-    return encodeURIComponent(
-      `${envs.APPVEYOR_URL}/project/${envs.APPVEYOR_REPO_NAME}/builds/${envs.APPVEYOR_BUILD_ID}/job/${envs.APPVEYOR_JOB_ID}`,
+    return (
+      `${envs.APPVEYOR_URL}/project/${envs.APPVEYOR_REPO_NAME}/builds/${envs.APPVEYOR_BUILD_ID}/job/${envs.APPVEYOR_JOB_ID}`
     )
   }
   return ''
 }
 
 function _getBranch(inputs: UploaderInputs) {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.APPVEYOR_REPO_BRANCH || ''
 }
 
@@ -38,41 +38,42 @@ function _getJob(envs: UploaderEnvs) {
     envs.APPVEYOR_PROJECT_SLUG &&
     envs.APPVEYOR_BUILD_VERSION
   ) {
-    return `${envs.APPVEYOR_ACCOUNT_NAME}%2F${envs.APPVEYOR_PROJECT_SLUG}%2F${envs.APPVEYOR_BUILD_VERSION}`
+    return `${envs.APPVEYOR_ACCOUNT_NAME}/${envs.APPVEYOR_PROJECT_SLUG}/${envs.APPVEYOR_BUILD_VERSION}`
   }
   return ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
-  const { args, environment: envs } = inputs
-  return Number(args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER || '')
+function _getPR(inputs: UploaderInputs): string {
+  const { args, envs } = inputs
+  return args.pr || envs.APPVEYOR_PULL_REQUEST_NUMBER || ''
 }
 
 function _getService() {
   return 'appveyor'
 }
 
-export function getServiceName() {
+export function getServiceName(): string {
   return 'Appveyor CI'
 }
 
 function _getSHA(inputs: UploaderInputs) {
-  const { args, environment: envs } = inputs
-  return args.sha || envs.APPVEYOR_REPO_COMMIT || ''
+  const { args, envs } = inputs
+  return args.sha || envs.APPVEYOR_PULL_REQUEST_HEAD_COMMIT || envs.APPVEYOR_REPO_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs) {
-  const { args, environment: envs } = inputs
-  return args.slug || envs.APPVEYOR_REPO_NAME || ''
+  const { args, envs } = inputs
+  if (args.slug !== '') return args.slug
+  return envs.APPVEYOR_REPO_NAME || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),
@@ -87,6 +88,7 @@ export function getEnvVarNames(): string[] {
     'APPVEYOR_BUILD_VERSION',
     'APPVEYOR_JOB_ID',
     'APPVEYOR_PROJECT_SLUG',
+    'APPVEYOR_PULL_REQUEST_HEAD_COMMIT',
     'APPVEYOR_PULL_REQUEST_NUMBER',
     'APPVEYOR_REPO_BRANCH',
     'APPVEYOR_REPO_COMMIT',

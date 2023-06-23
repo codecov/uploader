@@ -1,7 +1,8 @@
 import td from 'testdouble'
 
 import * as providerWercker from '../../src/ci_providers/provider_wercker'
-import { IServiceParams, UploaderArgs, UploaderInputs } from '../../src/types'
+import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('Wercker CI Params', () => {
   afterEach(() => {
@@ -11,39 +12,30 @@ describe('Wercker CI Params', () => {
   describe('detect()', () => {
     it('does not run without Wercker CI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-        },
-        environment: {},
+        args: { ...createEmptyArgs() },
+        envs: {},
       }
-      const detected = providerWercker.detect(inputs.environment)
+      const detected = providerWercker.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with Wercker CI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-        },
-        environment: {
+        args: { ...createEmptyArgs() },
+        envs: {
           CI: 'true',
           WERCKER_MAIN_PIPELINE_STARTED: 'true',
         },
       }
-      const detected = providerWercker.detect(inputs.environment)
+      const detected = providerWercker.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
 
-  it('gets correct params on push', () => {
+  it('gets correct params on push', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
-      environment: {
+      args: { ...createEmptyArgs() },
+      envs: {
         CI: 'true',
         WERCKER_MAIN_PIPELINE_STARTED: '1',
         WERCKER_GIT_BRANCH: 'main',
@@ -59,28 +51,27 @@ describe('Wercker CI Params', () => {
       buildURL: 'https://example.com/build',
       commit: 'testingsha',
       job: '',
-      pr: 0,
+      pr: '',
       service: 'wercker',
       slug: 'testOrg/testRepo',
     }
-    const params = providerWercker.getServiceParams(inputs)
+    const params = await providerWercker.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
-        tag: '',
-        url: '',
-        source: '',
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
-      environment: {
+      envs: {
         CI: 'true',
         WERCKER_MAIN_PIPELINE_STARTED: '1',
         WERCKER_GIT_BRANCH: 'main',
@@ -96,12 +87,12 @@ describe('Wercker CI Params', () => {
       buildURL: 'https://example.com/build',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'wercker',
       slug: 'testOrg/testRepo',
     }
 
-    const params = providerWercker.getServiceParams(inputs)
+    const params = await providerWercker.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

@@ -1,37 +1,81 @@
+Usage: codecov <command> [options]
+
 Options:
-  -b, --build    Specify the build number manually
-  -B, --branch   Specify the branch manually
-  -e, --env      Specify environment variables to be included with this build.
-                 Also accepting environment variables: CODECOV_ENV=VAR,VAR2
-  -C, --sha      Specify the commit SHA mannually
-  -f, --file     Target file(s) to upload
-  -F, --flags    Flag the upload to group coverage metrics         [default: ""]
-  -n, --name     Custom defined name of the upload. Visible in Codecov UI
-                                                                   [default: ""]
-  -N, --parent   The commit SHA of the parent for which you are uploading
-                 coverage. If not present, the parent will be determined using
-                 the API of your repository provider. When using the repository
-                 provider's API, the parent is determined via finding the
-                 closest ancestor to the commit.
-  -P, --pr       Specify the pull request number mannually
-  -s, --dir      Directory to search for coverage reports.
-                 Already searches project root and current working directory
-  -t, --token    Codecov upload token                              [default: ""]
-  -T, --tag      Specify the git tag                               [default: ""]
-  -v, --verbose  Run with verbose logging                              [boolean]
-  -R, --rootDir  Specify the project root directory when not in a git repo
-  -Z, --nonZero  Should errors exit with a non-zero (default: false)
+  -B, --branch                  Specify the branch manually             [string]
+  -b, --build                   Specify the build number manually       [number]
+  -c, --clean                   Move discovered coverage reports to the trash
                                                       [boolean] [default: false]
-  -d, --dryRun   Don't upload files to Codecov                         [boolean]
-  -r, --slug     Specify the slug manually (Enterprise use)
-  -u, --url      Change the upload host (Enterprise use)
-                                        [string] [default: "https://codecov.io"]
-  -c, --clean    Move discovered coverage reports to the trash
+  -C, --sha                     Specify the commit SHA manually         [string]
+      --changelog, --CL         Display a link for the current changelog
                                                       [boolean] [default: false]
-  -X, --feature  Toggle functionalities
-                 -X network       Disable uploading the file network    [string]
-  -Q, --source   Used internally by Codecov, this argument helps track wrappers
-                 of the uploader (e.g. GitHub Action, CircleCI Orb)
+  -d, --dryRun                  Don't upload files to Codecov
+                                                      [boolean] [default: false]
+  -e, --env                     Specify environment variables to be included
+                                with this build.
+                                Also accepting environment variables:
+                                CODECOV_ENV=VAR,VAR2
+  -f, --file                    Target file(s) to upload                [string]
+      --fullReport, --full      Specify the path to a previously uploaded
+                                Codecov report                          [string]
+  -F, --flags                   Flag the upload to group coverage metrics
                                                           [string] [default: ""]
-      --version  Show version number                                   [boolean]
-  -h, --help     Show help                                             [boolean]
+  -g, --gcov                    Run with gcov support [boolean] [default: false]
+      --gcovArgs, --ga          Extra arguments to pass to gcov         [string]
+      --gcovIgnore, --gi        Paths to ignore during gcov gathering   [string]
+      --gcovInclude, --gI       Paths to include during gcov gathering  [string]
+      --gcovExecutable, --gx    gcov executable to run. Defaults to 'gcov'
+                                                                        [string]
+  -i, --networkFilter           Specify a filter on the files listed in the
+                                network section of the Codecov report. Useful
+                                for upload-specific path fixing         [string]
+  -k, --networkPrefix           Specify a prefix on files listed in the network
+                                section of the Codecov report. Useful to help
+                                resolve path fixing                     [string]
+  -n, --name                    Custom defined name of the upload. Visible in
+                                Codecov UI                [string] [default: ""]
+  -N, --parent                  The commit SHA of the parent for which you are
+                                uploading coverage. If not present, the parent
+                                will be determined using the API of your
+                                repository provider. When using the repository
+                                provider's API, the parent is determined via
+                                finding the closest ancestor to the commit.
+                                                                        [string]
+  -P, --pr                      Specify the pull request number manually[number]
+  -Q, --source                  Used internally by Codecov, this argument helps
+                                track
+                                wrappers of the uploader (e.g. GitHub Action,
+                                CircleCI Orb)             [string] [default: ""]
+  -R, --rootDir                 Specify the project root directory when not in a
+                                git repo
+  -r, --slug                    Specify the slug manually [string] [default: ""]
+  -s, --dir                     Directory to search for coverage reports.
+                                Already searches project root and current
+                                working directory                       [string]
+  -T, --tag                     Specify the git tag       [string] [default: ""]
+  -t, --token                   Codecov upload token      [string] [default: ""]
+  -U, --upstream                The upstream http proxy server to connect
+                                through                   [string] [default: ""]
+  -u, --url                     Change the upload host (Enterprise use)
+                                        [string] [default: "https://codecov.io"]
+  -v, --verbose                 Run with verbose logging               [boolean]
+  -X, --feature                 Toggle functionalities. Separate multiple ones
+                                by comma: -X network,search
+                                -X fixes         Enable file fixes to ignore
+                                common lines from coverage (e.g. blank lines or
+                                empty brackets)
+                                -X network       Disable uploading the file
+                                network
+                                -X search        Disable searching for coverage
+                                files                                   [string]
+      --xcode, --xc, --xc       Deprecating, please use xs] Run with xcode 
+                                support               [boolean] [default: false]
+      --xcodeArchivePath, --xp  [Deprecating, please use xs] Specify the xcode
+                                archive path. Likely specified as the
+                                -resultBundlePath and should end in .xcresult
+                                                                        [string]
+      --swift, --xs             Run with swift support[boolean] [default: false]
+      --swiftProject, --xsp     Specify the swift project [string] [default: ""]
+  -Z, --nonZero                 Should errors exit with a non-zero (default:
+                                false)                [boolean] [default: false]
+      --version                 Show version number                    [boolean]
+  -h, --help                    Show help                              [boolean]

@@ -1,6 +1,7 @@
 import td from 'testdouble'
 import childProcess from 'child_process'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 /*
 Add your provider here and name it provder<Ci>. Example:
@@ -15,8 +16,8 @@ describe('<Ci> Params', () => {
   describe('detect()', () => {
     it('does not run without <Ci> env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
-        environment: {},
+        args: { ...createEmptyArgs() },
+        envs: {},
       }
       /*
       const detected = provider<Ci>.detect(inputs.envs)
@@ -25,9 +26,9 @@ describe('<Ci> Params', () => {
     })
 
     it('does not run without <Ci> env variable', () => {
-      const inputs: UploaderInputs= {
-        args: {},
-        environment: {},
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
+        envs: {},
       }
       /*
       const detected = provider<Ci>.detect(inputs.envs)
@@ -37,10 +38,10 @@ describe('<Ci> Params', () => {
   })
 
   // This should test that the provider outputs proper default values
-  it('gets the correct params on no env variables', () => {
+  it('gets the correct params on no env variables', async () => {
     const inputs: UploaderInputs = {
-      args: { tag: '', url: '', source: '', flags: '' },
-      environment: {},
+      args: { ...createEmptyArgs() },
+      envs: {},
     }
     const expected: IServiceParams = {
       branch: '',
@@ -48,21 +49,21 @@ describe('<Ci> Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: '',
       slug: '',
     }
     /*
-    const params = provider<Ci>.getServiceParams(inputs)
+    const params = await provider<Ci>.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     */
   })
 
   // This should test that the provider outputs proper parameters when a push event is created
-  it('gets the correct params on push', () => {
+  it('gets the correct params on push', async () => {
     const inputs: UploaderInputs = {
-      args: { tag: '', url: '', source: '', flags: '' },
-      environment: {},
+      args: { ...createEmptyArgs() },
+      envs: {},
     }
     const expected: IServiceParams = {
       branch: '',
@@ -70,26 +71,21 @@ describe('<Ci> Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: '',
       slug: '',
     }
     /*
-    const params = provider<Ci>.getServiceParams(inputs)
+    const params = await provider<Ci>.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     */
   })
   //
   // This should test that the provider outputs proper parameters when a pull request event is created
-  it('gets the correct params on pr', () => {
+  it('gets the correct params on pr', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
-      environment: {},
+      args: { ...createEmptyArgs() },
+      envs: {},
     }
     const expected: IServiceParams = {
       branch: '',
@@ -97,26 +93,21 @@ describe('<Ci> Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: '',
       slug: '',
     }
     /*
-    const params = provider<Ci>.getServiceParams(inputs)
+    const params = await provider<Ci>.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     */
   })
 
   // This should test that the provider outputs proper parameters when given overrides
-  it('gets the correct params on overrides', () => {
+  it('gets the correct params on overrides', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
-      environment: {},
+      args: { ...createEmptyArgs() },
+      envs: {},
     }
     const expected: IServiceParams = {
       branch: '',
@@ -124,12 +115,12 @@ describe('<Ci> Params', () => {
       buildURL: '',
       commit: '',
       job: '',
-      pr: 0,
+      pr: '',
       service: '',
       slug: '',
     }
     /*
-    const params = provider<Ci>.getServiceParams(inputs)
+    const params = await provider<Ci>.getServiceParams(inputs)
     expect(expected).toBeTruthy()
     */
   })

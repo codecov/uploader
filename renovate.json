@@ -1,10 +1,14 @@
 {
   "extends": [
-    "config:base"
+    "config:base",
+    "docker:pinDigests",
+    "npm:unpublishSafe",
+    "helpers:pinGitHubActionDigests"
   ],
   "reviewers": [
     "codecov/open-source"
   ],
+
   "packageRules": [
     {
       "matchPackageNames": ["pkg"],
@@ -16,4 +20,9 @@
       "groupName": "devDependencies (non-major)"
     }
     ]
-}
+
+  "circleci" : {
+    "pinDigests": true
+  }
+
+

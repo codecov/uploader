@@ -1,3 +1,4 @@
+import { setSlug } from '../helpers/provider'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -5,29 +6,28 @@ export function detect(envs: UploaderEnvs): boolean {
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.WERCKER_MAIN_PIPELINE_STARTED || ''
 }
 
 function _getBuildURL(inputs: UploaderInputs): string {
-  const { environment: envs } = inputs
+  const { envs } = inputs
   return envs.WERCKER_BUILD_URL || ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
 
   return args.branch || envs.WERCKER_GIT_BRANCH || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getJob(envs: UploaderEnvs): string {
+function _getJob(): string {
   return ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
-  return Number(args.pr || '')
+  return args.pr || ''
 }
 
 function _getService(): string {
@@ -39,22 +39,22 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.WERCKER_GIT_COMMIT || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
-  return args.slug || `${envs.WERCKER_GIT_OWNER}/${envs.WERCKER_GIT_REPOSITORY}`
+  const { args, envs } = inputs
+  return setSlug(args.slug, envs.WERCKER_GIT_OWNER, envs.WERCKER_GIT_REPOSITORY)
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

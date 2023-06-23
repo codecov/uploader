@@ -1,8 +1,11 @@
 import td from 'testdouble'
+import Undici from 'undici'
 import childProcess from 'child_process'
 
-import * as providerGitHubactions from '../../src/ci_providers//provider_githubactions'
+import * as providerGitHubactions from '../../src/ci_providers/provider_githubactions'
+import { SPAWNPROCESSBUFFERSIZE } from '../../src/helpers/constants'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('GitHub Actions Params', () => {
   afterEach(() => {
@@ -12,10 +15,8 @@ describe('GitHub Actions Params', () => {
   describe('detect()', () => {
     it('does not run without GitHub Actions env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          flags: '',
-        },
-        environment: {
+        args: { ...createEmptyArgs() },
+        envs: {
           GITHUB_REF: 'refs/heads/master',
           GITHUB_REPOSITORY: 'testOrg/testRepo',
           GITHUB_RUN_ID: '2',
@@ -23,13 +24,13 @@ describe('GitHub Actions Params', () => {
           GITHUB_WORKFLOW: 'testWorkflow',
         },
       }
-      const detected = providerGitHubactions.detect(inputs.environment)
+      const detected = providerGitHubactions.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
-    it('does not with GitHub Actions env variable', () => {
-      const inputs = {
-        args: {},
+    it('does not run with only the GitHub Actions env variable', () => {
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
         envs: {
           GITHUB_ACTIONS: 'true',
         },
@@ -39,15 +40,10 @@ describe('GitHub Actions Params', () => {
     })
   })
 
-  it('gets correct params for a push event', () => {
+  it('gets correct params for a push event', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
-      environment: {
+      args: { ...createEmptyArgs() },
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_REF: 'refs/heads/master',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
@@ -60,27 +56,21 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'master',
       build: '2',
-      buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: 0,
+      pr: '',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for a PR', () => {
+  it('gets correct params for a PR', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
-      environment: {
+      args: { ...createEmptyArgs() },
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',
@@ -94,34 +84,162 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
-      buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: 1,
+      pr: '1',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
       stdout: 'testingsha',
     })
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for a merge', () => {
+  it('gets correct buildURL for a PR', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+      args: { ...createEmptyArgs() },
+      envs: {
+        GITHUB_ACTIONS: 'true',
+        GITHUB_HEAD_REF: 'branch',
+        GITHUB_JOB: 'testJob',
+        GITHUB_REF: 'refs/pull/1/merge',
+        GITHUB_REPOSITORY: 'testOrg/testRepo',
+        GITHUB_RUN_ID: '2',
+        GITHUB_SERVER_URL: 'https://github.com',
+        GITHUB_SHA: 'testingsha',
+        GITHUB_WORKFLOW: 'testWorkflow',
       },
-      environment: {
+    }
+    const expected: IServiceParams = {
+      branch: 'branch',
+      build: '2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
+      commit: 'testingsha',
+      job: 'testWorkflow',
+      pr: '1',
+      service: 'github-actions',
+      slug: 'testOrg/testRepo',
+    }
+
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
+    ).thenReturn({
+      stdout: 'testingsha',
+    })
+
+    const request = td.replace(Undici, 'request')
+    td.when(
+      request(
+        'https://api.github.com/repos/testOrg/testRepo/actions/runs/2/jobs',
+        {
+          headers: { 'User-Agent': 'Awesome-Octocat-App' }
+        }
+      )
+    ).thenReturn({
+      statusCode: 200,
+      body: {
+        json: () => {
+          return {
+            'jobs': [{
+              'id': 1,
+              'name': 'fakeJob',
+              'html_url': 'https://fake.com',
+            }, {
+              'id': 2,
+              'name': 'seocondFakeJob',
+              'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
+            }, {
+              'id': 3,
+              'name': 'anotherFakeJob',
+              'html_url': 'https://example.com',
+            }]
+          }
+        }
+      }
+    })
+
+    const params = await providerGitHubactions.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
+  it('gets correct buildURL by default for a PR', async () => {
+    const inputs: UploaderInputs = {
+      args: { ...createEmptyArgs() },
+      envs: {
+        GITHUB_ACTIONS: 'true',
+        GITHUB_HEAD_REF: 'branch',
+        GITHUB_JOB: 'testJob',
+        GITHUB_REF: 'refs/pull/1/merge',
+        GITHUB_REPOSITORY: 'testOrg/testRepo',
+        GITHUB_RUN_ID: '2',
+        GITHUB_SERVER_URL: 'https://github.com',
+        GITHUB_SHA: 'testingsha',
+        GITHUB_WORKFLOW: 'testWorkflow',
+      },
+    }
+    const expected: IServiceParams = {
+      branch: 'branch',
+      build: '2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
+      commit: 'testingsha',
+      job: 'testWorkflow',
+      pr: '1',
+      service: 'github-actions',
+      slug: 'testOrg/testRepo',
+    }
+
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
+    ).thenReturn({
+      stdout: 'testingsha',
+    })
+    const request = td.replace(Undici, 'request')
+    td.when(
+      request(
+        'https://api.github.com/repos/testOrg/testRepo/actions/runs/2/jobs',
+        {
+          headers: { 'User-Agent': 'Awesome-Octocat-App' }
+        }
+      )
+    ).thenReturn({
+      statusCode: 200,
+      body: {
+        json: () => {
+          return {
+            'jobs': [{
+              'id': 1,
+              'name': 'fakeJob',
+              'html_url': 'https://fake.com',
+            }, {
+              'id': 2,
+              'name': 'testJob',
+              'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
+            }, {
+              'id': 3,
+              'name': 'anotherFakeJob',
+              'html_url': 'https://example.com',
+            }]
+          }
+        }
+      }
+    })
+    const params = await providerGitHubactions.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+  })
+
+  it('gets correct params for a merge', async () => {
+    const inputs: UploaderInputs = {
+      args: { ...createEmptyArgs() },
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',
@@ -135,40 +253,38 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
-      buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingmergecommitsha2345678901234567890',
       job: 'testWorkflow',
-      pr: 1,
+      pr: '1',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
       stdout:
         'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
     })
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct params for overrides', () => {
+  it('gets correct params for overrides', async () => {
     const inputs: UploaderInputs = {
       args: {
-        branch: 'branch',
-        build: '3',
-        pr: '2',
-        sha: 'testsha',
-        slug: 'testOrg/testRepo',
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
+        ...createEmptyArgs(),
+        ...{
+          branch: 'branch',
+          build: '3',
+          pr: '2',
+          sha: 'testsha',
+          slug: 'testOrg/testRepo',
+        },
       },
-      environment: {
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_SERVER_URL: 'https://github.com',
       },
@@ -176,32 +292,26 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'branch',
       build: '3',
-      buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F3',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/3',
       commit: 'testsha',
       job: '',
-      pr: 2,
+      pr: '2',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: 'testsha' })
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets an improper merge commit message', () => {
+  it('gets an improper merge commit message', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        tag: '',
-        url: '',
-        source: '',
-        flags: '',
-      },
-      environment: {
+      args: { ...createEmptyArgs() },
+      envs: {
         GITHUB_ACTIONS: 'true',
         GITHUB_HEAD_REF: 'branch',
         GITHUB_REF: 'refs/pull/1/merge',
@@ -215,20 +325,19 @@ describe('GitHub Actions Params', () => {
     const expected: IServiceParams = {
       branch: 'branch',
       build: '2',
-      buildURL:
-        'https%3A%2F%2Fgithub.com%2FtestOrg%2FtestRepo%2Factions%2Fruns%2F2',
+      buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
       job: 'testWorkflow',
-      pr: 1,
+      pr: '1',
       service: 'github-actions',
       slug: 'testOrg/testRepo',
     }
 
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      spawnSync('git', ['show', '--no-patch', '--format="%P"']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: '' })
-    const params = providerGitHubactions.getServiceParams(inputs)
+    const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

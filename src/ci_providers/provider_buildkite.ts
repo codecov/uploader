@@ -1,3 +1,4 @@
+import { setSlug } from '../helpers/provider'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 /**
@@ -17,7 +18,7 @@ export function detect(envs: UploaderEnvs): boolean {
  * @returns {string}
  */
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.BUILDKITE_BUILD_NUMBER || ''
 }
 
@@ -27,9 +28,8 @@ function _getBuild(inputs: UploaderInputs): string {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
-  return inputs.environment.BUILDKITE_BUILD_URL || ''
+  return inputs.envs.BUILDKITE_BUILD_URL || ''
 }
 
 /**
@@ -39,7 +39,7 @@ function _getBuildURL(inputs: UploaderInputs): string {
  * @returns {string}
  */
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.BUILDKITE_BRANCH || ''
 }
 
@@ -59,9 +59,9 @@ function _getJob(envs: UploaderEnvs): string {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {string}
  */
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
-  return Number(args.pr || '')
+  return args.pr || ''
 }
 
 /**
@@ -88,7 +88,7 @@ export function getServiceName(): string {
  * @returns {string}
  */
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   if (Boolean(args.sha) || Boolean(envs.BUILDKITE_COMMIT)) {
     return args.sha || envs.BUILDKITE_COMMIT || ''
   }
@@ -101,12 +101,8 @@ function _getSHA(inputs: UploaderInputs): string {
  * @returns {string}
  */
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
-  if (args.slug || envs.BUILDKITE_PROJECT_SLUG) {
-    return args.slug || envs.BUILDKITE_PROJECT_SLUG || ''
-  }
-  throw new Error('Unable to detect slug, please set manually with the -r flag')
-  return ''
+  const { args, envs } = inputs
+  return setSlug(args.slug, envs.BUILDKITE_ORGANIZATION_SLUG, envs.BUILDKITE_PIPELINE_SLUG)
 }
 /**
  * Generates and return the serviceParams object
@@ -114,20 +110,20 @@ function _getSlug(inputs: UploaderInputs): string {
  * @param {args: {}, envs: {}} inputs an object of arguments and enviromental variable key/value pairs
  * @returns {{ branch: string, build: string, buildURL: string, commit: string, job: string, pr: string, service: string, slug: string }}
  */
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),
   }
 }
 
-export function getEnvVarNames() {
+export function getEnvVarNames(): string[] {
   return [
     'BUILDKITE',
     'BUILDKITE_BRANCH',

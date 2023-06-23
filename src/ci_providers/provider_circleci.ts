@@ -1,12 +1,13 @@
+import { setSlug } from '../helpers/provider'
+import { isSetAndNotEmpty } from '../helpers/util'
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.CI) && Boolean(envs.CIRCLECI)
 }
 
-// eslint-disable-next-line no-unused-vars
 function _getBuildURL(inputs: UploaderInputs): string {
-  return ''
+  return inputs.envs['CIRCLE_BUILD_URL'] ?? ''
 }
 
 // This is the value that gets passed to the Codecov uploader
@@ -20,56 +21,54 @@ export function getServiceName(): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.CIRCLE_BRANCH || ''
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.CIRCLE_SHA1 || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
-  let slug = args.slug || ''
+  const { args, envs } = inputs
+
+  const slug = setSlug(
+    args.slug,
+    envs.CIRCLE_PROJECT_USERNAME,
+    envs.CIRCLE_PROJECT_REPONAME,
+  )
   if (slug !== '') {
     return slug
   }
-  if (envs.CIRCLE_PROJECT_REPONAME !== '') {
-    slug = `${envs.CIRCLE_PROJECT_USERNAME}/${envs.CIRCLE_PROJECT_REPONAME}`
-  } else {
-    if (envs.CIRCLE_REPOSITORY_URL) {
-      slug = `${envs.CIRCLE_REPOSITORY_URL.split(':')[1].split('.git')[0]}`
-    } else {
-      throw new Error(
-        'Unable to detect slug from env. Please set manually with the -r flag',
-      )
-    }
+
+  if (isSetAndNotEmpty(envs.CIRCLE_REPOSITORY_URL)) {
+    return `${envs.CIRCLE_REPOSITORY_URL?.split(':')[1]?.split('.git')[0]}`
   }
-  return args.slug || slug
+  return slug
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.CIRCLE_BUILD_NUM || ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
-  const { args, environment: envs } = inputs
-  return Number(args.pr || envs.CIRCLE_PR_NUMBER || '')
+function _getPR(inputs: UploaderInputs): string {
+  const { args, envs } = inputs
+  return args.pr || envs.CIRCLE_PR_NUMBER || ''
 }
 
 function _getJob(envs: UploaderEnvs): string {
   return envs.CIRCLE_NODE_INDEX || ''
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
     buildURL: _getBuildURL(inputs),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(inputs.envs),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

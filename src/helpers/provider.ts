@@ -1,65 +1,72 @@
 import providers from '../ci_providers'
-import { info, logError, verbose } from '../helpers/logger'
+import { info, logError, UploadLogger } from '../helpers/logger'
 import { IServiceParams, UploaderInputs } from '../types'
 
-export function detectProvider(inputs: UploaderInputs): IServiceParams {
-  const { args, environment } = inputs
-  let serviceParams: IServiceParams | undefined
+export async function detectProvider(
+  inputs: UploaderInputs,
+  hasToken = false,
+): Promise<Partial<IServiceParams>> {
+  const { args } = inputs
+  let serviceParams: Partial<IServiceParams> | undefined
 
   //   check if we have a complete set of manual overrides (slug, SHA)
-  if (args.sha && args.slug) {
+  if (args.sha && (args.slug || hasToken)) {
     // We have the needed args for a manual override
-    info(
-      `Using manual override from args. CI Provider detection will not be ran.`,
-    )
+    info(`Using manual override from args.`)
     serviceParams = {
-      branch: '',
-      build: '',
-      buildURL: '',
       commit: args.sha,
-      job: '',
-      pr: 0,
-      service: '',
-      slug: args.slug,
+      ...(hasToken ? {} : { slug: args.slug }),
     }
-    return serviceParams
+  } else {
+    serviceParams = undefined
   }
 
-  //   if not, loop though all providers
+  //   loop though all providers
   try {
-    serviceParams = walkProviders(inputs)
-    if (serviceParams !== undefined) {
-      return serviceParams
-    }
+    const serviceParams = await walkProviders(inputs)
+    return { ...serviceParams, ...serviceParams }
   } catch (error) {
     //   if fails, display message explaining failure, and explaining that SHA and slug need to be set as args
-    if (serviceParams !== undefined) {
-      logError(`Errow detecting repos setting using git: ${error}`)
+    if (typeof serviceParams !== 'undefined') {
+      logError(`Error detecting repos setting using git: ${error}`)
+    } else {
+      throw new Error(
+        '\nUnable to detect SHA and slug, please specify them manually.\nSee the help for more details.',
+      )
     }
   }
-  throw new Error(
-    '\nUnable to detect service, please specify sha and slug manually.\nYou can do this by passing the values with the `-S` and `-r` flags.\nSee the `-h` flag for more details.',
-  )
+  return serviceParams
 }
 
-export function walkProviders(
-  inputs: UploaderInputs,
-): IServiceParams {
+export async function walkProviders(inputs: UploaderInputs): Promise<IServiceParams> {
   for (const provider of providers) {
-    if (provider.detect(inputs.environment)) {
+    if (provider.detect(inputs.envs)) {
       info(`Detected ${provider.getServiceName()} as the CI provider.`)
-      verbose(
-        '-> Using the following env variables:',
-        Boolean(inputs.args.verbose),
-      )
+      UploadLogger.verbose('-> Using the following env variables:')
       for (const envVarName of provider.getEnvVarNames()) {
-        verbose(
-          `     ${envVarName}: ${inputs.environment[envVarName]}`,
-          Boolean(inputs.args.verbose),
-        )
+        UploadLogger.verbose(`     ${envVarName}: ${inputs.envs[envVarName]}`)
       }
-      return provider.getServiceParams(inputs)
+      return await provider.getServiceParams(inputs)
     }
   }
   throw new Error(`Unable to detect provider.`)
+}
+
+export function setSlug(
+  slugArg: string | undefined,
+  orgEnv: string | undefined,
+  repoEnv: string | undefined,
+): string {
+  if (typeof slugArg !== "undefined" && slugArg !== '') {
+    return slugArg
+  }
+  if (
+    typeof orgEnv !== 'undefined' &&
+    typeof repoEnv !== 'undefined' &&
+    orgEnv !== '' &&
+    repoEnv !== ''
+  ) {
+    return `${orgEnv}/${repoEnv}`
+  }
+  return ''
 }

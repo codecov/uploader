@@ -8,6 +8,8 @@ module.exports = {
     '!**/vendor/**',
   ],
   coverageReporters: ['text', 'cobertura', 'html'],
-  setupFilesAfterEnv: ['<rootDir>/test/test_helpers.js'],
+  setupFilesAfterEnv: ['<rootDir>/test/test_helpers.ts'],
   reporters: ['jest-spec-reporter'],
+  testPathIgnorePatterns: ['<rootDir>/dist/'],
+  modulePathIgnorePatterns: ['<rootDir>/dist'],
 }

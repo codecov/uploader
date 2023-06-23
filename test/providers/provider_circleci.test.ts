@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import * as providerCircleci from '../../src/ci_providers//provider_circleci'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('CircleCI Params', () => {
   afterEach(() => {
@@ -11,32 +12,30 @@ describe('CircleCI Params', () => {
   describe('detect()', () => {
     it('does not run without CircleCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
-        environment: {},
+        args: {...createEmptyArgs(), },
+        envs: {},
       }
-      const detected = providerCircleci.detect(inputs.environment)
+      const detected = providerCircleci.detect(inputs.envs)
       expect(detected).toBeFalsy()
     })
 
     it('does run with CircleCI env variable', () => {
       const inputs: UploaderInputs = {
-        args: {},
-        environment: {
+        args: {...createEmptyArgs(), },
+        envs: {
           CI: 'true',
           CIRCLECI: 'true',
         },
       }
-      const detected = providerCircleci.detect(inputs.environment)
+      const detected = providerCircleci.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
 
-  it('gets correct params', () => {
+  it('gets correct params', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        flags: '',
-      },
-      environment: {
+      args: {...createEmptyArgs(), },
+      envs: {
         CI: 'true',
         CIRCLECI: 'true',
         CIRCLE_BRANCH: 'master',
@@ -55,20 +54,18 @@ describe('CircleCI Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '3',
-      pr: 1,
+      pr: '1',
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }
-    const params = providerCircleci.getServiceParams(inputs)
+    const params = await providerCircleci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
-  it('gets correct slug when empty reponame', () => {
+  it('gets correct slug when empty reponame', async () => {
     const inputs: UploaderInputs = {
-      args: {
-        flags: '',
-      },
-      environment: {
+      args: {...createEmptyArgs(), },
+      envs: {
         CI: 'true',
         CIRCLECI: 'true',
         CIRCLE_BRANCH: 'master',
@@ -86,11 +83,11 @@ describe('CircleCI Params', () => {
       buildURL: '',
       commit: 'testingsha',
       job: '3',
-      pr: 1,
+      pr: '1',
       service: 'circleci',
       slug: 'testOrg/testRepo',
     }
-    const params = providerCircleci.getServiceParams(inputs)
+    const params = await providerCircleci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 })

@@ -5,8 +5,7 @@ export function detect(envs: UploaderEnvs): boolean {
   return Boolean(envs.TEAMCITY_VERSION)
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs): string {
+function _getBuildURL(): string {
   return ''
 }
 
@@ -21,42 +20,42 @@ export function getServiceName(): string {
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.branch || envs.BRANCH_NAME || ''
 }
 
 function _getSHA(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.sha || envs.BUILD_VCS_NUMBER || ''
 }
 
 function _getSlug(inputs: UploaderInputs): string {
   const { args } = inputs
-  return args.slug || parseSlugFromRemoteAddr('') || ''
+  if (args.slug !== '') return args.slug
+  return parseSlugFromRemoteAddr('') || ''
 }
 
 function _getBuild(inputs: UploaderInputs): string {
-  const { args, environment: envs } = inputs
+  const { args, envs } = inputs
   return args.build || envs.BUILD_NUMBER || ''
 }
 
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
-  return Number(args.pr || '')
+  return args.pr || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getJob(envs: UploaderEnvs): string {
+function _getJob(): string {
   return ''
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),

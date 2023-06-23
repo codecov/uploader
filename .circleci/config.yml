@@ -1,29 +1,50 @@
-# Javascript Node CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-javascript/ for more details
-#
 version: 2.1
 
 orbs:
-  win: circleci/windows@2.4.1 
+
+win: circleci/windows@2.1
+
+win: circleci/windows@4.1.1
+
 
 jobs:
+  build-aarch64:
+    machine:
+      image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+
+      - run: npm ci
+
+      - run: |
+          make test
+          mkdir -p coverage-aarch64
+          cp -r coverage/* coverage-aarch64/
+
+      - run: make build_aarch64
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - out/codecov-aarch64
+            - coverage-aarch64
+
   build-linux-and-osx:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:16.7.0
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
+      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
 
     working_directory: ~/repo 
 
     steps:
       - checkout
 
-      # Download and cache dependencies
+        Download and cache dependencies
       - restore_cache:
           keys:
             - v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
@@ -35,39 +56,27 @@ jobs:
             - node_modules
           key: v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
 
-      # run tests!
       - run: make test
 
-      # run tests!
       - run: make build
 
-      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
           root: .
-          # Must be relative path from root
           paths:
             - out
             - coverage
             - package.json
+            - vendor
 
   build-alpine:
     docker:
-      # specify the version you desire here
-      - image: alpine:3.14.1
-
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/mongo:3.4.4
+      - image: alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
 
     working_directory: ~/repo
 
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
 
       - run:
@@ -84,7 +93,7 @@ jobs:
           name: Confirm that alpine node binary is static
           command: |
             apk add file
-            file node
+            (file node | grep 'static') || exit ${?}
 
       - run:
           name: Create pkg-cache directory and copy static NodeJS binary
@@ -106,20 +115,15 @@ jobs:
           name: Build uploader binary on alpine
           command: make build_alpine
 
-      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
       - persist_to_workspace:
-          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
-          # taken to be the root directory of the workspace.
           root: .
-          # Must be relative path from root
           paths:
             - out/codecov-alpine
             - coverage-alpine
 
   test-alpine:
     docker:
-      # specify the version you desire here
-      - image: alpine:3.14.1
+      - image: alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
     steps:
       - run:
           name: Install git
@@ -128,7 +132,6 @@ jobs:
             apk add git
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Run Alpine binary -f (dry run)
@@ -152,43 +155,85 @@ jobs:
             - coverage-alpine
             - output_alpine.txt
 
-  build-windows:
-    executor: win/default
+  test-alpine-proxy:
+    docker:
+      - image: alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
     steps:
+      - run:
+          name: Install git
+          command: |
+            apk update
+            apk add git squid
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
-      # https://superuser.com/a/1620000/54442
       - run:
-          name: Install and set Node 16.x
-          command: |
-            $ErrorActionPreference="Stop"
-            nvm arch
-            nvm install 16 all
-            nvm use 16
+          name: Start Squid
+          command: squid
       - run:
-          name: Build Windows Binary
+          name: Run Alpine binary auto-detect (dry run)
           command: |
-            $ErrorActionPreference="Stop"
-            node --version
-            npm ci; npm test; npm run build; npm run build-windows
+            out/codecov-alpine -U http://localhost:3128 -F alpine-proxy -v -d -Z -e CIRCLE_BRANCH >> output_alpine_proxy.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -U http://localhost:3128 -F alpine-proxy -v -Z -e CIRCLE_BRANCH
+
+      - store_artifacts:
+          path: output_alpine_proxy.txt
 
       - persist_to_workspace:
           root: .
           paths:
-            - out
-            - coverage
+            - output_alpine_proxy.txt
+
+  test-alpine-without-git:
+    docker:
+      - image: alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
+    steps:
+      - run:
+          name: Install git
+          command: |
+            apk update
+            apk add git
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Remove .git directory
+          command: rm -rf .git
+      - run:
+          name: Run Alpine binary -f (dry run)
+          command: |
+            NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine_without_git.txt
+      - run:
+          name: Run Alpine binary auto-detect (dry run)
+          command: |
+            out/codecov-alpine -F alpine-without-git -v -d -Z -e CIRCLE_BRANCH >> output_alpine_without_git.txt
+      - run:
+          name: Run Alpine binary (upload)
+          command: |
+            out/codecov-alpine -F alpine-without-git -v -Z -e CIRCLE_BRANCH
+
+      - store_artifacts:
+          path: output_alpine.txt
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_alpine_without_git.txt
 
   test-linux:
     docker:
-      # specify the version you desire here
-      - image: circleci/node:16.7.0
+      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
     steps:
       - checkout
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
+      - run:
+          name: Confirm that linux uploader binary is static
+          command: |
+            (file out/codecov-linux | grep 'static') || exit ${?}
       - run:
           name: Run Linux binary -f (dry run)
           command: |
@@ -210,11 +255,10 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: circleci/node:16.7.0
+      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
     steps:
       - checkout
       - attach_workspace:
-          # TODO: Determine why we use the cwd on Linex and not on other operating systems.
           at: .
       - run:
           name: Remove .git directory
@@ -232,6 +276,66 @@ jobs:
           root: .
           paths:
             - output_linux_without_git.txt
+
+  test-aarch64:
+    machine:
+      image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Confirm that aarch64 uploader binary is static
+          command: |
+            file out/codecov-aarch64
+      - run:
+          name: Confirm that aarch64 uploader binary is static
+          command: |
+            (file out/codecov-aarch64 | grep 'static') || exit ${?}
+      - run:
+          name: Run aarch64 binary -f (dry run)
+          command: |
+            out/codecov-aarch64 -f /home/circleci/project/coverage/cobertura-coverage.xml -F aarch64 -d -Z -v -e CIRCLE_BRANCH >> output_aarch64.txt
+      - run:
+          name: Run aarch64 binary auto-detect (dry run)
+          command: |
+            out/codecov-aarch64 -F aarch64 -d -Z -e CIRCLE_BRANCH >> output_aarch64.txt
+      - run:
+          name: Run aarch64 binary (upload)
+          command: |
+            out/codecov-aarch64 -F aarch64 -Z -e CIRCLE_BRANCH
+            out/codecov-aarch64 -F "-aarch64" -Z -e CIRCLE_BRANCH
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_aarch64.txt
+
+  test-aarch64-without-git:
+    machine:
+      image: ubuntu-2004:2022.04.1
+    resource_class: arm.medium
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Remove .git directory
+          command: rm -rf .git
+      - run:
+          name: Run Linux binary (dry run)
+          command: |
+            out/codecov-aarch64 -F aarch64-without-git -d -Z -e CIRCLE_BRANCH > output_aarch64_without_git.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-aarch64 -F aarch64-without-git -Z -e CIRCLE_BRANCH
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_aarch64_without_git.txt
 
   test-macos:
     macos:
@@ -282,6 +386,33 @@ jobs:
           paths:
             - output_osx_without_git.txt
 
+  build-windows:
+    executor: win/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: 
+        https://superuser.com/a/1620000/54442
+      - run:
+          name: Install and set Node 16.x
+          command: |
+            $ErrorActionPreference="Stop"
+            nvm arch
+            nvm install 16 all
+            nvm use 16
+      - run:
+          name: Build Windows Binary
+          command: |
+            $ErrorActionPreference="Stop"
+            node --version
+            npm ci; npm test; npm run build; npm run build-windows
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - out
+            - coverage
+
   test-windows:
     executor: win/default
     steps:
@@ -319,7 +450,6 @@ jobs:
           name: Remove .git directory
           command: del -Recurse -Force .git
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Run Windows binary (dry-run)
@@ -339,7 +469,7 @@ jobs:
 
   review:
     docker:
-      - image: circleci/node:16.7.0
+      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
     steps:
       - attach_workspace:
           at: .
@@ -356,7 +486,15 @@ jobs:
       - store_artifacts:
           path: output_alpine.txt
       - store_artifacts:
+          path: output_alpine_proxy.txt
+      - store_artifacts:
+          path: output_alpine_without_git.txt
+      - store_artifacts:
           path: output_linux_without_git.txt
+      - store_artifacts:
+          path: output_aarch64.txt
+      - store_artifacts:
+          path: output_aarch64_without_git.txt
       - store_artifacts:
           path: output_osx.txt
       - store_artifacts:
@@ -370,17 +508,10 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/node:16.7.0
+      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
     steps:
       - attach_workspace:
           at: .
-      - run:
-          name: Install GHR
-          command: >
-            wget
-            https://github.com/tcnksm/ghr/releases/download/v0.5.4/ghr_v0.5.4_linux_amd64.zip
-
-            unzip ghr_v0.5.4_linux_amd64.zip
       - run:
           name: Make binaries executable
           command: |
@@ -389,13 +520,13 @@ jobs:
           name: Package
           command: >
             RELEASE_TAG=v$(cat package.json | jq --raw-output
-            .version)_$CIRCLE_BUILD_NUM
+            .version)
 
             echo $RELEASE_TAG
 
             echo $RELEASE_TAG > release_tag
 
-            ./ghr -u codecov -r uploader --replace $RELEASE_TAG out
+            vendor/ghr -u codecov -r uploader $RELEASE_TAG out
 
       - persist_to_workspace:
           root: .
@@ -403,10 +534,9 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:354.0.0-slim
+      - image: google/cloud-sdk:430.0.0-slim@sha256:96a831dff775f0e90ddb424d68314e0069fe68d03d52a4ca6bbe58fef4c1952d
     steps:
       - attach_workspace:
-          # Must be absolute path or relative path from working_directory
           at: .
       - run:
           name: Push release tag to pubsub
@@ -418,21 +548,62 @@ jobs:
             gcloud --quiet config set project $GCLOUD_UPLOADER_PROJECT_ID
             gcloud pubsub topics publish $GCLOUD_UPLOADER_PUBSUB_TOPIC --message '{"release":"'"$RELEASE_TAG"'", "latest":true}'
 
+  standards-coverage-comparison:
+    machine:
+      image: ubuntu-2004:202201-02
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Clone Autotest and Start Acceptance Testing Containers
+          command: |
+            cd ..
+            git clone --depth 5 https://codecov:${GITHUB_TOKEN}@github.com/codecov/autotest.git > /dev/null 2>&1
+            cd autotest/
+            echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKER_USERNAME" --password-stdin
+            docker-compose -f docker-compose-acceptance.yml up -d > /dev/null 2>&1
+            sleep 10
+      - run:
+          name: Standards Coverage Comparison
+          command: make run-standards-comparison
+
 workflows:
   version: 2
 
   'Build and Test':
     jobs:
+      #         - standards-coverage-comparison:
+      #           context:
+      #             - 'DockerHub Push Context'
+      #             - 'Github Checkout'
+      #           requires:
+      #             - build-alpine
       - build-linux-and-osx
+      - build-aarch64:
+          requires:
+            - build-linux-and-osx
       - build-alpine:
           requires:
             - build-linux-and-osx
       - test-alpine:
           requires:
             - build-alpine
+      - test-alpine-proxy:
+          requires:
+            - build-alpine
+      - test-alpine-without-git:
+          requires:
+            - test-alpine
       - build-windows:
           requires:
             - build-linux-and-osx
+      - test-aarch64:
+          requires:
+            - build-aarch64
+      - test-aarch64-without-git:
+          requires:
+            - test-aarch64
       - test-linux:
           requires:
             - build-linux-and-osx
@@ -453,8 +624,10 @@ workflows:
             - test-windows
       - review:
           requires:
-            - test-alpine
+            - test-alpine-proxy
+            - test-alpine-without-git
             - test-linux-without-git
+            - test-aarch64-without-git
             - test-macos-without-git
             - test-windows-without-git
       - deploy:

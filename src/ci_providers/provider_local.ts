@@ -1,9 +1,9 @@
 import { parseSlug } from '../helpers/git'
 import { isProgramInstalled, runExternalProgram } from '../helpers/util'
-import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
+import { IServiceParams, UploaderInputs } from '../types'
 
 // This provider requires git to be installed
-export function detect(envs: UploaderEnvs): boolean {
+export function detect(): boolean {
   return isProgramInstalled('git')
 }
 
@@ -12,15 +12,15 @@ function _getBuild(inputs: UploaderInputs): string {
   return args.build || ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getBuildURL(inputs: UploaderInputs): string {
+function _getBuildURL(): string {
   return ''
 }
 
 function _getBranch(inputs: UploaderInputs): string {
-  const { args } = inputs
-  if (args.branch) {
-    return args.branch
+  const { args, envs } = inputs
+  const branch = args.branch || envs.GIT_BRANCH || envs.BRANCH_NAME || ''
+  if (branch !== '') {
+    return branch
   }
   try {
     const branchName = runExternalProgram('git', ['rev-parse', '--abbrev-ref', 'HEAD'])
@@ -32,15 +32,13 @@ function _getBranch(inputs: UploaderInputs): string {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getJob(env: UploaderEnvs): string {
+function _getJob(): string {
   return ''
 }
 
-// eslint-disable-next-line no-unused-vars
-function _getPR(inputs: UploaderInputs): number {
+function _getPR(inputs: UploaderInputs): string {
   const { args } = inputs
-  return Number(args.pr || '')
+  return args.pr || ''
 }
 
 // This is the value that gets passed to the Codecov uploader
@@ -54,9 +52,10 @@ export function getServiceName(): string {
 }
 
 function _getSHA(inputs: UploaderInputs) {
-  const { args } = inputs
-  if (args.sha) {
-    return args.sha
+  const { args, envs } = inputs
+  const sha = args.sha || envs.GIT_COMMIT || ''
+  if (sha !== '') {
+    return sha
   }
   try {
     const sha = runExternalProgram('git', ['rev-parse', 'HEAD'])
@@ -79,13 +78,13 @@ function _getSlug(inputs: UploaderInputs): string {
   }
 }
 
-export function getServiceParams(inputs: UploaderInputs): IServiceParams {
+export async function getServiceParams(inputs: UploaderInputs): Promise<IServiceParams> {
   return {
     branch: _getBranch(inputs),
     build: _getBuild(inputs),
-    buildURL: _getBuildURL(inputs),
+    buildURL: _getBuildURL(),
     commit: _getSHA(inputs),
-    job: _getJob(inputs.environment),
+    job: _getJob(),
     pr: _getPR(inputs),
     service: _getService(),
     slug: _getSlug(inputs),
@@ -93,5 +92,10 @@ export function getServiceParams(inputs: UploaderInputs): IServiceParams {
 }
 
 export function getEnvVarNames(): string[] {
-  return ['CI']
+  return [
+    'BRANCH_NAME',
+    'CI',
+    'GIT_BRANCH',
+    'GIT_COMMIT',
+  ]
 }

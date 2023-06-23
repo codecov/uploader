@@ -61,8 +61,8 @@ typings/
 .next
 
 # pkg output
-out/*
-dist/*
+out/
+dist/
 
 codecov
 codecov-macos
@@ -70,3 +70,8 @@ codecov.exe
 .DS_Store
 .idea/*
 .dccache
+.coverage
+# File genrated as part of XCode tests
+coverage-report-test.json
+
+*.coverage.txt

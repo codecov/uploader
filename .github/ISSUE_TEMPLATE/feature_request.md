@@ -2,7 +2,8 @@
 name: Feature request
 about: Suggest an idea for this project
 title: Feature Request
-labels: your_labels
+labels:
+- enhancement
 assignees: your_username
 
 ---

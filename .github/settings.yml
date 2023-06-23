@@ -1,0 +1,9 @@
+# These settings are synced to GitHub by https://github.com/apps/settings
+
+# See https://docs.github.com/en/rest/reference/repos#update-a-repository
+repository:
+  
+  # The name of the repository
+  name: uploader
+  
+  collaborators:

@@ -2,6 +2,7 @@ import td from 'testdouble'
 
 import * as providerCodeBuild from '../../src/ci_providers/provider_codebuild'
 import { IServiceParams, UploaderInputs } from '../../src/types'
+import { createEmptyArgs } from '../test_helpers'
 
 describe('CodeBuild Params', () => {
   afterEach(() => {
@@ -10,8 +11,8 @@ describe('CodeBuild Params', () => {
 
   describe('detect()', () => {
     it('does not run without CodeBuild env variable', () => {
-      const inputs = {
-        args: {},
+      const inputs: UploaderInputs = {
+        args: { ...createEmptyArgs() },
         envs: {},
       }
       const detected = providerCodeBuild.detect(inputs.envs)
@@ -20,32 +21,22 @@ describe('CodeBuild Params', () => {
 
     it('does run with CodeBuild env variable', () => {
       const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          source: '',
-          url: '',
-          flags: '',
-        },
-        environment: {
+        args: { ...createEmptyArgs() },
+        envs: {
           CI: 'true',
           CODEBUILD_CI: 'true',
         },
       }
-      const detected = providerCodeBuild.detect(inputs.environment)
+      const detected = providerCodeBuild.detect(inputs.envs)
       expect(detected).toBeTruthy()
     })
   })
 
   describe('getServiceParams()', () => {
-    it('gets correct params', () => {
+    it('gets correct params', async () => {
       const inputs: UploaderInputs = {
-        args: {
-          tag: '',
-          source: '',
-          url: '',
-          flags: '',
-        },
-        environment: {
+        args: { ...createEmptyArgs() },
+        envs: {
           CI: 'true',
           CODEBUILD_CI: 'true',
           CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
@@ -61,28 +52,27 @@ describe('CodeBuild Params', () => {
         buildURL: '',
         commit: 'testingsha',
         job: '2',
-        pr: 1,
+        pr: '1',
         service: 'codebuild',
         slug: 'repo',
       }
-      const params = providerCodeBuild.getServiceParams(inputs)
+      const params = await providerCodeBuild.getServiceParams(inputs)
       expect(params).toMatchObject(expected)
     })
 
-    it('gets correct params for overrides', () => {
+    it('gets correct params for overrides', async () => {
       const inputs: UploaderInputs = {
         args: {
-          branch: 'branch',
-          build: '3',
-          pr: '7',
-          sha: 'testsha',
-          slug: 'testOrg/testRepo',
-          tag: '',
-          source: '',
-          url: '',
-          flags: '',
+          ...createEmptyArgs(),
+          ...{
+            branch: 'branch',
+            build: '3',
+            pr: '7',
+            sha: 'testsha',
+            slug: 'testOrg/testRepo',
+          },
         },
-        environment: {
+        envs: {
           CI: 'true',
           CODEBUILD_CI: 'true',
           CODEBUILD_WEBHOOK_HEAD_REF: 'refs/heads/master',
@@ -98,12 +88,12 @@ describe('CodeBuild Params', () => {
         buildURL: '',
         commit: 'testsha',
         job: '2',
-        pr: 7,
+        pr: '7',
         service: 'codebuild',
         slug: 'testOrg/testRepo',
       }
 
-      const params = providerCodeBuild.getServiceParams(inputs)
+      const params = await providerCodeBuild.getServiceParams(inputs)
       expect(params).toMatchObject(expected)
     })
   })

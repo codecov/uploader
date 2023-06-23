@@ -1,4 +1,4 @@
-import childProcess from 'child_process'
+import { runExternalProgram } from './util'
 
 export function parseSlug(slug: string): string {
   // origin    https://github.com/torvalds/linux.git (fetch)
@@ -7,16 +7,16 @@ export function parseSlug(slug: string): string {
     return ''
   }
 
-  if (slug.match('http')) {
-    // Type is http(s)
-    const phaseOne = slug.split('//')[1].replace('.git', '')
-    const phaseTwo = phaseOne.split('/')
-    const cleanSlug = `${phaseTwo[1]}/${phaseTwo[2]}`
+  if (slug.match('http:') || slug.match('https:') || slug.match('ssh:')) {
+    // Type is http(s) or ssh
+    const phaseOne = slug.split('//')[1]?.replace('.git', '') || ''
+    const phaseTwo = phaseOne?.split('/') || ''
+    const cleanSlug = phaseTwo.length > 2 ? `${phaseTwo[1]}/${phaseTwo[2]}` : ''
     return cleanSlug
   } else if (slug.match('@')) {
     // Type is git
-    const cleanSlug = slug.split(':')[1].replace('.git', '')
-    return cleanSlug
+    const cleanSlug = slug.split(':')[1]?.replace('.git', '')
+    return cleanSlug || ''
   }
   throw new Error(`Unable to parse slug URL: ${slug}`)
 }
@@ -25,11 +25,8 @@ export function parseSlugFromRemoteAddr(remoteAddr?: string): string {
   let slug = ''
   if (!remoteAddr) {
     remoteAddr = (
-      childProcess.spawnSync('git', ['config', '--get', 'remote.origin.url'])
-        .stdout || ''
+      runExternalProgram('git', ['config', '--get', 'remote.origin.url']) || ''
     )
-      .toString()
-      .trimRight()
   }
   if (remoteAddr) {
     slug = parseSlug(remoteAddr)

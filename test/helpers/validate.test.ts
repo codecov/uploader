@@ -1,22 +1,6 @@
 import * as validate from '../../src/helpers/validate'
-import { checkValueType } from '../../src/helpers/validate'
-import { DEFAULT_UPLOAD_HOST } from '../../src/helpers/constansts'
-import Module from 'module'
-
-// Backup the env
-const realEnv = { ...process.env }
 
 describe('Input Validators', () => {
-  describe('checkValueType()', () => {
-    it('throws an error when the value is not the correct type', () => {
-      expect(() => {
-        checkValueType('testValue', {}, 'number')
-      }).toThrowError(
-        /The value of testValue is not of type number, can not continue, please review/,
-      )
-    })
-  })
-
   describe('Tokens', () => {
     it('Returns true with a valid alphanumeric token', () => {
       expect(validate.validateToken('1bc123')).toBe(true)
@@ -46,34 +30,27 @@ describe('Input Validators', () => {
 
   describe('Flags', () => {
     it('Should pass without a dash', () => {
-      expect(validate.validateFlags('moo')).toBe(true)
+      expect(validate.isValidFlag('moo')).toBe(true)
     })
     it('Should pass with a dash', () => {
-      expect(validate.validateFlags('moo-foor')).toBe(true)
+      expect(validate.isValidFlag('moo-foor')).toBe(true)
     })
 
     it('Should pass with a period in the middle', () => {
-      expect(validate.validateFlags('moo.foor')).toBe(true)
+      expect(validate.isValidFlag('moo.foor')).toBe(true)
     })
 
     it('Should pass with a dash at the start', () => {
-      expect(validate.validateFlags('-moo-foor')).toBe(true)
-    })
-  })
-
-  describe('FileNamePath', () => {
-    it('Should pass with an absolute path', () => {
-      expect(validate.validateFileNamePath('/path/to/file/1.txt')).toBe(true)
-    })
-    it('Should pass with a relative path', () => {
-      expect(validate.validateFileNamePath('./path/to/file/1.txt')).toBe(true)
+      expect(validate.isValidFlag('-moo-foor')).toBe(true)
     })
 
-    it('Should fail with spaces', () => {
-      expect(validate.validateFileNamePath('/path to/file')).toBe(false)
-    })
-    it('Should fail with other characters', () => {
-      expect(validate.validateFileNamePath('/path{}to/file')).toBe(false)
+    it("should throw when they they not match the pattern", () => {
+      // arrange
+      const invalidFlagName = "flag/subflag"
+      const expectedErrorMessage = "Flags must consist only of alphanumeric characters, '_', '-', or '.' and not exceed 45 characters. Received flag/subflag"
+
+      // act
+      expect(() => validate.validateFlags([invalidFlagName])).toThrowError(expectedErrorMessage)
     })
   })
 
@@ -93,5 +70,31 @@ describe('Input Validators', () => {
         validate.validateSHA('1732d84b7ef2425e979d6034a3e3bb5633da344a'),
       ).toBe(true)
     })
+  })
+
+  describe('checkSlug()', () => {
+      it('should return true for a slug with a forward slash', () => {
+          // arrange
+          const inputSlug = "testOrg/testRepo"
+          const expectedResult = true
+
+          // act
+          const result = validate.checkSlug(inputSlug)
+
+          // assert
+          expect(result).toEqual(expectedResult)
+      })
+
+      it('should return false for a slug without a forward slash', () => {
+          // arrange
+          const inputSlug = 'testRepo'
+          const expectedResult = false
+
+          // act
+          const result = validate.checkSlug(inputSlug)
+
+          // assert
+          expect(result).toEqual(expectedResult)
+      })
   })
 })
