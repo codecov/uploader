@@ -470,7 +470,10 @@ jobs:
           at: .
       - run:
           name: Remove test coverage files
-          command: Remove-Item -Recurse -Force *.coverage.txt coverage-report-test.json test/fixtures -or echo
+          command: |
+            Remove-Item -Recurse -Force *.coverage.txt -or echo
+            Remove-Item -Recurse -Force coverage-report-test.json -or echo
+            Remove-Item -Recurse -Force test/fixtures -or echo
       - run:
           name: Run Windows binary (dry-run)
           command: |
