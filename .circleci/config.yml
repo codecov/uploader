@@ -130,6 +130,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run Alpine binary -f (dry run)
           command: |
             NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
@@ -167,6 +170,9 @@ jobs:
           name: Start Squid
           command: squid
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run Alpine binary auto-detect (dry run)
           command: |
             out/codecov-alpine -U http://localhost:3128 -F alpine-proxy -v -d -Z -e CIRCLE_BRANCH >> output_alpine_proxy.txt
@@ -198,6 +204,9 @@ jobs:
       - run:
           name: Remove .git directory
           command: rm -rf .git
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
