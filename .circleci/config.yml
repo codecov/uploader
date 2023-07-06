@@ -130,6 +130,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run Alpine binary -f (dry run)
           command: |
             NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH >> output_alpine.txt
@@ -167,6 +170,9 @@ jobs:
           name: Start Squid
           command: squid
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run Alpine binary auto-detect (dry run)
           command: |
             out/codecov-alpine -U http://localhost:3128 -F alpine-proxy -v -d -Z -e CIRCLE_BRANCH >> output_alpine_proxy.txt
@@ -198,6 +204,9 @@ jobs:
       - run:
           name: Remove .git directory
           command: rm -rf .git
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
@@ -231,6 +240,9 @@ jobs:
           command: |
             (file out/codecov-linux | grep 'static') || exit ${?}
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run Linux binary -f (dry run)
           command: |
             out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v -e CIRCLE_BRANCH >> output_linux.txt
@@ -259,6 +271,9 @@ jobs:
       - run:
           name: Remove .git directory
           command: rm -rf .git
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run Linux binary (dry run)
           command: |
@@ -290,6 +305,9 @@ jobs:
           command: |
             (file out/codecov-aarch64 | grep 'static') || exit ${?}
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run aarch64 binary -f (dry run)
           command: |
             out/codecov-aarch64 -f /home/circleci/project/coverage/cobertura-coverage.xml -F aarch64 -d -Z -v -e CIRCLE_BRANCH >> output_aarch64.txt
@@ -320,6 +338,9 @@ jobs:
           name: Remove .git directory
           command: rm -rf .git
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run Linux binary (dry run)
           command: |
             out/codecov-aarch64 -F aarch64-without-git -d -Z -e CIRCLE_BRANCH > output_aarch64_without_git.txt
@@ -340,6 +361,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run MacOS binary -f (dry-run)
           command: |
@@ -368,6 +392,9 @@ jobs:
           command: rm -rf .git
       - attach_workspace:
           at: .
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run MacOS binary (dry-run)
           command: |
@@ -416,6 +443,12 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Remove test coverage files
+          command: |
+            Remove-Item -Recurse -Force *.coverage.txt;  echo "ok"
+            Remove-Item -Recurse -Force coverage-report-test.json; echo "ok"
+            Remove-Item -Recurse -Force test/fixtures; echo "ok"
+      - run:
           name: Run Windows binary -f (dry-run)
           command: |
             dir C:\Users\circleci\project\coverage\
@@ -447,6 +480,12 @@ jobs:
           command: del -Recurse -Force .git
       - attach_workspace:
           at: .
+      - run:
+          name: Remove test coverage files
+          command: |
+            Remove-Item -Recurse -Force *.coverage.txt; echo "ok"
+            Remove-Item -Recurse -Force coverage-report-test.json; echo "ok"
+            Remove-Item -Recurse -Force test/fixtures; echo "ok"
       - run:
           name: Run Windows binary (dry-run)
           command: |
