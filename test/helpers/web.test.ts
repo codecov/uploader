@@ -3,6 +3,7 @@ import {
   MockClient,
   ProxyAgent,
   setGlobalDispatcher,
+  errors
 } from 'undici'
 
 import { version } from '../../package.json'
@@ -19,6 +20,12 @@ import {
 } from '../../src/helpers/web'
 import { IServiceParams, PostResults, UploaderArgs, UploaderEnvs } from '../../src/types.js'
 import { createEmptyArgs } from '../test_helpers'
+
+
+// Mock setTimeout for simulating the delay during retry
+const fakeSetTimeout = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+
 
 describe('Web Helpers', () => {
   let uploadURL: string
@@ -280,10 +287,6 @@ describe('Web Helpers', () => {
 
 
 
-
-
-
-
       https://put.codecov.local`
       const expectedResults = {
         putURL: 'https://put.codecov.local/',
@@ -292,6 +295,123 @@ describe('Web Helpers', () => {
       expect(JSON.stringify(parsePOSTResults(testURL))).toStrictEqual(JSON.stringify(expectedResults))
     })
   })
+
+  describe('Uploader should retry POST on ECONNRESET', () => {
+    it('should retry and return response data when ECONNRESET occurs once', async () => {
+      // Replace the original setTimeout with fakeSetTimeout
+      jest.mock('timers', () => ({
+        setTimeout: fakeSetTimeout,
+      }));
+      const envs: UploaderEnvs = {}
+      const args: UploaderArgs = {
+        flags: '',
+        slug: '',
+        upstream: '',
+      }
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ECONNRESET'
+      uploadURL = 'http://codecov.io'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(uploadURL)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(new errors.ConnectTimeoutError('timeout error')).times(1)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(error).times(1)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).reply(200, 'testPOSTHTTP')
+      
+      const responseData = await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
+      try {
+        expect(responseData).toBe('testPOSTHTTP')
+      } catch (error) {
+        throw new Error(`${responseData} - ${error}`)
+      }
+    });
+
+    it('should fail with error if ECONNRESET happens 4 times', async () => {
+      // Replace the original setTimeout with fakeSetTimeout
+      jest.mock('timers', () => ({
+        setTimeout: fakeSetTimeout,
+      }));
+      const envs: UploaderEnvs = {}
+      const args: UploaderArgs = {
+        flags: '',
+        slug: '',
+        upstream: '',
+      }
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ECONNRESET'
+      uploadURL = 'http://codecov.io'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(uploadURL)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(error).times(4)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).reply(200, 'testPOSTHTTP')
+      
+      try {
+        await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
+        expect(true).toBe(false)
+      } catch (error) {
+        expect(error).toBeInstanceOf(errors.UndiciError)
+      }
+    })
+  });
+
+  describe('Uploader should retry PUT on ECONNRESET', () => {
+    it('should retry and return response data when ECONNRESET occurs once', async () => {
+      // Replace the original setTimeout with fakeSetTimeout
+      const envs: UploaderEnvs = {}
+    const args: UploaderArgs = {
+      flags: '',
+      slug: '',
+      upstream: '',
+    }
+    jest.spyOn(console, 'log').mockImplementation(() => void {})
+    const postResults: PostResults = {
+      putURL: new URL('https://codecov.io'),
+      resultURL: new URL('https://results.codecov.io'),
+    }
+
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ECONNRESET'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(postResults.putURL.origin)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).replyWithError(new errors.ConnectTimeoutError('timeout error')).times(1)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).replyWithError(error).times(1)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).reply(200, postResults.resultURL.href)
+      
+      const response = await uploadToCodecovPUT(postResults, uploadFile, envs, args)
+      expect(response.resultURL.href).toStrictEqual('https://results.codecov.io/')
+    });
+  });
 })
 
 describe('displayChangelog()', () => {
