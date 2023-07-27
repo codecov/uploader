@@ -39,7 +39,7 @@ describe('File Helpers', () => {
     const cwd = td.replace(process, 'cwd')
     td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn({ stdout: 'fish' })
-    expect(fileHelpers.fetchGitRoot()).toEqual({stdout: 'fish'})
+    expect(fileHelpers.fetchGitRoot()).toEqual({ stdout: 'fish' })
   })
 
   it('can get a file listing', async () => {
@@ -52,7 +52,7 @@ describe('File Helpers', () => {
       }
     })
     expect(
-      await fileHelpers.getFileListing('.', { flags: '', verbose: 'true', slug: '',upstream: '' }),
+      await fileHelpers.getFileListing('.', { flags: '', verbose: 'true', slug: '', upstream: '' }),
     ).toBe(files.join('\n'))
   })
 
@@ -277,6 +277,11 @@ describe('File Helpers', () => {
       it('should return path when project root is . and filepath starts /', () => {
         expect(fileHelpers.getFilePath('.', '/usr/coverage.xml')).toEqual(
           '/usr/coverage.xml',
+        )
+      })
+      it('should return path when file path starts with Windows letter drive', () => {
+        expect(fileHelpers.getFilePath('.', 'C:\Users\circleci\project\coverage\cobertura-coverage.xml')).toEqual(
+          'C:\Users\circleci\project\coverage\cobertura-coverage.xml',
         )
       })
     })
