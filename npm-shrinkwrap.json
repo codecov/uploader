@@ -26,7 +26,7 @@
         "@types/js-yaml": "4.0.5",
         "@types/micromatch": "4.0.2",
         "@types/mock-fs": "4.13.1",
-        "@types/node": "18.16.9",
+        "@types/node": "18.17.1",
         "@types/validator": "13.7.16",
         "@types/yargs": "17.0.24",
         "@typescript-eslint/eslint-plugin": "5.59.11",
@@ -1609,9 +1609,9 @@
       }
     },
     "node_modules/@types/node": {
-      "version": "18.16.9",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.16.9.tgz",
-      "integrity": "sha512-IeB32oIV4oGArLrd7znD2rkHQ6EDCM+2Sr76dJnrHwv9OHBTTM6nuDLK9bmikXzPa0ZlWMWtRGo/Uw4mrzQedA==",
+      "version": "18.17.1",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.1.tgz",
+      "integrity": "sha512-xlR1jahfizdplZYRU59JlUx9uzF1ARa8jbhM11ccpCJya8kvos5jwdm2ZAgxSCwOl0fq21svP18EVwPBXMQudw==",
       "dev": true
     },
     "node_modules/@types/normalize-package-data": {
@@ -10474,9 +10474,9 @@
       }
     },
     "@types/node": {
-      "version": "18.16.9",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.16.9.tgz",
-      "integrity": "sha512-IeB32oIV4oGArLrd7znD2rkHQ6EDCM+2Sr76dJnrHwv9OHBTTM6nuDLK9bmikXzPa0ZlWMWtRGo/Uw4mrzQedA==",
+      "version": "18.17.1",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.1.tgz",
+      "integrity": "sha512-xlR1jahfizdplZYRU59JlUx9uzF1ARa8jbhM11ccpCJya8kvos5jwdm2ZAgxSCwOl0fq21svP18EVwPBXMQudw==",
       "dev": true
     },
     "@types/normalize-package-data": {
