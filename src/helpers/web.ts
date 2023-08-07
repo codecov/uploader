@@ -12,14 +12,13 @@ import {
   UploaderEnvs,
   UploaderInputs,
 } from '../types'
-import { UploadLogger, info } from './logger'
+import { UploadLogger, info, logError } from './logger'
 import { addProxyIfNeeded } from './proxy'
+import { sleep } from './util'
 
-import { promisify } from 'util'
-import { setTimeout } from 'timers'
 
-const maxRetries = 3
-const baseBackoffDelayMs = 250 // Adjust this value based on your needs.
+const maxRetries = 4
+const baseBackoffDelayMs = 1000 // Adjust this value based on your needs.
 
 /**
  *
@@ -70,8 +69,9 @@ async function requestWithRetry(
       retryCount < maxRetries
     ) {
       const backoffDelay = baseBackoffDelayMs * 2 ** retryCount
-      await promisify(setTimeout)(backoffDelay)
+      await sleep(backoffDelay)
       UploadLogger.verbose('Request to Codecov failed. Retrying...')
+      logError(`Request error: ${error.message}`)
       return requestWithRetry(url, options, retryCount + 1)
     }
     throw error
