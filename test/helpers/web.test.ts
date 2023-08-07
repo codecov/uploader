@@ -21,10 +21,7 @@ import {
 import { IServiceParams, PostResults, UploaderArgs, UploaderEnvs } from '../../src/types.js'
 import { createEmptyArgs } from '../test_helpers'
 
-
-// Mock setTimeout for simulating the delay during retry
-const fakeSetTimeout = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
+import * as util_module from '../../src/helpers/util'
 
 
 describe('Web Helpers', () => {
@@ -298,10 +295,6 @@ describe('Web Helpers', () => {
 
   describe('Uploader should retry POST on ECONNRESET', () => {
     it('should retry and return response data when ECONNRESET occurs once', async () => {
-      // Replace the original setTimeout with fakeSetTimeout
-      jest.mock('timers', () => ({
-        setTimeout: fakeSetTimeout,
-      }));
       const envs: UploaderEnvs = {}
       const args: UploaderArgs = {
         flags: '',
@@ -337,11 +330,8 @@ describe('Web Helpers', () => {
       }
     });
 
-    it('should fail with error if ECONNRESET happens 4 times', async () => {
-      // Replace the original setTimeout with fakeSetTimeout
-      jest.mock('timers', () => ({
-        setTimeout: fakeSetTimeout,
-      }));
+    it('should fail with error if ECONNRESET happens 5 times', async () => {
+      const mockSleep = jest.spyOn(util_module, 'sleep').mockResolvedValue(42)
       const envs: UploaderEnvs = {}
       const args: UploaderArgs = {
         flags: '',
@@ -357,7 +347,7 @@ describe('Web Helpers', () => {
       mockClient.intercept({
         method: 'POST',
         path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
-      }).replyWithError(error).times(4)
+      }).replyWithError(error).times(5)
 
       mockClient.intercept({
         method: 'POST',
@@ -369,6 +359,7 @@ describe('Web Helpers', () => {
         expect(true).toBe(false)
       } catch (error) {
         expect(error).toBeInstanceOf(errors.UndiciError)
+        expect(mockSleep).toBeCalledTimes(4)
       }
     })
   });
