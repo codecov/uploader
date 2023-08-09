@@ -21,7 +21,7 @@ import {
 import { IServiceParams, PostResults, UploaderArgs, UploaderEnvs } from '../../src/types.js'
 import { createEmptyArgs } from '../test_helpers'
 
-import * as util_module from '../../src/helpers/util'
+import * as utilModule from '../../src/helpers/util'
 
 
 describe('Web Helpers', () => {
@@ -331,7 +331,7 @@ describe('Web Helpers', () => {
     });
 
     it('should fail with error if ECONNRESET happens 5 times', async () => {
-      const mockSleep = jest.spyOn(util_module, 'sleep').mockResolvedValue(42)
+      const mockSleep = jest.spyOn(utilModule, 'sleep').mockResolvedValue(42)
       const envs: UploaderEnvs = {}
       const args: UploaderArgs = {
         flags: '',
