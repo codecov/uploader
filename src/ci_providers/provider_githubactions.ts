@@ -54,17 +54,12 @@ async function _getBuildURL(inputs: UploaderInputs): Promise<string> {
 
 function _getBranch(inputs: UploaderInputs): string {
   const { args, envs } = inputs
-  const branchRegex = /refs\/heads\/(.*)/
-  const branchMatches = branchRegex.exec(envs.GITHUB_REF || '')
-  let branch
-  if (branchMatches) {
-    branch = branchMatches[1]
+  const triggerName = envs.GITHUB_EVENT_NAME
+  if (triggerName == "pull_request" || triggerName == "pull_request_target") {
+    return args.branch || envs.GITHUB_REF || ''
+  } else {
+    return args.branch || envs.GITHUB_REF_NAME || ''
   }
-
-  if (envs.GITHUB_HEAD_REF && envs.GITHUB_HEAD_REF !== '') {
-    branch = envs.GITHUB_HEAD_REF
-  }
-  return args.branch || branch || ''
 }
 
 function _getJob(envs: UploaderEnvs): string {
@@ -138,6 +133,7 @@ export async function getServiceParams(inputs: UploaderInputs): Promise<IService
   }
 }
 
+// https://docs.github.com/en/actions/learn-github-actions/variables
 export function getEnvVarNames(): string[] {
   return [
     'GITHUB_ACTION',
@@ -148,5 +144,7 @@ export function getEnvVarNames(): string[] {
     'GITHUB_SERVER_URL',
     'GITHUB_SHA',
     'GITHUB_WORKFLOW',
+    'GITHUB_EVENT_NAME',
+    'GITHUB_REF_NAME',
   ]
 }

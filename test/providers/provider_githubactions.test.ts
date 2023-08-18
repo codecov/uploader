@@ -45,7 +45,7 @@ describe('GitHub Actions Params', () => {
       args: { ...createEmptyArgs() },
       envs: {
         GITHUB_ACTIONS: 'true',
-        GITHUB_REF: 'refs/heads/master',
+        GITHUB_REF_NAME: 'master',
         GITHUB_REPOSITORY: 'testOrg/testRepo',
         GITHUB_RUN_ID: '2',
         GITHUB_SERVER_URL: 'https://github.com',
@@ -68,7 +68,7 @@ describe('GitHub Actions Params', () => {
   })
 
   it('gets correct params for a PR', async () => {
-    const inputs: UploaderInputs = {
+    let inputs: UploaderInputs = {
       args: { ...createEmptyArgs() },
       envs: {
         GITHUB_ACTIONS: 'true',
@@ -79,10 +79,11 @@ describe('GitHub Actions Params', () => {
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
+        GITHUB_EVENT_NAME: 'pull_request',
       },
     }
     const expected: IServiceParams = {
-      branch: 'branch',
+      branch: 'refs/pull/1/merge',
       build: '2',
       buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
@@ -92,13 +93,23 @@ describe('GitHub Actions Params', () => {
       slug: 'testOrg/testRepo',
     }
 
-    const spawnSync = td.replace(childProcess, 'spawnSync')
+    let spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
       stdout: 'testingsha',
     })
-    const params = await providerGitHubactions.getServiceParams(inputs)
+    let params = await providerGitHubactions.getServiceParams(inputs)
+    expect(params).toMatchObject(expected)
+
+    inputs["envs"]["GITHUB_EVENT_NAME"] = 'pull_request_target'
+    spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
+    ).thenReturn({
+      stdout: 'testingsha',
+    })
+    params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
 
@@ -115,10 +126,11 @@ describe('GitHub Actions Params', () => {
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
+        GITHUB_EVENT_NAME: 'pull_request',
       },
     }
     const expected: IServiceParams = {
-      branch: 'branch',
+      branch: 'refs/pull/1/merge',
       build: '2',
       buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
@@ -183,10 +195,11 @@ describe('GitHub Actions Params', () => {
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
+        GITHUB_EVENT_NAME: 'pull_request',
       },
     }
     const expected: IServiceParams = {
-      branch: 'branch',
+      branch: 'refs/pull/1/merge',
       build: '2',
       buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
       commit: 'testingsha',
@@ -248,10 +261,11 @@ describe('GitHub Actions Params', () => {
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingmergecommitsha',
         GITHUB_WORKFLOW: 'testWorkflow',
+        GITHUB_EVENT_NAME: 'pull_request',
       },
     }
     const expected: IServiceParams = {
-      branch: 'branch',
+      branch: 'refs/pull/1/merge',
       build: '2',
       buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingmergecommitsha2345678901234567890',
@@ -320,10 +334,11 @@ describe('GitHub Actions Params', () => {
         GITHUB_SERVER_URL: 'https://github.com',
         GITHUB_SHA: 'testingsha',
         GITHUB_WORKFLOW: 'testWorkflow',
+        GITHUB_EVENT_NAME: 'pull_request',
       },
     }
     const expected: IServiceParams = {
-      branch: 'branch',
+      branch: 'refs/pull/1/merge',
       build: '2',
       buildURL: 'https://github.com/testOrg/testRepo/actions/runs/2',
       commit: 'testingsha',
