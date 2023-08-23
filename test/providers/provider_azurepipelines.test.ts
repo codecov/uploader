@@ -55,7 +55,7 @@ describe('Azure Pipelines CI Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: '' })
+    ).thenReturn({ stdout: Buffer.from('') })
 
     const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -92,7 +92,7 @@ describe('Azure Pipelines CI Params', () => {
     td.when(
       execFileSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn(
-      'nonmergesha23456789012345678901234567890',
+      Buffer.from('nonmergesha23456789012345678901234567890'),
     )
     const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -129,7 +129,7 @@ describe('Azure Pipelines CI Params', () => {
     td.when(
       execFileSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn(
-      'nonmergesha23456789012345678901234567890',
+      Buffer.from('nonmergesha23456789012345678901234567890'),
     )
     const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -164,7 +164,7 @@ describe('Azure Pipelines CI Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
+    ).thenReturn({ stdout: Buffer.from('https://github.com/testOrg/testRepo.git') })
     const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -200,7 +200,7 @@ describe('Azure Pipelines CI Params', () => {
     td.when(
       execFileSync('git', ['show', '--no-patch', '--format=%P']),
     ).thenReturn(
-      'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
+      Buffer.from('testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890'),
     )
     const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)

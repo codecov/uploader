@@ -11,7 +11,7 @@ describe('isProgramInstalled()', () => {
   it('should throw an error when program is not found', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(spawnSync('fooProg')).thenReturn({
-      error: 'Huh?',
+      error: new Error('Huh?'),
     })
     expect(isProgramInstalled('fooProg')).toBeFalsy()
   })
@@ -27,7 +27,7 @@ describe('runExternalProgram()', () => {
     td.when(
       spawnSync('ls', ['-geewhiz'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
-      error: 'Huh?',
+      error: new Error('Huh?'),
     })
     expect(() => runExternalProgram('ls', ['-geewhiz'])).toThrowError(/Huh\?/)
   })
@@ -37,7 +37,7 @@ describe('runExternalProgram()', () => {
     td.when(
       spawnSync('ls', ['-geewhiz'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
-      stdout: 'I am output',
+      stdout: Buffer.from('I am output'),
     })
     expect(runExternalProgram('ls', ['-geewhiz'])).toEqual('I am output')
   })
@@ -47,13 +47,13 @@ describe('runExternalProgram()', () => {
     td.when(
       spawnSync('ls', ['-geewhiz'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
-      stdout: `
+      stdout: Buffer.from(`
 
 
           I am output
 
 
-          `,
+          `),
     })
     expect(runExternalProgram('ls', ['-geewhiz'])).toEqual('I am output')
   })
