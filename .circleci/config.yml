@@ -421,8 +421,11 @@ jobs:
           command: |
             $ErrorActionPreference="Stop"
             nvm arch
+            nvm list
             nvm install 16 all
             nvm use 16
+            nvm list
+            nvm use 16.20.2
       - run:
           name: Build Windows Binary
           command: |
