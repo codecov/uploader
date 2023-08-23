@@ -422,7 +422,7 @@ jobs:
             $ErrorActionPreference="Stop"
             nvm arch
             nvm install 17 all
-            nvm use 17
+            nvm use 17.9.1
       - run:
           name: Build Windows Binary
           command: |
