@@ -449,12 +449,22 @@ jobs:
             Remove-Item -Recurse -Force coverage-report-test.json; echo "ok"
             Remove-Item -Recurse -Force test/fixtures; echo "ok"
       - run:
-          name: Run Windows binary -f (dry-run)
-          command: |
-            dir C:\Users\circleci\project\coverage\
-            attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
-            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
+          name: dir command
           shell: cmd.exe
+          command: |
+            dir C:\Users\circleci\project\
+            dir C:\Users\circleci\project\coverage\
+      - run:
+          name: attrib command
+          shell: cmd.exe
+          command: |
+            attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
+      - run:
+          name: Run Windows binary -f (dry-run)
+          shell: cmd.exe
+          command: |
+            dir
+            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
       - run:
           name: Run Windows binary auto-detect (dry-run)
           command: |
