@@ -452,6 +452,11 @@ jobs:
           name: dir command
           shell: cmd.exe
           command: |
+            pwd
+            dir .
+            dir C:\
+            dir C:\Users\
+            dir C:\Users\circleci\
             dir C:\Users\circleci\project\
             dir C:\Users\circleci\project\coverage\
       - run:
