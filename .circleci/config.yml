@@ -422,7 +422,7 @@ jobs:
             $ErrorActionPreference="Stop"
             nvm arch
             nvm install 16 all
-            nvm use 16
+            nvm use 16.20.2
       - run:
           name: Build Windows Binary
           command: |
@@ -451,9 +451,9 @@ jobs:
       - run:
           name: Run Windows binary -f (dry-run)
           command: |
-            dir C:\Users\circleci\project\coverage\
-            attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
-            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
+            dir .
+            attrib .\coverage\cobertura-coveage.xml
+            .\out\codecov.exe -f .\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary auto-detect (dry-run)
