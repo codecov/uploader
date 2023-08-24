@@ -19,12 +19,12 @@ describe('generateSwiftCoverageFiles()', () => {
 
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('xcrun')).thenReturn({
-            stdout: 'xcrun installed',
-            error: null
+            stdout: Buffer.from('xcrun installed'),
+            error: undefined
         })
         td.when(spawnSync('xcrun', td.matchers.contains('llvm-cov'), { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
-            stdout: '',
-            error: null
+            stdout: Buffer.from(''),
+            error: undefined
         })
 
         expect(await generateSwiftCoverageFiles('')).toEqual([
@@ -49,12 +49,12 @@ describe('generateSwiftCoverageFiles()', () => {
 
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('xcrun')).thenReturn({
-            stdout: 'xcrun installed',
-            error: null
+            stdout: Buffer.from('xcrun installed'),
+            error: undefined
         })
         td.when(spawnSync('xcrun', td.matchers.contains('llvm-cov'), { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
-            stdout: '',
-            error: null
+            stdout: Buffer.from(''),
+            error: undefined
         })
 
         expect(await generateSwiftCoverageFiles('Project')).toEqual([
@@ -78,12 +78,12 @@ describe('generateSwiftCoverageFiles()', () => {
 
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('xcrun')).thenReturn({
-            stdout: 'xcrun installed',
-            error: null
+            stdout: Buffer.from('xcrun installed'),
+            error: undefined
         })
         td.when(spawnSync('xcrun', td.matchers.contains('llvm-cov'), { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
-            stdout: '',
-            error: null
+            stdout: Buffer.from(''),
+            error: undefined
         })
 
         expect(await generateSwiftCoverageFiles('Project')).toEqual([
@@ -107,12 +107,12 @@ describe('generateSwiftCoverageFiles()', () => {
 
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('xcrun')).thenReturn({
-            stdout: 'xcrun installed',
-            error: null
+            stdout: Buffer.from('xcrun installed'),
+            error: undefined
         })
         td.when(spawnSync('xcrun', td.matchers.contains('llvm-cov'), { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
-            stdout: '',
-            error: 'could not convert'
+            stdout: Buffer.from(''),
+            error: new Error('could not convert')
         })
 
         expect(await generateSwiftCoverageFiles('')).toEqual([])
@@ -133,8 +133,8 @@ describe('generateSwiftCoverageFiles()', () => {
     it('should exit gracefully if no swift coverage is found', async () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('xcrun')).thenReturn({
-            stdout: 'xcrun installed',
-            error: null
+            stdout: Buffer.from('xcrun installed'),
+            error: undefined
         })
         const homedir = td.replace(os, 'homedir')
         td.when(homedir()).thenReturn('test/fixtures/yaml')
@@ -148,7 +148,7 @@ describe('generateSwiftCoverageFiles()', () => {
 
     it('should return an error when xcrun is not installed', async () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
-        td.when(spawnSync('xcrun')).thenReturn({ error: "Command 'xcrun' not found" })
+        td.when(spawnSync('xcrun')).thenReturn({ error: new Error("Command 'xcrun' not found") })
 
         await expect(generateSwiftCoverageFiles('')).rejects.toThrowError(/xcrun is not installed/)
     })

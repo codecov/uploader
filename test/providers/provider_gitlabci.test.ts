@@ -53,7 +53,7 @@ describe('GitLabCI Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: '' })
+    ).thenReturn({ stdout: Buffer.from('') })
     const params = await providerGitLabci.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -137,7 +137,7 @@ describe('GitLabCI Params', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-      ).thenReturn({ stdout: 'https://gitlab.com/testOrg/testRepo.git' })
+      ).thenReturn({ stdout: Buffer.from('https://gitlab.com/testOrg/testRepo.git') })
 
       const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('testOrg/testRepo')
@@ -148,7 +148,7 @@ describe('GitLabCI Params', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-      ).thenReturn({ stdout: 'git@gitlab.com:/' })
+      ).thenReturn({ stdout: Buffer.from('git@gitlab.com:/') })
 
       const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')
@@ -159,7 +159,7 @@ describe('GitLabCI Params', () => {
       const spawnSync = td.replace(childProcess, 'spawnSync')
       td.when(
         spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-      ).thenReturn({ stdout: '' })
+      ).thenReturn({ stdout: Buffer.from('') })
 
       const params = await providerGitLabci.getServiceParams(inputs)
       expect(params.slug).toBe('')

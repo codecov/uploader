@@ -27,10 +27,10 @@ describe('File Helpers', () => {
   it('can fetch the git root', () => {
     const cwd = td.replace(process, 'cwd')
     const spawnSync = td.replace(childProcess, 'spawnSync')
-    td.when(cwd()).thenReturn({ stdout: 'fish' })
+    td.when(cwd()).thenReturn('fish')
     td.when(
       spawnSync('git', ['rev-parse', '--show-toplevel'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: 'gitRoot' })
+    ).thenReturn({ stdout: Buffer.from('gitRoot') })
 
     expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')
   })
@@ -38,8 +38,8 @@ describe('File Helpers', () => {
   it('returns cwd when it cannot fetch the git root', () => {
     const cwd = td.replace(process, 'cwd')
     td.replace(childProcess, 'spawnSync')
-    td.when(cwd()).thenReturn({ stdout: 'fish' })
-    expect(fileHelpers.fetchGitRoot()).toEqual({ stdout: 'fish' })
+    td.when(cwd()).thenReturn('fish')
+    expect(fileHelpers.fetchGitRoot()).toEqual('fish')
   })
 
   it('can get a file listing', async () => {

@@ -18,12 +18,12 @@ describe('generateCoveragePyFile()', () => {
 
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('coverage')).thenReturn({
-            stdout: 'coverage installed',
-            error: null
+            stdout: Buffer.from('coverage installed'),
+            error: undefined
         })
         td.when(spawnSync('coverage', td.matchers.contains('xml'), { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn({
-            stdout: 'xml',
-            error: null
+            stdout: Buffer.from('xml'),
+            error: undefined
         })
 
         expect(await generateCoveragePyFile(fixturesCoveragePyDir, [])).toBe('xml')
@@ -32,8 +32,8 @@ describe('generateCoveragePyFile()', () => {
     it('should return if a file is provided', async () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('coverage')).thenReturn({
-            stdout: 'coverage installed',
-            error: null
+            stdout: Buffer.from('coverage installed'),
+            error: undefined
         })
 
         const projectRoot = process.cwd()
@@ -42,7 +42,7 @@ describe('generateCoveragePyFile()', () => {
 
     it('should return a log when coveragepy is not installed', async () => {
         const spawnSync = td.replace(childProcess, 'spawnSync')
-        td.when(spawnSync('coverage')).thenReturn({ error: "command not found: coverage" })
+        td.when(spawnSync('coverage')).thenReturn({ error: new Error("command not found: coverage") })
 
         const projectRoot = process.cwd()
         expect(await generateCoveragePyFile(projectRoot, [])).toBe('coveragepy is not installed')
@@ -56,8 +56,8 @@ describe('generateCoveragePyFile()', () => {
 
         const spawnSync = td.replace(childProcess, 'spawnSync')
         td.when(spawnSync('coverage')).thenReturn({
-            stdout: 'coverage installed',
-            error: null
+            stdout: Buffer.from('coverage installed'),
+            error: undefined
         })
 
         expect(await generateCoveragePyFile(fixturesYamlDir, [])).toBe('Skipping coveragepy, no .coverage file found.')
