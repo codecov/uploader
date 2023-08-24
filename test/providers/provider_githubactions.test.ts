@@ -1,7 +1,5 @@
 import td from 'testdouble'
-import Undici from 'undici'
-import { BodyReadable } from 'undici'
-import { Dispatcher } from 'undici'
+import { Dispatcher, MockAgent, getGlobalDispatcher, setGlobalDispatcher } from 'undici'
 import childProcess from 'child_process'
 
 import * as providerGitHubactions from '../../src/ci_providers/provider_githubactions'
@@ -10,8 +8,16 @@ import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
 describe('GitHub Actions Params', () => {
+
+  let dispatcher: Dispatcher
+
   afterEach(() => {
     td.reset()
+    setGlobalDispatcher(dispatcher)
+  })
+
+  beforeEach(() => {
+    dispatcher = getGlobalDispatcher()
   })
 
   describe('detect()', () => {
@@ -137,42 +143,27 @@ describe('GitHub Actions Params', () => {
       stdout: Buffer.from('testingsha'),
     })
 
-    const request = td.replace(Undici, 'request')
-    const body: Partial<BodyReadable> = {
-      json: () => {
-        return new Promise(() => {
-          return {
-            'jobs': [{
-              'id': 1,
-              'name': 'fakeJob',
-              'html_url': 'https://fake.com',
-            }, {
-              'id': 2,
-              'name': 'seocondFakeJob',
-              'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
-            }, {
-              'id': 3,
-              'name': 'anotherFakeJob',
-              'html_url': 'https://example.com',
-            }]
-          }
-        })
-      }
-    }
-    async function response(): Promise<Partial<Dispatcher.ResponseData>> {
-      return await {
-        statusCode: 200,
-        body
-      }
-    }
-    td.when(
-      request(
-        'https://api.github.com/repos/testOrg/testRepo/actions/runs/2/jobs',
-        {
-          headers: { 'User-Agent': 'Awesome-Octocat-App' }
-        }
-      )
-    ).thenReturn(response())
+    const mockAgent = new MockAgent()
+    setGlobalDispatcher(mockAgent)
+
+    const mockPool = mockAgent.get('https://api.github.com')
+    mockPool.intercept({
+      path: '/repos/testOrg/testRepo/actions/runs/2/jobs'
+    }).reply(200, {
+      'jobs': [{
+        'id': 1,
+        'name': 'fakeJob',
+        'html_url': 'https://fake.com',
+      }, {
+        'id': 2,
+        'name': 'seocondFakeJob',
+        'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
+      }, {
+        'id': 3,
+        'name': 'anotherFakeJob',
+        'html_url': 'https://example.com',
+      }]
+    })
 
     const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -210,36 +201,29 @@ describe('GitHub Actions Params', () => {
     ).thenReturn({
       stdout: Buffer.from('testingsha'),
     })
-    const request = td.replace(Undici, 'request')
-    td.when(
-      request(
-        'https://api.github.com/repos/testOrg/testRepo/actions/runs/2/jobs',
-        {
-          headers: { 'User-Agent': 'Awesome-Octocat-App' }
-        }
-      )
-    ).thenReturn({
-      statusCode: 200,
-      body: {
-        json: () => {
-          return {
-            'jobs': [{
-              'id': 1,
-              'name': 'fakeJob',
-              'html_url': 'https://fake.com',
-            }, {
-              'id': 2,
-              'name': 'testJob',
-              'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
-            }, {
-              'id': 3,
-              'name': 'anotherFakeJob',
-              'html_url': 'https://example.com',
-            }]
-          }
-        }
-      }
+
+    const mockAgent = new MockAgent()
+    setGlobalDispatcher(mockAgent)
+
+    const mockPool = mockAgent.get('https://api.github.com')
+    mockPool.intercept({
+      path: '/repos/testOrg/testRepo/actions/runs/2/jobs'
+    }).reply(200, {
+      'jobs': [{
+        'id': 1,
+        'name': 'fakeJob',
+        'html_url': 'https://fake.com',
+      }, {
+        'id': 2,
+        'name': 'testJob',
+        'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
+      }, {
+        'id': 3,
+        'name': 'anotherFakeJob',
+        'html_url': 'https://example.com',
+      }]
     })
+
     const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
