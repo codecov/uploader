@@ -134,7 +134,7 @@ describe('Bitbucket Params', () => {
 
     const execFileSync = td.replace(childProcess, 'spawnSync')
     td.when(execFileSync('git', ['rev-parse', 'testingsha12'], { maxBuffer: SPAWNPROCESSBUFFERSIZE })).thenReturn(
-      { stdout: 'newtestsha'},
+      { stdout: Buffer.from('newtestsha') },
     )
     const params = await providerBitbucket.getServiceParams(inputs)
     expect(params).toMatchObject(expected)

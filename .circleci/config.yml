@@ -422,7 +422,7 @@ jobs:
             $ErrorActionPreference="Stop"
             nvm arch
             nvm install 16 all
-            nvm use 16
+            nvm use 16.20.2
       - run:
           name: Build Windows Binary
           command: |
@@ -451,9 +451,9 @@ jobs:
       - run:
           name: Run Windows binary -f (dry-run)
           command: |
-            dir C:\Users\circleci\project\coverage\
-            attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
-            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
+            dir .
+            attrib .\coverage\cobertura-coveage.xml
+            .\out\codecov.exe -f .\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary auto-detect (dry-run)
@@ -569,7 +569,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:442.0.0-slim@sha256:95912c88d7adeff40a81fe151ced2b4c4ba237918cd997fb5258340716daad94
+      - image: google/cloud-sdk:444.0.0-slim@sha256:c3d601141c08400997b34c298fdfe29cf80de62792d3e6308ff0e5727e0e12e3
     steps:
       - attach_workspace:
           at: .

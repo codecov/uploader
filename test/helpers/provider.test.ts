@@ -42,7 +42,7 @@ describe('detectProvider()', () => {
     jest.spyOn(console, 'error').mockImplementation(() => void {})
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(spawnSync('git')).thenReturn({
-      error: 'Git is not installed!',
+      error: new Error('Git is not installed!'),
     })
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs()},
@@ -60,7 +60,7 @@ describe('walkProviders()', () => {
   it('will throw if unable to detect', async () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(spawnSync('git')).thenReturn({
-      error: 'Git is not installed!',
+      error: new Error('Git is not installed!'),
     })
     const inputs: UploaderInputs = {
       args: {...createEmptyArgs()},
