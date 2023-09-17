@@ -66,7 +66,7 @@ jobs:
 
   build-alpine:
     docker:
-      - image: alpine:3.18.3@sha256:7144f7bab3d4c2648d7e59409f15ec52a18006a128c733fcff20d3a4a54ba44a
+      - image: alpine:3.18.3
 
     working_directory: ~/repo
 
@@ -119,7 +119,7 @@ jobs:
 
   test-alpine:
     docker:
-      - image: alpine:3.18.3@sha256:7144f7bab3d4c2648d7e59409f15ec52a18006a128c733fcff20d3a4a54ba44a
+      - image: alpine:3.18.3
     steps:
       - run:
           name: Install git
@@ -156,7 +156,7 @@ jobs:
 
   test-alpine-proxy:
     docker:
-      - image: alpine:3.18.3@sha256:7144f7bab3d4c2648d7e59409f15ec52a18006a128c733fcff20d3a4a54ba44a
+      - image: alpine:3.18.3
     steps:
       - run:
           name: Install git
@@ -191,7 +191,7 @@ jobs:
 
   test-alpine-without-git:
     docker:
-      - image: alpine:3.18.3@sha256:7144f7bab3d4c2648d7e59409f15ec52a18006a128c733fcff20d3a4a54ba44a
+      - image: alpine:3.18.3
     steps:
       - run:
           name: Install git
@@ -230,7 +230,7 @@ jobs:
 
   test-linux:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:17.9.1
     steps:
       - checkout
       - attach_workspace:
@@ -263,7 +263,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:17.9.1
     steps:
       - checkout
       - attach_workspace:
@@ -504,7 +504,7 @@ jobs:
 
   review:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:17.9.1
     steps:
       - attach_workspace:
           at: .
@@ -543,7 +543,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:17.9.1
     steps:
       - attach_workspace:
           at: .
@@ -569,7 +569,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:446.0.1-slim@sha256:def7f07281f9e74da7746909cd749d507a09a9a79232d1e6fd6cff87c99eb8e3
+      - image: google/cloud-sdk:446.0.1-slim
     steps:
       - attach_workspace:
           at: .
