@@ -23,10 +23,10 @@
         "@commitlint/cli": "17.7.1",
         "@commitlint/config-conventional": "17.7.0",
         "@types/jest": "27.5.2",
-        "@types/js-yaml": "4.0.5",
+        "@types/js-yaml": "4.0.6",
         "@types/micromatch": "4.0.2",
         "@types/mock-fs": "4.13.1",
-        "@types/node": "18.17.17",
+        "@types/node": "18.17.19",
         "@types/validator": "13.11.1",
         "@types/yargs": "17.0.24",
         "@typescript-eslint/eslint-plugin": "6.7.2",
@@ -1616,9 +1616,9 @@
       }
     },
     "node_modules/@types/js-yaml": {
-      "version": "4.0.5",
-      "resolved": "https://registry.npmjs.org/@types/js-yaml/-/js-yaml-4.0.5.tgz",
-      "integrity": "sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==",
+      "version": "4.0.6",
+      "resolved": "https://registry.npmjs.org/@types/js-yaml/-/js-yaml-4.0.6.tgz",
+      "integrity": "sha512-ACTuifTSIIbyksx2HTon3aFtCKWcID7/h3XEmRpDYdMCXxPbl+m9GteOJeaAkiAta/NJaSFuA7ahZ0NkwajDSw==",
       "dev": true
     },
     "node_modules/@types/json-schema": {
@@ -1652,9 +1652,9 @@
       }
     },
     "node_modules/@types/node": {
-      "version": "18.17.17",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.17.tgz",
-      "integrity": "sha512-cOxcXsQ2sxiwkykdJqvyFS+MLQPLvIdwh5l6gNg8qF6s+C7XSkEWOZjK+XhUZd+mYvHV/180g2cnCcIl4l06Pw==",
+      "version": "18.17.19",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.19.tgz",
+      "integrity": "sha512-+pMhShR3Or5GR0/sp4Da7FnhVmTalWm81M6MkEldbwjETSaPalw138Z4KdpQaistvqQxLB7Cy4xwYdxpbSOs9Q==",
       "dev": true
     },
     "node_modules/@types/normalize-package-data": {
@@ -10407,9 +10407,9 @@
       }
     },
     "@types/js-yaml": {
-      "version": "4.0.5",
-      "resolved": "https://registry.npmjs.org/@types/js-yaml/-/js-yaml-4.0.5.tgz",
-      "integrity": "sha512-FhpRzf927MNQdRZP0J5DLIdTXhjLYzeUTmLAu69mnVksLH9CJY3IuSeEgbKUki7GQZm0WqDkGzyxju2EZGD2wA==",
+      "version": "4.0.6",
+      "resolved": "https://registry.npmjs.org/@types/js-yaml/-/js-yaml-4.0.6.tgz",
+      "integrity": "sha512-ACTuifTSIIbyksx2HTon3aFtCKWcID7/h3XEmRpDYdMCXxPbl+m9GteOJeaAkiAta/NJaSFuA7ahZ0NkwajDSw==",
       "dev": true
     },
     "@types/json-schema": {
@@ -10443,9 +10443,9 @@
       }
     },
     "@types/node": {
-      "version": "18.17.17",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.17.tgz",
-      "integrity": "sha512-cOxcXsQ2sxiwkykdJqvyFS+MLQPLvIdwh5l6gNg8qF6s+C7XSkEWOZjK+XhUZd+mYvHV/180g2cnCcIl4l06Pw==",
+      "version": "18.17.19",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-18.17.19.tgz",
+      "integrity": "sha512-+pMhShR3Or5GR0/sp4Da7FnhVmTalWm81M6MkEldbwjETSaPalw138Z4KdpQaistvqQxLB7Cy4xwYdxpbSOs9Q==",
       "dev": true
     },
     "@types/normalize-package-data": {
