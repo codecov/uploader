@@ -108,7 +108,7 @@ export async function uploadToCodecovPUT(
     )
   }
 
-  return { status: 'success', resultURL: putAndResultUrlPair.resultURL }
+  return { status: 'processing', resultURL: putAndResultUrlPair.resultURL }
 }
 
 export async function uploadToCodecovPOST(

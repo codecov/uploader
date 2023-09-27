@@ -92,11 +92,11 @@ describe('Uploader Core', () => {
     mockClient.intercept({
       method: 'PUT',
       path: '/',
-    }).reply(200, 'success')
+    }).reply(200, 'processing')
 
     const result = await app.main(args)
     expect(result).toEqual({
-      status: 'success',
+      status: 'processing',
       resultURL: 'https://results.codecov.io/',
     })
   }, 30000)
@@ -212,11 +212,11 @@ describe('Uploader Core', () => {
       mockClient.intercept({
         method: 'PUT',
         path: '/',
-      }).reply(200, 'success')
+      }).reply(200, 'processing')
 
       const result = await app.main(args)
       expect(result).toEqual({
-        status: 'success',
+        status: 'processing',
         resultURL: 'https://results.codecov.io/',
       })
     }, 30000)
@@ -249,11 +249,11 @@ describe('Uploader Core', () => {
     mockClient.intercept({
       method: 'PUT',
       path: '/',
-    }).reply(200, 'success')
+    }).reply(200, 'processing')
 
     const result = await app.main(args)
     expect(result).toEqual({
-      status: 'success',
+      status: 'processing',
       resultURL: 'https://results.codecov.io/',
     })
   }, 30000)
