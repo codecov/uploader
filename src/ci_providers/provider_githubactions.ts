@@ -30,7 +30,9 @@ async function _getJobURL(inputs: UploaderInputs): Promise<string> {
 
   const data = await res.body.json()
   const { envs } = inputs
-  for (const job of data.jobs) {
+
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  for (const job of (data as any).jobs) {
     if (job.name == envs.GITHUB_JOB) {
       return job.html_url
     }
