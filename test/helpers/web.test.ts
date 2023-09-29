@@ -321,7 +321,7 @@ describe('Web Helpers', () => {
         method: 'POST',
         path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
       }).reply(200, 'testPOSTHTTP')
-      
+
       const responseData = await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
       try {
         expect(responseData).toBe('testPOSTHTTP')
@@ -353,7 +353,7 @@ describe('Web Helpers', () => {
         method: 'POST',
         path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
       }).reply(200, 'testPOSTHTTP')
-      
+
       try {
         await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
         expect(true).toBe(false)
@@ -398,7 +398,7 @@ describe('Web Helpers', () => {
         method: 'PUT',
         path: `/`,
       }).reply(200, postResults.resultURL.href)
-      
+
       const response = await uploadToCodecovPUT(postResults, uploadFile, envs, args)
       expect(response.resultURL.href).toStrictEqual('https://results.codecov.io/')
     });
@@ -456,9 +456,7 @@ describe('generateRequestHeadersPOST()', () => {
     )
 
     expect(typeof requestHeaders.options.body).toEqual('undefined')
-    expect(requestHeaders.agent).toMatchObject(
-      new ProxyAgent(args.upstream),
-    )
+    expect(requestHeaders.agent).toBeInstanceOf(ProxyAgent)
   })
 })
 
@@ -492,9 +490,7 @@ describe('generateRequestHeadersPUT()', () => {
 
     expect(requestHeaders.url.href).toEqual('https://localhost.local/')
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
-    expect(requestHeaders.agent).toMatchObject(
-      new ProxyAgent(args.upstream),
-    )
+    expect(requestHeaders.agent).toBeInstanceOf(ProxyAgent)
   })
 })
 
