@@ -403,6 +403,117 @@ describe('Web Helpers', () => {
       expect(response.resultURL.href).toStrictEqual('https://results.codecov.io/')
     });
   });
+
+  describe('Uploader should retry POST on ETIMEDOUT', () => {
+    it('should retry and return response data when ETIMEDOUT occurs once', async () => {
+      const envs: UploaderEnvs = {}
+      const args: UploaderArgs = {
+        flags: '',
+        slug: '',
+        upstream: '',
+      }
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ETIMEDOUT'
+      uploadURL = 'http://codecov.io'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(uploadURL)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(new errors.ConnectTimeoutError('timeout error')).times(1)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(error).times(1)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).reply(200, 'testPOSTHTTP')
+
+      const responseData = await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
+      try {
+        expect(responseData).toBe('testPOSTHTTP')
+      } catch (error) {
+        throw new Error(`${responseData} - ${error}`)
+      }
+    });
+
+    it('should fail with error if ETIMEDOUT happens 5 times', async () => {
+      const mockSleep = jest.spyOn(utilModule, 'sleep').mockResolvedValue(42)
+      const envs: UploaderEnvs = {}
+      const args: UploaderArgs = {
+        flags: '',
+        slug: '',
+        upstream: '',
+      }
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ETIMEDOUT'
+      uploadURL = 'http://codecov.io'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(uploadURL)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(error).times(5)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).reply(200, 'testPOSTHTTP')
+
+      try {
+        await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
+        expect(true).toBe(false)
+      } catch (error) {
+        expect(error).toBeInstanceOf(errors.UndiciError)
+        expect(mockSleep).toBeCalledTimes(4)
+      }
+    })
+  });
+
+  describe('Uploader should retry PUT on ETIMEDOUT', () => {
+    it('should retry and return response data when ETIMEDOUT occurs once', async () => {
+      // Replace the original setTimeout with fakeSetTimeout
+      const envs: UploaderEnvs = {}
+    const args: UploaderArgs = {
+      flags: '',
+      slug: '',
+      upstream: '',
+    }
+    jest.spyOn(console, 'log').mockImplementation(() => void {})
+    const postResults: PostResults = {
+      putURL: new URL('https://codecov.io'),
+      resultURL: new URL('https://results.codecov.io'),
+    }
+
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ETIMEDOUT'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(postResults.putURL.origin)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).replyWithError(new errors.ConnectTimeoutError('timeout error')).times(1)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).replyWithError(error).times(1)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).reply(200, postResults.resultURL.href)
+
+      const response = await uploadToCodecovPUT(postResults, uploadFile, envs, args)
+      expect(response.resultURL.href).toStrictEqual('https://results.codecov.io/')
+    });
+  });
 })
 
 describe('displayChangelog()', () => {

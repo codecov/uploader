@@ -63,10 +63,12 @@ async function requestWithRetry(
     return response
   } catch (error: unknown) {
     if (
-      ((error instanceof errors.UndiciError && error.code == 'ECONNRESET') ||
+      (
+        (error instanceof errors.UndiciError && error.code == 'ECONNRESET') ||
+        (error instanceof errors.UndiciError && error.code == 'ETIMEDOUT') ||
         error instanceof errors.ConnectTimeoutError ||
-        error instanceof errors.SocketError) &&
-      retryCount < maxRetries
+        error instanceof errors.SocketError
+      ) && retryCount < maxRetries
     ) {
       const backoffDelay = baseBackoffDelayMs * 2 ** retryCount
       await sleep(backoffDelay)
