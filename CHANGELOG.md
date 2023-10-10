@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.6.4](https://github.com/codecov/uploader/compare/v0.6.2...v0.6.4) (2023-10-10)
+### [0.6.3](https://github.com/codecov/uploader/compare/v0.6.2...v0.6.3) (2023-10-10)
 
 
 ### Bug Fixes
