@@ -60,7 +60,7 @@ const args: ICLIArgument[] = [
   {
     name: 'preventSymbolicLinks',
     type: 'boolean',
-    description: 'Specifies whether to prevent following of symbolic links'
+    description: 'Specifies whether to prevent following of symbolic links. Defaults to false (symbolic links are followed).'
   },
   {
     name: 'fullReport',
