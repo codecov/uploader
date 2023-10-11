@@ -58,7 +58,7 @@ const args: ICLIArgument[] = [
     description: 'Target file(s) to upload',
   },
   {
-    name: 'preventSymbolicLInks',
+    name: 'preventSymbolicLinks',
     type: 'boolean',
     description: 'Specifies whether to prevent following of symbolic links'
   },
