@@ -58,6 +58,11 @@ const args: ICLIArgument[] = [
     description: 'Target file(s) to upload',
   },
   {
+    name: 'preventSymbolicLInks',
+    type: 'boolean',
+    description: 'Specifies whether to prevent following of symbolic links'
+  },
+  {
     name: 'fullReport',
     type: 'string',
     description: 'Specify the path to a previously uploaded Codecov report'
