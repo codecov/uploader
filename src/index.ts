@@ -223,6 +223,7 @@ export async function main(
 
     coverageFilePaths = requestedPaths
 
+
     if (!args.feature || args.feature.split(',').includes('search') === false) {
       info('Searching for coverage files...')
       const isNegated = (path: string) => path.startsWith('!')
@@ -237,6 +238,7 @@ export async function main(
             return coverageFilePaths.concat(coverageFilePatterns())
           }
         })(),
+        !args.preventSymbolicLinks,
       ))
 
       // Generate what the file listing would be after the blocklist is applied

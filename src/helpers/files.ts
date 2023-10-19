@@ -197,6 +197,7 @@ const isNegated = (path: string) => path.startsWith('!')
 export async function getCoverageFiles(
   projectRoot: string,
   coverageFilePatterns: string[],
+  followSymbolicLinks: boolean = true,
 ): Promise<string[]> {
   const globstar = (pattern: string) => `**/${pattern}`
 
@@ -214,6 +215,7 @@ export async function getCoverageFiles(
   }), {
     cwd: projectRoot,
     dot: true,
+    followSymbolicLinks,
     ignore: getBlocklist(),
     suppressErrors: true,
   })
