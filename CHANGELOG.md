@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.1](https://github.com/codecov/uploader/compare/v0.6.3...v0.7.1) (2023-10-19)
+
+
+### Features
+
+* prevent symbolic link following ([#1223](https://github.com/codecov/uploader/issues/1223)) ([61e0e4f](https://github.com/codecov/uploader/commit/61e0e4fb8c246865634dd1c5cf647c1b7b1f5c0d))
+
+
+### Bug Fixes
+
+* **deps:** update dependency undici to v5.26.2 [security] ([#1232](https://github.com/codecov/uploader/issues/1232)) ([24772d1](https://github.com/codecov/uploader/commit/24772d18bd16800d9f57ed3a01c29b6f21a2317a))
+* **deps:** update dependency undici to v5.26.3 ([#1230](https://github.com/codecov/uploader/issues/1230)) ([2cbbfcd](https://github.com/codecov/uploader/commit/2cbbfcd70c5b9712d5102d5f4975836bcc057bbe))
+
 ### [0.7.0](https://github.com/codecov/uploader/compare/v0.6.3...v0.7.0) (2023-10-17)
 
 
