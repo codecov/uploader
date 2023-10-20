@@ -17,12 +17,17 @@ import {
   populateBuildParams,
   uploadToCodecovPOST,
   uploadToCodecovPUT,
+  userAgent,
 } from '../../src/helpers/web'
 import { IServiceParams, PostResults, UploaderArgs, UploaderEnvs } from '../../src/types.js'
 import { createEmptyArgs } from '../test_helpers'
 
 import * as utilModule from '../../src/helpers/util'
+import { IncomingHttpHeaders } from 'undici/types/header'
 
+function hasUserAgent(headers: IncomingHttpHeaders | string[]): headers is IncomingHttpHeaders {
+  return "User-Agent" in headers
+}
 
 describe('Web Helpers', () => {
   let uploadURL: string
@@ -544,6 +549,13 @@ describe('generateRequestHeadersPOST()', () => {
         'G',
       )}&token=134&slug=testOrg/testUploader`,
     )
+
+    const headers = requestHeaders.options.headers!
+    expect(hasUserAgent(headers)).toEqual(true)
+    if (hasUserAgent(headers)) {
+      expect(headers['User-Agent']).toEqual(userAgent)
+    }
+
     expect(typeof requestHeaders.options.body).toEqual('undefined')
     expect(typeof requestHeaders.agent).toEqual('undefined')
   })
@@ -566,6 +578,12 @@ describe('generateRequestHeadersPOST()', () => {
       )}&token=134&slug=testOrg/testUploader`,
     )
 
+    const headers = requestHeaders.options.headers!
+    expect(hasUserAgent(headers)).toEqual(true)
+    if (hasUserAgent(headers)) {
+      expect(headers['User-Agent']).toEqual(userAgent)
+    }
+
     expect(typeof requestHeaders.options.body).toEqual('undefined')
     expect(requestHeaders.agent).toBeInstanceOf(ProxyAgent)
   })
@@ -585,6 +603,13 @@ describe('generateRequestHeadersPUT()', () => {
     )
 
     expect(requestHeaders.url.href).toEqual('https://localhost.local/')
+
+    const headers = requestHeaders.options.headers!
+    expect(hasUserAgent(headers)).toEqual(true)
+    if (hasUserAgent(headers)) {
+      expect(headers['User-Agent']).toEqual(userAgent)
+    }
+
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
     expect(typeof requestHeaders.agent).toEqual('undefined')
   })
@@ -600,6 +625,13 @@ describe('generateRequestHeadersPUT()', () => {
     )
 
     expect(requestHeaders.url.href).toEqual('https://localhost.local/')
+
+    const headers = requestHeaders.options.headers!
+    expect(hasUserAgent(headers)).toEqual(true)
+    if (hasUserAgent(headers)) {
+      expect(headers['User-Agent']).toEqual(userAgent)
+    }
+
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
     expect(requestHeaders.agent).toBeInstanceOf(ProxyAgent)
   })

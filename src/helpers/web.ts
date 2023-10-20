@@ -19,6 +19,7 @@ import { sleep } from './util'
 
 const maxRetries = 4
 const baseBackoffDelayMs = 1000 // Adjust this value based on your needs.
+export const userAgent: string = 'codecov-uploader/' + version
 
 /**
  *
@@ -209,9 +210,10 @@ export function generateRequestHeadersPOST(
     postURL,
   )
 
-  const headers = {
+  const headers: Record<string, string> = {
     'X-Upload-Token': token,
     'X-Reduced-Redundancy': 'false',
+    'User-Agent': userAgent,
   }
 
   return {
@@ -232,9 +234,10 @@ export function generateRequestHeadersPUT(
   envs: UploaderEnvs,
   args: UploaderArgs,
 ): IRequestHeaders {
-  const headers = {
+  const headers: Record<string, string> = {
     'Content-Type': 'text/plain',
     'Content-Encoding': 'gzip',
+    'User-Agent': userAgent,
   }
 
   return {
