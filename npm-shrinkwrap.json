@@ -27,7 +27,7 @@
         "@types/micromatch": "4.0.4",
         "@types/mock-fs": "4.13.3",
         "@types/node": "20.8.7",
-        "@types/validator": "13.11.3",
+        "@types/validator": "13.11.5",
         "@types/yargs": "17.0.29",
         "@typescript-eslint/eslint-plugin": "6.8.0",
         "@typescript-eslint/parser": "6.8.0",
@@ -1836,9 +1836,9 @@
       "dev": true
     },
     "node_modules/@types/validator": {
-      "version": "13.11.3",
-      "resolved": "https://registry.npmjs.org/@types/validator/-/validator-13.11.3.tgz",
-      "integrity": "sha512-jxjhh33aTYDHnrV1vZ3AvWQHfrGx2f5UxKjaP13l5q04fG+/hCKKm0MfodIoCqxevhbcfBb6ZjynyHuQ/jueGQ==",
+      "version": "13.11.5",
+      "resolved": "https://registry.npmjs.org/@types/validator/-/validator-13.11.5.tgz",
+      "integrity": "sha512-xW4qsT4UIYILu+7ZrBnfQdBYniZrMLYYK3wN9M/NdeIHgBN5pZI2/8Q7UfdWIcr5RLJv/OGENsx91JIpUUoC7Q==",
       "dev": true
     },
     "node_modules/@types/yargs": {
@@ -10046,9 +10046,9 @@
       "dev": true
     },
     "@types/validator": {
-      "version": "13.11.3",
-      "resolved": "https://registry.npmjs.org/@types/validator/-/validator-13.11.3.tgz",
-      "integrity": "sha512-jxjhh33aTYDHnrV1vZ3AvWQHfrGx2f5UxKjaP13l5q04fG+/hCKKm0MfodIoCqxevhbcfBb6ZjynyHuQ/jueGQ==",
+      "version": "13.11.5",
+      "resolved": "https://registry.npmjs.org/@types/validator/-/validator-13.11.5.tgz",
+      "integrity": "sha512-xW4qsT4UIYILu+7ZrBnfQdBYniZrMLYYK3wN9M/NdeIHgBN5pZI2/8Q7UfdWIcr5RLJv/OGENsx91JIpUUoC7Q==",
       "dev": true
     },
     "@types/yargs": {
