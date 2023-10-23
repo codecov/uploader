@@ -63,7 +63,7 @@
     "pkg": "5.8.1",
     "prettier": "3.0.3",
     "standard-version": "9.5.0",
-    "testdouble": "3.19.0",
+    "testdouble": "3.20.0",
     "testdouble-jest": "2.0.0",
     "ts-jest": "29.1.1",
     "typescript": "5.2.2"

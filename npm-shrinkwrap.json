@@ -41,7 +41,7 @@
         "pkg": "5.8.1",
         "prettier": "3.0.3",
         "standard-version": "9.5.0",
-        "testdouble": "3.19.0",
+        "testdouble": "3.20.0",
         "testdouble-jest": "2.0.0",
         "ts-jest": "29.1.1",
         "typescript": "5.2.2"
@@ -6971,9 +6971,9 @@
       ]
     },
     "node_modules/quibble": {
-      "version": "0.8.0",
-      "resolved": "https://registry.npmjs.org/quibble/-/quibble-0.8.0.tgz",
-      "integrity": "sha512-hFN7qy9BP6H7gU5LtOCMKu1PeVGKO1jV+avf62zbKJI/tmvkNUYqA5NTxR89WUgsxzS0EACsuT11PNOFxPUBvg==",
+      "version": "0.9.0",
+      "resolved": "https://registry.npmjs.org/quibble/-/quibble-0.9.0.tgz",
+      "integrity": "sha512-gpBmqaEPl0nNZuDq16sLO7g/aYcrldSIls8igHm5EYP02+Kzmn/DCNpcSGywnhTk6aNJXkUv6vrRDvrJyRJ2Xw==",
       "dev": true,
       "dependencies": {
         "lodash": "^4.17.21",
@@ -7964,13 +7964,13 @@
       }
     },
     "node_modules/testdouble": {
-      "version": "3.19.0",
-      "resolved": "https://registry.npmjs.org/testdouble/-/testdouble-3.19.0.tgz",
-      "integrity": "sha512-iavgMMYdgnAyB7EGv2prhgtqnvhSI+K/EVPySqW4MwFjEiLJkiLBnWqlCP09ikB1Q2LargMb8W6otImp8cnLdw==",
+      "version": "3.20.0",
+      "resolved": "https://registry.npmjs.org/testdouble/-/testdouble-3.20.0.tgz",
+      "integrity": "sha512-P/wfyKF1P1AE8/VM6PXCtSQJyOgPObOg191TlVZnoSQw/hhFXvxIFM5yGJ7Bf9Hs0FX8677YCv3esVgPGSeTLg==",
       "dev": true,
       "dependencies": {
         "lodash": "^4.17.21",
-        "quibble": "^0.8.0",
+        "quibble": "^0.9.0",
         "stringify-object-es5": "^2.5.0",
         "theredoc": "^1.0.0"
       },
@@ -13761,9 +13761,9 @@
       "integrity": "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A=="
     },
     "quibble": {
-      "version": "0.8.0",
-      "resolved": "https://registry.npmjs.org/quibble/-/quibble-0.8.0.tgz",
-      "integrity": "sha512-hFN7qy9BP6H7gU5LtOCMKu1PeVGKO1jV+avf62zbKJI/tmvkNUYqA5NTxR89WUgsxzS0EACsuT11PNOFxPUBvg==",
+      "version": "0.9.0",
+      "resolved": "https://registry.npmjs.org/quibble/-/quibble-0.9.0.tgz",
+      "integrity": "sha512-gpBmqaEPl0nNZuDq16sLO7g/aYcrldSIls8igHm5EYP02+Kzmn/DCNpcSGywnhTk6aNJXkUv6vrRDvrJyRJ2Xw==",
       "dev": true,
       "requires": {
         "lodash": "^4.17.21",
@@ -14507,13 +14507,13 @@
       }
     },
     "testdouble": {
-      "version": "3.19.0",
-      "resolved": "https://registry.npmjs.org/testdouble/-/testdouble-3.19.0.tgz",
-      "integrity": "sha512-iavgMMYdgnAyB7EGv2prhgtqnvhSI+K/EVPySqW4MwFjEiLJkiLBnWqlCP09ikB1Q2LargMb8W6otImp8cnLdw==",
+      "version": "3.20.0",
+      "resolved": "https://registry.npmjs.org/testdouble/-/testdouble-3.20.0.tgz",
+      "integrity": "sha512-P/wfyKF1P1AE8/VM6PXCtSQJyOgPObOg191TlVZnoSQw/hhFXvxIFM5yGJ7Bf9Hs0FX8677YCv3esVgPGSeTLg==",
       "dev": true,
       "requires": {
         "lodash": "^4.17.21",
-        "quibble": "^0.8.0",
+        "quibble": "^0.9.0",
         "stringify-object-es5": "^2.5.0",
         "theredoc": "^1.0.0"
       }
