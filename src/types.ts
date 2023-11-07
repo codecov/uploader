@@ -34,6 +34,7 @@ export interface UploaderArgs {
   token?: string // Codecov upload token
   upstream: string // Upstream proxy to connect to
   url?: string // Change the upload host (Enterprise use)
+  useCWD?: boolean
   verbose?: string // Run with verbose logging
   xcode?: string // Run with xcode support
   xcodeArchivePath?: string // Specify the xcode archive path. Likely specified as the -resultBundlePath and should end in .xcresult
