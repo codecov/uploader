@@ -42,7 +42,7 @@ export function info(message: string): void {
 export class UploadLogger {
   private static _instance: UploadLogger
   logLevel = 'info'
-  
+
   private constructor() {
     // Intentionally empty
   }
