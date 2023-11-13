@@ -25,7 +25,7 @@
         "@types/jest": "29.5.8",
         "@types/js-yaml": "4.0.9",
         "@types/micromatch": "4.0.4",
-        "@types/mock-fs": "4.13.3",
+        "@types/mock-fs": "4.13.4",
         "@types/node": "20.8.7",
         "@types/validator": "13.11.5",
         "@types/yargs": "17.0.29",
@@ -1855,9 +1855,9 @@
       "dev": true
     },
     "node_modules/@types/mock-fs": {
-      "version": "4.13.3",
-      "resolved": "https://registry.npmjs.org/@types/mock-fs/-/mock-fs-4.13.3.tgz",
-      "integrity": "sha512-PeXnRqMVBkVjHNCxu1wzPBi9cv5uWVl6535XD11NXt8pasJXh2MHxWvJs6d7eyt/V6BGgHZ4O3LF71CVMdMasA==",
+      "version": "4.13.4",
+      "resolved": "https://registry.npmjs.org/@types/mock-fs/-/mock-fs-4.13.4.tgz",
+      "integrity": "sha512-mXmM0o6lULPI8z3XNnQCpL0BGxPwx1Ul1wXYEPBGl4efShyxW2Rln0JOPEWGyZaYZMM6OVXM/15zUuFMY52ljg==",
       "dev": true,
       "dependencies": {
         "@types/node": "*"
@@ -10134,9 +10134,9 @@
       "dev": true
     },
     "@types/mock-fs": {
-      "version": "4.13.3",
-      "resolved": "https://registry.npmjs.org/@types/mock-fs/-/mock-fs-4.13.3.tgz",
-      "integrity": "sha512-PeXnRqMVBkVjHNCxu1wzPBi9cv5uWVl6535XD11NXt8pasJXh2MHxWvJs6d7eyt/V6BGgHZ4O3LF71CVMdMasA==",
+      "version": "4.13.4",
+      "resolved": "https://registry.npmjs.org/@types/mock-fs/-/mock-fs-4.13.4.tgz",
+      "integrity": "sha512-mXmM0o6lULPI8z3XNnQCpL0BGxPwx1Ul1wXYEPBGl4efShyxW2Rln0JOPEWGyZaYZMM6OVXM/15zUuFMY52ljg==",
       "dev": true,
       "requires": {
         "@types/node": "*"
