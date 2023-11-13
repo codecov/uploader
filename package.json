@@ -44,7 +44,7 @@
   "devDependencies": {
     "@commitlint/cli": "18.4.0",
     "@commitlint/config-conventional": "18.4.0",
-    "@types/jest": "29.5.7",
+    "@types/jest": "29.5.8",
     "@types/js-yaml": "4.0.8",
     "@types/micromatch": "4.0.4",
     "@types/mock-fs": "4.13.3",
