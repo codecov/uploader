@@ -45,7 +45,7 @@
     "@commitlint/cli": "18.4.0",
     "@commitlint/config-conventional": "18.4.0",
     "@types/jest": "29.5.8",
-    "@types/js-yaml": "4.0.8",
+    "@types/js-yaml": "4.0.9",
     "@types/micromatch": "4.0.4",
     "@types/mock-fs": "4.13.3",
     "@types/node": "20.8.7",
