@@ -192,7 +192,7 @@ const args: ICLIArgument[] = [
   },
   {
     alias: 'uc',
-    name: 'useCWD',
+    name: 'useCwd',
     type: 'boolean',
     default: false,
     description: 'Use the current working directory instead of the git root',
