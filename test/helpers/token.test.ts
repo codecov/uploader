@@ -8,11 +8,11 @@ import { createEmptyArgs } from '../test_helpers'
 
 describe('Get tokens', () => {
   const fixturesDir = path.join(
-    fileHelpers.fetchGitRoot(),
+    fileHelpers.fetchGitRoot(false),
     'test/fixtures/yaml',
   )
   const invalidFixturesDir = path.join(
-    fileHelpers.fetchGitRoot(),
+    fileHelpers.fetchGitRoot(false),
     'test/fixtures/invalid_yaml',
   )
 
