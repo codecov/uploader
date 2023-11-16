@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.7.1](https://github.com/codecov/uploader/compare/v0.6.3...v0.7.1) (2023-10-19)
+
+
+### Features
+
+* prevent symbolic link following ([#1223](https://github.com/codecov/uploader/issues/1223)) ([61e0e4f](https://github.com/codecov/uploader/commit/61e0e4fb8c246865634dd1c5cf647c1b7b1f5c0d))
+
+
+### Bug Fixes
+
+* **deps:** update dependency undici to v5.26.2 [security] ([#1232](https://github.com/codecov/uploader/issues/1232)) ([24772d1](https://github.com/codecov/uploader/commit/24772d18bd16800d9f57ed3a01c29b6f21a2317a))
+* **deps:** update dependency undici to v5.26.3 ([#1230](https://github.com/codecov/uploader/issues/1230)) ([2cbbfcd](https://github.com/codecov/uploader/commit/2cbbfcd70c5b9712d5102d5f4975836bcc057bbe))
+
+### [0.7.0](https://github.com/codecov/uploader/compare/v0.6.3...v0.7.0) (2023-10-17)
+
+
+### Bug Fixes
+
+* **deps:** update dependency undici to v5.26.2 [security] ([#1232](https://github.com/codecov/uploader/issues/1232)) ([24772d1](https://github.com/codecov/uploader/commit/24772d18bd16800d9f57ed3a01c29b6f21a2317a))
+* **deps:** update dependency undici to v5.26.3 ([#1230](https://github.com/codecov/uploader/issues/1230)) ([2cbbfcd](https://github.com/codecov/uploader/commit/2cbbfcd70c5b9712d5102d5f4975836bcc057bbe))
+
+### [0.6.3](https://github.com/codecov/uploader/compare/v0.6.2...v0.6.3) (2023-10-10)
+
+
+### Bug Fixes
+
+* add ETIMEDOUT ([#1203](https://github.com/codecov/uploader/issues/1203)) ([23d8e78](https://github.com/codecov/uploader/commit/23d8e7827373b4e0c07959c7f00dae506526b8ce))
+* **deps:** update dependency undici to v5.25.3 ([#1114](https://github.com/codecov/uploader/issues/1114)) ([4d20e99](https://github.com/codecov/uploader/commit/4d20e99ace5e90983ffc4c510603eb19aef1aab9))
+* **deps:** update dependency undici to v5.25.4 ([#1212](https://github.com/codecov/uploader/issues/1212)) ([cf51701](https://github.com/codecov/uploader/commit/cf51701a14d9fd132af0b121c0b9d353252549f3))
+* **deps:** update dependency validator to v13.11.0 ([#1110](https://github.com/codecov/uploader/issues/1110)) ([39f8f0a](https://github.com/codecov/uploader/commit/39f8f0a2e529cc6169f5732cbdae5eb511d8e092))
+* handle windows drive letter at start of path ([#1099](https://github.com/codecov/uploader/issues/1099)) ([cba973c](https://github.com/codecov/uploader/commit/cba973cecd9360338f0a7a96e3b7ab597ef29fd5))
+* retry on ECONNRESET ([#1098](https://github.com/codecov/uploader/issues/1098)) ([acbf664](https://github.com/codecov/uploader/commit/acbf664d2a052ef365a35027873a0c3b6d8c3e71)), closes [codecov/uploader#537](https://github.com/codecov/uploader/issues/537)
+* update windows node version ([#1134](https://github.com/codecov/uploader/issues/1134)) ([dfeedf5](https://github.com/codecov/uploader/commit/dfeedf5bf631b29d30dc635a4da92c68fa33b5be))
+
+### [0.6.2](https://github.com/codecov/uploader/compare/v0.6.0...v0.6.2) (2023-08-07)
+
+
+### Bug Fixes
+
+* **deps:** update dependency fast-glob to v3.3.1 ([#1104](https://github.com/codecov/uploader/issues/1104)) ([e151a79](https://github.com/codecov/uploader/commit/e151a79906e365a5c5a9c5b86f9e956dceed6c99)), closes [#1063](https://github.com/codecov/uploader/issues/1063)
+* **deps:** update dependency undici to v5.22.0 ([#1031](https://github.com/codecov/uploader/issues/1031)) ([32e1f90](https://github.com/codecov/uploader/commit/32e1f90f3879776bf9ca24b938f113d65cd2215b))
+* **deps:** update dependency undici to v5.22.1 ([#1059](https://github.com/codecov/uploader/issues/1059)) ([0f48b37](https://github.com/codecov/uploader/commit/0f48b3754cc1021a7f9d27a3112dd88e2bb22cba))
+* **deps:** update dependency yargs to v17.7.2 ([#1038](https://github.com/codecov/uploader/issues/1038)) ([2ab7941](https://github.com/codecov/uploader/commit/2ab7941a173f12419a5126e2a6522c0eecab0446))
+* use token param for upstream proxy auth ([b448744](https://github.com/codecov/uploader/commit/b4487448b185de43947120daf83d9f50da034922))
+
 ### [0.6.1](https://github.com/codecov/uploader/compare/v0.6.0...v0.6.1) (2023-06-20)
 
 

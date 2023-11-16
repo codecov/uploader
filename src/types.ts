@@ -23,6 +23,7 @@ export interface UploaderArgs {
   nonZero?: string // Should errors exit with a non-zero (default: false)
   parent?: string // The commit SHA of the parent for which you are uploading coverage.
   pr?: string // Specify the pull request number manually
+  preventSymbolicLinks?: string // Specifies whether to prevent following of symoblic links
   rootDir?: string // Specify the project root directory when not in a git repo
   sha?: string // Specify the commit SHA manually
   slug: string // Specify the slug manually

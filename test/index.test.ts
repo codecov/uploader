@@ -92,11 +92,11 @@ describe('Uploader Core', () => {
     mockClient.intercept({
       method: 'PUT',
       path: '/',
-    }).reply(200, 'success')
+    }).reply(200, 'processing')
 
     const result = await app.main(args)
     expect(result).toEqual({
-      status: 'success',
+      status: 'processing',
       resultURL: 'https://results.codecov.io/',
     })
   }, 30000)
@@ -164,17 +164,19 @@ describe('Uploader Core', () => {
       })
 
       const detectProvider = td.replace(providerHelpers, 'detectProvider')
-      const buildParams: Partial<IServiceParams> = {
-        branch: '',
-        build: '',
-        buildURL: '',
-        commit: 'testSHA',
-        job: '',
-        pr: '',
-        service: 'no service',
-        slug: '',
+      async function buildParams(): Promise<Partial<IServiceParams>> {
+        return await {
+          branch: '',
+          build: '',
+          buildURL: '',
+          commit: 'testSHA',
+          job: '',
+          pr: '',
+          service: 'no service',
+          slug: '',
+        }
       }
-      td.when(detectProvider(td.matchers.anything(), false)).thenReturn(buildParams)
+      td.when(detectProvider(td.matchers.anything(), false)).thenReturn(buildParams())
 
       await expect(f()).rejects.toThrow(
         'Slug must be set if a token is not passed',
@@ -210,11 +212,11 @@ describe('Uploader Core', () => {
       mockClient.intercept({
         method: 'PUT',
         path: '/',
-      }).reply(200, 'success')
+      }).reply(200, 'processing')
 
       const result = await app.main(args)
       expect(result).toEqual({
-        status: 'success',
+        status: 'processing',
         resultURL: 'https://results.codecov.io/',
       })
     }, 30000)
@@ -247,11 +249,11 @@ describe('Uploader Core', () => {
     mockClient.intercept({
       method: 'PUT',
       path: '/',
-    }).reply(200, 'success')
+    }).reply(200, 'processing')
 
     const result = await app.main(args)
     expect(result).toEqual({
-      status: 'success',
+      status: 'processing',
       resultURL: 'https://results.codecov.io/',
     })
   }, 30000)

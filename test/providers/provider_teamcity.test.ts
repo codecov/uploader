@@ -58,7 +58,7 @@ describe('TeamCity Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: '' })
+    ).thenReturn({ stdout: Buffer.from('') })
     const params = await providerTeamCity.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -87,7 +87,7 @@ describe('TeamCity Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: 'https://github.com/testOrg/testRepo.git' })
+    ).thenReturn({ stdout: Buffer.from('https://github.com/testOrg/testRepo.git') })
     const params = await providerTeamCity.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -115,7 +115,7 @@ describe('TeamCity Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['config', '--get', 'remote.origin.url'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: '' })
+    ).thenReturn({ stdout: Buffer.from('') })
     const expected: IServiceParams = {
       branch: 'branch',
       build: '3',

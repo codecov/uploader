@@ -3,6 +3,7 @@ import {
   MockClient,
   ProxyAgent,
   setGlobalDispatcher,
+  errors
 } from 'undici'
 
 import { version } from '../../package.json'
@@ -16,9 +17,17 @@ import {
   populateBuildParams,
   uploadToCodecovPOST,
   uploadToCodecovPUT,
+  userAgent,
 } from '../../src/helpers/web'
 import { IServiceParams, PostResults, UploaderArgs, UploaderEnvs } from '../../src/types.js'
 import { createEmptyArgs } from '../test_helpers'
+
+import * as utilModule from '../../src/helpers/util'
+import { IncomingHttpHeaders } from 'undici/types/header'
+
+function hasUserAgent(headers: IncomingHttpHeaders | string[]): headers is IncomingHttpHeaders {
+  return "User-Agent" in headers
+}
 
 describe('Web Helpers', () => {
   let uploadURL: string
@@ -280,10 +289,6 @@ describe('Web Helpers', () => {
 
 
 
-
-
-
-
       https://put.codecov.local`
       const expectedResults = {
         putURL: 'https://put.codecov.local/',
@@ -292,6 +297,228 @@ describe('Web Helpers', () => {
       expect(JSON.stringify(parsePOSTResults(testURL))).toStrictEqual(JSON.stringify(expectedResults))
     })
   })
+
+  describe('Uploader should retry POST on ECONNRESET', () => {
+    it('should retry and return response data when ECONNRESET occurs once', async () => {
+      const envs: UploaderEnvs = {}
+      const args: UploaderArgs = {
+        flags: '',
+        slug: '',
+        upstream: '',
+      }
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ECONNRESET'
+      uploadURL = 'http://codecov.io'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(uploadURL)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(new errors.ConnectTimeoutError('timeout error')).times(1)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(error).times(1)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).reply(200, 'testPOSTHTTP')
+
+      const responseData = await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
+      try {
+        expect(responseData).toBe('testPOSTHTTP')
+      } catch (error) {
+        throw new Error(`${responseData} - ${error}`)
+      }
+    });
+
+    it('should fail with error if ECONNRESET happens 5 times', async () => {
+      const mockSleep = jest.spyOn(utilModule, 'sleep').mockResolvedValue(42)
+      const envs: UploaderEnvs = {}
+      const args: UploaderArgs = {
+        flags: '',
+        slug: '',
+        upstream: '',
+      }
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ECONNRESET'
+      uploadURL = 'http://codecov.io'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(uploadURL)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(error).times(5)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).reply(200, 'testPOSTHTTP')
+
+      try {
+        await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
+        expect(true).toBe(false)
+      } catch (error) {
+        expect(error).toBeInstanceOf(errors.UndiciError)
+        expect(mockSleep).toBeCalledTimes(4)
+      }
+    })
+  });
+
+  describe('Uploader should retry PUT on ECONNRESET', () => {
+    it('should retry and return response data when ECONNRESET occurs once', async () => {
+      // Replace the original setTimeout with fakeSetTimeout
+      const envs: UploaderEnvs = {}
+    const args: UploaderArgs = {
+      flags: '',
+      slug: '',
+      upstream: '',
+    }
+    jest.spyOn(console, 'log').mockImplementation(() => void {})
+    const postResults: PostResults = {
+      putURL: new URL('https://codecov.io'),
+      resultURL: new URL('https://results.codecov.io'),
+    }
+
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ECONNRESET'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(postResults.putURL.origin)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).replyWithError(new errors.ConnectTimeoutError('timeout error')).times(1)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).replyWithError(error).times(1)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).reply(200, postResults.resultURL.href)
+
+      const response = await uploadToCodecovPUT(postResults, uploadFile, envs, args)
+      expect(response.resultURL.href).toStrictEqual('https://results.codecov.io/')
+    });
+  });
+
+  describe('Uploader should retry POST on ETIMEDOUT', () => {
+    it('should retry and return response data when ETIMEDOUT occurs once', async () => {
+      const envs: UploaderEnvs = {}
+      const args: UploaderArgs = {
+        flags: '',
+        slug: '',
+        upstream: '',
+      }
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ETIMEDOUT'
+      uploadURL = 'http://codecov.io'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(uploadURL)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(new errors.ConnectTimeoutError('timeout error')).times(1)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(error).times(1)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).reply(200, 'testPOSTHTTP')
+
+      const responseData = await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
+      try {
+        expect(responseData).toBe('testPOSTHTTP')
+      } catch (error) {
+        throw new Error(`${responseData} - ${error}`)
+      }
+    });
+
+    it('should fail with error if ETIMEDOUT happens 5 times', async () => {
+      const mockSleep = jest.spyOn(utilModule, 'sleep').mockResolvedValue(42)
+      const envs: UploaderEnvs = {}
+      const args: UploaderArgs = {
+        flags: '',
+        slug: '',
+        upstream: '',
+      }
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ETIMEDOUT'
+      uploadURL = 'http://codecov.io'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(uploadURL)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).replyWithError(error).times(5)
+
+      mockClient.intercept({
+        method: 'POST',
+        path: `/upload/v4?package=uploader-${version}&token=${token}&hello`,
+      }).reply(200, 'testPOSTHTTP')
+
+      try {
+        await uploadToCodecovPOST(new URL(uploadURL), token, query, source, envs, args);
+        expect(true).toBe(false)
+      } catch (error) {
+        expect(error).toBeInstanceOf(errors.UndiciError)
+        expect(mockSleep).toBeCalledTimes(4)
+      }
+    })
+  });
+
+  describe('Uploader should retry PUT on ETIMEDOUT', () => {
+    it('should retry and return response data when ETIMEDOUT occurs once', async () => {
+      // Replace the original setTimeout with fakeSetTimeout
+      const envs: UploaderEnvs = {}
+    const args: UploaderArgs = {
+      flags: '',
+      slug: '',
+      upstream: '',
+    }
+    jest.spyOn(console, 'log').mockImplementation(() => void {})
+    const postResults: PostResults = {
+      putURL: new URL('https://codecov.io'),
+      resultURL: new URL('https://results.codecov.io'),
+    }
+
+      const error = new errors.UndiciError("conn reset error")
+      error.code = 'ETIMEDOUT'
+      mockAgent.disableNetConnect()
+      mockClient = mockAgent.get(postResults.putURL.origin)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).replyWithError(new errors.ConnectTimeoutError('timeout error')).times(1)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).replyWithError(error).times(1)
+
+      mockClient.intercept({
+        method: 'PUT',
+        path: `/`,
+      }).reply(200, postResults.resultURL.href)
+
+      const response = await uploadToCodecovPUT(postResults, uploadFile, envs, args)
+      expect(response.resultURL.href).toStrictEqual('https://results.codecov.io/')
+    });
+  });
 })
 
 describe('displayChangelog()', () => {
@@ -322,6 +549,13 @@ describe('generateRequestHeadersPOST()', () => {
         'G',
       )}&token=134&slug=testOrg/testUploader`,
     )
+
+    const headers = requestHeaders.options.headers!
+    expect(hasUserAgent(headers)).toEqual(true)
+    if (hasUserAgent(headers)) {
+      expect(headers['User-Agent']).toEqual(userAgent)
+    }
+
     expect(typeof requestHeaders.options.body).toEqual('undefined')
     expect(typeof requestHeaders.agent).toEqual('undefined')
   })
@@ -344,10 +578,14 @@ describe('generateRequestHeadersPOST()', () => {
       )}&token=134&slug=testOrg/testUploader`,
     )
 
+    const headers = requestHeaders.options.headers!
+    expect(hasUserAgent(headers)).toEqual(true)
+    if (hasUserAgent(headers)) {
+      expect(headers['User-Agent']).toEqual(userAgent)
+    }
+
     expect(typeof requestHeaders.options.body).toEqual('undefined')
-    expect(requestHeaders.agent).toMatchObject(
-      new ProxyAgent(args.upstream),
-    )
+    expect(requestHeaders.agent).toBeInstanceOf(ProxyAgent)
   })
 })
 
@@ -365,6 +603,13 @@ describe('generateRequestHeadersPUT()', () => {
     )
 
     expect(requestHeaders.url.href).toEqual('https://localhost.local/')
+
+    const headers = requestHeaders.options.headers!
+    expect(hasUserAgent(headers)).toEqual(true)
+    if (hasUserAgent(headers)) {
+      expect(headers['User-Agent']).toEqual(userAgent)
+    }
+
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
     expect(typeof requestHeaders.agent).toEqual('undefined')
   })
@@ -380,10 +625,15 @@ describe('generateRequestHeadersPUT()', () => {
     )
 
     expect(requestHeaders.url.href).toEqual('https://localhost.local/')
+
+    const headers = requestHeaders.options.headers!
+    expect(hasUserAgent(headers)).toEqual(true)
+    if (hasUserAgent(headers)) {
+      expect(headers['User-Agent']).toEqual(userAgent)
+    }
+
     expect(requestHeaders.options.body).toEqual("I'm a coverage report!")
-    expect(requestHeaders.agent).toMatchObject(
-      new ProxyAgent(args.upstream),
-    )
+    expect(requestHeaders.agent).toBeInstanceOf(ProxyAgent)
   })
 })
 

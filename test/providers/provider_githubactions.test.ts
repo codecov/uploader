@@ -1,5 +1,5 @@
 import td from 'testdouble'
-import Undici from 'undici'
+import { Dispatcher, MockAgent, getGlobalDispatcher, setGlobalDispatcher } from 'undici'
 import childProcess from 'child_process'
 
 import * as providerGitHubactions from '../../src/ci_providers/provider_githubactions'
@@ -8,8 +8,16 @@ import { IServiceParams, UploaderInputs } from '../../src/types'
 import { createEmptyArgs } from '../test_helpers'
 
 describe('GitHub Actions Params', () => {
+
+  let dispatcher: Dispatcher
+
   afterEach(() => {
     td.reset()
+    setGlobalDispatcher(dispatcher)
+  })
+
+  beforeEach(() => {
+    dispatcher = getGlobalDispatcher()
   })
 
   describe('detect()', () => {
@@ -96,7 +104,7 @@ describe('GitHub Actions Params', () => {
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
-      stdout: 'testingsha',
+      stdout: Buffer.from('testingsha'),
     })
     const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -132,38 +140,29 @@ describe('GitHub Actions Params', () => {
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
-      stdout: 'testingsha',
+      stdout: Buffer.from('testingsha'),
     })
 
-    const request = td.replace(Undici, 'request')
-    td.when(
-      request(
-        'https://api.github.com/repos/testOrg/testRepo/actions/runs/2/jobs',
-        {
-          headers: { 'User-Agent': 'Awesome-Octocat-App' }
-        }
-      )
-    ).thenReturn({
-      statusCode: 200,
-      body: {
-        json: () => {
-          return {
-            'jobs': [{
-              'id': 1,
-              'name': 'fakeJob',
-              'html_url': 'https://fake.com',
-            }, {
-              'id': 2,
-              'name': 'seocondFakeJob',
-              'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
-            }, {
-              'id': 3,
-              'name': 'anotherFakeJob',
-              'html_url': 'https://example.com',
-            }]
-          }
-        }
-      }
+    const mockAgent = new MockAgent()
+    setGlobalDispatcher(mockAgent)
+
+    const mockPool = mockAgent.get('https://api.github.com')
+    mockPool.intercept({
+      path: '/repos/testOrg/testRepo/actions/runs/2/jobs'
+    }).reply(200, {
+      'jobs': [{
+        'id': 1,
+        'name': 'fakeJob',
+        'html_url': 'https://fake.com',
+      }, {
+        'id': 2,
+        'name': 'seocondFakeJob',
+        'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
+      }, {
+        'id': 3,
+        'name': 'anotherFakeJob',
+        'html_url': 'https://example.com',
+      }]
     })
 
     const params = await providerGitHubactions.getServiceParams(inputs)
@@ -200,38 +199,31 @@ describe('GitHub Actions Params', () => {
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
-      stdout: 'testingsha',
+      stdout: Buffer.from('testingsha'),
     })
-    const request = td.replace(Undici, 'request')
-    td.when(
-      request(
-        'https://api.github.com/repos/testOrg/testRepo/actions/runs/2/jobs',
-        {
-          headers: { 'User-Agent': 'Awesome-Octocat-App' }
-        }
-      )
-    ).thenReturn({
-      statusCode: 200,
-      body: {
-        json: () => {
-          return {
-            'jobs': [{
-              'id': 1,
-              'name': 'fakeJob',
-              'html_url': 'https://fake.com',
-            }, {
-              'id': 2,
-              'name': 'testJob',
-              'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
-            }, {
-              'id': 3,
-              'name': 'anotherFakeJob',
-              'html_url': 'https://example.com',
-            }]
-          }
-        }
-      }
+
+    const mockAgent = new MockAgent()
+    setGlobalDispatcher(mockAgent)
+
+    const mockPool = mockAgent.get('https://api.github.com')
+    mockPool.intercept({
+      path: '/repos/testOrg/testRepo/actions/runs/2/jobs'
+    }).reply(200, {
+      'jobs': [{
+        'id': 1,
+        'name': 'fakeJob',
+        'html_url': 'https://fake.com',
+      }, {
+        'id': 2,
+        'name': 'testJob',
+        'html_url': 'https://github.com/testOrg/testRepo/actions/runs/2/jobs/2',
+      }, {
+        'id': 3,
+        'name': 'anotherFakeJob',
+        'html_url': 'https://example.com',
+      }]
     })
+
     const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -266,7 +258,7 @@ describe('GitHub Actions Params', () => {
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({
       stdout:
-        'testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890',
+        Buffer.from('testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890'),
     })
     const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
@@ -303,7 +295,7 @@ describe('GitHub Actions Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: 'testsha' })
+    ).thenReturn({ stdout: Buffer.from('testsha') })
     const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
@@ -336,7 +328,7 @@ describe('GitHub Actions Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn({ stdout: '' })
+    ).thenReturn({ stdout: Buffer.from('') })
     const params = await providerGitHubactions.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })

@@ -2,9 +2,13 @@ version: 2.1
 
 orbs:
 
+
 win: circleci/windows@2.1
 
 win: circleci/windows@4.1.1
+
+
+win: circleci/windows@5.0.0
 
 
 jobs:
@@ -37,7 +41,7 @@ jobs:
 
   build-linux-and-osx:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
 
     working_directory: ~/repo 
 
@@ -70,7 +74,7 @@ jobs:
 
   build-alpine:
     docker:
-      - image: alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
+      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
 
     working_directory: ~/repo
 
@@ -123,7 +127,7 @@ jobs:
 
   test-alpine:
     docker:
-      - image: alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
+      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
     steps:
       - run:
           name: Install git
@@ -133,6 +137,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
@@ -157,7 +164,7 @@ jobs:
 
   test-alpine-proxy:
     docker:
-      - image: alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
+      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
     steps:
       - run:
           name: Install git
@@ -170,6 +177,9 @@ jobs:
       - run:
           name: Start Squid
           command: squid
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run Alpine binary auto-detect (dry run)
           command: |
@@ -189,7 +199,7 @@ jobs:
 
   test-alpine-without-git:
     docker:
-      - image: alpine:3.18.0@sha256:02bb6f428431fbc2809c5d1b41eab5a68350194fb508869a33cb1af4444c9b11
+      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
     steps:
       - run:
           name: Install git
@@ -202,6 +212,9 @@ jobs:
       - run:
           name: Remove .git directory
           command: rm -rf .git
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run Alpine binary -f (dry run)
           command: |
@@ -225,7 +238,7 @@ jobs:
 
   test-linux:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
     steps:
       - checkout
       - attach_workspace:
@@ -234,6 +247,9 @@ jobs:
           name: Confirm that linux uploader binary is static
           command: |
             (file out/codecov-linux | grep 'static') || exit ${?}
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run Linux binary -f (dry run)
           command: |
@@ -255,7 +271,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
     steps:
       - checkout
       - attach_workspace:
@@ -263,6 +279,9 @@ jobs:
       - run:
           name: Remove .git directory
           command: rm -rf .git
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run Linux binary (dry run)
           command: |
@@ -294,6 +313,9 @@ jobs:
           command: |
             (file out/codecov-aarch64 | grep 'static') || exit ${?}
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run aarch64 binary -f (dry run)
           command: |
             out/codecov-aarch64 -f /home/circleci/project/coverage/cobertura-coverage.xml -F aarch64 -d -Z -v -e CIRCLE_BRANCH >> output_aarch64.txt
@@ -324,6 +346,9 @@ jobs:
           name: Remove .git directory
           command: rm -rf .git
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run Linux binary (dry run)
           command: |
             out/codecov-aarch64 -F aarch64-without-git -d -Z -e CIRCLE_BRANCH > output_aarch64_without_git.txt
@@ -344,6 +369,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - run:
           name: Run MacOS binary -f (dry-run)
           command: |
@@ -373,6 +401,9 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
           name: Run MacOS binary (dry-run)
           command: |
             out/codecov-macos -F macos-without-git -d > output_osx_without_git.txt
@@ -399,7 +430,7 @@ jobs:
             $ErrorActionPreference="Stop"
             nvm arch
             nvm install 16 all
-            nvm use 16
+            nvm use 16.20.2
       - run:
           name: Build Windows Binary
           command: |
@@ -420,11 +451,17 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Remove test coverage files
+          command: |
+            Remove-Item -Recurse -Force *.coverage.txt;  echo "ok"
+            Remove-Item -Recurse -Force coverage-report-test.json; echo "ok"
+            Remove-Item -Recurse -Force test/fixtures; echo "ok"
+      - run:
           name: Run Windows binary -f (dry-run)
           command: |
-            dir C:\Users\circleci\project\coverage\
-            attrib C:\Users\circleci\project\coverage\cobertura-coverage.xml
-            .\out\codecov.exe -f C:\Users\circleci\project\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
+            dir .
+            attrib .\coverage\cobertura-coveage.xml
+            .\out\codecov.exe -f .\coverage\cobertura-coverage.xml -F windows -d -Z -v -e CIRCLE_BRANCH >> output_win.txt
           shell: cmd.exe
       - run:
           name: Run Windows binary auto-detect (dry-run)
@@ -452,6 +489,12 @@ jobs:
       - attach_workspace:
           at: .
       - run:
+          name: Remove test coverage files
+          command: |
+            Remove-Item -Recurse -Force *.coverage.txt; echo "ok"
+            Remove-Item -Recurse -Force coverage-report-test.json; echo "ok"
+            Remove-Item -Recurse -Force test/fixtures; echo "ok"
+      - run:
           name: Run Windows binary (dry-run)
           command: |
             .\out\codecov.exe -F windows-without-git -d > output_win_without_git.txt
@@ -469,7 +512,7 @@ jobs:
 
   review:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
     steps:
       - attach_workspace:
           at: .
@@ -508,7 +551,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/node:17.9.1@sha256:672e6db46d85bb5f2d5f301a612635ff1d2563303710b4e699d521f620b1bb6e
+      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
     steps:
       - attach_workspace:
           at: .
@@ -534,7 +577,7 @@ jobs:
             - release_tag
   release:
     docker:
-      - image: google/cloud-sdk:430.0.0-slim@sha256:96a831dff775f0e90ddb424d68314e0069fe68d03d52a4ca6bbe58fef4c1952d
+      - image: google/cloud-sdk:455.0.0-slim@sha256:81ec3899b4085267ac8adbfdbc95f95d5a4a4de846f2f7ee16c62fad982d5267
     steps:
       - attach_workspace:
           at: .

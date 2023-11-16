@@ -2,6 +2,7 @@
 
 import { logError, main, verbose } from '../src'
 import { addArguments } from '../src/helpers/cli'
+import { info } from '../src/helpers/logger'
 
 var argv = require('yargs') // eslint-disable-line
 
@@ -29,5 +30,9 @@ main(realArgs)
 
     const end = Date.now()
     verbose(`End of uploader: ${end - start} milliseconds`, realArgs.verbose)
+
+    if (!realArgs.nonZero) {
+      info('Codecov will exit with status code 0. If you are expecting a non-zero exit code, please pass in the `-Z` flag')
+    }
     process.exit(realArgs.nonZero ? -1 : 0)
   })
