@@ -34,4 +34,5 @@ jobs:
           if-no-files-found: error
           name: linux-uploads
           path: |
-            - package.json
+            package.json
+            vendor/
