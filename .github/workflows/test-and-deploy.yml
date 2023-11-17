@@ -30,4 +30,4 @@ jobs:
         with:
           name: linux-build
           path: |
-            - /home/runner/work/uploader/uploader/vendor/
+            - /home/runner/work/uploader/uploader/package.json
