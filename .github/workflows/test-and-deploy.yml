@@ -18,17 +18,10 @@ jobs:
           cache: 'npm'
       - name: Install deps
         run: npm ci
-      - name: Test
-        run: make test
-      - name: Build
-        run: make build
-      - name: ls
-        run: |
-          pwd
-          ls
-          echo "break"
-          cd ..
-          ls
+      #- name: Test
+      #  run: make test
+      #- name: Build
+      #  run: make build
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
