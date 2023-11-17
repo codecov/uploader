@@ -22,6 +22,10 @@ jobs:
         run: make test
       - name: Build
         run: make build
+      - name: Make binaries executable
+        run: |
+          chmod u+x out/codecov-linux
+          chmod u+x out/codecov-macos
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -52,6 +56,8 @@ jobs:
         run: |
           $ErrorActionPreference="Stop"
           npm run build; npm run build-windows
+      - name: Make binaries executable
+        run: chmod u+x out/codecov-windows
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
