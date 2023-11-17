@@ -16,6 +16,8 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
+      - name: Install deps
+        run: npm ci
       - name: Test
         run: make test
       - name: Build
