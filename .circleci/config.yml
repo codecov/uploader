@@ -614,7 +614,6 @@ workflows:
       #             - 'Github Checkout'
       #           requires:
       #             - build-alpine
-      - build-linux-and-osx
       - build-aarch64:
           requires:
             - build-linux-and-osx

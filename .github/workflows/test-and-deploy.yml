@@ -26,6 +26,7 @@ jobs:
         run: |
           pwd
           ls
+          echo "break"
           cd ..
           ls
       - name: Upload artifacts
