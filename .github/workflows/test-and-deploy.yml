@@ -25,6 +25,9 @@ jobs:
       - name: ls
         run: |
           ls -al /home/runner/work/uploader/uploader/
+      - name: cat
+        run: |
+          cat /home/runner/work/uploader/uploader/package.json
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
