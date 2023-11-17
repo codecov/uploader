@@ -18,21 +18,17 @@ jobs:
           cache: 'npm'
       - name: Install deps
         run: npm ci
-      #- name: Test
-      #  run: make test
-      #- name: Build
-      #  run: make build
-      - name: ls
-        run: |
-          ls -al /home/runner/work/uploader/uploader/
-      - name: cat
-        run: |
-          cat /home/runner/work/uploader/uploader/package.json
+      - name: Test
+        run: make test
+      - name: Build
+        run: make build
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
           name: linux-uploads
           path: |
+            coverage/
+            out/
             package.json
             vendor/
