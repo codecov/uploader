@@ -32,3 +32,56 @@ jobs:
             out/
             package.json
             vendor/
+
+  build-macos:
+    runs-on: macos-latest
+    needs: build-linux
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Install deps
+        run: npm ci
+      - name: Test
+        run: make test
+      - name: Build
+        run: make build
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: macos-uploads
+          path: |
+            coverage/
+            out/
+
+  build-windows:
+    runs-on: windows-latest
+    needs: build-linux
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'npm'
+      - name: Install deps
+        run: |
+          $ErrorActionPreference="Stop"
+          node --version
+          npm ci; npm test
+      - name: Build
+        run: |
+          $ErrorActionPreference="Stop"
+          npm run build; npm run build-windows
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: windows-uploads
+          path: |
+            coverage/
+            out/

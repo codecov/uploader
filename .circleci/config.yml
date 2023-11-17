@@ -31,39 +31,6 @@ jobs:
             - out/codecov-aarch64
             - coverage-aarch64
 
-  build-linux-and-osx:
-    docker:
-      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-            - v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
-
-      - run: npm install
-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
-
-      - run: make test
-
-      - run: make build
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - out
-            - coverage
-            - package.json
-            - vendor
-
   build-alpine:
     docker:
       - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
@@ -409,33 +376,6 @@ jobs:
           paths:
             - output_osx_without_git.txt
 
-  build-windows:
-    executor: win/default
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      # https://superuser.com/a/1620000/54442
-      - run:
-          name: Install and set Node 16.x
-          command: |
-            $ErrorActionPreference="Stop"
-            nvm arch
-            nvm install 16 all
-            nvm use 16.20.2
-      - run:
-          name: Build Windows Binary
-          command: |
-            $ErrorActionPreference="Stop"
-            node --version
-            npm ci; npm test; npm run build; npm run build-windows
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - out
-            - coverage
-
   test-windows:
     executor: win/default
     steps:
@@ -629,9 +569,6 @@ workflows:
       - test-alpine-without-git:
           requires:
             - test-alpine
-      - build-windows:
-          requires:
-            - build-linux-and-osx
       - test-aarch64:
           requires:
             - build-aarch64
