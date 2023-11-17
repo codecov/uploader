@@ -28,6 +28,5 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: linux-build
           path: |
             - /home/runner/work/uploader/uploader/package.json
