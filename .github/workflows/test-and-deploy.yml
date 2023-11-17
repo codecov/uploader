@@ -34,7 +34,7 @@ jobs:
         with:
           name: linux-build
           path: |
-            - out
-            - coverage
-            - package.json
-            - vendor
+            - ./out
+            - ./coverage
+            - ./package.json
+            - ./vendor
