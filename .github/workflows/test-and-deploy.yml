@@ -27,4 +27,4 @@ jobs:
         with:
           name: linux-build
           path: |
-            - vendor
+            - /home/runner/work/uploader/uploader/vendor/
