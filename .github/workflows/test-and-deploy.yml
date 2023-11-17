@@ -32,4 +32,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          path: package.json
+          name: linux-uploads
+          path: |
+            - package.json
