@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build-linux:
+  build-linux-and-osx:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -26,37 +26,12 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: linux-uploads
+          name: linux-and-osx-artifacts
           path: |
             coverage/
             out/
             package.json
             vendor/
-
-  build-macos:
-    runs-on: macos-latest
-    needs: build-linux
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 18
-          cache: 'npm'
-      - name: Install deps
-        run: npm ci
-      - name: Test
-        run: make test
-      - name: Build
-        run: make build
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          if-no-files-found: error
-          name: macos-uploads
-          path: |
-            coverage/
-            out/
 
   build-windows:
     runs-on: windows-latest
@@ -81,7 +56,41 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: windows-uploads
+          name: windows-artifacts
           path: |
             coverage/
             out/
+
+  test-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - uses: actions/download-artifact@v3
+        with:
+          name: linux-and-osx-artifacts
+      - name: Confirm that linux uploader binary is static
+        run: (file out/codecov-linux | grep 'static') || exit ${?}
+      - name: Remove test coverage files
+        run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - name: Run Linux binary -f (dry run)
+        run: |
+          out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v >> output_linux.txt
+      - name: Run Linux binary auto-detect (dry run)
+        run: |
+          out/codecov-linux -F linux -d -Z >> output_linux.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-linux -F linux -Z
+            out/codecov-linux -F "-linux" -Z
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: linux-and-osx-artifacts
+          path: |
+            output-linux.txt
