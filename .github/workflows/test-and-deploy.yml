@@ -22,6 +22,12 @@ jobs:
         run: make test
       - name: Build
         run: make build
+      - name: ls
+        run: |
+          pwd
+          ls
+          cd ..
+          ls
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
