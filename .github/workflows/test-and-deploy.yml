@@ -35,7 +35,7 @@ jobs:
 
   build-windows:
     runs-on: windows-latest
-    needs: build-linux
+    needs: build-linux-and-osx
     steps:
       - name: Checkout
         uses: actions/checkout@v4
