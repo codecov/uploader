@@ -82,11 +82,10 @@ jobs:
       - name: Run Linux binary auto-detect (dry run)
         run: |
           out/codecov-linux -F linux -d -Z >> output_linux.txt
-      - run:
-          name: Run Linux binary (upload)
-          command: |
-            out/codecov-linux -F linux -Z
-            out/codecov-linux -F "-linux" -Z
+      - name: Run Linux binary (upload)
+        run: |
+          out/codecov-linux -F linux -Z
+          out/codecov-linux -F "-linux" -Z
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
