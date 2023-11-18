@@ -145,23 +145,19 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: artifact
-      - run:
-          name: Remove test coverage files
-          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - name: Remove test coverage files
+        run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
         run: chmod u+x out/codecov-macos
-      - run:
-          name: Run MacOS binary -f (dry-run)
-          command: |
-            out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z -v | tee output_osx.txt
-      - run:
-          name: Run MacOS binary auto-detect (dry-run)
-          command: |
-            out/codecov-macos -F macos -v -d -Z | tee -a output_osx.txt
-      - run:
-          name: Run MacOS binary (upload)
-          command: |
-            out/codecov-macos -F macos -v -Z
+      - name: Run MacOS binary -f (dry-run)
+        run: |
+          out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z -v | tee output_osx.txt
+      - name: Run MacOS binary auto-detect (dry-run)
+        run: |
+          out/codecov-macos -F macos -v -d -Z | tee -a output_osx.txt
+      - name: Run MacOS binary (upload)
+        run: |
+          out/codecov-macos -F macos -v -Z
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
