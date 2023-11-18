@@ -164,3 +164,38 @@ jobs:
           if-no-files-found: error
           path: |
             output_osx.txt
+
+  test-windows:
+    runs-on: windows-latest
+    needs: build-windows
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+      - name: Remove test coverage files
+        run: |
+          Remove-Item -Recurse -Force *.coverage.txt;  echo "ok"
+          Remove-Item -Recurse -Force coverage-report-test.json; echo "ok"
+          Remove-Item -Recurse -Force test/fixtures; echo "ok"
+      - name: Run Windows binary -f (dry-run)
+        run: |
+          dir .
+          attrib .\coverage\cobertura-coveage.xml
+          .\out\codecov.exe -f .\coverage\cobertura-coverage.xml -F windows -d -Z -v | tee output_win.txt
+        shell: cmd.exe
+      - name: Run Windows binary auto-detect (dry-run)
+        run: |
+          .\out\codecov.exe -F windows -v -d -Z | tee -a output_win.txt
+        shell: cmd.exe
+      - name: Run Windows binary (upload)
+        run: |
+          .\out\codecov.exe -F windows -v -Z
+        shell: cmd.exe
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          path: |
+            output_win.txt
