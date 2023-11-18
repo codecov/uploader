@@ -95,4 +95,4 @@ jobs:
           if-no-files-found: error
           name: linux-and-osx-artifacts
           path: |
-            output-linux.txt
+            output_linux.txt
