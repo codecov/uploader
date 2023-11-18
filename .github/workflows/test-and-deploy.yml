@@ -29,9 +29,63 @@ jobs:
           name: linux-and-osx-artifacts
           path: |
             coverage/
-            out/
             package.json
             vendor/
+      - name: Upload binaries
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: binaries
+          path: |
+            out/
+
+  build-alpine:
+    runs-on: ubuntu-latest
+    needs: build-linux-and-osx
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Download prebuilt static node binary
+        run: |
+          apk add wget coreutils make
+          NODE_RELEASE=node.v16.2.0_b57a0d7c9ecba551879997ac44bba3c9d9443df5
+          wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/node
+          wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA1SUM
+          wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA256SUM
+          wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA512SUM
+          for i in 1 256 512; do "sha${i}sum" -c "SHA${i}SUM"; done
+      - name: Confirm that alpine node binary is static
+        run: |
+          apk add file
+          (file node | grep 'static') || exit ${?}
+      - name: Create pkg-cache directory and copy static NodeJS binary
+        run: |
+          mkdir -p ~/.pkg-cache/v2.6
+          cp node /root/.pkg-cache/v2.6/fetched-v14.0.0-alpine-x64
+      - name: Remove downloaded binary and run tests
+        run: |
+          rm -rf node
+          apk add npm git
+          npm ci
+          npm test
+          mkdir -p coverage-alpine
+          cp -r coverage/* coverage-alpine/
+      - name: Build uploader binary on alpine
+        run: make build_alpine
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: alpine-artifacts
+          path: |
+            coverage-alpine
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: binaries
+          path: |
+            out/codecov-alpine
 
   build-windows:
     runs-on: windows-latest
@@ -60,6 +114,13 @@ jobs:
           path: |
             coverage/
             out/
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          name: binaries
+          path: |
+            out/codecov.exe
 
   test-linux:
     runs-on: ubuntu-latest

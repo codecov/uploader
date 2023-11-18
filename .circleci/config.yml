@@ -195,39 +195,6 @@ jobs:
           paths:
             - output_alpine_without_git.txt
 
-  test-linux:
-    docker:
-      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Confirm that linux uploader binary is static
-          command: |
-            (file out/codecov-linux | grep 'static') || exit ${?}
-      - run:
-          name: Remove test coverage files
-          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
-      - run:
-          name: Run Linux binary -f (dry run)
-          command: |
-            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v -e CIRCLE_BRANCH | tee output_linux.txt
-      - run:
-          name: Run Linux binary auto-detect (dry run)
-          command: |
-            out/codecov-linux -F linux -d -Z -e CIRCLE_BRANCH >> output_linux.txt
-      - run:
-          name: Run Linux binary (upload)
-          command: |
-            out/codecov-linux -F linux -Z -e CIRCLE_BRANCH
-            out/codecov-linux -F "-linux" -Z -e CIRCLE_BRANCH
-
-      - persist_to_workspace:
-          root: .
-          paths:
-            - output_linux.txt
-
   test-linux-without-git:
     docker:
       - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
