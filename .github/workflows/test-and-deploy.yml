@@ -26,21 +26,15 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: linux-and-osx-artifacts
           path: |
             coverage/
+            out/
             package.json
             vendor/
-      - name: Upload binaries
-        uses: actions/upload-artifact@v3
-        with:
-          if-no-files-found: error
-          name: binaries
-          path: |
-            out/
 
   build-alpine:
     runs-on: ubuntu-latest
+    container: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
     needs: build-linux-and-osx
     steps:
       - name: Checkout
@@ -76,15 +70,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: alpine-artifacts
           path: |
             coverage-alpine
-      - name: Upload binary
-        uses: actions/upload-artifact@v3
-        with:
-          if-no-files-found: error
-          name: binaries
-          path: |
             out/codecov-alpine
 
   build-windows:
@@ -110,16 +97,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: windows-artifacts
           path: |
             coverage/
-            out/
-      - name: Upload binary
-        uses: actions/upload-artifact@v3
-        with:
-          if-no-files-found: error
-          name: binaries
-          path: |
             out/codecov.exe
 
   test-linux:
@@ -132,8 +111,6 @@ jobs:
         with:
           node-version: 18
       - uses: actions/download-artifact@v3
-        with:
-          name: linux-and-osx-artifacts
       - name: Confirm that linux uploader binary is static
         run: (file out/codecov-linux | grep 'static') || exit ${?}
       - name: Remove test coverage files
@@ -154,6 +131,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           if-no-files-found: error
-          name: linux-and-osx-artifacts
           path: |
             output_linux.txt
