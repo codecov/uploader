@@ -22,10 +22,6 @@ jobs:
         run: make test
       - name: Build
         run: make build
-      - name: Make binaries executable
-        run: |
-          chmod u+x out/codecov-linux
-          chmod u+x out/codecov-macos
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -56,8 +52,6 @@ jobs:
         run: |
           $ErrorActionPreference="Stop"
           npm run build; npm run build-windows
-      - name: Make binaries executable
-        run: chmod u+x out/codecov-windows
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -83,6 +77,10 @@ jobs:
         run: (file out/codecov-linux | grep 'static') || exit ${?}
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - name: Get perms
+        run: |
+          ls -al out
+          whoami
       - name: Run Linux binary -f (dry run)
         run: |
           out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v >> output_linux.txt
