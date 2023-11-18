@@ -77,10 +77,8 @@ jobs:
         run: (file out/codecov-linux | grep 'static') || exit ${?}
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
-      - name: Get perms
-        run: |
-          ls -al out
-          whoami
+      - name: Update exec permission
+        run: chmod u+x out/codecov-linux
       - name: Run Linux binary -f (dry run)
         run: |
           out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v >> output_linux.txt
