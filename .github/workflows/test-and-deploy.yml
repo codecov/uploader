@@ -81,10 +81,10 @@ jobs:
         run: chmod u+x out/codecov-linux
       - name: Run Linux binary -f (dry run)
         run: |
-          out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v >> output_linux.txt
+          out/codecov-linux -f coverage/cobertura-coverage.xml -F linux -d -Z -v | tee output_linux.txt
       - name: Run Linux binary auto-detect (dry run)
         run: |
-          out/codecov-linux -F linux -d -Z >> output_linux.txt
+          out/codecov-linux -F linux -d -Z | tee -a output_linux.txt
       - name: Run Linux binary (upload)
         run: |
           out/codecov-linux -F linux -Z
