@@ -66,7 +66,7 @@ jobs:
 
   build-alpine:
     docker:
-      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
+      - image: alpine:3.18.5@sha256:34871e7290500828b39e22294660bee86d966bc0017544e848dd9a255cdf59e0
 
     working_directory: ~/repo
 
@@ -119,7 +119,7 @@ jobs:
 
   test-alpine:
     docker:
-      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
+      - image: alpine:3.18.5@sha256:34871e7290500828b39e22294660bee86d966bc0017544e848dd9a255cdf59e0
     steps:
       - run:
           name: Install git
@@ -156,7 +156,7 @@ jobs:
 
   test-alpine-proxy:
     docker:
-      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
+      - image: alpine:3.18.5@sha256:34871e7290500828b39e22294660bee86d966bc0017544e848dd9a255cdf59e0
     steps:
       - run:
           name: Install git
@@ -191,7 +191,7 @@ jobs:
 
   test-alpine-without-git:
     docker:
-      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
+      - image: alpine:3.18.5@sha256:34871e7290500828b39e22294660bee86d966bc0017544e848dd9a255cdf59e0
     steps:
       - run:
           name: Install git
