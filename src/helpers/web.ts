@@ -67,6 +67,7 @@ async function requestWithRetry(
       (
         (error instanceof errors.UndiciError && error.code == 'ECONNRESET') ||
         (error instanceof errors.UndiciError && error.code == 'ETIMEDOUT') ||
+        (error instanceof errors.UndiciError && error.code == 'UND_ERR_RESPONSE_STATUS_CODE') ||
         error instanceof errors.ConnectTimeoutError ||
         error instanceof errors.SocketError
       ) && retryCount < maxRetries
