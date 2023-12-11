@@ -57,6 +57,8 @@ Options:
                                 through                   [string] [default: ""]
   -u, --url                     Change the upload host (Enterprise use)
                                         [string] [default: "https://codecov.io"]
+      --useCwd, --uc            Use the current working directory instead of the
+                                git root [boolean] [default: false]
   -v, --verbose                 Run with verbose logging               [boolean]
   -X, --feature                 Toggle functionalities. Separate multiple ones
                                 by comma: -X network,search

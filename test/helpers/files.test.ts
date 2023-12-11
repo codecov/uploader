@@ -32,14 +32,26 @@ describe('File Helpers', () => {
       spawnSync('git', ['rev-parse', '--show-toplevel'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn({ stdout: Buffer.from('gitRoot') })
 
-    expect(fileHelpers.fetchGitRoot()).toBe('gitRoot')
+    expect(fileHelpers.fetchGitRoot(false)).toBe('gitRoot')
   })
 
   it('returns cwd when it cannot fetch the git root', () => {
     const cwd = td.replace(process, 'cwd')
     td.replace(childProcess, 'spawnSync')
     td.when(cwd()).thenReturn('fish')
-    expect(fileHelpers.fetchGitRoot()).toEqual('fish')
+    expect(fileHelpers.fetchGitRoot(false)).toEqual('fish')
+  })
+
+  it('returns cwd when its input is true even if it can fetch the git root', () => {
+    const cwd = td.replace(process, 'cwd')
+    const spawnSync = td.replace(childProcess, 'spawnSync')
+    td.when(cwd()).thenReturn('CWD')
+    td.when(
+      spawnSync('git', ['rev-parse', '--show-toplevel'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
+    ).thenReturn({ stdout: Buffer.from('gitRoot') })
+
+    expect(fileHelpers.fetchGitRoot(true)).toEqual('CWD')
+
   })
 
   it('can get a file listing', async () => {

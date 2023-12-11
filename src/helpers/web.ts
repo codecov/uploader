@@ -19,7 +19,7 @@ import { sleep } from './util'
 
 const maxRetries = 4
 const baseBackoffDelayMs = 1000 // Adjust this value based on your needs.
-export const userAgent: string = `codecov-uploader/${version}`
+export const userAgent = `codecov-uploader/${version}`
 
 /**
  *

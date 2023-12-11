@@ -83,6 +83,7 @@ function dryRun(
  * @param {boolean} args.clean Move discovered coverage reports to the trash
  * @param {string} args.feature Toggle features
  * @param {string} args.source Track wrappers of the uploader
+ * @param {string} args.useCwd Use current working directory as the automatically detected project root
  */
 export async function main(
   args: UploaderArgs,
@@ -135,7 +136,7 @@ export async function main(
 
   // #endregion
   // #region == Step 2: detect if we are in a git repo
-  const projectRoot = args.rootDir || fetchGitRoot()
+  const projectRoot = args.rootDir || fetchGitRoot(args.useCwd || false)
   if (projectRoot === '') {
     info(
       '=> No git repo detected. Please use the -R flag if the below detected directory is not correct.',

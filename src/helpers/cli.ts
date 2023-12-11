@@ -191,6 +191,13 @@ const args: ICLIArgument[] = [
     default: 'https://codecov.io',
   },
   {
+    alias: 'uc',
+    name: 'useCwd',
+    type: 'boolean',
+    default: false,
+    description: 'Use the current working directory instead of the git root',
+  },
+  {
     alias: 'v',
     name: 'verbose',
     type: 'boolean',

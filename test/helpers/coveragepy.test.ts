@@ -12,7 +12,7 @@ describe('generateCoveragePyFile()', () => {
 
     it('should run when coveragepy is asked for', async () => {
         const fixturesCoveragePyDir = path.join(
-            fileHelpers.fetchGitRoot(),
+            fileHelpers.fetchGitRoot(false),
             'test/fixtures/coveragepy',
         )
 
@@ -50,7 +50,7 @@ describe('generateCoveragePyFile()', () => {
 
     it('should return a log when there are no dotcoverage files', async () => {
         const fixturesYamlDir = path.join(
-            fileHelpers.fetchGitRoot(),
+            fileHelpers.fetchGitRoot(false),
             'test/fixtures/yaml',
         )
 
