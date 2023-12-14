@@ -1,5 +1,5 @@
 import { ProxyAgent } from 'undici';
-import { UploaderArgs, UploaderEnvs } from '../types.js';
+import { UploaderArgs, UploaderEnvs } from '../types';
 import { logError } from './logger'
 
 export function getBasicAuthToken(username: string, password: string): string {
