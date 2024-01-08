@@ -48,6 +48,10 @@ describe('Input Validators', () => {
       expect(validate.isValidFlag('uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^')).toBe(true)
     })
 
+    it('Should throw with a name longer than 1024 characters', () => {
+      expect(validate.isValidFlag('uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^')).toBe(false)
+    })
+
     it("should throw when they they not match the pattern", () => {
       // arrange
       const invalidFlagName = "flag'subflag"
