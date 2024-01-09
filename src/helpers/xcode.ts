@@ -11,7 +11,7 @@ export async function generateXcodeCoverageFiles(archivePath: string): Promise<s
   if (!isProgramInstalled('xcrun')) {
       throw new Error('xcrun is not installed, cannot process files')
   }
-  info('Running xcode coversion...')
+  info('Running xcode conversion...')
 
   const coverage: XcodeCoverageReport = {}
   const report = { coverage: coverage }
