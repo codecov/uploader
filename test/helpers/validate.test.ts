@@ -44,11 +44,19 @@ describe('Input Validators', () => {
       expect(validate.isValidFlag('-moo-foor')).toBe(true)
     })
 
+    it('Should pass with a long name and special characters', () => {
+      expect(validate.isValidFlag('uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^')).toBe(true)
+    })
+
+    it('Should throw with a name longer than 1024 characters', () => {
+      expect(validate.isValidFlag('uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^uu-thisnameis-ridculouslylong-javascrip-but-thisisareally-longnamethatisgoing-tobe-supported-withmanymanycharacters-andthisflagname-istoolongto-dispaly-intheui1234567891011121314151617181920212222324252627282829201212-thisnameis$%#%&^')).toBe(false)
+    })
+
     it("should throw when they they not match the pattern", () => {
       // arrange
-      const invalidFlagName = "flag/subflag"
-      const expectedErrorMessage = "Flags must consist only of alphanumeric characters, '_', '-', or '.' and not exceed 45 characters. Received flag/subflag"
+      const invalidFlagName = "flag'subflag"
 
+      const expectedErrorMessage = "Flags cannot contain the ' or \" characters and cannot exceed 1024 characters. Received flag'subflag"
       // act
       expect(() => validate.validateFlags([invalidFlagName])).toThrowError(expectedErrorMessage)
     })
@@ -73,28 +81,28 @@ describe('Input Validators', () => {
   })
 
   describe('checkSlug()', () => {
-      it('should return true for a slug with a forward slash', () => {
-          // arrange
-          const inputSlug = "testOrg/testRepo"
-          const expectedResult = true
+    it('should return true for a slug with a forward slash', () => {
+      // arrange
+      const inputSlug = "testOrg/testRepo"
+      const expectedResult = true
 
-          // act
-          const result = validate.checkSlug(inputSlug)
+      // act
+      const result = validate.checkSlug(inputSlug)
 
-          // assert
-          expect(result).toEqual(expectedResult)
-      })
+      // assert
+      expect(result).toEqual(expectedResult)
+    })
 
-      it('should return false for a slug without a forward slash', () => {
-          // arrange
-          const inputSlug = 'testRepo'
-          const expectedResult = false
+    it('should return false for a slug without a forward slash', () => {
+      // arrange
+      const inputSlug = 'testRepo'
+      const expectedResult = false
 
-          // act
-          const result = validate.checkSlug(inputSlug)
+      // act
+      const result = validate.checkSlug(inputSlug)
 
-          // assert
-          expect(result).toEqual(expectedResult)
-      })
+      // assert
+      expect(result).toEqual(expectedResult)
+    })
   })
 })
