@@ -196,9 +196,9 @@ describe('Azure Pipelines CI Params', () => {
       service: 'azure_pipelines',
       slug: 'testOrg/testRepo',
     }
-    const execFileSync = td.replace(childProcess, 'execFileSync')
+    const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
-      execFileSync('git', ['show', '--no-patch', '--format=%P']),
+      spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
     ).thenReturn(
       Buffer.from('testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890'),
     )
