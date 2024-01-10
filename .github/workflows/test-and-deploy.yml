@@ -135,14 +135,14 @@ jobs:
         run: chmod u+x out/codecov-linux
       - name: Run Linux binary -f (dry run)
         run: |
-          out/codecov-linux -f coverage/cobertura-coverage.xml -F linux -d -Z -v | tee output_linux.txt
+          out/codecov-linux -f coverage/cobertura-coverage.xml -F linux -d -Z -v -t ${{ secrets.CODECOV_TOKEN }} | tee output_linux.txt
       - name: Run Linux binary auto-detect (dry run)
         run: |
           out/codecov-linux -F linux -d -Z | tee -a output_linux.txt
       - name: Run Linux binary (upload)
         run: |
-          out/codecov-linux -F linux -Z
-          out/codecov-linux -F "-linux" -Z
+          out/codecov-linux -F linux -Z -t ${{ secrets.CODECOV_TOKEN }}
+          out/codecov-linux -F "-linux" -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -165,13 +165,13 @@ jobs:
         run: chmod u+x out/codecov-macos
       - name: Run MacOS binary -f (dry-run)
         run: |
-          out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z -v | tee output_osx.txt
+          out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z -v -t ${{ secrets.CODECOV_TOKEN }} | tee output_osx.txt
       - name: Run MacOS binary auto-detect (dry-run)
         run: |
-          out/codecov-macos -F macos -v -d -Z | tee -a output_osx.txt
+          out/codecov-macos -F macos -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_osx.txt
       - name: Run MacOS binary (upload)
         run: |
-          out/codecov-macos -F macos -v -Z
+          out/codecov-macos -F macos -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -196,15 +196,15 @@ jobs:
         run: |
           dir .
           attrib .\coverage\cobertura-coveage.xml
-          .\out\codecov.exe -f .\coverage\cobertura-coverage.xml -F windows -d -Z -v | tee output_win.txt
+          .\out\codecov.exe -f .\coverage\cobertura-coverage.xml -F windows -d -Z -v -t ${{ secrets.CODECOV_TOKEN }} | tee output_win.txt
         shell: cmd.exe
       - name: Run Windows binary auto-detect (dry-run)
         run: |
-          .\out\codecov.exe -F windows -v -d -Z | tee -a output_win.txt
+          .\out\codecov.exe -F windows -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_win.txt
         shell: cmd.exe
       - name: Run Windows binary (upload)
         run: |
-          .\out\codecov.exe -F windows -v -Z
+          .\out\codecov.exe -F windows -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd.exe
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
