@@ -191,7 +191,6 @@ jobs:
       - name: Remove test coverage files
         run: |
           Remove-Item -Recurse -Force *.coverage.txt;  echo "ok"
-          Remove-Item -Recurse -Force coverage-report-test.json; echo "ok"
           Remove-Item -Recurse -Force test/fixtures; echo "ok"
       - name: Run Windows binary -f (dry-run)
         run: |
