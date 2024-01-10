@@ -199,9 +199,9 @@ describe('Azure Pipelines CI Params', () => {
     const spawnSync = td.replace(childProcess, 'spawnSync')
     td.when(
       spawnSync('git', ['show', '--no-patch', '--format=%P'], { maxBuffer: SPAWNPROCESSBUFFERSIZE }),
-    ).thenReturn(
-      Buffer.from('testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890'),
-    )
+    ).thenReturn({
+      stdout: Buffer.from('testingsha123456789012345678901234567890 testingmergecommitsha2345678901234567890'),
+    })
     const params = await providerAzurepipelines.getServiceParams(inputs)
     expect(params).toMatchObject(expected)
   })
