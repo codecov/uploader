@@ -197,15 +197,15 @@ jobs:
           dir .
           attrib .\coverage\cobertura-coveage.xml
           .\out\codecov.exe -f .\coverage\cobertura-coverage.xml -F windows -d -Z -v -t ${{ secrets.CODECOV_TOKEN }} | tee output_win.txt
-        shell: cmd.exe
+        shell: cmd
       - name: Run Windows binary auto-detect (dry-run)
         run: |
           .\out\codecov.exe -F windows -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_win.txt
-        shell: cmd.exe
+        shell: cmd
       - name: Run Windows binary (upload)
         run: |
           .\out\codecov.exe -F windows -v -Z -t ${{ secrets.CODECOV_TOKEN }}
-        shell: cmd.exe
+        shell: cmd
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
