@@ -6,6 +6,20 @@ on:
     branches:
       - main
 
+# Remaining circleci jobs to port
+# - build-aarch64:
+# - test-alpine:
+# - test-alpine-proxy:
+# - test-alpine-without-git:
+# - test-aarch64:
+# - test-aarch64-without-git:
+# - test-linux-without-git:
+# - test-macos-without-git:
+# - test-windows-without-git:
+# - review:
+# - deploy:
+# - release:
+
 jobs:
   build-linux-and-osx:
     runs-on: ubuntu-latest

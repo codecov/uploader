@@ -31,6 +31,92 @@ jobs:
             - out/codecov-aarch64
             - coverage-aarch64
 
+  build-linux-and-osx:
+    docker:
+      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
+
+      - run: make test
+
+      - run: make build
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - out
+            - coverage
+            - package.json
+            - vendor
+
+  build-alpine:
+    docker:
+      - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+
+      - run:
+          name: Download prebuilt static node binary
+          command: |
+            apk add wget coreutils make
+            NODE_RELEASE=node.v16.2.0_b57a0d7c9ecba551879997ac44bba3c9d9443df5
+            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/node
+            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA1SUM
+            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA256SUM
+            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA512SUM
+            for i in 1 256 512; do "sha${i}sum" -c "SHA${i}SUM"; done
+      - run:
+          name: Confirm that alpine node binary is static
+          command: |
+            apk add file
+            (file node | grep 'static') || exit ${?}
+
+      - run:
+          name: Create pkg-cache directory and copy static NodeJS binary
+          command: |
+            mkdir -p ~/.pkg-cache/v2.6
+            cp node /root/.pkg-cache/v2.6/fetched-v14.0.0-alpine-x64
+
+      - run:
+          name: Remove downloaded binary and run tests
+          command: |
+            rm -rf node
+            apk add npm git
+            npm ci
+            npm test
+            mkdir -p coverage-alpine
+            cp -r coverage/* coverage-alpine/
+
+      - run:
+          name: Build uploader binary on alpine
+          command: make build_alpine
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - out/codecov-alpine
+            - coverage-alpine
+
   test-alpine:
     docker:
       - image: alpine:3.18.4@sha256:eece025e432126ce23f223450a0326fbebde39cdf496a85d8c016293fc851978
@@ -142,6 +228,39 @@ jobs:
           paths:
             - output_alpine_without_git.txt
 
+  test-linux:
+    docker:
+      - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Confirm that linux uploader binary is static
+          command: |
+            (file out/codecov-linux | grep 'static') || exit ${?}
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
+          name: Run Linux binary -f (dry run)
+          command: |
+            out/codecov-linux -f /home/circleci/project/coverage/cobertura-coverage.xml -F linux -d -Z -v -e CIRCLE_BRANCH >> output_linux.txt
+      - run:
+          name: Run Linux binary auto-detect (dry run)
+          command: |
+            out/codecov-linux -F linux -d -Z -e CIRCLE_BRANCH >> output_linux.txt
+      - run:
+          name: Run Linux binary (upload)
+          command: |
+            out/codecov-linux -F linux -Z -e CIRCLE_BRANCH
+            out/codecov-linux -F "-linux" -Z -e CIRCLE_BRANCH
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_linux.txt
+
   test-linux-without-git:
     docker:
       - image: cimg/node:18.18.2@sha256:46635b60468f394da9a6682bc37ff7b3ede41e3920b9ab9b1cdf3d5e70233775
@@ -235,6 +354,34 @@ jobs:
           paths:
             - output_aarch64_without_git.txt
 
+  test-macos:
+    macos:
+      xcode: '12.5.1'
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Remove test coverage files
+          command: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - run:
+          name: Run MacOS binary -f (dry-run)
+          command: |
+            out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -v -e CIRCLE_BRANCH >> output_osx.txt
+      - run:
+          name: Run MacOS binary auto-detect (dry-run)
+          command: |
+            out/codecov-macos -F macos -v -d -Z -e CIRCLE_BRANCH >> output_osx.txt
+      - run:
+          name: Run MacOS binary (upload)
+          command: |
+            out/codecov-macos -F macos -v -Z -e CIRCLE_BRANCH
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - output_osx.txt
+
   test-macos-without-git:
     macos:
       xcode: '12.5.1'
@@ -261,6 +408,33 @@ jobs:
           root: .
           paths:
             - output_osx_without_git.txt
+
+  build-windows:
+    executor: win/default
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      # https://superuser.com/a/1620000/54442
+      - run:
+          name: Install and set Node 16.x
+          command: |
+            $ErrorActionPreference="Stop"
+            nvm arch
+            nvm install 16 all
+            nvm use 16.20.2
+      - run:
+          name: Build Windows Binary
+          command: |
+            $ErrorActionPreference="Stop"
+            node --version
+            npm ci; npm test; npm run build; npm run build-windows
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - out
+            - coverage
 
   test-windows:
     executor: win/default
@@ -440,6 +614,7 @@ workflows:
       #             - 'Github Checkout'
       #           requires:
       #             - build-alpine
+      - build-linux-and-osx
       - build-aarch64:
           requires:
             - build-linux-and-osx
@@ -455,6 +630,9 @@ workflows:
       - test-alpine-without-git:
           requires:
             - test-alpine
+      - build-windows:
+          requires:
+            - build-linux-and-osx
       - test-aarch64:
           requires:
             - build-aarch64
