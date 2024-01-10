@@ -1,6 +1,6 @@
-import childProcess from 'child_process'
 import { parseSlugFromRemoteAddr } from '../helpers/git'
 import { info } from '../helpers/logger'
+import { runExternalProgram } from "../helpers/util"
 import { IServiceParams, UploaderEnvs, UploaderInputs } from '../types'
 
 export function detect(envs: UploaderEnvs): boolean {
@@ -59,10 +59,7 @@ function _getSHA(inputs: UploaderInputs): string {
 
   if (_getPR(inputs)) {
     const mergeCommitRegex = /^[a-z0-9]{40} [a-z0-9]{40}$/
-    const mergeCommitMessage = childProcess
-      .execFileSync('git', ['show', '--no-patch', '--format=%P'])
-      .toString()
-      .trimRight()
+    const mergeCommitMessage = runExternalProgram('git', ['show', '--no-patch', '--format=%P'])
     if (mergeCommitRegex.exec(mergeCommitMessage)) {
       const mergeCommit = mergeCommitMessage.split(' ')[1]
       info(`    Fixing merge commit SHA ${commit} -> ${mergeCommit}`)
