@@ -429,10 +429,10 @@ jobs:
         run: cat output_linux.txt
       - name: Cat output_linux_without_git.txt
         run: cat output_linux_without_git.txt
-      - name: Cat output_macos.txt
-        run: cat output_macos.txt
-      - name: Cat output_macos_without_git.txt
-        run: cat output_macos_without_git.txt
+      - name: Cat output_osx.txt
+        run: cat output_osx.txt
+      - name: Cat output_osx_without_git.txt
+        run: cat output_osx_without_git.txt
       - name: Cat output_windows.txt
         run: cat output_windows.txt
       - name: Cat output_windows_without_git.txt
