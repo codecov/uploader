@@ -68,7 +68,7 @@ jobs:
       - name: Create pkg-cache directory and copy static NodeJS binary
         run: |
           mkdir -p ~/.pkg-cache/v2.6
-          cp node ~/.pkg-cache/v2.6/fetched-v16.2.0-alpine-x64
+          cp node ~/.pkg-cache/v2.6/fetched-v14.0.0-alpine-x64
       - name: Remove downloaded binary and run tests
         run: |
           rm -rf node
