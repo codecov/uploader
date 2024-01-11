@@ -196,14 +196,9 @@ jobs:
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
         run: chmod u+x out/codecov-alpine
-      - name: ls
-        run: |
-          pwd
-          ls
-          find . -name 'cobertura-coverage.xml'
       - name: Run Alpine binary -f (dry run)
         run: |
-          NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -t ${{ secrets.CODECOV_TOKEN }} >> output_alpine.txt
+          NODE_DEBUG=vm out/codecov-alpine -v -f ./coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -t ${{ secrets.CODECOV_TOKEN }} >> output_alpine.txt
       - name: Run Alpine binary auto-detect (dry run)
         run: |
           out/codecov-alpine -F alpine -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} >> output_alpine.txt
