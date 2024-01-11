@@ -8,10 +8,8 @@ on:
 
 # Remaining circleci jobs to port
 # - build-aarch64:
-# - test-alpine-proxy:
 # - test-aarch64:
 # - test-aarch64-without-git:
-# - review:
 # - deploy:
 # - release:
 
@@ -301,6 +299,38 @@ jobs:
           path: |
             output_alpine_without_git.txt
 
+  test-alpine-proxy:
+    runs-on: ubuntu-latest
+    container: alpine:3.19.0@sha256:51b67269f354137895d43f3b3d810bfacd3945438e94dc5ac55fdac340352f48
+    needs: test-alpine
+    steps:
+      - name: Install git
+        run: |
+          apk update
+          apk add git
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/download-artifact@v3
+        with:
+          name: artifact
+      - name: Start squid
+        run: squid
+      - name: Remove test coverage files
+        run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - name: Update exec permission
+        run: chmod u+x out/codecov-alpine
+      - name: Run Alpine binary auto-detect (dry run)
+        run: |
+          out/codecov-alpine -U http://localhost:3128 -F alpine-without-git -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} >> output_alpine_proxy.txt
+      - name: Run Alpine binary (upload)
+        run: out/codecov-alpine -U http://localhost:3128 -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          if-no-files-found: error
+          path: |
+            output_alpine_proxy.txt
+
   test-windows:
     runs-on: windows-latest
     needs: build-windows
@@ -374,6 +404,7 @@ jobs:
   review:
     runs-on: ubuntu-latest
     needs:
+      - test-alpine-proxy
       - test-alpine-without-git
       - test-linux-without-git
       - test-macos-without-git
