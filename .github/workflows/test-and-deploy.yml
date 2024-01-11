@@ -145,7 +145,7 @@ jobs:
 
   test-linux-without-git:
     runs-on: ubuntu-latest
-    needs: test-linux
+    needs: build-linux-and-osx
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -205,7 +205,7 @@ jobs:
 
   test-macos-without-git:
     runs-on: macos-latest
-    needs: test-macos
+    needs: build-linux-and-osx
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -267,7 +267,7 @@ jobs:
   test-alpine-without-git:
     runs-on: ubuntu-latest
     container: alpine:3.19.0@sha256:51b67269f354137895d43f3b3d810bfacd3945438e94dc5ac55fdac340352f48
-    needs: test-alpine
+    needs: build-alpine
     steps:
       - name: Install git
         run: |
@@ -302,7 +302,7 @@ jobs:
   test-alpine-proxy:
     runs-on: ubuntu-latest
     container: alpine:3.19.0@sha256:51b67269f354137895d43f3b3d810bfacd3945438e94dc5ac55fdac340352f48
-    needs: test-alpine
+    needs: build-alpine
     steps:
       - name: Install git
         run: |
@@ -367,7 +367,7 @@ jobs:
 
   test-windows-without-git:
     runs-on: windows-latest
-    needs: test-windows
+    needs: build-windows
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -404,10 +404,14 @@ jobs:
   review:
     runs-on: ubuntu-latest
     needs:
+      - test-alpine
       - test-alpine-proxy
       - test-alpine-without-git
+      - test-linux
       - test-linux-without-git
+      - test-macos
       - test-macos-without-git
+      - test-windows
       - test-windows-without-git
     steps:
       - name: Checkout
