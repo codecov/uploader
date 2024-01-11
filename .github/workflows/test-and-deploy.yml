@@ -194,14 +194,16 @@ jobs:
           name: artifact
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
+      - name: Update exec permission
+        run: chmod u+x out/codecov-alpine
       - name: Run Alpine binary -f (dry run)
         run: |
-          NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -e CIRCLE_BRANCH -t ${{ secrets.CODECOV_TOKEN }} >> output_alpine.txt
+          NODE_DEBUG=vm out/codecov-alpine -v -f /root/project/coverage-alpine/cobertura-coverage.xml -F alpine -d -Z -t ${{ secrets.CODECOV_TOKEN }} >> output_alpine.txt
       - name: Run Alpine binary auto-detect (dry run)
         run: |
-          out/codecov-alpine -F alpine -v -d -Z -e CIRCLE_BRANCH -t ${{ secrets.CODECOV_TOKEN }} >> output_alpine.txt
+          out/codecov-alpine -F alpine -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} >> output_alpine.txt
       - name: Run Alpine binary (upload)
-        run: out/codecov-alpine -F alpine -v -Z -e CIRCLE_BRANCH -t ${{ secrets.CODECOV_TOKEN }}
+        run: out/codecov-alpine -F alpine -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
