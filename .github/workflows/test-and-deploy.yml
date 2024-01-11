@@ -307,7 +307,7 @@ jobs:
       - name: Install git
         run: |
           apk update
-          apk add git
+          apk add git squid
       - name: Checkout
         uses: actions/checkout@v4
       - uses: actions/download-artifact@v3
