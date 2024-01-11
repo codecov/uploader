@@ -437,7 +437,7 @@ jobs:
         run: cat output_osx.txt
       - name: Cat output_osx_without_git.txt
         run: cat output_osx_without_git.txt
-      - name: Cat output_windows.txt
-        run: cat output_windows.txt
-      - name: Cat output_windows_without_git.txt
-        run: cat output_windows_without_git.txt
+      - name: Cat output_win.txt
+        run: cat output_win.txt
+      - name: Cat output_win_without_git.txt
+        run: cat output_win_without_git.txt
