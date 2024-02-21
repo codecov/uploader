@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: make build
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -74,7 +74,7 @@ jobs:
       - name: Build uploader binary on alpine
         run: make build_alpine
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -101,7 +101,7 @@ jobs:
           $ErrorActionPreference="Stop"
           npm run build; npm run build-windows
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -117,7 +117,7 @@ jobs:
       - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
           node-version: 18
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Confirm that linux uploader binary is static
@@ -137,7 +137,7 @@ jobs:
           out/codecov-linux -F linux -Z -t ${{ secrets.CODECOV_TOKEN }}
           out/codecov-linux -F "-linux" -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -152,7 +152,7 @@ jobs:
       - uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4
         with:
           node-version: 18
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Remove .git directory
@@ -168,7 +168,7 @@ jobs:
         run: |
           out/codecov-linux -F linux-without-git -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -180,7 +180,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Remove test coverage files
@@ -197,7 +197,7 @@ jobs:
         run: |
           out/codecov-macos -F macos -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -209,7 +209,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Remove .git directory
@@ -225,7 +225,7 @@ jobs:
         run: |
           out/codecov-macos -F macos-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -242,7 +242,7 @@ jobs:
           apk add git
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Remove test coverage files
@@ -258,7 +258,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -F alpine -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -275,7 +275,7 @@ jobs:
           apk add git
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Remove .git directory
@@ -293,7 +293,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -310,7 +310,7 @@ jobs:
           apk add git squid
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Start squid
@@ -325,7 +325,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -U http://localhost:3128 -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -337,7 +337,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Remove test coverage files
@@ -359,7 +359,7 @@ jobs:
           .\out\codecov.exe -F windows -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -371,7 +371,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: Remove .git directory
@@ -395,7 +395,7 @@ jobs:
           .\out\codecov.exe -F windows-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4
         with:
           if-no-files-found: error
           path: |
@@ -420,7 +420,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-      - uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3
+      - uses: actions/download-artifact@eaceaf801fd36c7dee90939fad912460b18a1ffe # v4
         with:
           name: artifact
       - name: List files
