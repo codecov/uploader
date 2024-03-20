@@ -36,7 +36,7 @@
   "dependencies": {
     "fast-glob": "3.3.2",
     "js-yaml": "4.1.0",
-    "snake-case": "3.0.4",
+    "snake-case": "4.0.0",
     "undici": "5.28.3",
     "validator": "13.11.0",
     "yargs": "17.7.2"
