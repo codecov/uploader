@@ -33,7 +33,7 @@ jobs:
 
   build-linux-and-osx:
     docker:
-      - image: cimg/node:18.20.0@sha256:03d3e8ee633b9538dee8abf40f516702aa95a72b3db99d010163076303e840ca
+      - image: cimg/node:18.20.1@sha256:425898a8e90fd50995367548cc6effbeb6023b533abc4d66250f9880098de713
 
     working_directory: ~/repo
 
@@ -230,7 +230,7 @@ jobs:
 
   test-linux:
     docker:
-      - image: cimg/node:18.20.0@sha256:03d3e8ee633b9538dee8abf40f516702aa95a72b3db99d010163076303e840ca
+      - image: cimg/node:18.20.1@sha256:425898a8e90fd50995367548cc6effbeb6023b533abc4d66250f9880098de713
     steps:
       - checkout
       - attach_workspace:
@@ -263,7 +263,7 @@ jobs:
 
   test-linux-without-git:
     docker:
-      - image: cimg/node:18.20.0@sha256:03d3e8ee633b9538dee8abf40f516702aa95a72b3db99d010163076303e840ca
+      - image: cimg/node:18.20.1@sha256:425898a8e90fd50995367548cc6effbeb6023b533abc4d66250f9880098de713
     steps:
       - checkout
       - attach_workspace:
@@ -504,7 +504,7 @@ jobs:
 
   review:
     docker:
-      - image: cimg/node:18.20.0@sha256:03d3e8ee633b9538dee8abf40f516702aa95a72b3db99d010163076303e840ca
+      - image: cimg/node:18.20.1@sha256:425898a8e90fd50995367548cc6effbeb6023b533abc4d66250f9880098de713
     steps:
       - attach_workspace:
           at: .
@@ -543,7 +543,7 @@ jobs:
 
   deploy:
     docker:
-      - image: cimg/node:18.20.0@sha256:03d3e8ee633b9538dee8abf40f516702aa95a72b3db99d010163076303e840ca
+      - image: cimg/node:18.20.1@sha256:425898a8e90fd50995367548cc6effbeb6023b533abc4d66250f9880098de713
     steps:
       - attach_workspace:
           at: .
