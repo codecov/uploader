@@ -24,7 +24,7 @@
         "@commitlint/config-conventional": "19.1.0",
         "@types/jest": "29.5.12",
         "@types/js-yaml": "4.0.9",
-        "@types/micromatch": "4.0.6",
+        "@types/micromatch": "4.0.7",
         "@types/mock-fs": "4.13.4",
         "@types/node": "20.8.7",
         "@types/validator": "13.11.9",
@@ -2411,9 +2411,9 @@
       "dev": true
     },
     "node_modules/@types/micromatch": {
-      "version": "4.0.6",
-      "resolved": "https://registry.npmjs.org/@types/micromatch/-/micromatch-4.0.6.tgz",
-      "integrity": "sha512-2eulCHWqjEpk9/vyic4tBhI8a9qQEl6DaK2n/sF7TweX9YESlypgKyhXMDGt4DAOy/jhLPvVrZc8pTDAMsplJA==",
+      "version": "4.0.7",
+      "resolved": "https://registry.npmjs.org/@types/micromatch/-/micromatch-4.0.7.tgz",
+      "integrity": "sha512-C/FMQ8HJAZhTsDpl4wDKZdMeeW5USjgzOczUwTGbRc1ZopPgOhIEnxY2ZgUrsuyy4DwK1JVOJZKFakv3TbCKiA==",
       "dev": true,
       "dependencies": {
         "@types/braces": "*"
@@ -11106,9 +11106,9 @@
       "dev": true
     },
     "@types/micromatch": {
-      "version": "4.0.6",
-      "resolved": "https://registry.npmjs.org/@types/micromatch/-/micromatch-4.0.6.tgz",
-      "integrity": "sha512-2eulCHWqjEpk9/vyic4tBhI8a9qQEl6DaK2n/sF7TweX9YESlypgKyhXMDGt4DAOy/jhLPvVrZc8pTDAMsplJA==",
+      "version": "4.0.7",
+      "resolved": "https://registry.npmjs.org/@types/micromatch/-/micromatch-4.0.7.tgz",
+      "integrity": "sha512-C/FMQ8HJAZhTsDpl4wDKZdMeeW5USjgzOczUwTGbRc1ZopPgOhIEnxY2ZgUrsuyy4DwK1JVOJZKFakv3TbCKiA==",
       "dev": true,
       "requires": {
         "@types/braces": "*"
