@@ -356,7 +356,7 @@ jobs:
 
   test-macos:
     macos:
-      xcode: '12.5.1'
+      xcode: '15.3.0'
     steps:
       - checkout
       - attach_workspace:
