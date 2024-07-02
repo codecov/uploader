@@ -643,7 +643,7 @@ workflows:
             - test-aarch64
       - test-linux:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - test-linux-without-git:
           requires:
             - test-linux
