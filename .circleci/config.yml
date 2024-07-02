@@ -357,6 +357,7 @@ jobs:
   test-macos:
     macos:
       xcode: '15.3.0'
+    resource_class: macos.m1.medium.gen1
     steps:
       - checkout
       - attach_workspace:
