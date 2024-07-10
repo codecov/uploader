@@ -31,7 +31,7 @@ jobs:
             - out/codecov-aarch64
             - coverage-aarch64
 
-  build-linux:
+  build-linux-and-osx:
     docker:
       - image: cimg/node:18.20.3@sha256:b7e440d8e097d27ca514390ee703ad95b0b8cc42ccd5ac88a4d8bbd06a44754f
 
@@ -368,15 +368,15 @@ jobs:
       - run:
           name: Run MacOS binary -f (dry-run)
           command: |
-            ./out/codecov-aarch64 -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -v -e CIRCLE_BRANCH >> output_osx.txt
+            ./out/codecov-linux -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -v -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary auto-detect (dry-run)
           command: |
-            ./out/codecov-aarch64 -F macos -v -d -Z -e CIRCLE_BRANCH >> output_osx.txt
+            ./out/codecov-linux -F macos -v -d -Z -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
-            ./out/codecov-aarch64 -F macos -v -Z -e CIRCLE_BRANCH
+            ./out/codecov-linux -F macos -v -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
@@ -400,11 +400,11 @@ jobs:
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            ./out/codecov-aarch64 -F macos-without-git -d > output_osx_without_git.txt
+            ./out/codecov-linux -F macos-without-git -d > output_osx_without_git.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
-            ./out/codecov-aarch64 -F macos-without-git
+            ./out/codecov-linux -F macos-without-git
 
       - persist_to_workspace:
           root: .
@@ -616,13 +616,13 @@ workflows:
       #             - 'Github Checkout'
       #           requires:
       #             - build-alpine
-      - build-linux
+      - build-linux-and-osx
       - build-aarch64:
           requires:
-            - build-linux
+            - build-linux-and-osx
       - build-alpine:
           requires:
-            - build-linux
+            - build-linux-and-osx
       - test-alpine:
           requires:
             - build-alpine
@@ -634,7 +634,7 @@ workflows:
             - test-alpine
       - build-windows:
           requires:
-            - build-linux
+            - build-linux-and-osx
       - test-aarch64:
           requires:
             - build-aarch64
@@ -643,13 +643,13 @@ workflows:
             - test-aarch64
       - test-linux:
           requires:
-            - build-linux
+            - build-linux-and-osx
       - test-linux-without-git:
           requires:
             - test-linux
       - test-macos:
           requires:
-            - build-aarch64
+            - build-linux-and-osx
       - test-macos-without-git:
           requires:
             - test-macos
