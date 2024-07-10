@@ -635,13 +635,13 @@ workflows:
       #             - 'Github Checkout'
       #           requires:
       #             - build-alpine
-      - build-linux-and-osx
+      - build-linux
       - build-aarch64:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - build-alpine:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - test-alpine:
           requires:
             - build-alpine
@@ -653,7 +653,7 @@ workflows:
             - test-alpine
       - build-windows:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - test-aarch64:
           requires:
             - build-aarch64
@@ -662,13 +662,13 @@ workflows:
             - test-aarch64
       - test-linux:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - test-linux-without-git:
           requires:
             - test-linux
       - build-macos:
           required:
-            - build-macos
+            - build-linux
       - test-macos:
           requires:
             - build-macos
