@@ -368,15 +368,15 @@ jobs:
       - run:
           name: Run MacOS binary -f (dry-run)
           command: |
-            out/codecov-aarch64 -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -v -e CIRCLE_BRANCH >> output_osx.txt
+            ./out/codecov-aarch64 -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -v -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary auto-detect (dry-run)
           command: |
-            out/codecov-aarch64 -F macos -v -d -Z -e CIRCLE_BRANCH >> output_osx.txt
+            ./out/codecov-aarch64 -F macos -v -d -Z -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-aarch64 -F macos -v -Z -e CIRCLE_BRANCH
+            ./out/codecov-aarch64 -F macos -v -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
@@ -400,11 +400,11 @@ jobs:
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            out/codecov-aarch64 -F macos-without-git -d > output_osx_without_git.txt
+            ./out/codecov-aarch64 -F macos-without-git -d > output_osx_without_git.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-aarch64 -F macos-without-git
+            ./out/codecov-aarch64 -F macos-without-git
 
       - persist_to_workspace:
           root: .
