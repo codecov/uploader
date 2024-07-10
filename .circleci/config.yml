@@ -667,7 +667,7 @@ workflows:
           requires:
             - test-linux
       - build-macos:
-          required:
+          requires:
             - build-linux
       - test-macos:
           requires:
