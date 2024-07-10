@@ -75,7 +75,7 @@ jobs:
       - checkout
       - run: npm install
       - run: make test
-      - run: make build-macos
+      - run: make build_macos
 
       - persist_to_workspace:
           root: .
