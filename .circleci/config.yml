@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   win: circleci/windows@5.0.0
+  node: circleci/node@5.2.0
 
 jobs:
   build-aarch64:
@@ -69,13 +70,12 @@ jobs:
       xcode: '15.3.0'
     resource_class: macos.m1.medium.gen1
 
-    docker:
-      - image: cimg/node:18.20.3@sha256:b7e440d8e097d27ca514390ee703ad95b0b8cc42ccd5ac88a4d8bbd06a44754f
-
     working_directory: ~/repo
 
     steps:
       - checkout
+      - node/install:
+          node-version: '18.20.3'
       - run: npm install
       - run: make test
       - run: make build_macos
