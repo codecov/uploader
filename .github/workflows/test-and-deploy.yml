@@ -28,7 +28,9 @@ jobs:
       - name: Test
         run: make test
       - name: Build
-        run: make build
+        run: |
+          make build
+          make build_macos
       - name: Upload artifacts
         uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
         with:
@@ -174,8 +176,8 @@ jobs:
           path: |
             output_linux_without_git.txt
 
-  test-macos:
-    runs-on: macos-latest
+  test-macos-arch64:
+    runs-on: macos-latest-xlarge
     needs: build-linux-and-osx
     steps:
       - name: Checkout
@@ -203,8 +205,8 @@ jobs:
           path: |
             output_osx.txt
 
-  test-macos-without-git:
-    runs-on: macos-latest
+  test-macos-arc64-without-git:
+    runs-on: macos-latest-xlarge
     needs: build-linux-and-osx
     steps:
       - name: Checkout
