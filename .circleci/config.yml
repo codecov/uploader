@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   win: circleci/windows@5.0.0
+  node: circleci/node@5.2.0
 
 jobs:
   build-aarch64:
@@ -31,7 +32,7 @@ jobs:
             - out/codecov-aarch64
             - coverage-aarch64
 
-  build-linux-and-osx:
+  build-linux:
     docker:
       - image: cimg/node:18.20.3@sha256:b7e440d8e097d27ca514390ee703ad95b0b8cc42ccd5ac88a4d8bbd06a44754f
 
@@ -63,6 +64,27 @@ jobs:
             - coverage
             - package.json
             - vendor
+
+  build-macos:
+    macos:
+      xcode: '15.3.0'
+    resource_class: macos.m1.medium.gen1
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - node/install:
+          node-version: '18.20.3'
+      - run: npm install
+      - run: make test
+      - run: make build_macos
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - out/codecov-macos
+            - coverage-macos
 
   build-alpine:
     docker:
@@ -356,7 +378,8 @@ jobs:
 
   test-macos:
     macos:
-      xcode: '12.5.1'
+      xcode: '15.3.0'
+    resource_class: macos.m1.medium.gen1
     steps:
       - checkout
       - attach_workspace:
@@ -367,15 +390,15 @@ jobs:
       - run:
           name: Run MacOS binary -f (dry-run)
           command: |
-            out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -v -e CIRCLE_BRANCH >> output_osx.txt
+            ./out/codecov-macos -f /Users/distiller/project/coverage/cobertura-coverage.xml -F macos -d -Z -v -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary auto-detect (dry-run)
           command: |
-            out/codecov-macos -F macos -v -d -Z -e CIRCLE_BRANCH >> output_osx.txt
+            ./out/codecov-macos -F macos -v -d -Z -e CIRCLE_BRANCH >> output_osx.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-macos -F macos -v -Z -e CIRCLE_BRANCH
+            ./out/codecov-macos -F macos -v -Z -e CIRCLE_BRANCH
 
       - persist_to_workspace:
           root: .
@@ -384,7 +407,8 @@ jobs:
 
   test-macos-without-git:
     macos:
-      xcode: '12.5.1'
+      xcode: '15.3.0'
+    resource_class: macos.m1.medium.gen1
     steps:
       - checkout
       - run:
@@ -398,11 +422,11 @@ jobs:
       - run:
           name: Run MacOS binary (dry-run)
           command: |
-            out/codecov-macos -F macos-without-git -d > output_osx_without_git.txt
+            ./out/codecov-macos -F macos-without-git -d > output_osx_without_git.txt
       - run:
           name: Run MacOS binary (upload)
           command: |
-            out/codecov-macos -F macos-without-git
+            ./out/codecov-macos -F macos-without-git
 
       - persist_to_workspace:
           root: .
@@ -614,13 +638,13 @@ workflows:
       #             - 'Github Checkout'
       #           requires:
       #             - build-alpine
-      - build-linux-and-osx
+      - build-linux
       - build-aarch64:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - build-alpine:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - test-alpine:
           requires:
             - build-alpine
@@ -632,7 +656,7 @@ workflows:
             - test-alpine
       - build-windows:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - test-aarch64:
           requires:
             - build-aarch64
@@ -641,13 +665,16 @@ workflows:
             - test-aarch64
       - test-linux:
           requires:
-            - build-linux-and-osx
+            - build-linux
       - test-linux-without-git:
           requires:
             - test-linux
+      - build-macos:
+          requires:
+            - build-linux
       - test-macos:
           requires:
-            - build-linux-and-osx
+            - build-macos
       - test-macos-without-git:
           requires:
             - test-macos

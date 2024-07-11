@@ -21,6 +21,9 @@ build:
 	rm -rf dist
 	npm run build
 	npm run build-linux
+
+build_macos:
+	npm run build
 	npm run build-macos
 
 build_aarch64:
