@@ -32,7 +32,7 @@ jobs:
           make build
           make build_macos
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -76,7 +76,7 @@ jobs:
       - name: Build uploader binary on alpine
         run: make build_alpine
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -103,7 +103,7 @@ jobs:
           $ErrorActionPreference="Stop"
           npm run build; npm run build-windows
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -139,7 +139,7 @@ jobs:
           out/codecov-linux -F linux -Z -t ${{ secrets.CODECOV_TOKEN }}
           out/codecov-linux -F "-linux" -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -170,7 +170,7 @@ jobs:
         run: |
           out/codecov-linux -F linux-without-git -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -199,7 +199,7 @@ jobs:
         run: |
           out/codecov-macos -F macos -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -227,7 +227,7 @@ jobs:
         run: |
           out/codecov-macos -F macos-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -260,7 +260,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -F alpine -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -295,7 +295,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -327,7 +327,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -U http://localhost:3128 -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -361,7 +361,7 @@ jobs:
           .\out\codecov.exe -F windows -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
@@ -397,7 +397,7 @@ jobs:
           .\out\codecov.exe -F windows-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd
       - name: Upload artifacts
-        uses: actions/upload-artifact@a8a3f3ad30e3422c9c7b888a15615d19a852ae32 # v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3
         with:
           if-no-files-found: error
           path: |
