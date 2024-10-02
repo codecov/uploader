@@ -312,8 +312,7 @@ jobs:
 
   test-aarch64:
     machine:
-      image: ubuntu-2004:2022.04.1
-    resource_class: arm.medium
+      image: default
     steps:
       - checkout
       - attach_workspace:
@@ -350,8 +349,7 @@ jobs:
 
   test-aarch64-without-git:
     machine:
-      image: ubuntu-2004:2022.04.1
-    resource_class: arm.medium
+      image: default
     steps:
       - checkout
       - attach_workspace:
