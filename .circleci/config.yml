@@ -16,6 +16,9 @@ jobs:
       - attach_workspace:
           at: .
 
+      - node/install:
+          node-version: '18.20.4'
+
       - run: npm ci
 
       - run: |
