@@ -7,8 +7,7 @@ orbs:
 jobs:
   build-aarch64:
     machine:
-      image: ubuntu-2004:2022.04.1
-    resource_class: arm.medium
+      image: default
 
     working_directory: ~/repo
 
@@ -607,7 +606,7 @@ jobs:
 
   standards-coverage-comparison:
     machine:
-      image: ubuntu-2004:202201-02
+      image: default
     steps:
       - checkout
       - attach_workspace:
