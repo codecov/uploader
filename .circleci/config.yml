@@ -8,6 +8,7 @@ jobs:
   build-aarch64:
     machine:
       image: default
+    resource_class: arm.medium
 
     working_directory: ~/repo
 
@@ -315,6 +316,7 @@ jobs:
   test-aarch64:
     machine:
       image: default
+    resource_class: arm.medium
     steps:
       - checkout
       - attach_workspace:
@@ -352,6 +354,7 @@ jobs:
   test-aarch64-without-git:
     machine:
       image: default
+    resource_class: arm.medium
     steps:
       - checkout
       - attach_workspace:
