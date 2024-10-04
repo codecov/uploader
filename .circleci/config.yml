@@ -7,7 +7,7 @@ orbs:
 jobs:
   build-aarch64:
     machine:
-      image: ubuntu-2004:2022.04.1
+      image: default
     resource_class: arm.medium
 
     working_directory: ~/repo
@@ -16,6 +16,9 @@ jobs:
       - checkout
       - attach_workspace:
           at: .
+
+      - node/install:
+          node-version: '18.20.4'
 
       - run: npm ci
 
@@ -312,7 +315,7 @@ jobs:
 
   test-aarch64:
     machine:
-      image: ubuntu-2004:2022.04.1
+      image: default
     resource_class: arm.medium
     steps:
       - checkout
@@ -350,7 +353,7 @@ jobs:
 
   test-aarch64-without-git:
     machine:
-      image: ubuntu-2004:2022.04.1
+      image: default
     resource_class: arm.medium
     steps:
       - checkout
@@ -609,7 +612,7 @@ jobs:
 
   standards-coverage-comparison:
     machine:
-      image: ubuntu-2004:202201-02
+      image: default
     steps:
       - checkout
       - attach_workspace:
