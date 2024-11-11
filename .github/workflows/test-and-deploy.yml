@@ -34,6 +34,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: build-linux-and-osx
           if-no-files-found: error
           path: |
             coverage/
@@ -78,6 +79,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: build-alpine
           if-no-files-found: error
           path: |
             coverage-alpine
@@ -105,6 +107,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: build-windows
           if-no-files-found: error
           path: |
             coverage/
@@ -141,6 +144,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-linux
           if-no-files-found: error
           path: |
             output_linux.txt
@@ -172,6 +176,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-linux-without-git
           if-no-files-found: error
           path: |
             output_linux_without_git.txt
@@ -201,6 +206,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-macos
           if-no-files-found: error
           path: |
             output_osx.txt
@@ -229,6 +235,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-macos-without-git
           if-no-files-found: error
           path: |
             output_osx_without_git.txt
@@ -258,6 +265,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-macos-arch64
           if-no-files-found: error
           path: |
             output_osx_arch64.txt
@@ -286,6 +294,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-macos-arch64-without-git
           if-no-files-found: error
           path: |
             output_osx_arch64_without_git.txt
@@ -319,6 +328,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-alpine
           if-no-files-found: error
           path: |
             output_alpine.txt
@@ -354,6 +364,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-alpine-without-git
           if-no-files-found: error
           path: |
             output_alpine_without_git.txt
@@ -386,6 +397,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-alpine-proxy
           if-no-files-found: error
           path: |
             output_alpine_proxy.txt
@@ -420,6 +432,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-windows
           if-no-files-found: error
           path: |
             output_win.txt
@@ -456,6 +469,7 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
+          name: test-windows-without-git
           if-no-files-found: error
           path: |
             output_win_without_git.txt
