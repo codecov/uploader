@@ -124,7 +124,7 @@ jobs:
           node-version: 18
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-linux-and-osx
       - name: Confirm that linux uploader binary is static
         run: (file out/codecov-linux | grep 'static') || exit ${?}
       - name: Remove test coverage files
@@ -160,7 +160,7 @@ jobs:
           node-version: 18
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-linux-and-osx
       - name: Remove .git directory
         run: rm -rf .git
       - name: Remove test coverage files
@@ -189,7 +189,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-linux-and-osx
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
@@ -219,7 +219,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-linux-and-osx
       - name: Remove .git directory
         run: rm -rf .git
       - name: Remove test coverage files
@@ -248,7 +248,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-linux-and-osx
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
@@ -278,7 +278,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-linux-and-osx
       - name: Remove .git directory
         run: rm -rf .git
       - name: Remove test coverage files
@@ -312,7 +312,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-alpine
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
@@ -346,7 +346,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-alpine
       - name: Remove .git directory
         run: rm -rf .git
       - name: Remove test coverage files
@@ -382,7 +382,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-alpine
       - name: Start squid
         run: squid
       - name: Remove test coverage files
@@ -410,7 +410,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-windows
       - name: Remove test coverage files
         run: |
           Remove-Item -Recurse -Force *.coverage.txt;  echo "ok"
@@ -445,7 +445,7 @@ jobs:
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
       - uses: actions/download-artifact@v4.1.8
         with:
-          name: artifact
+          name: build-windows
       - name: Remove .git directory
         run: del -Recurse -Force .git
       - name: Remove test coverage files
@@ -496,8 +496,6 @@ jobs:
           node-version: 18
           cache: 'npm'
       - uses: actions/download-artifact@v4.1.8
-        with:
-          name: artifact
       - name: List files
         run: tree
       - name: Cat output_alpine.txt
