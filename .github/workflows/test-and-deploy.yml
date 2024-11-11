@@ -122,7 +122,7 @@ jobs:
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: 18
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Confirm that linux uploader binary is static
@@ -158,7 +158,7 @@ jobs:
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: 18
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove .git directory
@@ -187,7 +187,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove test coverage files
@@ -217,7 +217,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove .git directory
@@ -246,7 +246,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove test coverage files
@@ -276,7 +276,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove .git directory
@@ -310,7 +310,7 @@ jobs:
           apk add git
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove test coverage files
@@ -344,7 +344,7 @@ jobs:
           apk add git
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove .git directory
@@ -380,7 +380,7 @@ jobs:
           apk add git squid
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Start squid
@@ -408,7 +408,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove test coverage files
@@ -443,7 +443,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: Remove .git directory
@@ -495,7 +495,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-      - uses: actions/download-artifact@v4.4.3
+      - uses: actions/download-artifact@v4.1.8
         with:
           name: artifact
       - name: List files
