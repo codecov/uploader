@@ -182,7 +182,7 @@ jobs:
             output_linux_without_git.txt
 
   test-macos:
-    runs-on: macos
+    runs-on: macos-latest-large
     needs: build-linux-and-osx
     steps:
       - name: Checkout
@@ -212,7 +212,7 @@ jobs:
             output_osx.txt
 
   test-macos-without-git:
-    runs-on: macos
+    runs-on: macos-latest-large
     needs: build-linux-and-osx
     steps:
       - name: Checkout
@@ -241,7 +241,7 @@ jobs:
             output_osx_without_git.txt
 
   test-macos-arch64:
-    runs-on: macos-latest-xlarge
+    runs-on: macos-latest
     needs: build-linux-and-osx
     steps:
       - name: Checkout
@@ -271,7 +271,7 @@ jobs:
             output_osx_arch64.txt
 
   test-macos-arch64-without-git:
-    runs-on: macos-latest-xlarge
+    runs-on: macos-latest
     needs: build-linux-and-osx
     steps:
       - name: Checkout
