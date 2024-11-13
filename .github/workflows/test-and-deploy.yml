@@ -30,7 +30,8 @@ jobs:
       - name: Build
         run: |
           make build
-          make build_macos
+          make build_macos_x64
+          make build_macos_arm64
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
@@ -181,7 +182,7 @@ jobs:
           path: |
             output_linux_without_git.txt
 
-  test-macos:
+  test-macos-x64:
     runs-on: macos-latest-large
     needs: build-linux-and-osx
     steps:
@@ -193,25 +194,25 @@ jobs:
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
-        run: chmod u+x out/codecov-macos
+        run: chmod u+x out/codecov-macos-x64
       - name: Run MacOS binary -f (dry-run)
         run: |
-          out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z -v -t ${{ secrets.CODECOV_TOKEN }} | tee output_osx.txt
+          out/codecov-macos-x64 -f coverage/cobertura-coverage.xml -F macos-x64 -d -Z -v -t ${{ secrets.CODECOV_TOKEN }} | tee output_macos_x64.txt
       - name: Run MacOS binary auto-detect (dry-run)
         run: |
-          out/codecov-macos -F macos -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_osx.txt
+          out/codecov-macos-x64 -F macos-x64 -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_macos_x64.txt
       - name: Run MacOS binary (upload)
         run: |
-          out/codecov-macos -F macos -v -Z -t ${{ secrets.CODECOV_TOKEN }}
+          out/codecov-macos-x64 -F macos-x64 -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: test-macos
+          name: test-macos-x64
           if-no-files-found: error
           path: |
-            output_osx.txt
+            output_macos_x64.txt
 
-  test-macos-without-git:
+  test-macos-x64-without-git:
     runs-on: macos-latest-large
     needs: build-linux-and-osx
     steps:
@@ -225,22 +226,22 @@ jobs:
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
-        run: chmod u+x out/codecov-macos
+        run: chmod u+x out/codecov-macos-x64
       - name: Run MacOS binary (dry-run)
         run: |
-          out/codecov-macos -F macos-without-git -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_osx_without_git.txt
+          out/codecov-macos-x64 -F macos-x64-without-git -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_macos_x64_without_git.txt
       - name: Run MacOS binary (upload)
         run: |
-          out/codecov-macos -F macos-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
+          out/codecov-macos-x64 -F macos-x64-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: test-macos-without-git
+          name: test-macos-x64-without-git
           if-no-files-found: error
           path: |
-            output_osx_without_git.txt
+            output_macos_x64_without_git.txt
 
-  test-macos-arch64:
+  test-macos-arm64:
     runs-on: macos-latest
     needs: build-linux-and-osx
     steps:
@@ -252,25 +253,25 @@ jobs:
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
-        run: chmod u+x out/codecov-macos
+        run: chmod u+x out/codecov-macos-arm64
       - name: Run MacOS binary -f (dry-run)
         run: |
-          out/codecov-macos -f coverage/cobertura-coverage.xml -F macos -d -Z -v -t ${{ secrets.CODECOV_TOKEN }} | tee output_osx.txt
+          out/codecov-macos-arm64 -f coverage/cobertura-coverage.xml -F macos-arm64 -d -Z -v -t ${{ secrets.CODECOV_TOKEN }} | tee output_macos_arm64.txt
       - name: Run MacOS binary auto-detect (dry-run)
         run: |
-          out/codecov-macos -F macos -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_osx.txt
+          out/codecov-macos-arm64 -F macos-arm64 -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_macos_arm64.txt
       - name: Run MacOS binary (upload)
         run: |
-          out/codecov-macos -F macos -v -Z -t ${{ secrets.CODECOV_TOKEN }}
+          out/codecov-macos-arm64 -F macos-arm64 -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: test-macos-arch64
+          name: test-macos-arm64
           if-no-files-found: error
           path: |
-            output_osx_arch64.txt
+            output_macos_arm64.txt
 
-  test-macos-arch64-without-git:
+  test-macos-arm64-without-git:
     runs-on: macos-latest
     needs: build-linux-and-osx
     steps:
@@ -284,20 +285,20 @@ jobs:
       - name: Remove test coverage files
         run: rm -rf *.coverage.txt coverage-report-test.json test/fixtures || echo
       - name: Update exec permission
-        run: chmod u+x out/codecov-macos
+        run: chmod u+x out/codecov-macos-arm64
       - name: Run MacOS binary (dry-run)
         run: |
-          out/codecov-macos -F macos-without-git -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_osx_without_git.txt
+          out/codecov-macos-arm64 -F macos-arm64-without-git -v -d -Z -t ${{ secrets.CODECOV_TOKEN }} | tee -a output_macos_arm64_without_git.txt
       - name: Run MacOS binary (upload)
         run: |
-          out/codecov-macos -F macos-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
+          out/codecov-macos-arm64 -F macos-arm64-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4.4.3
         with:
-          name: test-macos-arch64-without-git
+          name: test-macos-arm64-without-git
           if-no-files-found: error
           path: |
-            output_osx_arch64_without_git.txt
+            output_macos_arm64_without_git.txt
 
   test-alpine:
     runs-on: ubuntu-latest
@@ -482,10 +483,10 @@ jobs:
       - test-alpine-without-git
       - test-linux
       - test-linux-without-git
-      - test-macos
-      - test-macos-without-git
-      - test-macos-arch64
-      - test-macos-arch64-without-git
+      - test-macos-x64
+      - test-macos-x64-without-git
+      - test-macos-arm64
+      - test-macos-arm64-without-git
       - test-windows
       - test-windows-without-git
     steps:
@@ -506,14 +507,14 @@ jobs:
         run: cat output_linux.txt
       - name: Cat output_linux_without_git.txt
         run: cat output_linux_without_git.txt
-      - name: Cat output_osx.txt
-        run: cat output_osx.txt
-      - name: Cat output_osx_without_git.txt
-        run: cat output_osx_without_git.txt
-      - name: Cat output_osx_arch64.txt
-        run: cat output_osx_arch64.txt
-      - name: Cat output_osx_arch64_without_git.txt
-        run: cat output_osx_arch64_without_git.txt
+      - name: Cat output_macos_x64.txt
+        run: cat output_macos_x64.txt
+      - name: Cat output_macos_x64_without_git.txt
+        run: cat output_macos_x64_without_git.txt
+      - name: Cat output_macos_arm64.txt
+        run: cat output_macos_arm64.txt
+      - name: Cat output_macos_arm64_without_git.txt
+        run: cat output_macos_arm64_without_git.txt
       - name: Cat output_win.txt
         run: cat output_win.txt
       - name: Cat output_win_without_git.txt
