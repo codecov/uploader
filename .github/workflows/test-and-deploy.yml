@@ -43,7 +43,7 @@ jobs:
             vendor/
 
   build-macos-arm64:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
     needs: build-linux-and-macos-x64
     steps:
       - name: Checkout
