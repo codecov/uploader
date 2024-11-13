@@ -534,7 +534,7 @@ jobs:
       - name: Cat output_alpine_without_git.txt
         run: cat test-alpine-without-git/output_alpine_without_git.txt
       - name: Cat test-linux/output_linux.txt
-        run: cat test-lnux/output_linux.txt
+        run: cat test-linux/output_linux.txt
       - name: Cat test-linux-without-git/output_linux_without_git.txt
         run: cat test-linux-without-git/output_linux_without_git.txt
       - name: Cat test-macos-arm64/output_macos_arm64.txt

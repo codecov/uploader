@@ -81,7 +81,7 @@ jobs:
           node-version: '18.20.3'
       - run: npm install
       - run: make test
-      - run: make build_macos
+      - run: make build_macos_arm64
 
       - persist_to_workspace:
           root: .
