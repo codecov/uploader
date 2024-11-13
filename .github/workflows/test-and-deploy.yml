@@ -543,8 +543,8 @@ jobs:
         run: cat test-macos-arm64-without-git/output_macos_arm64_without_git.txt
       - name: Cat test-macos-x64/output_macos_x64.txt
         run: cat test-macos-x64/output_macos_x64.txt
-      - name: Cat test-macos-x64-without-git/_macos_x64_without_git.txt
-        run: cat test-macos-x64-without-git/_macos_x64_without_git.txt
+      - name: Cat test-macos-x64-without-git/output_macos_x64_without_git.txt
+        run: cat test-macos-x64-without-git/output_macos_x64_without_git.txt
       - name: Cat test-windows/output_win.txt
         run: cat test-windows/output_win.txt
       - name: Cat test-windows-without-git/output_win_without_git.txt

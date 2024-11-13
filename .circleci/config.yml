@@ -81,13 +81,16 @@ jobs:
           node-version: '18.20.3'
       - run: npm install
       - run: make test
-      - run: make build_macos_arm64
+      - run: |
+          make build_macos_arm64
+          mkdir -p coverage-macos-arm64
+          cp -r coverage/* coverage-macos-arm64/
 
       - persist_to_workspace:
           root: .
           paths:
-            - out/codecov-macos
-            - coverage-macos
+            - out/codecov-macos-arm64
+            - coverage-macos-arm64
 
   build-alpine:
     docker:
