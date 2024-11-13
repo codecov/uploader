@@ -22,9 +22,13 @@ build:
 	npm run build
 	npm run build-linux
 
-build_macos:
+build_macos_x64:
 	npm run build
-	npm run build-macos
+	npm run build-macos-x64
+
+build_macos_arm64:
+	npm run build
+	npm run build-macos-arm64
 
 build_aarch64:
 	npm run build
