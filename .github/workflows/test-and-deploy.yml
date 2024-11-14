@@ -32,7 +32,7 @@ jobs:
           make build
           make build_macos_x64
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: build-linux-and-macos-x64
           if-no-files-found: error
@@ -61,7 +61,7 @@ jobs:
         run: |
           make build_macos_arm64
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: build-macos-arm64
           if-no-files-found: error
@@ -106,7 +106,7 @@ jobs:
       - name: Build uploader binary on alpine
         run: make build_alpine
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: build-alpine
           if-no-files-found: error
@@ -134,7 +134,7 @@ jobs:
           $ErrorActionPreference="Stop"
           npm run build; npm run build-windows
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: build-windows
           if-no-files-found: error
@@ -151,7 +151,7 @@ jobs:
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: 18
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-linux-and-macos-x64
       - name: Confirm that linux uploader binary is static
@@ -171,7 +171,7 @@ jobs:
           out/codecov-linux -F linux -Z -t ${{ secrets.CODECOV_TOKEN }}
           out/codecov-linux -F "-linux" -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-linux
           if-no-files-found: error
@@ -187,7 +187,7 @@ jobs:
       - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: 18
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-linux-and-macos-x64
       - name: Remove .git directory
@@ -203,7 +203,7 @@ jobs:
         run: |
           out/codecov-linux -F linux-without-git -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-linux-without-git
           if-no-files-found: error
@@ -216,7 +216,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-linux-and-macos-x64
       - name: Remove test coverage files
@@ -233,7 +233,7 @@ jobs:
         run: |
           out/codecov-macos-x64 -F macos-x64 -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-macos-x64
           if-no-files-found: error
@@ -246,7 +246,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-linux-and-macos-x64
       - name: Remove .git directory
@@ -262,7 +262,7 @@ jobs:
         run: |
           out/codecov-macos-x64 -F macos-x64-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-macos-x64-without-git
           if-no-files-found: error
@@ -275,7 +275,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-macos-arm64
       - name: Remove test coverage files
@@ -292,7 +292,7 @@ jobs:
         run: |
           out/codecov-macos-arm64 -F macos-arm64 -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-macos-arm64
           if-no-files-found: error
@@ -305,7 +305,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-macos-arm64
       - name: Remove .git directory
@@ -321,7 +321,7 @@ jobs:
         run: |
           out/codecov-macos-arm64 -F macos-arm64-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-macos-arm64-without-git
           if-no-files-found: error
@@ -339,7 +339,7 @@ jobs:
           apk add git
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-alpine
       - name: Remove test coverage files
@@ -355,7 +355,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -F alpine -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-alpine
           if-no-files-found: error
@@ -373,7 +373,7 @@ jobs:
           apk add git
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-alpine
       - name: Remove .git directory
@@ -391,7 +391,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-alpine-without-git
           if-no-files-found: error
@@ -409,7 +409,7 @@ jobs:
           apk add git squid
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-alpine
       - name: Start squid
@@ -424,7 +424,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -U http://localhost:3128 -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-alpine-proxy
           if-no-files-found: error
@@ -437,7 +437,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-windows
       - name: Remove test coverage files
@@ -459,7 +459,7 @@ jobs:
           .\out\codecov.exe -F windows -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-windows
           if-no-files-found: error
@@ -472,7 +472,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: build-windows
       - name: Remove .git directory
@@ -496,7 +496,7 @@ jobs:
           .\out\codecov.exe -F windows-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4.4.3
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: test-windows-without-git
           if-no-files-found: error
@@ -524,7 +524,7 @@ jobs:
         with:
           node-version: 18
           cache: 'npm'
-      - uses: actions/download-artifact@v4.1.8
+      - uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
       - name: List files
         run: tree
       - name: Cat output_alpine.txt
