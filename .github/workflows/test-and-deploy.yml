@@ -32,7 +32,7 @@ jobs:
           make build
           make build_macos_x64
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: build-linux-and-macos-x64
           if-no-files-found: error
@@ -61,7 +61,7 @@ jobs:
         run: |
           make build_macos_arm64
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: build-macos-arm64
           if-no-files-found: error
@@ -106,7 +106,7 @@ jobs:
       - name: Build uploader binary on alpine
         run: make build_alpine
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: build-alpine
           if-no-files-found: error
@@ -134,7 +134,7 @@ jobs:
           $ErrorActionPreference="Stop"
           npm run build; npm run build-windows
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: build-windows
           if-no-files-found: error
@@ -171,7 +171,7 @@ jobs:
           out/codecov-linux -F linux -Z -t ${{ secrets.CODECOV_TOKEN }}
           out/codecov-linux -F "-linux" -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-linux
           if-no-files-found: error
@@ -203,7 +203,7 @@ jobs:
         run: |
           out/codecov-linux -F linux-without-git -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-linux-without-git
           if-no-files-found: error
@@ -233,7 +233,7 @@ jobs:
         run: |
           out/codecov-macos-x64 -F macos-x64 -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-macos-x64
           if-no-files-found: error
@@ -262,7 +262,7 @@ jobs:
         run: |
           out/codecov-macos-x64 -F macos-x64-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-macos-x64-without-git
           if-no-files-found: error
@@ -292,7 +292,7 @@ jobs:
         run: |
           out/codecov-macos-arm64 -F macos-arm64 -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-macos-arm64
           if-no-files-found: error
@@ -321,7 +321,7 @@ jobs:
         run: |
           out/codecov-macos-arm64 -F macos-arm64-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-macos-arm64-without-git
           if-no-files-found: error
@@ -355,7 +355,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -F alpine -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-alpine
           if-no-files-found: error
@@ -391,7 +391,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-alpine-without-git
           if-no-files-found: error
@@ -424,7 +424,7 @@ jobs:
       - name: Run Alpine binary (upload)
         run: out/codecov-alpine -U http://localhost:3128 -F alpine-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-alpine-proxy
           if-no-files-found: error
@@ -459,7 +459,7 @@ jobs:
           .\out\codecov.exe -F windows -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-windows
           if-no-files-found: error
@@ -496,7 +496,7 @@ jobs:
           .\out\codecov.exe -F windows-without-git -v -Z -t ${{ secrets.CODECOV_TOKEN }}
         shell: cmd
       - name: Upload artifacts
-        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        uses: actions/upload-artifact@6f51ac03b9356f520e9adb1b1b7802705f340c2b # v4.5.0
         with:
           name: test-windows-without-git
           if-no-files-found: error
