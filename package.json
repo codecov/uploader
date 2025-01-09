@@ -35,7 +35,7 @@
   },
   "homepage": "https://github.com/codecov/uploader#readme",
   "dependencies": {
-    "fast-glob": "3.3.2",
+    "fast-glob": "3.3.3",
     "js-yaml": "4.1.0",
     "snake-case": "3.0.4",
     "undici": "5.28.4",
