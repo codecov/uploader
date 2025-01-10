@@ -73,7 +73,7 @@ jobs:
 
   build-alpine:
     runs-on: ubuntu-latest
-    container: alpine:3.21.1@sha256:b97e2a89d0b9e4011bb88c02ddf01c544b8c781acf1f4d559e7c8f12f1047ac3
+    container: alpine:3.21.2@sha256:56fa17d2a7e7f168a043a2712e63aed1f8543aeafdcee47c58dcffe38ed51099
     needs: build-linux-and-macos-x64
     steps:
       - name: Checkout
@@ -330,7 +330,7 @@ jobs:
 
   test-alpine:
     runs-on: ubuntu-latest
-    container: alpine:3.21.1@sha256:b97e2a89d0b9e4011bb88c02ddf01c544b8c781acf1f4d559e7c8f12f1047ac3
+    container: alpine:3.21.2@sha256:56fa17d2a7e7f168a043a2712e63aed1f8543aeafdcee47c58dcffe38ed51099
     needs: build-alpine
     steps:
       - name: Install git
@@ -364,7 +364,7 @@ jobs:
 
   test-alpine-without-git:
     runs-on: ubuntu-latest
-    container: alpine:3.21.1@sha256:b97e2a89d0b9e4011bb88c02ddf01c544b8c781acf1f4d559e7c8f12f1047ac3
+    container: alpine:3.21.2@sha256:56fa17d2a7e7f168a043a2712e63aed1f8543aeafdcee47c58dcffe38ed51099
     needs: build-alpine
     steps:
       - name: Install git
@@ -400,7 +400,7 @@ jobs:
 
   test-alpine-proxy:
     runs-on: ubuntu-latest
-    container: alpine:3.21.1@sha256:b97e2a89d0b9e4011bb88c02ddf01c544b8c781acf1f4d559e7c8f12f1047ac3
+    container: alpine:3.21.2@sha256:56fa17d2a7e7f168a043a2712e63aed1f8543aeafdcee47c58dcffe38ed51099
     needs: build-alpine
     steps:
       - name: Install git
