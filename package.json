@@ -62,7 +62,7 @@
     "lint-staged": "15.4.3",
     "mock-fs": "5.5.0",
     "pkg": "5.8.1",
-    "prettier": "3.5.1",
+    "prettier": "3.5.2",
     "standard-version": "9.5.0",
     "testdouble": "3.20.2",
     "testdouble-jest": "2.0.0",
