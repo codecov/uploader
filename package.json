@@ -39,7 +39,7 @@
     "js-yaml": "4.1.0",
     "snake-case": "3.0.4",
     "undici": "5.28.5",
-    "validator": "13.12.0",
+    "validator": "13.15.0",
     "yargs": "17.7.2"
   },
   "devDependencies": {
@@ -50,7 +50,7 @@
     "@types/micromatch": "4.0.9",
     "@types/mock-fs": "4.13.4",
     "@types/node": "20.17.30",
-    "@types/validator": "13.12.2",
+    "@types/validator": "13.15.0",
     "@types/yargs": "17.0.33",
     "@typescript-eslint/eslint-plugin": "7.18.0",
     "@typescript-eslint/parser": "7.18.0",
