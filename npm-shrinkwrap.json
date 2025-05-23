@@ -44,7 +44,7 @@
         "testdouble": "3.20.2",
         "testdouble-jest": "2.0.0",
         "ts-jest": "29.3.1",
-        "typescript": "5.8.2"
+        "typescript": "5.8.3"
       }
     },
     "node_modules/@aashutoshrathi/word-wrap": {
@@ -8687,9 +8687,9 @@
       "dev": true
     },
     "node_modules/typescript": {
-      "version": "5.8.2",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.8.2.tgz",
-      "integrity": "sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==",
+      "version": "5.8.3",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.8.3.tgz",
+      "integrity": "sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==",
       "dev": true,
       "bin": {
         "tsc": "bin/tsc",
@@ -15442,9 +15442,9 @@
       "dev": true
     },
     "typescript": {
-      "version": "5.8.2",
-      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.8.2.tgz",
-      "integrity": "sha512-aJn6wq13/afZp/jT9QZmwEjDqqvSGp1VT5GVg+f/t6/oVyrgXM6BY1h9BRh/O5p3PlUPAe+WuiEZOmb/49RqoQ==",
+      "version": "5.8.3",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.8.3.tgz",
+      "integrity": "sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ==",
       "dev": true
     },
     "uglify-js": {
