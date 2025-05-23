@@ -26,7 +26,7 @@
         "@types/js-yaml": "4.0.9",
         "@types/micromatch": "4.0.9",
         "@types/mock-fs": "4.13.4",
-        "@types/node": "20.17.47",
+        "@types/node": "20.17.49",
         "@types/validator": "13.15.0",
         "@types/yargs": "17.0.33",
         "@typescript-eslint/eslint-plugin": "7.18.0",
@@ -2028,9 +2028,9 @@
       }
     },
     "node_modules/@types/node": {
-      "version": "20.17.47",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-20.17.47.tgz",
-      "integrity": "sha512-3dLX0Upo1v7RvUimvxLeXqwrfyKxUINk0EAM83swP2mlSUcwV73sZy8XhNz8bcZ3VbsfQyC/y6jRdL5tgCNpDQ==",
+      "version": "20.17.49",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-20.17.49.tgz",
+      "integrity": "sha512-lu4U+g0EbSW2aPGksNyqcesB2D3eDD0mv8ig9youJsEs/DuMOdeqcEbFOBDCCurXNpa10NkKSSRfOQLBFCiD8w==",
       "dev": true,
       "dependencies": {
         "undici-types": "~6.19.2"
@@ -10621,9 +10621,9 @@
       }
     },
     "@types/node": {
-      "version": "20.17.47",
-      "resolved": "https://registry.npmjs.org/@types/node/-/node-20.17.47.tgz",
-      "integrity": "sha512-3dLX0Upo1v7RvUimvxLeXqwrfyKxUINk0EAM83swP2mlSUcwV73sZy8XhNz8bcZ3VbsfQyC/y6jRdL5tgCNpDQ==",
+      "version": "20.17.49",
+      "resolved": "https://registry.npmjs.org/@types/node/-/node-20.17.49.tgz",
+      "integrity": "sha512-lu4U+g0EbSW2aPGksNyqcesB2D3eDD0mv8ig9youJsEs/DuMOdeqcEbFOBDCCurXNpa10NkKSSRfOQLBFCiD8w==",
       "dev": true,
       "requires": {
         "undici-types": "~6.19.2"
