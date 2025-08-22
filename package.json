@@ -67,7 +67,7 @@
     "testdouble": "3.20.2",
     "testdouble-jest": "2.0.0",
     "ts-jest": "29.4.1",
-    "typescript": "5.8.2"
+    "typescript": "5.9.2"
   },
   "lint-staged": {
     "**/*.js": [
