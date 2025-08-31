@@ -14,6 +14,7 @@ import * as providerGitLabci from './provider_gitlabci'
 import * as providerHerokuci from './provider_herokuci'
 import * as providerJenkinsci from './provider_jenkinsci'
 import * as providerLocal from './provider_local'
+import * as providerSemaphore from './provider_semaphore'
 import * as providerTeamCity from './provider_teamcity'
 import * as providerTravisci from './provider_travisci'
 import * as providerWercker from './provider_wercker'
@@ -34,6 +35,7 @@ const providerList: IProvider[] = [
   providerGitLabci,
   providerHerokuci,
   providerJenkinsci,
+  providerSemaphore,
   providerTeamCity,
   providerTravisci,
   providerWercker,
