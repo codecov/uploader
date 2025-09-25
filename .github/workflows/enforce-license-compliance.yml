@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Enforce License Compliance'
-        uses: getsentry/action-enforce-license-compliance@4fae092d42cc91cdfa447eb5b0987cbecfdb07c6 # main
+        uses: getsentry/action-enforce-license-compliance@48236a773346cb6552a7bda1ee370d2797365d87 # main
         with:
           fossa_api_key: ${{ secrets.FOSSA_API_KEY }}
