@@ -12,7 +12,7 @@
         "fast-glob": "3.3.3",
         "js-yaml": "4.1.0",
         "snake-case": "3.0.4",
-        "undici": "5.29.0",
+        "undici": "6.24.0",
         "validator": "13.15.15",
         "yargs": "17.7.2"
       },
@@ -1331,14 +1331,6 @@
       "dev": true,
       "engines": {
         "node": "^12.22.0 || ^14.17.0 || >=16.0.0"
-      }
-    },
-    "node_modules/@fastify/busboy": {
-      "version": "2.0.0",
-      "resolved": "https://registry.npmjs.org/@fastify/busboy/-/busboy-2.0.0.tgz",
-      "integrity": "sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ==",
-      "engines": {
-        "node": ">=14"
       }
     },
     "node_modules/@humanwhocodes/config-array": {
@@ -8528,14 +8520,11 @@
       }
     },
     "node_modules/undici": {
-      "version": "5.29.0",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-5.29.0.tgz",
-      "integrity": "sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==",
-      "dependencies": {
-        "@fastify/busboy": "^2.0.0"
-      },
+      "version": "6.24.0",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-6.24.0.tgz",
+      "integrity": "sha512-lVLNosgqo5EkGqh5XUDhGfsMSoO8K0BAN0TyJLvwNRSl4xWGZlCVYsAIpa/OpA3TvmnM01GWcoKmc3ZWo5wKKA==",
       "engines": {
-        "node": ">=14.0"
+        "node": ">=18.17"
       }
     },
     "node_modules/undici-types": {
@@ -9856,11 +9845,6 @@
       "resolved": "https://registry.npmjs.org/@eslint/js/-/js-8.57.1.tgz",
       "integrity": "sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==",
       "dev": true
-    },
-    "@fastify/busboy": {
-      "version": "2.0.0",
-      "resolved": "https://registry.npmjs.org/@fastify/busboy/-/busboy-2.0.0.tgz",
-      "integrity": "sha512-JUFJad5lv7jxj926GPgymrWQxxjPYuJNiNjNMzqT+HiuP6Vl3dk5xzG+8sTX96np0ZAluvaMzPsjhHZ5rNuNQQ=="
     },
     "@humanwhocodes/config-array": {
       "version": "0.13.0",
@@ -15142,12 +15126,9 @@
       "optional": true
     },
     "undici": {
-      "version": "5.29.0",
-      "resolved": "https://registry.npmjs.org/undici/-/undici-5.29.0.tgz",
-      "integrity": "sha512-raqeBD6NQK4SkWhQzeYKd1KmIG6dllBOTt55Rmkt4HtI9mwdWtJljnrXjAFUBLTSN67HWrOIZ3EPF4kjUw80Bg==",
-      "requires": {
-        "@fastify/busboy": "^2.0.0"
-      }
+      "version": "6.24.0",
+      "resolved": "https://registry.npmjs.org/undici/-/undici-6.24.0.tgz",
+      "integrity": "sha512-lVLNosgqo5EkGqh5XUDhGfsMSoO8K0BAN0TyJLvwNRSl4xWGZlCVYsAIpa/OpA3TvmnM01GWcoKmc3ZWo5wKKA=="
     },
     "undici-types": {
       "version": "6.21.0",
