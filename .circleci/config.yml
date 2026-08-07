@@ -104,32 +104,9 @@ jobs:
           at: .
 
       - run:
-          name: Download prebuilt static node binary
+          name: Install deps and run tests
           command: |
-            apk add wget coreutils make
-            NODE_RELEASE=node.v16.2.0_b57a0d7c9ecba551879997ac44bba3c9d9443df5
-            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/node
-            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA1SUM
-            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA256SUM
-            wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA512SUM
-            for i in 1 256 512; do "sha${i}sum" -c "SHA${i}SUM"; done
-      - run:
-          name: Confirm that alpine node binary is static
-          command: |
-            apk add file
-            (file node | grep 'static') || exit ${?}
-
-      - run:
-          name: Create pkg-cache directory and copy static NodeJS binary
-          command: |
-            mkdir -p ~/.pkg-cache/v2.6
-            cp node /root/.pkg-cache/v2.6/fetched-v14.0.0-alpine-x64
-
-      - run:
-          name: Remove downloaded binary and run tests
-          command: |
-            rm -rf node
-            apk add npm git
+            apk add --no-cache npm git make python3
             npm ci
             npm test
             mkdir -p coverage-alpine
@@ -144,7 +121,6 @@ jobs:
           paths:
             - out/codecov-alpine
             - coverage-alpine
-
   test-alpine:
     docker:
       - image: alpine:3.22.1@sha256:4bcff63911fcb4448bd4fdacec207030997caf25e9bea4045fa6c8c44de311d1

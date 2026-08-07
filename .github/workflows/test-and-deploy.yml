@@ -78,32 +78,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-      - name: Download prebuilt static node binary
+      - name: Install build deps and run tests
         run: |
-          apk add wget coreutils make
-          NODE_RELEASE=node.v16.2.0_b57a0d7c9ecba551879997ac44bba3c9d9443df5
-          wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/node
-          wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA1SUM
-          wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA256SUM
-          wget https://github.com/codecov/node-static-alpine/releases/download/$NODE_RELEASE/SHA512SUM
-          for i in 1 256 512; do "sha${i}sum" -c "SHA${i}SUM"; done
-      - name: Confirm that alpine node binary is static
-        run: |
-          apk add file
-          (file node | grep 'static') || exit ${?}
-      - name: Create pkg-cache directory and copy static NodeJS binary
-        run: |
-          mkdir -p ~/.pkg-cache/v2.6
-          cp node ~/.pkg-cache/v2.6/fetched-v14.0.0-alpine-x64
-      - name: Remove downloaded binary and run tests
-        run: |
-          rm -rf node
-          apk add npm git
+          apk add --no-cache npm git make python3
           npm ci
           npm test
           mkdir -p coverage-alpine
           cp -r coverage/* coverage-alpine/
       - name: Build uploader binary on alpine
+        # undici 6 needs Node >=18.17; pkg-fetch provides node18.5.0-alpine-x64
         run: make build_alpine
       - name: Upload artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
