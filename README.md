@@ -1,3 +1,9 @@
+## ⚠️ Deprecation Warning ⚠️
+
+This uploader is being deprecated in favor of the [Codecov CLI](https://github.com/codecov/codecov-cli) and will no longer be updated or maintained. Please update to the CLI for new features and development
+
+-----
+
 # Codecov Uploader 
 
 [![CircleCI](https://circleci.com/gh/codecov/uploader.svg?style=shield&circle-token=def755bf76a1d8c36436c3115530c7eac7fa30e0)](https://circleci.com/gh/codecov/uploader) [![codecov](https://codecov.io/gh/codecov/uploader/branch/master/graph/badge.svg?token=X1gImxfIya)](https://codecov.io/gh/codecov/uploader)
