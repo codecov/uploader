@@ -25,8 +25,10 @@ import { createEmptyArgs } from '../test_helpers'
 import * as utilModule from '../../src/helpers/util'
 import { IncomingHttpHeaders } from 'undici/types/header'
 
-function hasUserAgent(headers: IncomingHttpHeaders | string[]): headers is IncomingHttpHeaders {
-  return "User-Agent" in headers
+function hasUserAgent(
+  headers: IncomingHttpHeaders | string[] | Iterable<[string, string | string[] | undefined]>,
+): headers is IncomingHttpHeaders {
+  return typeof headers === 'object' && headers !== null && !Array.isArray(headers) && 'User-Agent' in headers
 }
 
 describe('Web Helpers', () => {
